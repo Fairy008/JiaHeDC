@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="js/ueditor/themes/default/dialogbase.css" />-->
+
+    <style>
+        #articleInfo body{ width: 900px;}
+        #addDownloadData .content{ width: 840px;  overflow: auto;}
+        /*输入框样式*/
+        #addDownloadData .input{border: 1px solid #e9e9e9;border-radius: 3px;padding-left:5px;margin-left:5px;width: 820px;margin-bottom: 15px;height: 44px;}
+        #addDownloadData .summary{border: 1px solid #e9e9e9;border-radius: 3px;padding-left:5px;margin-left:5px;width: 820px;height: 80px;margin-bottom: 15px;}
+
+        #addDownloadData .btn{width:165px;margin: 20px;text-align:center;height:30px;border-radius:3px;border:1px solid #42A7F4;font-size:14px;}
+        #addDownloadData .btn1{color:#42A7F4;background-color:#fff;}
+        #addDownloadData .btn3{background-color:#42A7F4;color:#ffffff;}
+
+        /*form公用样式*/
+        #addDownloadData .formErrorInfo{margin-top:10px;color:red;padding-left:80px;font-size:14px;}
+        #addDownloadData .formInputHighlight{box-shadow:0 0 8px #ff0000;border:0px !important;}
+
+        .tdLabel{
+            text-align: right;
+            width:80px;
+        }
+        .tdInput{
+
+        }
+        .form .inputType{
+            padding-left: 5px;
+        }
+    </style>
+    <title></title>
+
+</head>
+<body>
+
+<div style="height:100%;">
+    <div class="content">
+        <div style="margin: 15px 0px;" class="form">
+            <table>
+                <tr>
+                    <td class="tdLabel"><font color="red">*</font>区域:</td>
+                    <td class="tdInput">
+                        <input level="2" class="inputType" parentid="3100000000" chinaName ="湖北省" regionid="3102000006" regionCode = "CHN-HU" value="湖北省"  type="text" id="region" readonly="readonly">
+                    </td>
+                    <td class="tdLabel">作物:</td>
+                    <td class="tdInput">
+                        <select id="crop" class="inputType " style="text-align:center;width:93%;"/>
+                    </td>
+                    <td class="tdLabel"><font color="red">*</font>精度:</td>
+                    <td class="tdInput">
+                        <select id="accuracy" class="inputType" style="text-align:center;width: 93%;">
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="tdLabel"><font color="red">*</font>数据分类:</td>
+                    <td class="tdInput">
+                        <input id="dataClassifyView" class="inputType" readonly="true"/>
+                        <input type="hidden" id="dataClassify">
+                        <div id="dataContent" class="treeContent" style="display:none; position: absolute;z-index: 99999;">
+                            <ul id="dataTree" class="ztree" style="margin-top:0; width:175px;background-color: #fff;min-height:100px;max-height:200px;overflow-y:auto;border:1px solid #7B9DD4;"></ul>
+                        </div>
+                    </td>
+                    <td class="tdLabel"><font color="red">*</font>数据时间:</td>
+                    <td class="tdInput">
+                        <input id="dataTime" class="inputType" readonly="true">
+                    </td>
+                    <td class="tdLabel"><font color="red">*</font>数据价格:</td>
+                    <td class="tdInput">
+                        <input id="price" class="inputType">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <hr>
+        <br>
+        <div>
+            <input type="hidden" id="dataId" />
+            <input type="text" class="input" id="dataTitle" maxlength="30" placeholder="此处添加标题，字数不得超过30字"/>
+        </div>
+       <!-- <div>
+            <textarea type="text" class="summary" id="dataIntroduction" maxlength="200" placeholder="数据摘要，字数不能超过200字"/>
+        </div>-->
+        <script id="editor" type="text/plain" style="width:825px;margin-left:5px;height:280px;z-index:220"></script>
+        <!--失败原因-->
+        <div id="msgInfo"></div>
+        <div style="text-align: center">
+            <button class="btn3 btn" id="sumbit">提交</button>
+            <button class="btn1 btn" id="cancel">取消</button>
+        </div>
+
+    </div>
+    <!--个人中心菜单内容显示-->
+    <div id="menuInfo" style="display:none;"></div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="js/ueditor/ueditor.all.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi", "dateUtil","RegionModule","commons","urlConfig","PopWin","formVerfication","enums"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,dateUtil,RegionModule,commons,urlConfig,PopWin,formVerfication,enums){
+
+        /**
+         * 获取url中的参数
+         * @param 参数名称
+         * @return 参数值
+         * @version <1> 2019/3/14 lijie:Created.
+         */
+        var GetQueryString = function (name) {
+            return $("#dataId").val();
+        };
+
+        var token = commons.getAccessToken();
+        UE.delEditor('editor');
+        var ue =  UE.getEditor('editor',{"serverUrl":FORUM_COMMENT.upFile+"?AccessToken=" + token,"zIndex":1000});
+
+        var init = function() {
+            dateFun();
+            $('#region').off("click").on('click', function () {
+                changeRegionEvent();
+            });
+
+            loadCropsForEdit(500);//加载农作物
+            commons.findDictList(17001, "dataClassify");
+            commons.findDictList(4000, "accuracy");//初始化精度下拉框
+
+            var dataId=GetQueryString();
+            if(dataId){
+                editFun(dataId);
+            }
+        };
+
+        $("#dataClassifyView").click(function () {
+            var obj = $(this);
+            var objOffset = obj.offset();
+            $("#dataContent").slideDown("fast");
+            $("body").bind("mousedown", onBodyDown);
+            function getAsyncUrl(treeId, treeNode) {
+                return REDIS_CONFIG.findSubListByDictId_url+"?parentId="+(treeNode==undefined?"17000":treeNode.dictId);
+            };
+            $.fn.zTree.init($("#dataTree"), {
+                async:{
+                    enable: true,
+                    url:getAsyncUrl,
+                    dataFilter:function(treeId, parentNode, responseData){
+                        if(responseData){
+                            var datas=new Array();
+                            $.each(responseData.data,function (i,item) {
+                                item.leaf=!item.leaf;
+                                datas.push(item);
+                            })
+                            return datas;
+                        }
+                    }
+                },data: {
+                    key:{
+                        name:"dataName",
+                        isParent: "leaf"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey:"dictId",
+                        pIdKey:"parentId",
+                        rootPId:"17000"
+                    }
+                },callback:{
+                    onClick:function (event, treeId, treeNode) {
+                        if(treeNode.leaf){
+                            return;
+                        }
+                        obj.val(treeNode.dataName);
+                        $("#dataClassify").val(treeNode.dictId);
+                    }
+                }
+            });
+        });
+
+        function onBodyDown(event) {
+            if (!( event.target.id == "dataContent" || $(event.target).parents("#dataContent").length>0)) {
+                hideMenu();
+            }
+        }
+        function hideMenu() {
+            $("#dataContent").fadeOut("fast");
+            $("body").unbind("mousedown", onBodyDown);
+        }
+
+        var cropsJsonForEdit = {};
+        var loadCropsForEdit = function (dictId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    var optList = "";
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        cropsJsonForEdit[status.dictId] = status.dataName;
+                        optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                    }
+                    $("#crop").html(optList);
+                }
+            };
+            ajax.run();
+        };
+
+        /**
+         * 加载数据集数据
+         * @version <1> 2018-06-07 xzg : created.
+         */
+        var initDictFun = function(parentId, id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var selectDefaultVal = "请选择";
+                switch(parentId) {
+                    // case 500:selectDefaultVal = "请选择作物";
+                    //     break;
+                    case 4000:selectDefaultVal = "请选择精度";
+                        break;
+                }
+                var str = "<option value='-1'>--"+selectDefaultVal+"--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+(parentId==4000? element.dataValue:element.dictId)+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#"+id).html("");//清空
+                    $("#"+id).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * 初始化创建时间 和 报告时间控件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var dateFun = function () {
+            dateUtil.timeEvent_Self2("dataTime", function () {
+            }); //初始化日期控件
+        };
+
+        /**
+         * 区域点击：下拉控件
+         */
+        var changeRegionEvent = function(){
+            // var param = getParam();
+            var opts = {url:REGION_CONFIG.findRegionsByPid_URL,closeFun:function(){ }};
+            var regionSelector = new RegionModule.RegionSelector("region",opts);
+            regionSelector.show();
+        };
+
+        //保存
+        $("#sumbit").click(function(){
+            if(!formVerf()){
+                return false;
+            }
+            var data = {};
+            //标题默认只取前30个字符
+            data.dataId=GetQueryString();
+            var articleTitle=$("#dataTitle").val();//标题
+            data.dataTitle = articleTitle.length>30?articleTitle.substr(0,30):articleTitle;
+            /*data.dataIntroduction = $("#dataIntroduction").val();*/
+            data.dataContent = UE.getEditor('editor').getContent();
+            data.regionId = $("#region").attr("regionid");
+            data.regionCode = $("#region").attr("regioncode");
+            data.cropId = $("#crop").val();
+            data.accuracy = $("#accuracy").val();
+            data.dataClassify = $("#dataClassify").val();
+            data.dataTime = $("#dataTime").val();
+            data.price = $("#price").val();
+
+            var saveAjax = new BaseAjax();
+            saveAjax.opts.url = DOWNLOADDATA_CONFIG.saveDownloadData_url;
+            saveAjax.opts.async = false; //同步
+            saveAjax.opts.data = JSON.stringify(data);
+            saveAjax.opts.successFun = function(result){
+                if(result.flag){
+                    PopWin.showMessageWin("定制数据保存成功");
+
+                    //取消弹窗
+                    $("#addDownloadData").dialog("close");
+                    //刷新grid
+                    $("#dataGrid").trigger("reloadGrid");//刷新列表
+                }else{
+                    PopWin.showMessageWin("定制数据保存失败");
+                }
+            }
+            saveAjax.run();
+        });
+        $("#cancel").click(function () {
+            //取消弹窗
+            $("#addDownloadData").dialog("close");
+        });
+
+
+        var formVerf = function(){
+            var msgInfo = $('#msgInfo');
+            if(formVerfication.checkInputIsEmpty($('#region'),msgInfo,'区域不能为空')){
+                return false;
+            }
+            // if(formVerfication.checkInputIsEmpty($('#crop'),msgInfo,'作物不能为空')){
+            //     return false;
+            // }
+            if(formVerfication.checkInputIsEmpty($('#accuracy'),msgInfo,'精度不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#dataClassifyView'),msgInfo,'数据分类不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#dataTime'),msgInfo,'数据时间不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#dataTitle'),msgInfo,'标题不能为空')){
+                return false;
+            }
+          /*  if(formVerfication.checkInputIsEmpty($('#dataIntroduction'),msgInfo,'数据摘要不能为空')){
+                return false;
+            }*/
+            if(!UE.getEditor('editor').hasContents()){
+                clearErrorInfo($('#editor'),msgInfo);
+                $('#editor').addClass('formInputHighlight');
+                msgInfo.append('<div class="formErrorInfo"><span>内容不能为空</span></div>');
+                return false;
+            }
+            return true;
+        }
+
+
+        var editFun=function(dataId){
+            //获取帖子详情
+            var data=downloadDataDetail(dataId);
+            //回显内容
+            ue.ready(function(){
+                ue.setContent(data.dataContent);
+            })
+            //回显标题
+            $("#dataTitle").val(data.dataTitle);
+           /* $("#dataIntroduction").val(data.dataIntroduction);*/
+            $("#region").attr("regionid",data.regionId);
+            $("#region").attr("regioncode", data.regionCode);
+
+            $("#region").attr("value", data.regionName);
+            $("#region").attr("chinaname", data.regionName);
+
+            // parentid="3100000000" chinaName ="湖北省" regionid="3102000006" regionCode = "CHN-HU" value="湖北省"
+
+
+
+           // $("#crop").html("").val(data.cropId);
+            $("#crop option[value='"+ data.cropId +"']").attr("selected","selected");
+            $("#accuracy option[value='"+ data.accuracy +"']").attr("selected","selected");
+           // $("#accuracy").html("").val(data.accuracy);
+            $("#dataClassify").html("").val(data.dataClassify);
+            $("#dataClassifyView").html("").val(commons.queryDictName(data.dataClassify));
+            $("#dataTime").html("").val(data.dataTime);
+            $("#price").html("").val(data.price);
+        }
+
+        /**
+         * 根据帖子ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var downloadDataDetail = function(dataId){
+            var data={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = DOWNLOADDATA_CONFIG.findDownloadDataInfo_url+"?dataId="+dataId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    data=result.data;
+                }
+            }
+            ajax.run();
+            return data;
+        };
+
+        /**
+         * 获取数据库中所有的标签列表
+         * @version <1> 2019/3/15 13:29 zhangshen:Created.
+         */
+        var labelNameAndColorArr = [];
+        var findLabelList = function () {
+            var forumLabel = {dataStatus: '1', delFlag: '1'};
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumLabel);
+            ajax.opts.async = false;
+            ajax.opts.url = FORUM_LABEL.nolog_findAllLabel_url;
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if (result) {
+                    var list = result.data;
+                    $.each(list,function(i,o){
+                        labelNameAndColorArr.push({"name": o.labelName, "color": o.labelColor});
+                    });
+                }
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+
+        //清除错误信息
+        var clearErrorInfo = function(obj,showTargetObj){
+            if(showTargetObj.find('.formErrorInfo').length != 0){
+                obj.parents('body').find('.formInputHighlight').removeClass('formInputHighlight');
+                showTargetObj.find('.formErrorInfo').remove();
+            }
+        };
+
+
+
+        init();
+    })
+</script>
+</body>
+</html>

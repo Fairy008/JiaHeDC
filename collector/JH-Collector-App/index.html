@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/app.css" rel="stylesheet" />
+		<style type="text/css">
+			.my-button-position {}
+
+			.mui-bar-tab .mui-tab-item.mui-active {
+				color: #00575C
+			}
+
+			.mui-bar-tab .mui-tab-item {
+				display: table-cell;
+				overflow: hidden;
+				width: 1%;
+				height: 3.5rem;
+				text-align: center;
+				vertical-align: middle;
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				color: #212121
+			}
+
+			.jh-white {
+				color: white;
+			}
+
+			.mui-tab-label.jh-tab-label {
+				margin-left: 0.5rem;
+			}
+
+			.mui-icon.jh-bottom-tab-icon {
+				font-size: 2rem;
+			}
+		</style>
+	</head>
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<nav id="tabNav" class="mui-bar mui-bar-tab" style="background-color: #FFFFFF;">
+			<a class="mui-tab-item" href="html/task/list.html">
+				<img src="images/tab-icon/icon1a.png" style="margin-top:0.5rem ;width: 1.8rem;height: 1.8rem;">
+				<p style="height: 1rem;margin-top: -0.4rem;padding: 0;">
+					<span class="jh-tab-label" style="font-size: 0.7rem;color: #202020;">定标</span>
+				</p>
+			</a>
+			<a class="mui-tab-item" href="html/insurance/check.html">
+				<img src="images/tab-icon/icon2a.png" style="margin-top:0.5rem ;width: 1.8rem;height: 1.8rem;">
+				<p style="height: 1rem;margin-top: -0.4rem;padding: 0;">
+					<span class="jh-tab-label" style="font-size: 0.7rem;color: #202020;">验险</span>
+				</p>
+			</a>
+			<a class="mui-tab-item" href="html/mind/mind.html">
+				<img src="images/tab-icon/icon3a.png" style="margin-top:0.5rem ;width: 1.8rem;height: 1.8rem;">
+				<p style="height: 1rem;margin-top: -0.4rem;padding: 0;">
+					<span class="jh-tab-label" style="font-size: 0.7rem;color: #202020;">我的</span>
+				</p>
+			</a>
+
+		</nav>
+		<script src="js/mui.js"></script>
+		<script src='js/url_config.js'></script>
+		<script src='js/commons.js'></script>
+		<script src='js/app.js'></script>
+		<!-- <script src='js/myloop.js'></script> -->
+		<script type="text/javascript" charset="utf-8">
+			// console.log(document.documentElement.clientWidth)
+			// console.log(document.documentElement.clientHeight)
+
+			mui.init({
+				swipeBack: true, //启用右滑关闭功能
+			}); //这个没啥用,执行顺序部分和mui.plusReady交叉,空着就行
+			//判断网络状态
+			var network = true;
+			//设置默认打开首页显示的子页序号；
+			var Index = 0;
+			var aniShow = {};
+			//把子页的路径写在数组里面
+			var subpages = ["html/task/list.html", "html/insurance/check.html", "html/mind/mind.html"];
+
+			setTimeout(function() {
+				var userState = JSON.parse(localStorage.getItem("userState"))
+				// console.log(JSON.stringify(userState))
+				if (userState.isLogin == false) {
+					console.log(JSON.stringify(userState))
+					mui.openWindow({
+						id: 'login.html',
+						url: 'html/login/login.html',
+					});
+				}
+			}, 500);
+
+			//所有的plus-*方法写在mui.plusReady中或者后面。
+			mui.plusReady(function() {
+				//设置顶部状态栏
+				plus.navigator.setStatusBarStyle('UIStatusBarStyleBlackTranslucent') //ios设置背景字体颜色
+				// plus.navigator.setStatusBarStyle("UIStatusBarStyleBlackOpaque");
+				// plus.navigator.setStatusBarBackground('#2da3d5'); //设置状态栏的颜色
+				plus.navigator.setStatusBarStyle('dark');
+				// 				var types = {};
+				// 				types[plus.networkinfo.CONNECTION_UNKNOW] = "Unknown connection";
+				// 				types[plus.networkinfo.CONNECTION_NONE] = "None connection";
+				// 				types[plus.networkinfo.CONNECTION_ETHERNET] = "Ethernet connection";
+				// 				types[plus.networkinfo.CONNECTION_WIFI] = "WiFi connection";
+				// 				types[plus.networkinfo.CONNECTION_CELL2G] = "Cellular 2G connection";
+				// 				types[plus.networkinfo.CONNECTION_CELL3G] = "Cellular 3G connection";
+				// 				types[plus.networkinfo.CONNECTION_CELL4G] = "Cellular 4G connection";
+				document.addEventListener("netchange", onNetChange, false); //网络变化
+
+				// setInterval(function() {
+				// 	var nt = plus.networkinfo.getCurrentType();
+				// 	console.log(nt)
+				// }, 1000);
+				//netChange
+				function onNetChange() {
+					var nt = plus.networkinfo.getCurrentType();
+					console.log(nt)
+					switch (nt) {
+						case plus.networkinfo.CONNECTION_ETHERNET:
+						case plus.networkinfo.CONNECTION_WIFI:
+							console.log("当前网络为WiFi");
+							mui.toast("当前网络为WiFi");
+							localStorage.setItem('netWorkMode', 'wifi')
+							break;
+						case plus.networkinfo.CONNECTION_CELL2G:
+						case plus.networkinfo.CONNECTION_CELL3G:
+						case plus.networkinfo.CONNECTION_CELL4G:
+							localStorage.setItem('netWorkMode', 'mobile network')
+							mui.toast("当前网络非WiFi");
+							break;
+						default:
+							localStorage.setItem('netWorkMode', 'none')
+							mui.toast("当前没有网络");
+							network = false;
+							break;
+					}
+					console.log(localStorage.getItem('netWorkMode'))
+				}
+				var tabTopH = document.getElementById('tabNav').offsetHeight;
+				var self = plus.webview.currentWebview();
+				for (var i = 0; i < subpages.length; i++) {
+					//创建webview子页
+					var sub = plus.webview.create(
+						subpages[i], //子页id
+						subpages[i], //子页url
+						{
+							top: 4 + 'rem', //设置距离顶部的距离
+							bottom: tabTopH + 'px', //设置距离底部的距离
+							// hardwareAccelerated: true//开启硬件加速
+
+						}
+					);
+					//如不是我们设置的默认的子页则隐藏，否则添加到窗口中
+					if (i != Index) {
+						sub.hide();
+					}
+					//将webview对象填充到窗口
+					self.append(sub);
+				}
+
+
+				var userState = JSON.parse(localStorage.getItem("userState"))
+				if (userState == null) {
+					userState = {
+						"saveAC": "",
+						"savePWD": "",
+						"isLogin": false,
+						"isSavePWD": false,
+					}
+					localStorage.setItem("userState", JSON.stringify(userState))
+				}
+
+				// console.log('UserState' + UserState);
+			});
+			//获取当前页面所属的Webview窗口对象
+
+			//当前激活选项
+			var activeTab = subpages[Index];
+			//切换图标文字颜色
+			function changeTab(mTargetTab) {
+				var nav = mui(".mui-bar.mui-bar-tab")[0];
+				var tabs = nav.children;
+				var image0 = tabs[0].firstElementChild;
+				var text0 = tabs[0].lastElementChild.firstElementChild;
+				var image1 = tabs[1].firstElementChild;
+				var text1 = tabs[1].lastElementChild.firstElementChild;
+				var image2 = tabs[2].firstElementChild;
+				var text2 = tabs[2].lastElementChild.firstElementChild;
+				switch (mTargetTab) {
+					case "html/task/list.html":
+						image0.src = "images/tab-icon/icon1b.png";
+						text0.style.color = "#035755";
+						image1.src = "images/tab-icon/icon2a.png";
+						text1.style.color = "#202020";
+						image2.src = "images/tab-icon/icon3a.png";
+						text2.style.color = "#202020";
+						break;
+					case "html/insurance/check.html":
+						image0.src = "images/tab-icon/icon1a.png";
+						text0.style.color = "#202020";
+						image1.src = "images/tab-icon/icon2b.png";
+						text1.style.color = "#035755";
+						image2.src = "images/tab-icon/icon3a.png";
+						text2.style.color = "#202020";
+						break;
+					case "html/mind/mind.html":
+						image0.src = "images/tab-icon/icon1a.png";
+						text0.style.color = "#202020";
+						image1.src = "images/tab-icon/icon2a.png";
+						text1.style.color = "#202020";
+						image2.src = "images/tab-icon/icon3b.png";
+						text2.style.color = "#035755";
+						break;
+					default:
+						break;
+				}
+
+			}
+			//选项卡点击事件
+			mui('.mui-bar-tab').on('tap', 'a', function(e) {
+				//获取目标子页的id
+				var targetTab = this.getAttribute('href');
+				if (targetTab == activeTab) {
+					return;
+				}
+				changeTab(targetTab)
+				//显示目标选项卡
+				plus.webview.show(targetTab);
+				plus.webview.hide(activeTab);
+				//更改当前活跃的选项卡
+				activeTab = targetTab;
+
+			});
+
+			if (window.plus) {
+				initAll();
+			} else {
+				document.addEventListener("plusready", initAll, false);
+			}
+
+			function initAll() {
+				if (network) { //有网络情况下
+					//已经登录
+					//判断userBean是否为空,为空则从未登录过
+					// initDic()
+					changeTab("html/task/list.html")
+
+				} else { //无网络情况下
+				}
+			}
+
+			function initDic() {
+				setTimeout(function() {
+					//若已存在,仅尝试更新一次,若本地无响应数据,尝试更新指定次数
+					tryTimesUntils(3, localStorage.getItem('cropDicBean'), function() {
+						commons.askDicByPId(mui, SYS_DIC.nolog_queryDictByParentId_url, 500, function() {
+							//作物列表在尝试请求后仍然为空
+						});
+					}, function() {
+						if (!localStorage.getItem('cropDicBean')) {
+							mToastSet('尝试更新作物列表失败且本地无作物列表数据');
+							mui.alert('网络异常，无法完成初始化，请检查网络环境', '提示')
+						}
+					})
+
+					if (localStorage.getItem('cropDicBean') != null) {
+						tryTimesUntils(3, localStorage.getItem('cropDicBean'), function() {
+							commons.askDicByPId(mui, SYS_DIC.nolog_queryDictByParentId_url, 1800, function() {
+								//作物列表在尝试请求后仍然为空
+							});
+						}, function() {
+							if (!localStorage.getItem('taskDicBean')) {
+								mToastSet('尝试更新数据集列表失败且本地无数据集列表数据');
+							}
+						})
+					}
+				}, 0)
+			}
+
+			// console.log('localStorage总key数:' + localStorage.length);
+			// for (var i = 0; i < localStorage.length; i++) {
+			// 	console.log(localStorage.key(i));
+			// }
+			// localStorage.clear();
+			// setTimeout(function() {
+			// 	plus.storage.clear()
+			// }, 500);
+			
+			// setTimeout(function() {
+			// 	console.log('plus.storage总key数:' + plus.storage.getLength());
+			// 	for (var i = 0; i < plus.storage.getLength(); i++) {
+			// 		console.log(plus.storage.key(i));
+			// 	}
+			// 	var  cc = plus.storage.getItem("subtaskId1")
+			// 	console.log(cc);
+			// 	
+			// }, 100);
+		</script>
+	</body>
+</html>

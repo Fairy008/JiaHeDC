@@ -1,0 +1,668 @@
+
+<style type="text/css">
+    /***选项卡样式***/
+    #formDiv .btLabel{height:28px;line-height:28px;margin-left:5px;margin-bottom:8px;}
+    #formDiv .btLabel span{background:#3FC7F7;color:#fff;float:left;display:block;width:135px;text-align:center;border-right:1px solid #fff;cursor:pointer;}
+    .on{background:#00A7ED !important;}
+    #importInfo{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    .textareaStyle{width:90%;font-size:12px;border-radius:3px;border:1px solid #dfdfdf;resize:none;margin-top:4px;padding:4px;color:#000000}
+
+    .form{height:24px;line-height:24px;}
+    .form span{float:left;display:block;}
+    #DetailList{background:#FAFAFA !important; border:1px solid #F3F3F3;padding-left:5px;}
+
+    .file>div:nth-child(1){width:84%;text-align: left;}
+    .file>div:nth-child(2){width:16%;text-align:right;}
+    #file_list{
+        height: 315px;
+    }
+    #file_list h3{margin-top:10px;font-weight: normal !important;}
+    .tagTips{padding:10px 0px 0px 10px; color:red;}
+    .tagTips p{padding-bottom:10px;}
+    .tagTips span{display:block;height:18px;line-height:18px;}
+    .tagTips p span:first-child{font-weight:bold;}
+    .tagTips span:not(:first-child){padding-left:20px;}
+</style>
+<div class="content">
+    <div id="formDiv">
+        <div class="grid" id="grid">
+            <table id="loaderGrid"></table>
+            <div id="pager2"></div>
+        </div>
+
+        <div class="tagTips">
+            <p class="importTip"><span>数据集影像导入操作说明：</span>
+                <span>1).将数据导入至/mnt/module/collection/dataset路径下，</span>
+                <span>2).页面自动加载/mnt/module/collection/dataset路径下导入的文件目录，执行导入操作，实现数据集影像的导入。</span>
+            </p>
+        </div>
+
+        <div class="formDialog form" id="datasetDialog" style="display:none;">
+            <div  id="reprocessDetailList">
+                <span>待导入数据路径：</span><span id="reprocess_fileName"  class="viewType" style="width: 260px;"></span>
+            </div>
+            <table>
+                <tr>
+                    <td class="two_td1">影像名称:</td>
+                    <td class="two_td2">
+                        <input type="text" id="imageTitle" class="inputType" onfocus="this.style.color='#000000'"  />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><em class="txtRequired">*</em>区域:</td>
+                    <td class="two_td2">
+                        <input type="text" id="region" class="inputType" placeholder="请选择区域" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><em class="txtRequired">*</em>数据集:</td>
+                    <td class="two_td2">
+                        <select id="dataSet" class="inputType" onfocus="this.style.color='#000000'"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><em class="txtRequired">*</em>作物:</td>
+                    <td class="two_td2">
+                        <select id="crop"  class="inputType crop" onfocus="this.style.color='#000000'"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><em class="txtRequired">*</em>数据日期:</td>
+                    <td class="two_td2">
+                        <input type="text" id="productTime" class="workinput wicon i1 inputType" onfocus="this.style.color='#000000'" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><em class="txtRequired">*</em>精度:</td>
+                    <td class="two_td2">
+                        <select id="resolution" class="inputType resolution" onfocus="this.style.color='#000000'"></select>
+                    </td>
+                </tr>
+
+
+            </table>
+        </div>
+    </div>
+    <div id="detailDialog" style="display:none;">
+        <div  class="form" id="DetailList" >
+            <span>待导入数据路径：</span><span id="detail_fileName"  class="viewType" style="width: 520px;" ></span>
+        </div>
+        <div class="fileListDiv" >
+            <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div></div>
+            <div class="file_list" id="file_list"></div>
+        </div>
+
+    </div>
+</div>
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+<script type="text/javascript">
+    require(["jquery","BaseAjax","PopWin","commons","RegionModule","formVerfication","dateUtil"],function($,BaseAjax,PopWin,commons,RegionModule,formVerfication,dateUtil){
+        var init = function(){
+            loaderGrid();//默认加载导入数据列表
+            initResTypeFun(700);//数据类型 下拉框
+            $(window).resize(function(){
+                $("#loaderGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#loaderGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        }
+
+
+        var loaderGrid = function(){//数据导入列表
+            $("#loaderGrid").jqGrid({
+                url: DS_RESULTIMAGE.findImport_url ,
+                datatype: "json",
+                postData:{
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:[ '待导入数据路径','属性值','数据类型','属性','操作'],
+                colModel:[
+                    {name:'fileName',index:'fileName', align:'left', width:'15%', sortable:false},
+                    {name:'fileType',index:'fileType', align:'left', width:'15%',hidden:true, sortable:false},
+                    {name:'storageType',index:'storageType', align:'center', width:'15%',hidden:true},
+                    {name:'fileTypeName',index:'fileTypeName', align:'center', width:'15%', sortable:false},
+                    {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        var  titleName = "导入";
+                        var tostart="<img src='images/public/Ttostart.png' class='startBtn' fileName='"+ rowObject.fileName +"' storageType='"+ rowObject.storageType +"' fileType='"+ rowObject.fileType +"' title='"+ titleName +"' >";
+                        if(rowObject.isValidFile != "1"){
+                            tostart="<img src='images/public/TtostartG.png' title='无可执行文件（tif或csv文件）'>";
+                        }
+                        str+= tostart + "<img src='images/public/Twatch.png' class='seeBtn' fileName='"+ rowObject.fileName +"' storageType='"+ rowObject.storageType +"'  fileType='"+ rowObject.fileType +"' title='查看明细' >" ;
+                        return str;
+                    }}
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    tableEvent();
+                    $("#loaderGrid").setGridWidth($(".rightMain").width() - 30);
+                }
+            });
+        };
+
+
+        var loaderGridDetail = function(evt,obj){//文件夹文件列表
+            var fileName = $(evt).attr("fileName");
+            var fileType = $(evt).attr("fileType");
+            var storageType = $(evt).attr("storageType");
+
+            var importParam = {};
+            importParam.fileName=fileName;//文件夹路径
+            importParam.storageType = storageType; //数据类型
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_RESULTIMAGE.detail_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify(importParam);
+
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    var data = result.data;
+                    var fileHtml = '';
+                    if(data.length>0) {
+                        $(data).each(function (i,d) {
+                            fileHtml += "<div class='file'><div title='"+d.fileName+"'>"+d.fileName+"</div><div>"+(d.fileSize || "---")+"</div></div>";
+//                                fileHtml += '<tr><td title="' + element.fileName +'" class="t1">' + element.fileName + '</td><td class="t2">' + (element.fileSize!=null?element.fileSize:0) + '&nbsp;&nbsp;&nbsp;kb</td></tr>';
+                        });
+                    }
+                    else{
+                        fileHtml += "<h3>没有对应文件数据</h3>";
+                    }
+                    obj.html(fileHtml)
+                }
+                else{
+                    var fileHtml = "<h3>没有对应文件数据</h3>";
+                    obj.html(fileHtml)
+                }
+            }
+            ajax.run();
+        };
+        var tableEvent = function(){
+
+            $(".startBtn,.seeBtn").off("click");
+            $(".startBtn").on("click",function(){
+
+                var _this = this;
+                var forderName = $(_this).attr("fileName");
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = DS_RESULTIMAGE.checkNull_url;
+                ajax.opts.data = JSON.stringify({path : forderName});
+                ajax.opts.async = false;
+                ajax.opts.successFun = function(data){
+                    if(data.flag){
+                        showFormDialog(_this);//弹出层展示form框
+                    }else{
+                        PopWin.showMessageWin(data.msg);
+                    }
+                };
+                ajax.opts.failureFun = function(){
+
+                    PopWin.showMessageWin("数据集入库失败")
+                }
+                ajax.run();
+
+
+
+            });
+            $(".seeBtn").bind("click",function(){
+                showDetailDialog(this);//弹出层展示文件夹详情
+            });
+        }
+
+        /**
+         * 弹出框
+         * @param fileName : 文件名称  fileType：文件类型  filePath：文件路径
+         * @version <1> 2018-03-09 wl : created.
+         */
+        var showDetailDialog = function(evt){
+            var filePath = $(evt).attr("filePath");
+            var fileName = $(evt).attr("fileName");
+            var fileType=$(evt).attr("fileType");
+
+            var detailDialog = $("#detailDialog");
+            var dialogParent = detailDialog.parent();
+            var dialogOwn = detailDialog.clone();
+            //加载文件夹路径以及名称
+            $('#detail_fileName').html(fileName);
+            $('#detail_fileName').attr('title',fileName);
+            /*$('#detail_fileTypeName').html("文件夹");*/
+            var obj =   $('#file_list');
+            loaderGridDetail(evt,obj);//加载文件夹详情
+            //选择数据类型并添加说明
+            detailDialog.dialog({
+                autoOpen: false,
+                title: '任务详情',
+                height: 500,
+                width: 700,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            detailDialog.dialog("open");
+
+        };
+
+
+        //数据类型缓存
+        var resTypeCache = [];
+        /**
+         * 获取数据类型下拉框数据
+         * @param parentId = 700
+         * @version <1> 2018-03-09 wl : created.
+         */
+        var initResTypeFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if(result.flag){
+                    resTypeCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#storageType").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+        /**
+         * 弹出框
+         * @param fileName : 文件名称  fileType：文件类型  filePath：文件路径  storageType：页签
+         * @version <1> 2018-04-24 zhangshen : created.
+         */
+        var showFormDialog = function(evt){
+            var filePath = $(evt).attr("filePath");
+            var fileName = $(evt).attr("fileName");
+            var fileType = $(evt).attr("fileType");
+            var storageType = $(evt).attr("storageType");
+
+            var formDialog = null;
+            var dialogTitle = "导入";
+            formDialog = $("#datasetDialog");
+            //getDataDictOption("crop",500, "");//初始化卫星下拉框的值
+            //getDataDictOption("resolution", 4000, 4010);
+            initTimeEvent();//初始化时间控件
+            //加载文件夹路径以及名称
+            $('#reprocess_fileName').html(fileName);
+            $('#reprocess_fileName').attr('title',fileName);
+            RegionSelectFun("region", "crop");//区域点击事件
+            initDataSetFun(1800, "dataSet");//初始化数据集下拉框
+            initResolution("dataSet", "resolution");//根据数据集，初始化精度
+
+            var formParent = formDialog.parent();
+            var formOwn = formDialog.clone();
+
+            //选择数据类型并添加说明
+            formDialog.dialog({
+                autoOpen: false,
+                title: '导入',
+                height: 375,
+                width: 430,
+                modal: true,
+                close:function(){
+                    formOwn.appendTo(formParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [
+                    {
+                        text:"确认",
+                        click:function(){
+
+                            var importParam = {};
+                            importParam.fileName = fileName;
+                            importParam.fileType = fileType;
+                            importParam.storageType = storageType;
+                            importFun(formDialog, importParam);
+                        }
+                    },
+                    {
+                        text:"关闭",
+                        click:function(){
+                            //processDialog.dialog("close");
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            formDialog.dialog("option","title", dialogTitle).dialog("open");
+        };
+
+
+        var processDialog = $("#process");
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    $(".ui-dialog-titlebar").hide();
+                    $(".ui-dialog").css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 获取数据集下拉框数据
+         * @param parentId = 1800
+         * @version <1> 2018-06-12 zhangshen : created.
+         */
+        var initDataSetFun = function(parentId, dataSetIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        if(element.dictId != 1805 && element.dictId != 1804) {//过滤掉 降雨 和 地温
+                            str += "<option value='" + element.dictId + "' dataCode = '" + element.dataCode + "'>" + element.dataName + "</option>";
+                        }
+                    });
+                    $("#"+dataSetIdName).html("");//清空
+                    $("#"+dataSetIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * 查询数据字典数据
+         * @param selectClass ： 类选择器
+         * @paran dictId : 上级节点ID
+         * 数据集下拉框查询参数： "dsSelect","1"
+         * @version <1> 2018-04-24 zhangshen : Created.
+         */
+        var getDataDictOption = function(selectClass, dictId, defaultValue) {
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DICT_COFING.queryDictByParentId_url;
+            baseAjax.opts.data = JSON.stringify({'parentId': dictId});
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    $('.' + selectClass).html("");
+
+                    var dataStatusArray = resultData.data;
+                    var optionHtml = "";
+
+                    if(defaultValue == undefined || defaultValue == null || defaultValue == ""){
+                        optionHtml += "<option value=''>--请选择--</option>";
+                    }
+
+
+                    for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                        var dataStatus = dataStatusArray[i];
+                        if(dataStatus.dictId == defaultValue){
+                            optionHtml += '<option value="' + dataStatus.dictId + '" name="'+ dataStatus.dataName +'" dataCode="' + dataStatus.dataCode + '" selected>' + dataStatus.dataName + '</option>';
+                        }else{
+                            optionHtml += '<option value="' + dataStatus.dictId + '" name="'+ dataStatus.dataName +'"  dataCode="' + dataStatus.dataCode + '">' + dataStatus.dataName + '</option>';
+                        }
+                    }
+                    $('.' + selectClass).append(optionHtml);
+                } else {
+
+                }
+            }
+            baseAjax.run();
+        }
+
+
+        /**
+         * 区域选择控件
+         * @version <1> 2018-04-24 zhangshen : Created.
+         */
+        var RegionSelectFun = function(regionIdName, cropIdName){
+            var txtArea = document.getElementById(regionIdName);
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        var regionId = txtArea.getAttribute("regionId");
+                        queryCropFun(regionId,cropIdName);
+                    }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            };
+            queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+            return true;
+        };
+
+        /**
+         * 点击区域时查询作物列表
+         * @param regionId 区域ID
+         * @version <1> 2018-06-07 lxy: created.
+         */
+        var queryCropFun = function(regionId,cropIdName){
+            if (regionId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url + "?regionId="+regionId;
+                ajax.opts.async = false;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            } else {
+                $('#'+cropIdName).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * 初始化作物下拉框
+         * @param crop 查询出的作物对象集合
+         * @version <1> 2018-06-07 lxy: created.
+         */
+        var initCropFun = function(crop,cropIdName){
+            var result='<option value="">--请选择--</option>';
+            if(crop!=null){
+                $.each(crop,function(i,o){
+                    result += '<option value = "' + o.cropId + '" dataCode="'+o.cropCode+'">' + o.cropName + '</option>';
+                });
+                if(result != ''){
+                    $('#'+cropIdName).html(result);
+                }else{
+                    $('#'+cropIdName).html('<option value="">--请选择--</option>');
+                }
+            }
+            $('#'+cropIdName).html(result);
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id选择器名称
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var initResolution = function(dataSet, resolution) {
+            $("#"+dataSet).change(function() {
+                queryResolutionFun(dataSet, resolution);
+            });
+            queryResolutionFun(dataSet, resolution);
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id选择器名称
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var queryResolutionFun = function(dataSet, resolution){
+            var dataSetId = $("#"+dataSet).val();
+            if (dataSetId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryResolutionListByDataSetId_url + "?dataSetId="+dataSetId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (data) {
+                    if (data.flag) {
+                        var result = data.data;
+                        initResolutionFun(result,resolution);
+                    } else {
+                        $('#'+resolution).html('<option value="">--请选择--</option>');
+                    }
+                };
+                ajax.run();
+            } else {
+                $('#'+resolution).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * Description:
+         * @param result 根据数据集id查询出来的精度列表
+         * @param resolution 精度id选择器名称
+         * @return
+         * @version <1> 2018/8/30 16:51 zhangshen: Created.
+         */
+        var initResolutionFun = function(result,resolution){
+            var resultHtml = '<option value="">--请选择--</option>';
+            if(result) {
+                $.each(result,function(i,o){
+                    resultHtml += '<option value = "' + o.resolutionId + '">' + o.resolutionName + '</option>';
+                });
+            }
+            $('#'+resolution).html(resultHtml);
+        };
+
+        /**
+         * 初始化时间控件
+         * @version <1> 2018-04-24 zhangshen : Created.
+         */
+        var initTimeEvent = function(){
+            $("#productTime").jeDate({
+                multiPane:true,
+                format: 'YYYY-MM-DD'
+            });
+
+        }
+
+        /**
+         * 导入确认
+         * @version <1> 2018-04-24 zhangshen : Created.
+         */
+        var importFun = function(formDialog, importParam){
+            var storageType = importParam.storageType;
+            if(!formVerf(storageType)){//验证
+                return ;
+            }
+
+            var resultimage = {};
+            resultimage.imageTitle = $("#imageTitle").val(); //影像名称
+            resultimage.regionId = document.getElementById("region").getAttribute("regionId");//区域id
+            resultimage.regionCode = document.getElementById("region").getAttribute("regionCode");//区域id
+
+            resultimage.dataTimeStr = $("#productTime").val(); //数据日期
+            resultimage.dsType = $('#dataSet option:selected').val();//数据集
+            resultimage.dsCode = $("#dataSet option:selected").attr("dataCode");
+            resultimage.cropId = $("#crop option:selected").val(); //作物
+            resultimage.cropCode = $("#crop option:selected").attr("dataCode");
+            resultimage.resolution = $("#resolution option:selected").val();
+            resultimage.storagePath = $("#reprocess_fileName").html(); //文件路径
+
+            formDialog.dialog("close");
+            showProcess();
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(resultimage);
+
+            ajax.opts.url = DS_RESULTIMAGE.loader_url;
+
+            ajax.opts.successFun = function(data){
+
+                processDialog.dialog("close");
+                if(data.flag){
+                    PopWin.showMessageWin("入库成功");
+                    $("#loaderGrid").jqGrid('setGridParam',{
+                        datatype:'json',
+                        page:1
+                    }).trigger("reloadGrid");
+                }else{
+                    PopWin.showMessageWin("入库失败");
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+                processDialog.dialog("close");
+            };
+            ajax.run();
+        }
+
+        //验证
+        var formVerf = function(storageType){
+            var datasetDialog = $('#datasetDialog');
+            if(formVerfication.checkInputLength(0,50,$('#imageTitle'),datasetDialog,'影像名称长度不能超过50字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#region"),datasetDialog,'区域不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#dataSet'),datasetDialog,'数据集不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#crop'),datasetDialog,'作物不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#resolution'),datasetDialog,'精度不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#productTime'),datasetDialog,'日期数据不能为空')){
+                return false;
+            }
+            return true;
+        }
+
+
+
+        init();
+    })
+</script>

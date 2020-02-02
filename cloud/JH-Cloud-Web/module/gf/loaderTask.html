@@ -1,0 +1,700 @@
+<style type="text/css">
+   #DetailInfo table .four_td1{width: 80px !important;text-align:right;padding-right:2px;}
+   #DetailInfo table .four_td2{text-align: left;padding-right:20px;width: calc((100% - 306px)/3) !important;}
+   #DetailInfo{margin: auto;background:#FAFAFA !important; border:1px solid #F3F3F3;}
+   #DetailInfo table{width:100%;text-align: center !important; }
+   #DetailInfo tr td{word-wrap: break-word;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display: inline-block;height: 24px; line-height: 24px;}
+
+   h3{font-weight:normal;padding-top:10px;}
+
+    .file>div:nth-child(1){width:84%;text-align: left;}
+    .file>div:nth-child(2){width:16%;text-align:right;}
+    #file_list{
+        height: 265px;overflow-y: auto;
+    }
+
+    .detailFile>div:nth-child(1){width:45%;text-align: left;}
+    .detailFile>div:nth-child(2){width:10%;text-align:center;}
+    .detailFile>div:nth-child(3){width:10%;text-align:center;}
+    .detailFile>div:nth-child(4){width:35%;text-align:center;}
+    #detail_list{
+        height: 265px;overflow-y: auto;
+    }
+
+    .success{ color: #34b40e;}
+    .fail{ color: #ff0000;}
+
+    /*.fileListDiv{overflow-y: auto;height:265px;}*/
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">任务名称：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_loaderName" /></span>
+                </div>
+                <div>
+                    <span class="label2">任务创建人：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_creatorName" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_createTime" /></span>
+                </div>
+                <div>
+                    <span class="label2">入库状态：</span>
+                    <span>
+                    <select id="search_loaderStatus" class="input inputWidth_100" style="text-align:center;" >
+                    </select>
+                </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+        <div class="searchRow" >
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">入库方式：</span>
+                    <span>
+                    <select id="search_loaderType" class="input inputWidth_100" style="text-align:center;" >
+                    </select>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="loaderGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="detailDialog" style="display:none;">
+        <div  id="DetailInfo" >
+        <table>
+            <tr>
+                <td class="four_td1">任务名称:</td>
+                <td class="four_td2">
+                    <span id="detail_loaderName" class="viewType"></span>
+                </td>
+                <td class="four_td1">文件夹路径:</td>
+                <td class="four_td2">
+                    <span id="detail_dataStoragePath" class="viewType"></span>
+                </td>
+                <td class="four_td1">入库方式:</td>
+                <td class="four_td2">
+                    <span id="detail_loaderType" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">数据类型:</td>
+                <td class="four_td2">
+                    <span id="detail_storageType" class="viewType"></span>
+                </td>
+                <td class="four_td1">文件数量:</td>
+                <td class="four_td2">
+                    <span id="detail_totalNum" class="viewType"></span>
+                </td>
+                <td class="four_td1">入库影像:</td>
+                <td class="four_td2">
+                    <span id="detail_okNum" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">任务创建人:</td>
+                <td class="four_td2">
+                    <span id="detail_creatorName" class="viewType"></span>
+                </td>
+                <td class="four_td1">创建时间:</td>
+                <td class="four_td2">
+                    <span id="detail_createTime" class="viewType"></span>
+                </td>
+
+                <td class="four_td1">入库状态:</td>
+                <td class="four_td2">
+                    <span id="detail_loaderStatus" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">失败原因:</td>
+                <td colspan="5" id="detail_reason" style="width: calc(100% - 83px) !important;text-align: left;max-width:750px;"></td>
+            </tr>
+        </table>
+        </div>
+       <div class="fileListDiv" id="fileList">
+            <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div></div>
+            <div class="file_list" id="file_list"></div>
+        </div>
+        <div class="fileListDiv" id="detailList">
+            <div class='file_title detailFile'><div style='text-align: center;'>文件名</div><div>文件大小</div><div>文件状态</div><div>原因</div></div>
+            <div class="detail_list" id="detail_list"></div>
+        </div>
+    </div>
+
+    <div id="reloadDialog" class="dialogStyle">
+        是否确认重新入库？
+    </div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons){
+            var init = function(){
+                loaderGrid();
+                dateFun();
+                initPutInFun(1400);//入库方式
+                initStorageTypeFun(700);//数据类型
+                initPutInStatusFun(900);//入库状态
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+                $(window).resize(function(){
+                    $("#loaderGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $("#search_loaderType").html('');
+                $("#search_loaderStatus").html('');
+                initPutInFun(1400);//入库方式
+                initPutInStatusFun(900);//入库状态
+            }
+
+            var chanageTableCss = function(){
+                var divObj = $('#loaderGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            var loaderGrid = function(){
+                $("#loaderGrid").jqGrid({
+                    url: LOADER_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData:{
+                        userFlag:commons.getMyDataFun()
+
+                    },
+                    mtype:'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['loaderId','任务名称','待入库文件路径','入库方式','数据类型','文件数量','入库景数', '任务创建人',"创建时间",'入库时间','入库状态','操作'],
+                    colModel:[
+                        {name:'loaderId',index:'loader_id', hidden:true},
+                        {name:'loaderName',index:'loader_name', align:'left', width:'20%'},
+                        {name:'dataStoragePath',index:'data_storage_path', align:'left', width:'30%',formatter:function(cellvalue, options, rowObject){
+                            var lastIndex = cellvalue.lastIndexOf("\\") != -1 ? cellvalue.lastIndexOf("\\") : cellvalue.lastIndexOf("/");
+                            return cellvalue.substr(lastIndex + 1);
+                         }},
+                        {name:'loaderType',index:'loader_type', align:'center', width:'8%',hidden:true,formatter:function(cellvalue, options, rowObject){
+                            var len = putInCache.length;
+                            for(i = 0;i < len;i++){
+                                if(putInCache[i].dictId == cellvalue){
+                                    return putInCache[i].dataName;
+                                }
+                            }
+                            return "";
+                        }},
+                        {name:'storageType',index:'storage_type', align:'center', width:'8%',formatter:function(cellvalue, options, rowObject){
+                            var len = storageTypeCache.length;
+                            for(i = 0;i < len;i++){
+                                if(storageTypeCache[i].dictId == cellvalue){
+                                    return storageTypeCache[i].dataName;
+                                }
+                            }
+                            return "";
+                        }},
+                        {name:'totalNum',index:'total_num',align:'center', width:'6%', sortable:true, hidden:true},
+                        {name:'okNum',index:'ok_num',align:'center', width:'6%', sortable:true},
+                        {name:'creatorName',index:'creator_name', width:'10%',align:'center', sortable:true},
+                        {name:'createTime',index:'create_time', width:'15%', align:"center", sortable:true},
+                        {name:'endTime',index:'end_time', width:'15%', align:"center", sortable:true},
+                        {name:'loaderStatus',index:'loader_status', width:'8%', align:"center", sortable:true,formatter:function(cellvalue, options, rowObject){
+                            var len = putInStatusCache.length;
+                            for(i = 0;i < len;i++){
+                                if(putInStatusCache[i].dictId == cellvalue){
+                                    switch (putInStatusCache[i].dictId){
+                                        case 903:
+                                            return '<span class="success">'+putInStatusCache[i].dataName+'</span>';
+                                        case 904:
+                                            return '<span class="fail">'+putInStatusCache[i].dataName+'</span>';
+                                        default:
+                                            return  putInStatusCache[i].dataName;
+                                    }
+
+                                }
+                            }
+                            return "";
+
+                        }},
+                        {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str =  "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.loaderId +"'  fileName='"+ rowObject.dataStoragePath +"' storageType='"+ rowObject.storageType +"' filePath=='"+ rowObject.dataStoragePath +"' fileType='"+ rowObject.fileType +"' loaderStatus='"+rowObject.loaderStatus+"' title='查看明细' >" ;
+                            switch (rowObject.loaderStatus){
+                                case 904://入库失败
+                                    str+="<img src='images/public/Trefresh.png' class='startBtn' data-id='"+ rowObject.loaderId +"'title='重新入库' >";
+                                    break;
+                                case 903:
+                                    str+="<img src='images/public/Trefresh.png' class='startBtn' data-id='"+ rowObject.loaderId +"'title='重新入库' >";
+                                    break;
+                                default:
+                                    str+="<img src='images/public/TrefreshG.png' title='重新入库' >";
+                                    break;
+                            }
+                            return str;
+                        }}
+                    ],
+                    width:'100%',
+                    autowidth:true,
+                    height:'100%',
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager2',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function(){
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#loaderGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            var dateFun = function(){
+                $("#search_createTime").jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2017-12-26 lcw : Created.
+             */
+            var tableEvent = function(){
+
+                $(".startBtn").click(function(){
+                    // startFun(this);
+                    reloadFun(this);
+                });
+                $(".stopBtn").click(function(){
+                    stopFun(this);
+                });
+                $(".seeBtn").click(function(){
+                    seeFun(this);
+                })
+
+            };
+
+            /**
+             * 开始入库任务
+             * @param : loaderId
+             * @version<1> 2018-03-06 lcw:Created.
+             */
+            var startFun = function(evt){
+                var loaderId =  $(evt).attr("data-id");
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOADER_CONFIG.start_url + "?loaderId=" + loaderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+
+                };
+                ajax.opts.failureFun = function(){
+
+                };
+                ajax.run();
+            };
+
+            var reloadFun=function(evt){//重新入库
+                var loaderId =  $(evt).attr("data-id");
+                var reloadDialog = $("#reloadDialog");
+                reloadDialog.dialog({
+                    autoOpen: false,
+                    title:'系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons:[
+                        {
+                            text:"是",
+                            click:function(){
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = LOADER_CONFIG.reload_url + "?loaderId=" + loaderId;
+                                ajax.opts.contentType = "application/json";
+                                ajax.opts.successFun=function(result){
+                                    if(result.flag){
+                                        $("#loaderGrid").trigger("reloadGrid");
+                                        reloadDialog.dialog("close");
+                                        PopWin.showMessageWin("重新入库成功");
+                                    }else{
+                                        PopWin.showMessageWin("重新入库失败");
+                                    }
+                                };
+                                ajax.opts.errorFun = function(){
+                                    PopWin.showMessageWin("记录行删除失败");
+                                };
+                                ajax.run();
+                            }},{
+                            text:"否",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                reloadDialog.dialog("open");
+            };
+
+            /**
+             * 停止入库任务
+             * @param : loaderId
+             * @version<1> 2018-03-06 lcw:Created.
+             */
+            var stopFun = function(evt){
+                var loaderId =  $(evt).attr("data-id");
+
+            };
+
+            /**
+             * 查看入库任务明细
+             * @param : loaderId
+             * @version<1> 2018-03-06 lcw:Created.
+             */
+            var seeFun = function(evt){
+                //var rowId=$(evt).attr("id");
+                var loaderId =  $(evt).attr("data-id");
+                var loaderStatus =  $(evt).attr("loaderStatus");
+                var filePath = $(evt).attr("filePath");
+                var fileName = $(evt).attr("fileName");
+                var detailDialog = $("#detailDialog");
+                var dialogParent = detailDialog.parent();
+                var dialogOwn = detailDialog.clone();
+                //加载文件夹路径以及名称
+                $('#detail_fileName').html(fileName);
+                var obj =   $('#data_list table tbody');
+                setFileFun(loaderId);//查询文件详情
+                //判断文件夹状态  如果文件夹状态为  待入库 或者 入库中查询文件夹下所有
+                //如果是入库成功或者入库失败查询数据库
+                switch (loaderStatus){
+                    case "901":
+
+                        $("#detailList").hide();//隐藏数据列表
+                        $("#fileList").show();//显示文件夹列表
+                        loaderGridDetail(evt,obj);//加载文件夹详情
+                        break;
+                    case "902":
+                    case "903":
+                    case "904":
+                        $("#detailList").show();//显示数据列表
+                        $("#fileList").hide();//隐藏文件夹列表
+                        loaderDetail(evt,obj);
+                        break;
+                }
+                //选择数据类型并添加说明
+                detailDialog.dialog({
+                    autoOpen: false,
+                    title:'任务详情',
+                    height: 530,
+                    width: 880,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+
+                detailDialog.dialog("open");
+            };
+
+            /**
+             * 查看入库任务详情
+             * @param : loaderId
+             * @version<1> 2018-03-22 wl:Created.
+             */
+            var setFileFun = function(loaderId){//弹出窗展示文件名称及文件类型
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOADER_CONFIG.findById_url + "?loaderId=" + loaderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        var data = result.data;
+                        $('#detail_creatorName').html(data.creatorName);
+                        $('#detail_createTime').html(data.createTime);
+
+                        $('#detail_dataStoragePath').html(data.dataStoragePath);
+                        $('#detail_dataStoragePath').attr('title',data.dataStoragePath);
+                        var lenL = putInCache.length;
+                        for(i = 0;i < lenL;i++){
+                            if(putInCache[i].dictId == data.loaderType){
+                                $('#detail_loaderType').html(putInCache[i].dataName);
+                            }
+                        }
+                        var len = storageTypeCache.length;
+                        for(i = 0;i < len;i++){
+                            if(storageTypeCache[i].dictId == data.storageType){
+                                $('#detail_storageType').html(storageTypeCache[i].dataName);
+                            }
+                        }
+                        $('#detail_totalNum').html(data.totalNum);
+                        $('#detail_okNum').html(data.okNum);
+                        var lenS = putInStatusCache.length;
+                        for(i = 0;i < lenS;i++){
+                            if(putInStatusCache[i].dictId == data.loaderStatus){
+                                if(data.loaderStatus==903){
+                                    $('#detail_loaderStatus').html('<span class="green">' + putInStatusCache[i].dataName + '</span>');
+                                }else if(data.loaderStatus==904){
+                                    $('#detail_loaderStatus').html('<span class="red">' + putInStatusCache[i].dataName + '</span>');
+                                }else{
+                                    $('#detail_loaderStatus').html('<span>' + putInStatusCache[i].dataName + '</span>');
+                                }
+
+                            }
+                        }
+                        $('#detail_loaderName').html(data.loaderName);
+                        $('#detail_loaderName').attr('title',data.loaderName);
+                        $('#detail_reason').html(data.reason);
+                        $("#detail_reason").attr("title", data.reason);
+                    }
+                    else{
+                        PopWin.showMessageWin("系统错误!");
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("系统错误!");
+                    return false;
+                };
+                ajax.run();
+            };
+
+            /**
+             * 查看入库任务明细
+             * @param : fileName     storageType
+             * @version<1> 2018-03-14 wl:Created.
+             */
+            var loaderGridDetail = function(evt,obj){//文件夹文件列表
+                var fileName = $(evt).attr("fileName");
+                var storageType = $(evt).attr("storageType");
+
+                var importParam = {};
+                importParam.fileName=fileName;//文件夹路径
+                importParam.storageType = storageType; //数据类型
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOADER_CONFIG.detail_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify(importParam);
+
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        var detailList = result.data;
+                        var fileHtml = '';
+//                        if(data.length>0) {
+//                            $(data).each(function (i,element) {
+//                                fileHtml += '<tr><td title="' + element.fileName +'" class="t1">' + element.fileName + '</td><td class="t2">' + (element.fileSize!=null?element.fileSize:0) + '&nbsp;&nbsp;&nbsp;kb</td></tr>';
+//                            });
+//                        }
+//                        else{
+//                            fileHtml = '<tr><td colspan="2" >' +'没有对应文件数据'+ '</td></tr>'
+//                        }
+//                        obj.html(fileHtml)
+                        var detailHtml = "";
+                        $(detailList).each(function (i,d) {
+                            detailHtml += "<div class='file'><div title='"+d.fileName+"'>"+d.fileName+"</div><div>"+(d.fileSize || "---")+"</div></div>";
+
+                        });
+                        if (detailList.length == 0){
+                            detailHtml += "<h3>没有对应文件数据</h3>";
+                        }
+                        $('#file_list').html(detailHtml);
+                    }
+                    else{
+                       var detailHtml = "<h3>没有对应文件数据</h3>";
+
+                        $('#file_list').html(detailHtml);
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 查看入库任务明细 在入库之后
+             * @param : loaderId
+             * @version<1> 2018-04-24 wl:Created.
+             */
+            var loaderDetail = function(evt,obj){//文件夹文件列表
+                var loaderId =  $(evt).attr("data-id");
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOADER_CONFIG.dataDetail_url+ "?loaderId=" + loaderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function(result){
+
+                    if(result.flag){
+                        var detailList = result.data;
+                        var detailHtml = "";
+                        $(detailList).each(function (i,d) {
+                            detailHtml += "<div class='detailFile'><div title=\""+d.fileName+"\">"+d.fileName+"</div><div>"+(d.fileSize || "---")+"</div>";
+                            var len = putInStatusCache.length;
+                            for(i = 0;i < len;i++){
+                                if(putInStatusCache[i].dictId == d.loaderStatus){
+                                    switch (putInStatusCache[i].dictId){
+                                        case 901:
+                                        case 902:
+                                            detailHtml+= '<div><span >'+putInStatusCache[i].dataName+'</span></div>';
+                                            detailHtml+="<div ></div></div>";
+                                            break;
+                                        case 903:
+                                            detailHtml+= '<div><span class="success">'+putInStatusCache[i].dataName+'</span></div>';
+                                            detailHtml+="<div ></div></div>";
+                                            break;
+                                        case 904:
+                                            detailHtml+= '<div><span class="fail">'+putInStatusCache[i].dataName+'</span></div>';
+                                            detailHtml+='<div title="'+d.reason+'">'+(d.reason == null?'':d.reason)+'</div></div>';
+                                            break;
+                                    }
+                                }
+                            }
+
+                        });
+                        if (detailList.length == 0){
+                            detailHtml += "<h3>没有对应文件数据</h3>";
+                        }
+                        $('#detail_list').html(detailHtml);
+                    }
+                    else{
+                        var detailHtml = "<h3>没有对应文件数据</h3>";
+
+                        $('#detail_list').html(detailHtml);
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 查询检索
+             *
+             */
+            var searchFun = function(){
+                var loaderName=$("#search_loaderName").val().trim();
+                var creatorName = $("#search_creatorName").val().trim();
+                var createTime = $("#search_createTime").val().trim();
+                var loaderStatus = $("#search_loaderStatus").val().trim();
+                var loaderType = $("#search_loaderType").val().trim();
+                var param = {};
+                param.creatorName = creatorName;
+                param.beginTime = null;
+                param.endTime = null;
+                if(createTime != null && createTime != ''){
+                    var timeArr = createTime.split("至");
+                    param.beginTime = timeArr[0].trim();
+                    param.endTime = timeArr[1].trim();
+
+                }
+                param.loaderStatus = loaderStatus;
+                param.loaderType = loaderType;
+                param.loaderName=loaderName;
+                $("#loaderGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            };
+
+            //入库方式缓存
+            var putInCache = [];
+            var initPutInFun = function(parentId){//入库方式
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        putInCache=result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        });
+                        $("#search_loaderType").append(str);
+                    }
+                };
+                ajax.run();
+            };
+            //数据类型缓存
+            var storageTypeCache = [];
+            var initStorageTypeFun = function(parentId){//数据类型
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        storageTypeCache=result.data;
+                        /*  $.each(result.data, function(index, element){
+                         str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                         })
+                         $("#search_storageType").append(str);*/
+                    }
+                };
+                ajax.run();
+            };
+            //入库状态缓存
+            var putInStatusCache = [];
+            var initPutInStatusFun = function(parentId){//入库状态
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        putInStatusCache=result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        });
+                        $("#search_loaderStatus").append(str);
+                    }
+                };
+                ajax.run();
+            };
+
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

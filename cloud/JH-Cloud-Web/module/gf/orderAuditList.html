@@ -1,0 +1,1196 @@
+<style type="text/css">
+    #view_auditSuggestion{color: #0b0b0b; overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    #orderDescription,#auditSuggestion,#view_orderDescription{
+        resize: none;
+        border: 1px solid #ededed;
+        border-radius: 5px;
+    }
+    .form table .text_td1{
+        width: 5%!important;
+        text-align: right;
+        vertical-align: top;
+    }
+    .form table .text_td2{
+        width: 95%!important;
+        text-align: left;
+    }
+    #textDiv  table .text_td1{
+        width: 10%!important;
+        text-align: right;
+        border-radius: 5px;
+        /*  background-color: #b8b1b1;*/
+    }
+    #textDiv table .text_td7{
+        width: 40%!important;
+        text-align: left;
+    }
+    #textDiv table .text_td8{
+        width: 20%!important;
+        text-align: left;
+    }
+    #textDiv{
+        background:  #FAFAFA !important
+    }
+
+    .viewType2{
+        border: none;
+    }
+    #dataTime,#dataAuditSuggestion{
+        height: 26px;
+        line-height: 26px;
+        padding: 0 3px;
+        border-radius: 5px;
+        outline: none;
+        border: 1px solid #EEEEEE;
+        width: 200px;
+        font-size: 14px;
+    }
+    .lableDialog{
+        font-size: 14px;
+        vertical-align: middle;
+    }
+    .grayBtn{
+        cursor: Default !important;
+    }
+
+    .DetailInfo{margin: auto;background:#FAFAFA !important; border:1px solid #F3F3F3;}
+
+    .DetailInfo table .four_td1{width: 80px !important;text-align:right;padding-right:2px;}
+    .DetailInfo table .four_td2{text-align: left;padding-right:20px;width: calc((100% - 306px)/3) !important;}
+    .DetailInfo table{width:100%;text-align: center !important; }
+    .DetailInfo tr td{word-wrap: break-word;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display: inline-block;height: 24px; line-height: 24px;}
+
+    .DetailInfo table .mul_td1{width:calc(100% - 82px) !important;text-align:left;}
+    h3{font-weight:normal;padding-top:10px;}
+
+    .file>div:nth-child(1){width:80%;text-align: left;}
+    .file>div:nth-child(2){width:20%;text-align:right;}
+    .file>div:nth-child(3){width:20%;text-align:right;}
+    #data_list{
+        height: 275px;
+    }
+    #file_list{
+        height: 325px;
+    }
+    .formErrorInfo {
+        margin-top: 0px !important;
+        padding-left: 10px !important;
+    }
+
+    #needTextDiv table{
+        background: #f5f5f5 !important;
+    }
+    #errorInfo,#needErrorInfo{
+        margin-top: 5px
+    }
+
+    /**审核意见样式**/
+    .dropdown {
+        position:relative;
+    }
+
+    .dropdown-toggle {
+        display:inline-block;
+        width:380px;
+        height:26px;
+        color:#333;
+        text-align:left;
+        border-radius:2px;
+        border:1px #EEEEEE solid;
+    }
+    .dropdown-menu {
+        z-index: 9999;
+        background:#fbfbfb;
+        border:1px solid #EEEEEE;
+        margin-top:0;
+        border-radius:5px;
+        position:absolute;
+        left:0;
+        max-height: 125px;
+        overflow-y:auto;
+        overflow-x: hidden;
+        width: 100%;
+    }
+    .dropdown-menu ul li{
+        width: 100%;
+        height: 25px;
+        line-height: 25px;
+        padding-left: 5px;
+    }
+    .dropdown-menu ul li:hover{
+        background-color: #ecf3f3;
+        cursor:pointer;
+    }
+    #auditSuggestion{
+        width: 596px !important;
+    }
+    #word_pathTwo{
+        cursor: pointer;
+        color: blue;
+        display: inline-block;
+        width: 600px;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">订单编号：</span>
+                    <span><input type="text" class="input" id="search_orderCode" /> </span>
+                </div>
+                <!--<div>-->
+                    <!--<span class="label2">申请人：</span>-->
+                    <!--<span><input type="text" class="input " id="search_creatorName" /></span>-->
+                <!--</div>-->
+                <div>
+                    <span class="label2">订单时间：</span>
+                    <span><input type="text" class="input " id="search_createTime" /></span>
+                </div>
+             <div>
+                    <span class="label2">订单状态：</span>
+                    <span>
+                    <select id="search_auditStatus" class="input " style="text-align:center;" >
+                        <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                    </select>
+                </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+
+    </div>
+    <div class="grid">
+        <table id="orderGrid"></table>
+        <div id="pager2"></div>
+    </div>
+    <div id="orderInfo" style="display:none;">
+        <div  id="DetailInfo" class="DetailInfo">
+            <table>
+                <tr>
+                    <td class="four_td1">订单编号:</td>
+                    <td class="four_td2">
+                        <span id="view_orderCode" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">订单分类:</td>
+                    <td class="four_td2">
+                        <span id="view_orderType" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">订单类型:</td>
+                    <td class="four_td2">
+                        <span id="view_orderAttribute" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">订单时间:</td>
+                    <td class="four_td2">
+                        <span id="view_createTime" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">申请人:</td>
+                    <td class="four_td2">
+                        <span id="view_creatorName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">订单状态:</td>
+                    <td class="four_td2">
+                        <span id="view_auditStatus" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr style="text-align:left;">
+                    <td class="four_td1 t6" style="vertical-align: top;">订单需求:</td>
+                    <td  colspan="5" style="width:760px;text-align:left;height: 55px !important;" class="t6">
+                        <textarea id="view_orderDescription" style="width:99.7% !important;background: #FAFAFA !important" rows="3" disabled></textarea>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="fileListDiv" >
+            <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div></div>
+            <div class="file_list" id="data_list"></div>
+        </div>
+        <div  id="DetailInfoBot" class="DetailInfo">
+            <table>
+                <tr>
+                    <td class="four_td1">审核人:</td>
+                    <td class="four_td2">
+                        <span id="view_orderAuditorName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">审核时间:</td>
+                    <td class="four_td2">
+                        <span id="view_auditTime" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">审核意见:</td>
+                    <td class="four_td2" >
+                        <span id="view_auditSuggestion" ></span>
+                    </td>
+                </tr>
+                <tr style="text-align:left;">
+                    <td class="four_td1" >有效期:</td>
+                    <td class="four_td2" colspan="5">
+                        <span id="view_dataAccessTime"  class="viewType" style="width:760px;"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div  id="auditNeedOrder" style="display:none;">
+        <div class="DetailInfo needOrderStyle" >
+            <table >
+                <tr>
+                    <td class="four_td1">订单编号:</td>
+                    <td class="four_td2" >
+                        <span id="orderCode" ></span>
+                    </td>
+                    <td class="four_td1">申请人:</td>
+                    <td class="four_td2" >
+                        <span id="creatorName" ></span>
+                    </td>
+                    <td class="four_td1">订单时间:</td>
+                    <td class="four_td2" >
+                        <span id="createTime" ></span>
+                    </td>
+                </tr>
+                <tr><td class="four_td1" colspan="3" >数据申请单:</td>
+                    <td class="four_td2" colspan="3" style="width: calc((93.5% - 82px)) !important;">
+                        <span id="word_pathTwo" class="viewType word_path" order-id="" data-url=""></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="form" id="needTextDiv">
+            <table cellspacing="6" >
+                <tr>
+                    <td class="text_td1" style="width: 15% !important;">订单需求描述:</td>
+                    <td class="text_td2" colspan="5" style="width: 100% !important;">
+                        <textarea name="orderDescription" id="orderDescription" class="viewType2" style="width: 100% !important;" rows="8" cols="62" placeholder="需求订单信息" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text_td1" style="width: 15% !important;">审核意见:</td>
+                    <td class="text_td2" colspan="5" >
+                        <!--<textarea name="auditSuggestion" id="auditSuggestion" class="viewType2 auditSuggestion" style="width: 100% !important;"  rows="8" cols="62" placeholder="审核意见" />-->
+                        <div class="dropdown">
+                            <input type="text" class="dropdown-toggle" id="auditSuggestion">
+                            <div class="dropdown-menu" style="display: none;">
+                                <ul>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="needErrorInfo"></div>
+    </div>
+
+    <div id="auditDataOrder" style="margin-top: 10px;display:none;">
+        <div  id="orderDetailList" class="DetailInfo">
+            <table >
+                <tr>
+                    <td class="four_td1">订单编号:</td>
+                    <td class="four_td2">
+                        <span id="data_orderCode" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">申请人:</td>
+                    <td class="four_td2">
+                        <span id="detail_creatorName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">订单时间:</td>
+                    <td class="four_td2">
+                        <span id="detail_createTime" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr><td class="four_td1" colspan="3" >数据申请单:</td>
+                    <td class="four_td2" colspan="3" style="width: calc((93.5% - 82px)) !important;">
+                        <span id="word_path" class="viewType word_path" order-id="" data-url="" style="cursor: pointer;color: blue"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+
+
+        <div class="fileListDiv">
+            <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div></div>
+            <div class="file_list" id="file_list"></div>
+        </div>
+        <div id="textDiv" class="textDiv">
+            <table id="textTab">
+                <tr>
+                    <td class="text_td1">截止时间:</td>
+                    <td class="text_td8">
+                        <input type="text" class="input inputWidth_190" id="dataTime" readonly/>
+                    </td>
+                    <td class="text_td1">审核意见:</td>
+                    <td class="text_td7" >
+                        <div class="dropdown">
+                            <input type="text" class="dropdown-toggle" id="dataAuditSuggestion" style="width: 400px;">
+                            <div class="dropdown-menu" style="display: none;">
+                                <ul>
+                                </ul>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="errorInfo"></div>
+    </div>
+
+    <div id="orderQueryDialog" style="display:none;" ></div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons",],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons){
+            var init = function(){
+                orderGrid();
+                initDateFun();
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+                $(window).resize(function(){
+                    $("#orderGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+                initSelect();
+
+
+                $("#dataTime").on("click",function(){
+                    $(".dropdown-menu").css("display","none");
+                })
+
+
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $('#search_auditStatus').html('<option value="">&#45;&#45;请选择&#45;&#45;</option>');
+                initSelect();
+            }
+
+
+
+            /**
+             *  初始化加载下拉框内容
+             * @version  <1> 2018-03-06 cxw : Created.:
+             */
+            var initSelect =  function () {
+                initDistributeStatusSelect();
+
+            }
+
+            /**
+             *  根据字典ID获取字典名称，加载审核状态
+             * @version  <1> 2018-03-27 cxw : Created.:
+             */
+            //  审核状态全局变量
+            var auditStatusArr = [];
+            var getAuditStatus =  function (dictId) {
+                var auditStatus;
+                for(var i =0;i<auditStatusArr.length;i++)
+                {
+                    if(auditStatusArr[i][dictId])
+                        auditStatus = auditStatusArr[i][dictId];
+                }
+                return auditStatus;
+            }
+
+
+            /**
+             *  初始化根据审核状态编码查询出id，然后根据查询出的id匹配父ID查询出所有字典信息
+             * @param dict 字典对象
+             * @version  <1> 2018-03-09 cxw : Created.:
+             */
+            var initDistributeStatusSelect = function () {
+                var varyAjax = new BaseAjax();
+                varyAjax.opts.url = DICT_COFING.queryDictByCode_url;
+                varyAjax.opts.type = "POST";
+                varyAjax.opts.async = false; //同步请求
+                varyAjax.opts.data = JSON.stringify({'dataCode':'DataAuditType'});
+                varyAjax.opts.successFun = function(result){
+                    var data = result.data;
+                    if(result.flag){
+                        if(data.length>0)
+                        {
+                            var obj = document.getElementById('search_auditStatus');
+                            for(var i =0 ;i<data.length;i++ ) {
+                                var temp = data[i]
+                                if(temp.dictId == 1101 || temp.dictId == 1102){
+                                    obj.options.add(new Option(temp.dataName, temp.dictId));
+                                }
+
+                                var tempStatus = {};
+                                tempStatus[temp.dictId] = temp.dataName;
+                                auditStatusArr[i] = tempStatus;
+                            }
+                        }
+                    }
+                };
+                varyAjax.opts.errorFun = function(){
+                    return false;
+                };
+                varyAjax.run();
+            }
+
+            /**
+             * jqGrid表格控件加载订单数据
+             * @param
+             * @version  <1> 2018-03-06 cxw : Created.:
+             */
+            var orderGrid = function(){
+                $("#orderGrid").jqGrid({
+                    url: ORDER_CONFIG.findOrderAuditByPage_url,
+                    datatype: "json",
+                    postData:{
+                        'orderParam' : {
+                        }
+                    },
+                    mtype:'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['orderId','申请人ID','订单编号','订单分类','订单类型','申请人', '订单时间', '订单状态','审核人','审核时间','操作'],
+                    colModel:[
+                        {name:'orderId',index:'order_id', hidden:true},
+                        {name:'creator',index:'creator', hidden:true},
+                        {name:'orderCode',index:'order_code',align:'center', width:'10%', sortable:true},
+                        {name:'orderType',index:'order_type',align:'center', width:'6%',formatter:function(cellvalue, options, rowObject){
+                            var orderType;
+                            if(cellvalue==1301) orderType = '数据订单';
+                            if(cellvalue==1302) orderType = '需求订单';
+                            return orderType;
+                        }},
+                        {name:'orderAttribute',index:'order_attribute',align:'center', width:'7%',formatter:function(cellvalue, options, rowObject){
+                            var orderType = "";
+                            if(cellvalue==2101) orderType = '内部订单';
+                            if(cellvalue==2102) orderType = '外部订单';
+
+                            return orderType;
+                        }},
+                        {name:'creatorName',index:'creator_name',align:'center', width:'9%', sortable:true},
+                        {name:'createTime',index:'create_time',align:'center', width:'10%', sortable:true},
+                        {name:'auditStatus',index:'audit_status', width:'5%', align:"center", sortable:true,formatter:function(cellvalue, options, rowObject){
+                            var auditStatus;
+                            /*if(cellvalue==1101) auditStatus = '待审核';
+                            if(cellvalue==1102) auditStatus = '审核通过';
+                            if(cellvalue==1103) auditStatus = '审核不通过';*/
+                            auditStatus = getAuditStatus(cellvalue);
+                            return auditStatus;
+                        }},
+                        {name:'orderAuditorName',index:'orderAuditorName', width:'8%',align:'center', sortable:true},
+                        {name:'auditTime',index:'audit_time', width:'8%', align:"center", sortable:true},
+                        {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str = "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.orderId +"' title='订单详情' >" ;
+                            var auditStatus = rowObject.auditStatus;
+                            if(auditStatus==1101) {
+                                str+= "<img src='images/public/Tsuccess.png' class='auditBtn' creator-id='"+rowObject.creator+"' order_type='"+ rowObject.orderType +"' data-id='"+ rowObject.orderId +"' title='审核' >" ;
+                            }
+                            else if(auditStatus==1102)
+                            {
+                                str+= "<img src='images/public/Trefresh.png' class='reAuditBtn' creator-id='"+rowObject.creator+"' order_type='"+ rowObject.orderType +"' data-id='"+ rowObject.orderId +"' title='重新审核' >" ;
+                            }
+                            else{
+                                str+= "<img src='images/public/TsuccessG.png' order_type='"+ rowObject.orderType +"'data-id='"+ rowObject.orderId +"' creator-id='"+rowObject.creator+"' class='grayBtn' title='审核' >" ;
+                            }
+                            return str;
+                        }}
+                    ],
+                    width:'100%',
+                    autowidth:true,
+                    height:'100%',
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager2',
+                    //sortname: 'orderId',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function(){
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#orderGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2017-12-26 lcw : Created.
+             */
+            var tableEvent = function(){
+                $(".seeBtn").off("click");
+                $(".seeBtn").on("click",function(){
+                    showFun($(this).attr("data-id"))
+                })
+                $(".auditBtn").off("click");
+                $(".auditBtn").on("click",function(){
+                    auditFun($(this).attr("data-id"),$(this).attr("order_type"),$(this).attr("creator-id"))
+                })
+                $(".reAuditBtn").off("click");
+                $(".reAuditBtn").on("click",function(){
+                    auditFun($(this).attr("data-id"),$(this).attr("order_type"),$(this).attr("creator-id"))
+                })
+
+                $("#word_path").off("click");
+                $("#word_path").on("click",function(){
+                    downWord($(this).attr("data-url"))
+                })
+
+                $("#word_pathTwo").off("click");
+                $("#word_pathTwo").on("click",function(){
+                    downWord($(this).attr("data-url"))
+                })
+
+            }
+
+            /**
+             * 表格查询操作事件
+             * @param creatorName 申请人
+             * @param handleStatus 分发状态
+             * @param beginTime 开始时间
+             * @param endTime 结束时间
+             * @version <1> 2018-03-07 cxw : Created.
+             */
+            var searchFun = function(){
+//                var creatorName = $("#search_creatorName").val().trim();
+                var createTime = ($("#search_createTime").val().trim()).split('至');
+                var auditStatus = $("#search_auditStatus").val().trim();
+                //var handleStatus = $("#search_handleStatus").val().trim();
+                var orderCode = $("#search_orderCode").val().trim();
+                var param = {};
+//                param.creatorName = creatorName;
+                param.auditStatus = auditStatus;
+                //param.handleStatus = handleStatus;
+                param.orderCode = orderCode;
+                param.beginTime = createTime[0];
+                param.endTime = createTime[1];
+                $("#orderGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            }
+
+            /**
+             *订单审核页加载
+             * @param orderId 订单ID
+             * * @param orderType 订单分类 值为1301时：数据订单，值为1302时为需求订单
+             * @return
+             * @version <1> 2018-03-14 cxw： Created.
+             */
+            var auditFun = function (orderId,orderType,creatorId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = ORDER_CONFIG.queryOrderById_url + "?orderId=" + orderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    if(result.flag)
+                    {
+                        var data = result.data;;
+                        var OrderDialogObject ;
+                        var type;
+                        if(orderType==1301)
+                        {
+                            type = 2;
+                            $('#detail_creatorName').html(data.creatorName);
+                            $('#detail_createTime').html(data.createTime);
+                            $('#detail_createTime').attr('title',data.createTime);
+                            $('#data_orderCode').html(data.orderCode);
+                            $('#auditSuggestion').html(data.auditSuggestion);
+                            $('#word_path').html(data.wordName);
+                            $('#word_path').attr("title",data.wordName);
+                            $('#word_path').attr("order-id",data.orderId);
+                            $('#word_path').attr("data-url",data.wordPath);
+                             OrderDialogObject = $('#auditDataOrder');
+                            var obj =   $('#file_list');
+                            showOrderFileDetailFun(orderId,obj);
+                        }
+                        else{
+                            type = 3;
+                            $('#orderDescription').html(data.orderDescription);
+                            $('#creatorName').html(data.creatorName);
+                            $('#createTime').html(data.createTime);
+                            $('#createTime').attr('title',data.createTime);
+                            $('#orderCode').html(data.orderCode);
+                            $('#auditSuggestion').html(data.auditSuggestion);
+                            $('#word_pathTwo').html(data.wordName);
+                            $('#word_pathTwo').attr("title",data.wordName);
+                            $('#word_pathTwo').attr("order-id",data.orderId);
+                            $('#word_pathTwo').attr("data-url",data.wordPath);
+                             OrderDialogObject = $('#auditNeedOrder');
+                        }
+                        showDialog(type,orderId,OrderDialogObject,orderType,creatorId);
+                        console.log(111)
+                        initDateFunByDialog();
+                    }
+                    else{
+                        PopWin.showMessageWin("订单审核页加载失败!");
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("订单审核页加载失败!");
+                    return false;
+                };
+                ajax.run();
+            }
+
+            /**
+             *订单详情查看
+             * @param orderId 订单ID
+             * @param auditType 值为1时给数据审核窗口订单信息赋值
+             * @return
+             * @version <1> 2018-03-07 cxw： Created.
+             */
+            var showFun = function(orderId,auditType){
+                var ajax = new BaseAjax();
+                ajax.opts.url = ORDER_CONFIG.queryOrderById_url + "?orderId=" + orderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    var data = result.data;
+                    if(auditType==1){
+                        $('#detail_creatorName').html(data.creatorName);
+                        $('#detail_createTime').html(data.createTime);
+                    }
+                    $('#view_orderType').html(data.orderType == 1301 ? '数据订单':'需求订单');
+                    $('#view_creatorName').html(data.creatorName);
+                    $('#view_orderCode').html(data.orderCode);
+                    $('#view_createTime').html(data.createTime);
+                    $('#view_orderAuditorName').html(data.orderAuditorName);
+                    if(data.orderAttribute==2101)
+                    {
+                        $("#view_orderAttribute").html('内部订单') ;
+                    }
+                    else{
+                       $("#view_orderAttribute").html('外部订单') ;
+                    }
+                    var auditStatus = getAuditStatus(data.auditStatus);
+//                    $('#view_auditStatus').html(auditStatus);
+                    if(data.auditStatus==1105 || data.auditStatus==1102){//审核不通过 和拒绝分发的订单状态标红
+                        $('#view_auditStatus').html("<span class='red'>" + auditStatus + "</span>");
+                    }else{
+                        $('#view_auditStatus').html("<span>" + auditStatus + "</span>");
+                    }
+
+
+
+
+                 /*   if(data.auditStatus == 1101 ){
+                        $('#view_auditStatus').html('待审核');
+                    }
+                    else if(data.auditStatus == 1102 ){
+                        $('#view_auditStatus').html('审核通过');
+                    }
+                    else{
+                        $('#view_auditStatus').html('审核不通过');
+                    }*/
+
+                    $('#view_auditTime').html(data.auditTime);
+                    $('#view_handlerPersonName').html(data.handlerPersonName);
+                   /* if(data.handleStatus == 1201 ){
+                        $('#view_handleStatus').html('待分发');
+                    }
+                    else if(data.handleStatus == 1202 ){
+                        $('#view_handleStatus').html('已分发');
+                    }
+                    else{
+                        $('#view_handleStatus').html('拒绝分发');
+                    }*/
+                    $('#view_handleTime').html(data.handleTime);
+                    $('#view_dataAccessTime').html(data.dataAccessTime);
+                    if(data.auditSuggestion)
+                    {
+                        if(data.auditSuggestion.length>15)
+                        {
+                            document.getElementById('view_auditSuggestion').innerHTML=data.auditSuggestion.substring(0,16)+'...';
+                        }
+                        else{
+                            document.getElementById('view_auditSuggestion').innerHTML=data.auditSuggestion;
+                        }
+                        $('#view_auditSuggestion').attr('title',data.auditSuggestion)
+                    }
+                    if(data.orderDescription)
+                    {
+                       // document.getElementById('view_orderDescription').innerHTML=data.orderDescription;
+                        $('#view_orderDescription').val(data.orderDescription);
+//                        if(data.orderDescription.length>10)
+//                        {
+//                            document.getElementById('view_orderDescription').innerHTML=data.orderDescription.substring(0,11)+'...';
+//                        }
+//                        else{
+//                            document.getElementById('view_orderDescription').innerHTML=data.orderDescription;
+//                        }
+                        $('#view_orderDescription').attr('title',data.orderDescription);
+                    }
+                    if(data.orderType == 1301 )
+                    {
+                        $('.t6').hide();
+                        $("#data_list").css("height","290px");
+                    }
+                    else{
+                        $("#data_list").css("height","240px");
+                        $('.t6').show();
+                    }
+                    var orderDialogObject =  $("#orderInfo");
+                    var obj =   $('#data_list');
+                    showOrderFileDetailFun(orderId,obj);
+                    showDialog(1,orderId,orderDialogObject);
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("订单详细加载失败!");
+                    return false;
+                };
+                ajax.run();
+            };
+
+            /**
+             *订单详情文件查看
+             * @param orderId 订单ID
+             * @return
+             * @version <1> 2018-03-07 cxw： Created.
+             */
+            var showOrderFileDetailFun = function(orderId,obj){
+                var ajax = new BaseAjax();
+                ajax.opts.url = ORDER_CONFIG.queryOrderDetailByOrderId_url + "?orderId=" + orderId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    var fileHtml = '';
+                    if(result.flag){
+                        var data = result.data;
+                        if(data.length>0) {
+                            for (var i= 0; i < data.length; i++) {
+                                fileHtml += "<div class='file'><div title='"+data[i].fileName+"'>"+data[i].fileName+"</div><div>"+(data[i].fileSize || "---")+"</div></div>";
+//                                fileHtml += '<tr><td  title="' + data[i].fileName +'" class="t1">' + data[i].fileName + '</td><td class="t2">' + (data[i].dataSize!=null?data[i].dataSize:'') + '</td><td class="t3">' + data[i].dataTime + '</td></tr>'
+                            }
+                        }
+                        else{
+                            fileHtml += "<h3>没有对应文件数据</h3>";
+//                            fileHtml = '<tr><td colspan="3" style="width:100% !important">' +'没有对应文件数据'+ '</td></tr>'
+                        }
+                      obj.html(fileHtml)
+                    }
+                    else{
+                        fileHtml += "<h3>没有对应文件数据</h3>";
+//                        var fileHtml = '<tr><td colspan="3" style="width:100% !important">' +'没有对应文件数据'+ '</td></tr>'
+                       obj.html(fileHtml)
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("订单详情文件加载失败!");
+                    return false;
+                };
+                ajax.run();
+            };
+
+            /**
+             * 审核订单信息 1301数据订单；1302需求订单；1101待审核；1102审核不通过；1103审核通过；1104已分发
+             * @param orderId 订单需求描述
+             * @param auditStatus 审核状态
+             * @version <1> 2018-03-14 cxw : Created.
+             */
+            var editOrderFun = function (orderId,orderType,creatorId,auditStatus,handleStatus,orderDialog) {
+              /*  if( (($('#dataTime').val()==null||$('#dataTime').val()=='')&&orderType==1301)&&auditStatus==1103)
+                {
+                    PopWin.showMessageWin('请选择截止日期');
+                    return;
+                }
+                var auditSuggestion = orderType==1301?$('#dataAuditSuggestion').val():$('#auditSuggestion').val();
+                if(auditStatus==1102&&( auditSuggestion==null||auditSuggestion==''))
+                {
+                        PopWin.showMessageWin('请填写拒绝原因');
+                        return;
+                }*/
+                //校验输入内容
+                if(!formVerf(orderType,auditStatus)){
+                    return;
+                }
+                var auditSuggestion = orderType==1301?$('#dataAuditSuggestion').val():$('#auditSuggestion').val();
+                //审核数据订单时，通过审核时直接分发
+                if(orderType==1301&&auditStatus==1103)
+                {
+                  auditStatus = 1104;
+                }
+                var orderDescription = $('#orderDescription').val().trim();
+                var param = {};
+                param.orderId = orderId;
+                param.creator=creatorId;
+                param.orderType = orderType;
+                param.auditStatus = auditStatus;
+                //param.handleStatus = handleStatus;
+                param.dataAccessTime = $('#dataTime').val().trim();
+                param.auditSuggestion =auditSuggestion;
+                var ajax = new BaseAjax();
+                ajax.opts.url = ORDER_CONFIG.auditOrder_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.data=JSON.stringify(param);
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        PopWin.showMessageWin(orderType == 1301?"数据订单已审核":"需求订单已审核!");
+                        searchFun();
+                    }
+                    else{
+                        PopWin.showMessageWin(orderType == 1301?"数据订单已审核失败":"需求订单已审核失败!");
+                    }
+
+                    commons.loadAlarmMsgFun();
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("订单审核失败!");
+                    return false;
+                };
+                ajax.run();
+                orderDialog.dialog("close");
+
+            }
+
+
+
+            /**
+             * 弹出框
+             * @param t
+             * @param orderId :订单ID
+             * @version <1> 2017-12-16 lcw: created.
+             */
+            var showDialog = function(type,orderId,OrderDialogObject,orderType,creatorId){
+                var orderDialog =  OrderDialogObject;
+                var dialogParent = orderDialog.parent();
+                var dialogOwn = orderDialog.clone();
+                if(type==1){
+                    orderDialog.dialog({
+                        autoOpen: false,
+                        title:'订单信息',
+                        height: 570,
+                        width: 900,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[
+                            {
+                                text:"关闭",
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+                    orderDialog.dialog("open");
+                }
+                else if(type==2){
+                    var auditStatus,handleStatus;
+                    orderDialog.dialog({
+                        autoOpen: false,
+                        title:'数据订单审核',
+                        height: 600,
+                        width: 800,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[
+                            {
+                                text:"审核通过",
+                                click:function(){
+                                    auditStatus = 1103;
+                                    handleStatus=1202;
+                                    editOrderFun(orderId,orderType,creatorId,auditStatus,handleStatus,orderDialog);
+                                }},{
+                                text:"审核不通过",
+                                click:function(){
+                                    auditStatus = 1102;
+                                    handleStatus=1201;
+                                    editOrderFun(orderId,orderType,creatorId,auditStatus,handleStatus,orderDialog);
+                                }},{
+                                text:'取消',
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+                    orderDialog.dialog("open");
+                    initAuditOpinion("auditDataOrder");//审核意见初始化
+                }
+                else{
+                    var auditStatus,handleStatus;
+                    orderDialog.dialog({
+                        autoOpen: false,
+                        title:'需求订单审核',
+                        height: 380,
+                        width: 750,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[
+                            {
+                                text:"审核通过",
+                                click:function(){
+                                    auditStatus = 1103;
+                                    handleStatus=1202;
+                                    editOrderFun(orderId,orderType,creatorId,auditStatus,handleStatus,orderDialog);
+                                }},{
+                                text:"审核不通过",
+                                click:function(){
+                                    auditStatus = 1102;
+                                    handleStatus=1201;
+                                    editOrderFun(orderId,orderType,creatorId,auditStatus,handleStatus,orderDialog);
+                                }},{
+                                text:"取消",
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+                    orderDialog.dialog("open");
+                    initAuditOpinion("auditNeedOrder");//审核意见初始化
+                }
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#orderGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+
+
+            /**
+             * 第一次加载页面时加载事件控件
+             * @version <1> 2018-03-15 cxw: created.
+             */
+            var initDateFun = function () {
+                dateMultiFun($("#search_createTime"))
+            }
+
+            /**
+             * 加载弹框页面时加载事件控件
+             * @version <1> 2018-03-15 cxw: created.
+             */
+            var initDateFunByDialog = function () {
+                dateFun($("#dataTime"));
+
+                $("#dataTime").on("click",function(){
+                    $(".dropdown-menu").css("display","none");
+
+                })
+            }
+
+            /**
+             * 加载双面板时间控件
+             * @param obj input对象
+             * @version <1> 2018-03-15 cxw: created.
+             */
+            var dateMultiFun = function(obj){
+                obj.jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+
+            };
+
+
+            /**
+             * 校验输入信息 1301数据订单；1302需求订单；1101待审核；1102审核不通过；1103审核通过；1104已分发
+             * @param orderType 订单类型
+             * @param auditStatus 审核状态
+             * @version <1> 2018-03-28 cxw : Created.
+             */
+            var formVerf = function (orderType,auditStatus) {
+                var bol = true ;
+                if(orderType==1301&&auditStatus==1103)
+                {
+                    if(!formDataVerfTimeAndLength()){
+                        bol = false;
+                    }
+                }
+                if(orderType==1301&&auditStatus==1102)
+                {
+                    if(!formDataVerf()){
+                        bol = false;
+                    }
+                }
+                if(orderType==1302&&auditStatus==1102)
+                {
+                    if(!(formnNeedVerf())){
+                        bol = false;
+                    }
+                }
+                if(orderType==1302&&auditStatus==1103)
+                {
+                    if(!(formnNeedVerfLength())){
+                        bol = false;
+                    }
+                }
+                return bol;
+            }
+
+            var formnNeedVerf = function(){
+                var addOrderInfo = $('#needErrorInfo');
+                if(formVerfication.checkInputIsEmpty($('#auditSuggestion'),addOrderInfo,'审核意见不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputLength(0,100,$('#auditSuggestion'),addOrderInfo,'审核意见不能超过100字')){
+                    return false;
+                }
+                return true;
+            }
+
+            var formnNeedVerfLength = function(){
+                var addOrderInfo = $('#needErrorInfo');
+                if(formVerfication.checkInputLength(0,100,$('#auditSuggestion'),addOrderInfo,'审核意见不能超过100字')){
+                    return false;
+                }
+                return true;
+            }
+
+            var formDataVerf = function(){
+                var addOrderInfo = $('#errorInfo');
+                if(formVerfication.checkInputIsEmpty($('#dataAuditSuggestion'),addOrderInfo,'审核意见不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputLength(0,100,$('#dataAuditSuggestion'),addOrderInfo,'审核意见不能超过100字')){
+                    return false;
+                }
+                return true;
+            }
+
+            var formDataVerfTimeAndLength = function(){
+                var addOrderInfo = $('#errorInfo');
+                if(formVerfication.checkInputIsEmpty($('#dataTime'),addOrderInfo,'截止时间不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputLength(0,100,$('#dataAuditSuggestion'),addOrderInfo,'分发意见不能超过100字')){
+                    return false;
+                }
+                return true;
+            }
+
+            /**
+             * 加载单面板时间控件
+             * @param obj input对象
+             * @version <1> 2018-03-15 cxw: created.
+             */
+            var dateFun = function(obj){
+                obj.jeDate({
+                    format: 'YYYY-MM-DD',
+                    minDate: $.nowDate({DD:"0"}),
+                    isToday:false
+                });
+
+            };
+
+            /**
+             * 获取审核意见下拉框数据
+             * @version <1> 2018-05-28 wl: created.
+             */
+            var initAuditOpinionFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                           //str += "<option>"+ element.dataName +"</option>";
+                           // str+="<li class='op' data-name='"+ element.dataName +"'>"+element.dataName +"</li>";
+                            str+="<li class='option viewType' title='"+ element.dataName +"'>"+ element.dataName +"</li>";
+                        })
+                        $(".dropdown-menu ul").html(str);
+                       // $("#EngineModel").append(str);
+                       /* $("#s_type").append(str);
+                        $("#s_type").combobox();*/
+                    }
+                }
+                ajax.run();
+            };
+
+            /**
+             * Description: 审核意见初始化
+             * @return
+             * @version <1> 2018/5/30 11:26 zhangshen: Created.
+             */
+            var initAuditOpinion = function(idName){
+                $("#"+idName+" .dropdown-menu ul").html("");
+                initAuditOpinionFun(5000);
+                //显示\隐藏下拉菜单
+                $("#"+idName+" .dropdown-menu").hide();
+                $("#"+idName+" .dropdown-toggle").click(function() {
+                    var len = $(this).parent().find("li").length;
+                    if(len > 5){
+                        $("#"+idName+" .dropdown-menu").css("top","-"+ 5 * 25 +"px");
+                    }else{
+                        $("#"+idName+" .dropdown-menu").css("top","-"+ len * 25 +"px");
+                    }
+
+                    $("#"+idName+" .dropdown-menu").toggle();
+                });
+                var dropdown = $("#"+idName+" .dropdown");
+                dropdown.on('click',function(e){e.stopPropagation();}).find(">"+ "#"+idName +" li").on('click',function(){
+                    dropdown.find("#"+idName+" .dropdown-menu").show();
+                });
+                $(document).on('click',function(){
+                    dropdown.find(".dropdown-menu").hide();
+                });
+                //赋值
+                $("#"+idName +" .dropdown-menu li.option").click(function(){
+                    $("#"+idName +" .dropdown-menu").hide();
+                    if(idName == "auditNeedOrder"){
+                        $("#auditSuggestion").val($(this).text());
+                    }else if(idName == "auditDataOrder"){
+                        $("#dataAuditSuggestion").val($(this).text());
+                    }
+                });
+                //添加输入值后下拉框隐藏事件
+                $("#"+idName).bind('input propertychange', function() {
+                    $("#"+idName+" .dropdown-menu").hide();
+                });
+            };
+
+            /**
+             * 下载数据订单申请文件
+             * @version <1> 2018-06-26  cxw: created.
+             */
+            var downWord = function (wordPath) {
+                var  AccessToken = commons.getAccessToken();
+                setTimeout(function() {
+                    var a = document.createElement('a');
+                    wordPath = encodeURI(wordPath);
+                    a.setAttribute('download','');
+                    a.href=ORDER_CONFIG.downloadOrderWord_url+"?url="+wordPath+"&AccessToken="+AccessToken;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                    }, 1000);
+                }, 100);
+            };
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

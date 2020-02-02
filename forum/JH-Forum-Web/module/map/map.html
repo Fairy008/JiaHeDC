@@ -1,0 +1,165 @@
+<link type="text/css" rel="stylesheet" href="css/map/map.css"/>
+<link href="js/lib/multiple-select/multiple-select.css" rel="stylesheet"/>
+<div class="content" style="width:100%;height:100%;">
+    <div id="divMap" style="height:100%; width: 100%" ></div>
+
+    <div id="mouse-position"></div>
+    <div class="myDataFrame">
+        <div class="dataContent ">
+            <div class="dataTitle">我的数据列表<div class="clearAll">[清空]</div></div>
+            <div style="height:calc(100% - 40px - 30px);overflow-y:auto;overflow-x: hidden;"><div id="myDataList" class="dataDiv myData" > </div></div>
+            <div class="bottom">
+                <span ><span class='circle' id="allSelect"></span><span>&nbsp;全选</span><span class="addedNum"></span></span>
+                <span class="btn1 btn2 btn_grey" id="orderBtn">创建订单</span>
+                <span class="btn1 btn2 btn_grey" id="dealBtn" style="display:none;" res-code="SJCLRWCJ">数据处理</span>
+            </div>
+
+        </div>
+
+        <!--<div  class="dataCar" title="我的数据列表"><span >0</span><span></span></div>-->
+    </div>
+    <div  class="dataCar" title="我的数据列表"><span >0</span><span></span></div>
+    <div id="datasearch" class="dataSearch" title="搜索结果"><span>数据检索</span></div>
+    <div id="formLabel">
+        <!--查询区域-->
+        <div id="searchDiv">
+            <h4><span class="scearch_icon"></span><span>数据关键字</span></h4>
+            <img src="images/public/hidden.png" title="隐藏" id="hideLabel"/>
+
+            <div id="searchForm">
+                <div class="navForm"></div>
+                <div  id="addItem"><img src="images/public/search.png" title="选择搜索条件" ></div>
+            </div>
+            <!--查询条件区域-->
+            <div id="formDiv">
+                <div class="btLabel">
+                    <span class="on" target="xzq">行政区</span>
+                    <span target="jwd">经纬度</span>
+                </div>
+                <div class="btForm">
+                    <div class="inputForm" id="xzq">
+                        <span class="styleName">行政区</span>
+                        <span><input type="text" id="txtArea" class="styleInput" onfocus="this.style.color='#000000'" readonly/></span>
+                    </div>
+
+                    <div class="inputForm2" id="jwd">
+                        <img class="pen" src="images/public/draw.png" width="20px" height="20px" title="矢量拾取"/>
+                        <div class="wd">
+                            <input type="text"  id="lat1" placeholder="纬度上">
+                        </div>
+                        <div class="jd">
+                            <input type="text" id="long1" placeholder="经度左">
+                            <span>&nbsp;</span>
+                            <input type="text" id="long2" placeholder="经度右">
+                        </div>
+                        <div class="wd">
+                            <input type="text" id="lat2" placeholder="纬度下">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inputForm">
+                    <span class="styleName">云量≤</span>
+                    <div class="slider">
+                        <span  style="height:5px;width:205px;">
+                        <div id="slider-range-max" style="width:150px;height:5px;background-color:#cecece;margin-top: 10px;margin-left: 10px;"></div>
+                        <input type="text" id="cloudPercent" style="border:0; color:#f6931f; font-weight:bold;width:35px;float:right;margin-top: -15px;">
+                    </span>
+                    </div>
+
+
+
+                        <!--<input type="text" id="amount" style="border:0; color:#f6931f; font-weight:bold;">-->
+
+
+                  <!--  <span><input id="cloudPercent"  class="styleInput2 " placeholder="100以内数字" onfocus="this.style.color='#000000'">&nbsp;至&nbsp;<input id="cloudPercent2"  class="styleInput2 " placeholder="100以内数字" onfocus="this.style.color='#000000'"></span>-->
+                </div>
+
+                <div class="inputForm">
+                    <span class="styleName">卫星</span>
+                    <span><select id="satName"  class="styleInput satNameSelect" onfocus="this.style.color='#000000'" ></select></span>
+                </div>
+                <div class="multipleInputForm">
+                    <samp class="styleName">传感器</samp>
+                    <!--<span><select id="sensName"  class="styleInput sensNameSelect" onfocus="this.style.color='#000000'"></select></span>-->
+                    <samp>
+                        <select id="sensName" multiple="multiple" class="styleInput sensNameSelect" onfocus="this.style.color='#000000'">
+                        </select>
+                    </samp>
+                </div>
+
+                <!--<div class="inputForm">-->
+                <!--<span class="styleName">数据类型</span>-->
+                <!--<span><select id="dsType"  name="dsType"  class="styleInput dsTypeSelect"></select></span>-->
+                <!--</div>-->
+                <div class="inputForm">
+                    <span class="styleName">影像时间</span>
+                    <span ><input type="text" class="workinput wicon i1 styleInput" id="dateScope" onfocus="this.style.color='#000000'" readonly/></span>
+                </div>
+                <div class="inputForm">
+                    <span class="styleName">景序列号</span>
+                    <span ><input type="text" class=" styleInput3" id="sceneId"  onfocus="this.style.color='#000000'" placeholder="景号之间请用逗号分隔" /></span>
+                </div>
+                <div class="inputForm">
+                    <span class="styleName">产品序列号</span>
+                    <span ><input type="text" class=" styleInput3" id="productLevel"  onfocus="this.style.color='#000000'" placeholder="产品序列号之间请用逗号分隔" /></span>
+                </div>
+
+                <div class="btns">
+                    <span class="btn1 btn2" id="okBtn">检索</span>
+                    <span class="btn1 btn2" id="cancelBtn">取消</span>
+                </div>
+            </div>
+        </div>
+        <!--显示区域-->
+        <div id="showDiv">
+            <h4>
+                <span class="scearch_icon"></span><span>搜索结果</span><span class="noRows"></span>
+            </h4>
+           <div id="dataDiv" class="dataDiv leftDataDiv">
+                <div class="grid">
+                    <table id="listGrid"></table>
+                    <div id="pager2"></div>
+                </div>
+
+               <div id="rowDetail" >
+                   <span>产品序列号：<span id="productLevel_show"></span></span>
+                   <span>景序列号：<span id="sceneId_show"></span></span>
+                   <span>
+                        <span>云量：<span id="cloudPercent_show"></span></span>
+                       &nbsp;&nbsp;&nbsp;&nbsp;
+                        <span>文件大小：<span id="dataSize_show"></span></span>
+                   </span>
+                   <span>文件名：<br/><span id="fileName_show"></span></span>
+
+
+
+
+               </div>
+           </div>
+           <!-- <ul id="dataDiv" class="dataDiv leftDataDiv">
+
+            </ul>-->
+            <!--<p class="page">
+                <span class="pages"></span>
+                <span class="pageFlip">
+                    <span id="firstPage"><img class="firstPage"  title="首页"></span>
+                    <span id="prePage"><img class="prePage"  title="上一页"></span>
+                    <span id="nextPage"><img class="nextPage" title="下一页"></span>
+                    <span id="lastPage"><img class="lastPage" title="尾页"></span>
+                </span>
+            </p>-->
+
+
+        </div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+<div id="dataHandleDialog" style="display:none;" ></div>
+<div id="createOrderDialog" style="display:none;" >
+    <input type="button" class="btn" value="上传报告" id="uploadBtn" />
+</div>
+<script type="text/javascript" src="js/map/map.js"></script>
+<script type="text/javascript" src="js/lib/multiple-select/multiple-select.js"></script>

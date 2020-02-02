@@ -1,0 +1,281 @@
+<!-- 容器 -->
+<div id="container" >
+    <!--内容 -->
+    <div id="content">
+
+        <ul id="tab">
+            <li class="tabin">图标样式</li>
+            <li>按钮样式</li>
+            <li>文字样式</li>
+        </ul>
+        <div id="tab_content">
+            <div id="realcontent">
+                <!-- 图标样式 -->
+                <div class="icon_style" >
+                    <div class="icon_table" >
+                        <ul class="th">
+                            <li>功能</li>
+                            <li>代码</li>
+                            <li>示例</li>
+                        </ul>
+                        <ul>
+                            <li>{iconName}</li>
+                            <li><script type="text/html" style='display:block'>{iconPath} | {iconPathG}</script></li>
+                            <li><img src="{iconPath}" /> | <img src="{iconPathG}" /></li>
+                        </ul>
+                    </div>
+                    <div class="remark">说明：置灰图标代表相对应的禁止操作</div>
+                </div>
+                <!-- 按钮样式 -->
+                <div class="btn_style" style="display: none">
+                    <div class="btn_table" >
+                        <ul class="th">
+                            <li>按钮</li>
+                            <li>代码</li>
+                            <li>示例</li>
+                        </ul>
+                        <ul>
+                            <li>{btnName}</li>
+                            <li><script type="text/html" style='display:block'><input type="button" class="btn" value="{btnName}" /></script></li>
+                            <li><input type="button" class="btn" value="{btnName}"></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- 文字样式 -->
+                <div class="font_style" style="display: none">
+                    <div class="font_table" >
+                        <ul class="th">
+                            <li>位置</li>
+                            <li>尺寸</li>
+                            <li>示例</li>
+                        </ul>
+                        <ul>
+                            <li>{fontName}</li>
+                            <li><script type="text/html" style='display:block'>{fontSize}</script></li>
+                            <li><span style="font-size:{fontSize}px!important;">这是测试</span></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 底部 -->
+    <div id="footing">
+
+    </div>
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","ztree", "formVerfication","PopWin","commons","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,ztree,formVerfication,PopWin,commons,enums) {
+
+        var init =function() {
+            tabFun();
+            iconFun();
+            btnFun();
+            fontFun();
+
+            }
+
+        //tab页切换
+        var tabFun =function(){
+            $("#tab li").each(function (index) {
+                $(this).click(function () {
+                    $("#tab li.tabin").removeClass("tabin");
+                    $(this).addClass("tabin");
+                    if (index == 0) {
+                        $(".icon_style").show();
+                        $(".icon_style").siblings().hide();
+                    }
+                    else if (index == 1) {
+                        $(".btn_style").show();
+                        $(".btn_style").siblings().hide();
+
+                    } else if (index == 2) {
+                        $(".font_style").show();
+                        $(".font_style").siblings().hide();
+                    }
+                });
+            });
+        }
+
+        //图标功能名称
+        var iconName=['详情','编辑','执行','重新执行','下载','发布','撤回','预览图层'];
+        //图标功能路径
+        var iconPath=['images/public/Twatch.png','images/public/Tedit.png','images/public/Ttostart.png','images/public/Trefresh.png',
+            'images/public/download.png','images/public/share.png',"images/public/back.png",'images/public/preview.png'];
+        //是否包含对应灰色图标
+        var iconG=[true,true,true,true,true,true,true,true];
+        //图标区功能
+        var iconFun=function(){
+            var detail=$(".icon_table ul:eq(1)").html();
+            $(".icon_table ul:eq(1)").remove();
+            var result="";
+            if(iconName.length==iconPath.length){
+                for(var i=0;i<iconName.length;i++){
+                    var iconPathArr=iconPath[i].split(".");
+                    var iconPathGNew=iconPathArr[0]+"G."+iconPathArr[1];
+                    var iconPathG =iconG[i]?iconPathGNew:"";
+                    var iconObj = {'iconName': iconName[i],'iconPath':iconPath[i],'iconPathG':iconPathG};
+                    result += "<ul>"+detail.format(iconObj)+"</ul>";
+                }
+                $(".icon_table").append(result);
+            }else{
+                PopWin.showMessageWin("图标方法和路径长度不一致！");
+            }
+        }
+
+        //按钮功能名称
+        var btnName=['搜索','批量操作'];
+        //按钮区功能
+        var btnFun=function(){
+            var detail=$(".btn_table ul:eq(1)").html();
+            $(".btn_table ul:eq(1)").remove();
+            var result="";
+            if(btnName.length>0){
+                for(var i=0;i<btnName.length;i++){
+                    var iconObj = {'btnName': btnName[i],'btnPath':btnName[i]};
+                    result += "<ul>"+detail.format(iconObj)+"</ul>";
+                }
+                $(".btn_table").append(result);
+            }else{
+                PopWin.showMessageWin("暂未设置按钮！");
+            }
+        }
+
+        //文字位置
+        var fontName=['标题部分','其他部分'];
+        //文字大小
+        var fontSize=['18','14'];
+        //文字区功能
+        var fontFun=function(){
+            var detail=$(".font_table ul:eq(1)").html();
+            $(".font_table ul:eq(1)").remove();
+            var result="";
+            if(fontName.length==fontSize.length){
+                for(var i=0;i<fontName.length;i++){
+                    var fontObj = {'fontName': fontName[i],'fontSize':fontSize[i]};
+                    result += "<ul>"+detail.format(fontObj)+"</ul>";
+                }
+                $(".font_table").append(result);
+            }else{
+                PopWin.showMessageWin("文字位置和文字大小长度不一致！");
+            }
+        }
+
+
+        init();
+
+
+    });
+
+    //字符串模板生成
+    String.prototype.format = function() {
+        if (arguments.length == 0) return this;
+        var param = arguments[0];
+        var s = this;
+        if (typeof(param) == 'object') {
+            for (var key in param)
+                s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+            return s;
+        } else {
+            for (var i = 0; i < arguments.length; i++)
+                s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+            return s;
+        }
+    }
+</script>
+<style>
+    #container{
+        margin: 0 auto;
+        padding-top: 1px;
+        height:100%;
+        width:100%;
+        /*background: #9cc3f9	;*/
+    }
+    #heading {
+        font-size: 25px!important;
+        color:white;
+        text-align: center;
+    }
+    #content{
+        height:100%;
+        width:100%;
+    }
+    ul,li{
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+    #tab li{
+        float: left;
+        background-color:#cdc9c9;
+        color: #fff;
+        padding: 5px;
+        margin-right: 2px;
+        cursor: pointer;
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+    #tab li.tabin{
+        background-color:#1f4350;
+        border-bottom: 0px;
+        z-index: 100;
+        position: relative;
+    }
+    #tab_content{
+        width: 98%;
+        height: 100%;
+        padding: 10px;
+        background-color: white;
+        clear: left;
+        border: 1px solid #E0FFFF;
+        position: relative;
+        top: -1px;
+    }
+    #tab_content a{
+        position: relative;
+        display: inline-block;
+        margin: 0 3.5px;
+        border: 1px solid #dfdcdc;
+        height: 23px;
+        line-height: 23px;
+        border-radius: 5px;
+        padding: 0 8px;
+        font-size: 12px;
+        color: #3b3b3b;
+    }
+    #tab_content ul{
+        list-style:none;
+        padding:0px;
+        margin:0px;
+        width:100%;
+        height:30px;
+        line-height:30px;
+        border:1px solid #1f4350;
+        border-top:0px;
+        font-size:12px;
+        text-align: center;
+    }
+    #tab_content ul li{
+        display:block;
+        width:33%;
+        float:left;
+        text-indent:2em;
+        color:#3a95e6;
+    }
+    #tab_content .th{
+        background:#1f4350;
+        font-weight:bold;
+        border-top:1px
+    }
+    #tab_content img{
+        vertical-align: middle;
+    }
+    .icon_style .remark{
+        color: red;
+        margin-top: 50px;
+    }
+</style>

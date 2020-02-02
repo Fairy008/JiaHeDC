@@ -1,0 +1,23 @@
+/* 表格主体带竖向滚动条*/
+.tableLi table{ width:100%;}
+.tableLi table caption{ font-size: 18px; color: #383838; font-weight: bold; }
+.tableLi table tr td,.tableLi table tr th{ width:15%; height: 36px; line-height: 36px; text-align: right; padding:0 10px; }
+.tableLi table thead tr th{ border-bottom: 2px solid #888; font-size:14px; color: #373737; font-weight: bold; }
+.tableLi table tbody tr td{ border-bottom: 1px solid #d4d4d4; color: #787878;}
+.tableLi table tbody tr td:first-child{ text-align: left; }
+
+/*搜索按钮*/
+.submitBtn { color:#fff; margin-top:10px; width: 199px; height: 30px; line-height: 30px; background: #1691f8 url(../img/sea_btn_small.png) 70px center no-repeat; border-radius: 3px; text-align: center; display: block;  }
+.submitBtn:hover { cursor: pointer;}
+
+/*分页*/
+.paging { width:280px; text-align: center; }
+.paging a.prepage,.paging a.nextpage{ height: 26px; line-height: 26px; padding: 0 7px; color: #fff; font-size:12px; border-radius: 3px; background: #1691f8; display: inline-block; }
+.paging a:hover{ cursor: pointer;}
+.paging span a { font-size:12px; color: #fff; padding:5px 4px;}
+.paging span a:hover,.paging span a.on{ color: #1691f8; }
+
+/*日历控件*/
+.form-horizontal input:hover{ cursor: pointer;}
+
+

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<!-- <link href="css/app.css" rel="stylesheet" type="text/css" /> -->
+	<title>珈和农情遥感</title>
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<style>
+		html,body{ margin:0; padding:0;height: 100%; font-size:12px;  color:#000;}
+		div, p, ul, h2, img{margin:0px; padding:0px;}
+		ul, li{ list-style:none; margin:0; padding:0}
+		a{color:#f91b52; text-decoration:none;}
+		a:hover{color:#ebb600; text-decoration:underline;}
+		img{ border:none;}
+		.red{ color:#f20101;}
+
+		.input input:focus{ background:#feffe9;}
+		.top{ height:10%; padding:2% 0 0 16%;}
+
+		.loginBtnWrap{ position:absolute; top:20px; right:20px;}
+		.loginBtn{width:50px; height:30px; background:#0896d5; color:#fff; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+
+		.main{ height:100%; width:100%;display:block;  margin:0 auto; background:#04aef8  url(img/login/loginBG.jpg) left bottom repeat-x;}
+		.right{float:left;width:50%; margin:0 5% 0 0; text-align:right; }
+		.inputWrap{float:left; width:240px;   padding:28px 2% 38px 2%; margin:5% 0 0 0; background:rgba(255, 255, 255, 1); box-shadow:0 0px 0px 0px #24a1ce; border-radius:3px; }
+		.login{font-size:22px; margin:0 0 0 0; text-align:center; color:#000; font-family:"黑体";}
+		.input,.input2{ line-height:30px; margin-bottom:15px;}
+		.button{width:100%; height:37px; background:#0070cd; color:#FFFFFF; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+		.zc{height:30px; line-height:30px; text-align:right;color:#CCCCCC;}
+		.inputStyle{height:30px; line-height:30px; width:100%; border:1px solid #ccc; border-radius:3px; color:#000;text-indent:3px;}
+		.inputStyle2{ width:50%;}
+		.copyright{clear:both;line-height:30px; width:100%; position:fixed;bottom:0; text-align:center; color:#000; font-size:14px; background:rgba(255, 255, 255, 0.8);}
+		.orange{color:#FF9900;}
+		.yz{ position:absolute; top:0; right:0; cursor:pointer;}
+		.yz input{ height:32px; border:none; color:#FFFFFF;cursor:pointer; }
+		.wrong {height:30px; line-height:30px;color:#f20101;}
+		.agree{ height:30px; line-height:30px; position:relative; padding-left:20px;}
+		.loginBtn{
+			text-decoration:none;
+			font-size: 12px;
+			text-decoration: none;
+			width: 60px;
+			height: 30px;
+			display: block;
+			text-align: center;
+			line-height: 30px;
+		}
+	</style>
+
+</head>
+
+
+<body>
+
+<div class="main">
+	<div  class="top"><img src="img/login/logo.png" /><span class="loginBtnWrap"><a href="login.html" class="loginBtn" >登录</a>
+	    </span></div>
+	<div class="right" ><img src="img/login/earth.png" width="461" height="461" /></div>
+	<form action="target.html">
+		<div class="inputWrap">
+			<div class="login">找回密码</div>
+			<div class="wrong" id="errorMsg">&nbsp;</div>
+			<div id="vailCode">
+			<div class="input"><input  class="inputStyle" id="phone" type="text" name="phone" placeholder="手机号码" /></div>
+			<div class="input2" style="position:relative;margin-bottom:10px;" ><input  class="inputStyle inputStyle2" id="verifCode" type="text" name="code" placeholder="手机验证码" /><span class="yz"><input type="button"  id = "getCode" value="获取手机验证码" style="border-radius: 2px; padding:0 10px;height:31px;background: #97c7ef;color:#fff;"/></span></div>
+			<div><input type="button" class="button"  value="下一步" id="next" /></div>
+			</div>
+			<div id="resetPwd" style="display: none">
+			<div class="input" ><input class="inputStyle" id="pwd" type="password" name="password" placeholder="新密码(密码长度在6-20位)" /></div>
+			<div class="input" style="margin-bottom:10px;"><input  class="inputStyle"  id="confirmPwd" type="password" name="password" placeholder="确认密码(密码长度在6-20位)" /></div>
+			<div><input type="button" class="button"  value="重置密码" id="submit" /></div>
+			</div>
+		</div>
+	</form>
+	<div style="clear:both;"></div>
+	<div class="copyright" id="copyright"><a style="color: #0a0a0a !important;" target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42018502001246"><img src="img/beian.png" width="20" height="20" align="absmiddle">鄂公网安备 42018502001246号</a>&nbsp;&nbsp;&nbsp; 鄂ICP备13010685号<br>
+		Copyright©武汉珈和科技有限公司 All Rights Reserved<br>
+	</div>
+</div>
+
+</body>
+
+
+<script src="js/lib/require/require.js"></script>
+<script src="js/require.config.js"></script>
+<script src="js/lib/jh/formVerfication.js"></script>
+<script type="text/javascript">
+	/**
+	 * 用户注册
+	 * @version <1> 2017-11-28 lcw : created.
+	 */
+	require(["jquery","BaseAjax","JHModule"],function($,BaseAjax,JHModule){
+
+		var codeBtn = document.getElementById("getCode"); //获取验证码DOM
+		var submitBtn = document.getElementById("submit");
+		var base64 = new JHModule.Base64();
+
+		/*
+		 * 获取手机验证码,60秒内不重复发送
+		 *
+		 * @version <1> 2017-11-29 lcw : created.
+		 */
+		var flag = false;
+		$("#getCode").on("click",function(){
+			var data,obj,countDown;
+			//在倒计时结束之后，才可再次点击
+			if(flag){
+				return ;
+			}
+			flag = true;
+			countDown = 60;
+			obj = $(this);
+
+			var phoneVal =$("#phone").val();
+			if((checkPhoneInput($("#phone")))){
+				return true;
+			}
+
+			$("#errorMsg").html(" ");
+			var codeAjax = new BaseAjax();
+			codeAjax.opts.url = User_Env.FindPwd_SendSmsCode_URL;
+			codeAjax.opts.data = {'mobile':phoneVal};
+			codeAjax.opts.contentType = "application/json";
+			codeAjax.opts.type = "GET";
+			codeAjax.opts.async = false;  //同步方法
+			codeAjax.opts.successFun = function(result){
+				if(result.flag){
+					obj.css('background','#cccccc');
+					obj.val(''+countDown + '秒后重新发送');
+					var countDownFun = function(){
+						if(countDown > 0){
+							obj.val(''+countDown + '秒后重新发送');
+							countDown--;
+						}else{
+							obj.css('background','#97c7ef');
+							obj.val('获取手机验证码');
+							clearInterval(sendCode);
+							countDown = 60;
+							flag = false;
+						}
+					};
+					var sendCode = setInterval(countDownFun,1000);
+				}else{
+					$("#errorMsg").html(result.msg);
+					flag = false;
+				}
+			};
+			codeAjax.opts.errorFun = function(){
+				flag = false;
+				$("#errorMsg").html("获取验证码失败");
+			};
+			codeAjax.run();
+		});
+
+		/**
+		 *验证码通过后进行下一步操作
+ 		*/
+		var phoneVal,codeVal;
+		$("#next").on("click",function(){
+			//手机号及验证码验证
+			if(checkPhoneInput($("#phone"))){
+				return ;
+			}else if(checkVerifyCode($('#verifCode'))){
+				return ;
+			}
+			phoneVal = $("#phone").val();
+			codeVal = $("#verifCode").val();
+			var registerEntity = {};
+			registerEntity.phone =  $("#phone").val();
+			registerEntity.verifCode = $("#verifCode").val();
+			//手机号及验证码校验,判断手机号与验证码是否匹配
+			var phoneAjax = new BaseAjax();
+			phoneAjax.opts.url = User_Env.ReSetPwd_CheckPhoneCode_URL;
+			phoneAjax.opts.data = registerEntity;
+			phoneAjax.opts.contentType = "application/json";
+			phoneAjax.opts.type = "GET";
+			phoneAjax.opts.async = false;  //同步方法
+			phoneAjax.opts.successFun = function(result){
+				if(result.flag){
+					$("#vailCode").hide();
+					$("#resetPwd").show();
+				}
+				else{
+					$("#errorMsg").html(result.msg);
+				}
+			}
+			phoneAjax.opts.errorFun = function(){
+				$("#errorMsg").html("系统错误,验证失败");
+			};
+			phoneAjax.run();
+		})
+		/**
+		 * 修改密码
+		 * @version <1> 2018-01-09 cxw : created.
+		 */
+		submitBtn.onclick = function(){
+			//注册提交验证
+			 if(checkPasswordInput($("#pwd"))){
+				return ;
+			}else if(checkReplyPasswordInput($("#confirmPwd"),$("#pwd"))){
+				return ;
+			}
+			var registerEntity = {};
+			registerEntity.accountPwd = base64.encode($("#pwd").val());
+			registerEntity.accountName = phoneVal;
+			registerEntity.smsVerifCode =  $("#verifCode").val();
+
+
+			console.log(registerEntity)
+
+			var resetpwdAjax = new BaseAjax();
+			resetpwdAjax.opts.url = User_Env.ReSetPwd_URL;
+			resetpwdAjax.opts.data = JSON.stringify(registerEntity);
+			resetpwdAjax.opts.contentType = "application/json";
+			resetpwdAjax.opts.type = "POST";
+			resetpwdAjax.opts.async = false;  //同步方法
+			resetpwdAjax.opts.successFun = function(result){
+				if(result.flag){
+					JHModule.CookieUtil.setCookie("registerPhone",registerEntity.accountName);
+					window.location.href = "resetPwdSuccess.html";
+				}else{
+					$("#errorMsg").html(result.msg);
+				}
+			}
+			resetpwdAjax.opts.errorFun = function(){
+				$("#errorMsg").html("修改密码失败");
+			};
+			resetpwdAjax.run();
+		}
+
+		/*
+		 *表单失去焦点事件，对表单项进行验证
+		 *@version <1> 2017-11-29 lcw : created.
+		 */
+		//手机号码输入框失去焦点事件
+		$('#phone').on('blur',function(){
+			var obj = $(this);
+			checkPhoneInput(obj);
+		});
+		//密码输入框失去焦点事件
+		// $('#pwd').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkPasswordInput(obj);
+		// });
+		//重复密码输入框失去焦点事件
+		// $('#confirmPwd').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkReplyPasswordInput(obj,$('#pwd'));
+		// });
+		//验证码输入框失去焦点事件
+		// $('#verifCode').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkVerifyCode(obj);
+		// });
+
+
+		/*
+		 *显示提示内容
+		 * @param msg
+		 * @version <1> 2017-11-29 lcw :created.
+		 */
+		var getHtml = function(msg){
+			return '<div class="d3"><span class="s3">*</span><span>' + msg + '</span></div>';
+		};
+
+		/*
+		 *清除错误信息
+		 * @param obj
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var clearErrorInfo = function(obj){
+			if(obj.parent().find('.d3').length != 0){
+				obj.parent().find('.d3').remove();
+			}
+		};
+
+		/*
+		 *清除错误信息
+		 * @param obj
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var clearErrorMsg = function(){
+			$("#errorMsg").html(" ");
+		};
+
+
+		/*
+		 *检验验证码输入
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkVerifyCode = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('手机验证码不能为空'));
+				$("#errorMsg").html("手机验证码不能为空");
+				return true;
+			}
+			return false;
+		};
+
+
+		/*
+		 *检验手机号码输入
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPhoneInput = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('手机号码不能为空'));
+				$("#errorMsg").html("手机号码不能为空");
+				return true;
+			}else if(!formVerfication.isPhone(obj.val())){
+				//obj.parent().append(getHtml('手机号码格式不正确'));
+				$("#errorMsg").html("手机号码格式不正确");
+				return true;
+			}
+			return false;
+		};
+
+		/*
+		 *密码验证
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPasswordInput = function(obj){
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('密码不能为空'));
+				$("#errorMsg").html("密码不能为空");
+				return true;
+			}else if(!formVerfication.isScopeLength(obj.val(),6,20)){
+				//obj.parent().append(getHtml('密码长度在6-20位'));
+				$("#errorMsg").html("密码长度在6-20位");
+				return true;
+			}
+			return false;
+		};
+
+		/*
+		 * 邮箱格式验证，允许邮箱为空
+		 * @param obj
+		 * @returns {boolean}
+		 * @version <1> 2017-11-29 lcw: created.
+		 */
+		var checkEmailInput = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				$("#errorMsg").html("邮箱不能为空");
+				return true;
+			}else if(!formVerfication.isEmail(obj.val())){
+				//obj.parent().append(getHtml("邮箱格式不正确"));
+				$("#errorMsg").html("邮箱格式不正确");
+				return true;
+			}
+			return false;
+		}
+
+		/*
+		 *确认密码验证
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkReplyPasswordInput = function(obj,objTo){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('重复密码不能为空'));
+				$("#errorMsg").html("重复密码不能为空");
+				return true;
+			}else if(!formVerfication.isScopeLength(obj.val(),6,20)){
+				//obj.parent().append(getHtml('重复密码长度在6-20位'));
+				$("#errorMsg").html("重复密码长度在6-20位");
+				return true;
+			}else if(!formVerfication.isPasswordTo(obj.val(),objTo.val())){
+				//obj.parent().append(getHtml('密码输入不一致'));
+				$("#errorMsg").html("密码输入不一致");
+				return true;
+			}
+			return false;
+		};
+	})
+
+</script>
+</html>

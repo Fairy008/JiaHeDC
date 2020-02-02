@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.collection.mapping.CollectionTemplateMapper">
+  <resultMap id="BaseResultMap" type="com.jh.collection.entity.CollectionTemplate">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="crop_id" jdbcType="INTEGER" property="cropId" />
+    <result column="template_type" jdbcType="INTEGER" property="templateType" />
+    <result column="purpose" jdbcType="VARCHAR" property="purpose" />
+    <result column="workplace" jdbcType="VARCHAR" property="workplace" />
+    <result column="template_content" jdbcType="VARCHAR" property="templateContent" />
+    <result column="encrypt" jdbcType="VARCHAR" property="encrypt" />
+    <result column="space_type" jdbcType="CHAR" property="spaceType" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="createor" jdbcType="VARCHAR" property="createor" />
+    <result column="updateor" jdbcType="VARCHAR" property="updateor" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="template_flag" jdbcType="INTEGER" property="templateFlag" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, phone, template_name, crop_id, template_type, purpose, workplace,template_content, encrypt,
+    space_type, create_time, update_time, createor, updateor, remark, del_flag ,template_flag
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collection_template
+    where id = #{id,jdbcType=INTEGER} and del_flag = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collection_template
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jh.collection.entity.CollectionTemplate">
+    insert into collection_template (phone, template_name,
+      crop_id, template_type, purpose, 
+      workplace, template_content,encrypt, space_type,
+      create_time, update_time, createor, 
+      updateor, remark, del_flag,template_flag
+      )
+    values ( #{phone,jdbcType=VARCHAR}, #{templateName,jdbcType=VARCHAR},
+      #{cropId,jdbcType=INTEGER}, #{templateType,jdbcType=INTEGER}, #{purpose,jdbcType=VARCHAR}, 
+      #{workplace,jdbcType=VARCHAR}, #{templateContent,jdbcType=VARCHAR},#{encrypt,jdbcType=VARCHAR}, #{spaceType,jdbcType=CHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createor,jdbcType=VARCHAR}, 
+      #{updateor,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER}, #{templateFlag,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jh.collection.entity.CollectionTemplate">
+    insert into collection_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="templateName != null">
+        template_name,
+      </if>
+      <if test="cropId != null">
+        crop_id,
+      </if>
+      <if test="templateType != null">
+        template_type,
+      </if>
+      <if test="purpose != null">
+        purpose,
+      </if>
+      <if test="workplace != null">
+        workplace,
+      </if>
+      <if test="templateContent != null">
+        template_content,
+      </if>
+      <if test="encrypt != null">
+        encrypt,
+      </if>
+      <if test="spaceType != null">
+        space_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createor != null">
+        createor,
+      </if>
+      <if test="updateor != null">
+        updateor,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="templateFlag != null">
+        template_flag
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="templateName != null">
+        #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropId != null">
+        #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="templateType != null">
+        #{templateType,jdbcType=INTEGER},
+      </if>
+      <if test="purpose != null">
+        #{purpose,jdbcType=VARCHAR},
+      </if>
+      <if test="workplace != null">
+        #{workplace,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="encrypt != null">
+        #{encrypt,jdbcType=VARCHAR},
+      </if>
+      <if test="spaceType != null">
+        #{spaceType,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createor != null">
+        #{createor,jdbcType=VARCHAR},
+      </if>
+      <if test="updateor != null">
+        #{updateor,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="templateFlag != null">
+        #{templateFlag,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jh.collection.entity.CollectionTemplate">
+    update collection_template
+    <set>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="templateName != null">
+        template_name = #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropId != null">
+        crop_id = #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="templateType != null">
+        template_type = #{templateType,jdbcType=INTEGER},
+      </if>
+      <if test="purpose != null">
+        purpose = #{purpose,jdbcType=VARCHAR},
+      </if>
+      <if test="workplace != null">
+        workplace = #{workplace,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        template_content = #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="encrypt != null">
+        encrypt = #{encrypt,jdbcType=VARCHAR},
+      </if>
+      <if test="spaceType != null">
+        space_type = #{spaceType,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createor != null">
+        createor = #{createor,jdbcType=VARCHAR},
+      </if>
+      <if test="updateor != null">
+        updateor = #{updateor,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="templateFlag != null">
+        template_flag = #{templateFlag,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jh.collection.entity.CollectionTemplate">
+    update collection_template
+    set phone = #{phone,jdbcType=VARCHAR},
+      template_name = #{templateName,jdbcType=VARCHAR},
+      crop_id = #{cropId,jdbcType=INTEGER},
+      template_type = #{templateType,jdbcType=INTEGER},
+      purpose = #{purpose,jdbcType=VARCHAR},
+      workplace = #{workplace,jdbcType=VARCHAR},
+      template_content = #{templateContent,jdbcType=VARCHAR},
+      encrypt = #{encrypt,jdbcType=VARCHAR},
+      space_type = #{spaceType,jdbcType=CHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      createor = #{createor,jdbcType=VARCHAR},
+      updateor = #{updateor,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=INTEGER},
+      template_flag = #{templateFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--分页查询-->
+  <select id="findByPage" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM collection_template
+    where del_flag = 1
+    <if test="templateName!=null and templateName !=''">
+      AND template_name = #{templateName}
+    </if>
+    <if test="cropId!=null and cropId !=''">
+      AND crop_id = #{cropId}
+    </if>
+    <if test="templateType!=null and templateType !=''">
+      AND template_type = #{templateType}
+    </if>
+    <if test="phone!=null and phone !=''">
+      AND phone = #{phone}
+    </if>
+    <if test="startCreateTime != null and startCreateTime != '' and endCreateTime != null and endCreateTime != ''">
+      AND to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startCreateTime} as VARCHAR) and cast(#{endCreateTime} as VARCHAR)
+    </if>
+    <if test="queryFlag ==null or queryFlag ==''">
+      OR (template_flag = 1 AND del_flag = 1)
+    </if>
+    order by
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord},id desc
+      </when>
+      <otherwise>
+        template_flag asc,create_time desc,id desc
+      </otherwise>
+    </choose>
+  </select>
+  <select id="findUniqueByProperty" resultMap="BaseResultMap">
+    select * FROM collection_template  where encrypt = #{value}
+  </select>
+</mapper>

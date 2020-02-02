@@ -1,0 +1,588 @@
+<style type="text/css">
+
+    .roleShowName{text-overflow: ellipsis;white-space:nowrap;overflow: hidden;width:130px;display: inline-block;}
+    #userInfo #view_address{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    #roleDialog input[type=checkbox]{margin-right:8px;position: relative;top:8px;vertical-align: top;}
+
+    .file>div{text-align: center;}
+    .file>div:nth-child(-1n + 4){width: calc((100% - 50%) /4);}
+    .file>div:nth-child(5){width: 25%;}
+    .file>div:nth-child(n + 6){width: calc(25% / 3);}
+    .file input,.file select{width: 80%;}
+    #dataProduct_list h3{margin-top:10px;font-weight: normal !important;text-align: center;}
+    #dataProduct_list{margin-bottom:10px;}
+    #addDataProduct{cursor: pointer;margin-top:-2px;padding-left:5px;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">姓名：</span>
+                    <span><input type="text" class="input" id="search_personName" /></span>
+                </div>
+                <div>
+                    <span class="label2">账号：</span>
+                    <span><input type="text" class="input" id="search_accountName" /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <!--<input name="Input" type="button" class="btn " id="addBtn" value="批量分配权限" />-->
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <table id="userGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="productDialog" class="dialogStyle" >
+        <div class="file">
+            <div><input id = "txtArea" class="input" type="text" placeholder="请选择区域" readonly/></div>
+            <div><select id="dataSet"></select></div>
+            <div><select id="resolution"></select></div>
+            <div><select id = "cropList"></select></div>
+            <div><input type="text" class="input" id="dataTime" placeholder="请选择日期" readonly/></div>
+            <div><select id="id_productType"><option value="2">自定义</option></select></div>
+            <div style="cursor: pointer;width: 15px !important; line-height: 25px; margin-left: 15px;"><input type="checkbox" name="defaultShowTitle" id="defaultShow" style="cursor: pointer;width: auto!important;" title="是否默认显示" ></div>
+            <div style="cursor: pointer;width: auto !important;">默认显示</div>
+            <img src='images/public/addCondition.png' id="addDataProduct">
+        </div>
+        <div class='file_title file' style="margin-top: 10px">
+            <div style='text-align: center;'>区域</div>
+            <div>数据集</div>
+            <div>精度</div>
+            <div>作物</div>
+            <div>日期</div>
+            <div>产品类型</div>
+            <div>是否默认显示</div>
+            <div>操作</div>
+        </div>
+        <div class="dataProduct_list" id="dataProduct_list"></div>
+    </div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons",'RegionModule'],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule){
+            var init = function(){
+                initDictFun(1800, "dataSet");//初始化数据集下拉框
+                initDictFun(4000, "resolution");//初始化精度下拉框
+                initDictFun(500, "cropList");//初始化作物下拉框
+                userGrid();
+                initPersonTypeCacheFun(1700);//用户类型
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+                $(window).resize(function(){
+                    $("#userGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 初始化日期控件
+             * @version<1> 2018-05-03 lcw :Created.
+             */
+            var dateFun = function(){
+                $("#dataTime").jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+            /**
+             * 数据集改变事件
+             * @version <1> 2018-07-25 cxw : created.
+             */
+            var dataSetChange = function () {
+                var dataSetId =   $('#dataSet').val();
+                if(dataSetId==1805||dataSetId==1804||dataSetId==1806){
+                    var str = "<option value='-1'>--请选择作物--</option>";
+                    $('#cropList').html(str);
+                    $("#cropList").attr('disabled','disabled');
+                }
+                else{
+                    initDictFun(500, "cropList");//初始化作物下拉框
+                    $("#cropList").removeAttr("disabled");
+                }
+            }
+
+            /**
+             * 区域选择控件
+             * @param regionIdName 区域ID
+             * @version <1> 2018-05-15 zhangshen : created.
+             */
+            var regionSelectFun = function(regionIdName){
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400};
+                    opts.url =REGION_CONFIG.findRegion_url;
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                    regionSelector.show();
+                }
+                return true;
+            }
+
+            /**
+             * 关闭区域选择控件
+             * @param regionIdName 区域ID
+             * @version <1> 2018-06-20 cxw : created.
+             */
+            var regionCloseFun = function(regionIdName) {
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function () {
+                    var opts = {colNum: 3, width: 400};
+                    opts.url = REGION_CONFIG.findRegion_url;
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName, opts);
+                    regionSelector.closeRegion();
+                    return true;
+                }
+            }
+
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+            }
+
+            /**
+             * 加载数据集数据
+             * @version <1> 2018-06-07 xzg : created.
+             */
+            var initDictFun = function(parentId, id){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var selectDefaultVal = "请选择";
+                    switch(parentId) {
+                        case 500:selectDefaultVal = "请选择作物";
+                            break;
+                        case 4000:selectDefaultVal = "请选择分辨率";
+                            break;
+                        case 1800:selectDefaultVal = "请选择数据集";
+                            break;
+                    }
+                    var str = "<option value='-1'>--"+selectDefaultVal+"--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        $("#"+id).html("");//清空
+                        $("#"+id).append(str);
+                    }
+                }
+                ajax.run();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#userGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+
+            var userGrid = function(){
+                $("#userGrid").jqGrid({
+                    url: USER_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData:{
+                        'personParam' : {}
+                    },
+                    mtype:'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['personId','accountId','账号','姓名', '昵称', '用户类型','状态','操作'],
+                    colModel:[
+                        {name:'personId',index:'personId', hidden:true},
+                        {name:'accountId',index:'accountId', hidden:true},
+                        {name:'mobile',index:'mobile',align:'center', width:'10%'},
+                        {name:'personName',index:'person_name',align:'center', width:'10%', sortable:false},
+                        {name:'nickName',index:'nickName',align:'center', width:'10%', sortable:false},
+                        {name:'personType',index:'personType', width:'15%',align:'center', sortable:false,formatter:function(cellvalue ,options, rowObject){
+                            var len = personTypeCache.length;
+                            for(i = 0;i < len;i++){
+                                if(personTypeCache[i].dictId == cellvalue){
+                                    return personTypeCache[i].dataName;
+                                }
+                            }
+                            return "";
+                        }},
+                        {name:'dataStatus',index:'dataStatus', width:'15%',align:'center', sortable:false,formatter:function(cellvalue ,options, rowObject){
+                            var value = "";
+                            if(cellvalue == '1'){
+                                value = "<span class='statusStyle'>正常</span>";
+                            }else{
+                                value = "<span class='statusStyle'>禁用</span>";
+                            }
+                            return value;
+                        }},
+
+                        {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            /*  var personType = rowObject.personType;
+                          if(personType == "1702" || personType == "" || personType == null ){
+                                return "<img src='images/public/TrelevanceG.png'  title='禁止配置数据权限' >";
+                            }
+                            else{
+                                return "<img src='images/public/Trelevance.png' class='relateProduct' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' title='配置数据权限' >";
+                            }*/
+                            return "<img src='images/public/Trelevance.png' class='relateProduct' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' title='配置数据权限' >";
+
+                        }}
+                    ],
+                    width:'100%',
+                    autowidth:true,
+                    height:'100%',
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager2',
+                    sortname: 'person_id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function(){
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#userGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2017-12-26 lcw : Created.
+             */
+            var globalAccountId = '';
+            var tableEvent = function(){
+                $(".relateProduct").off("click");
+
+                //分配数据权限事件
+                $('.relateProduct').on('click',function () {
+                    globalAccountId = $(this).attr("account-id");
+                    showProductDialog();
+                });
+            };
+
+            /**
+             * 用户数据权限分配
+             */
+            var showProductDialog = function() {
+                //绑定事件
+                $('#addDataProduct').on('click',addDataProductFun);
+                $('.delDataProduct').live('click',deleteDataProductClickFun);
+                $('.product_defaultShow').live('click',settingDefaultShow);
+                var dSet = document.getElementById('dataSet');
+                dSet.onchange = dataSetChange;
+                //高度和宽度是适应
+                var width = $(document.body).width() * 0.7;
+                var height = ($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50;
+                var productDialog = $('#productDialog');
+                var dialogParent = productDialog.parent();
+                var dialogOwn = productDialog.clone();
+                productDialog.dialog({
+                    autoOpen: false,
+                    title:'分配数据权限',
+                    height: height,
+                    width: width,
+                    minWidth:800,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:[{
+                        text:"关闭",
+                        click:function(){
+                            globalAccountId = '';//清空选择的用户
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+
+
+                regionSelectFun("txtArea");//加载区域,
+                regionCloseFun("dataTime");//关闭区域,
+                dateFun();//初始化日期控件
+                loadDataProduct();
+                productDialog.dialog("open");
+            };
+
+
+            /**
+             *  加载用户的数据权限
+             */
+            var loadDataProduct = function(){
+                var obj = $('#dataProduct_list');
+                var param = {};
+                param['accountId']=globalAccountId;
+                var ajax = new BaseAjax();
+                ajax.opts.url = DATA_PRODUCT.find_dataProduct;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify(param);
+
+                ajax.opts.successFun = function(result){
+                    var dataProductList = ' ';
+                    if(result.flag){
+                        var data = result.data;
+                        if(data.length>0) {
+                            $(data).each(function (i,d) {
+                                var productTypeName = '--';
+                                switch (d.productType){
+                                    case 1 :productTypeName = '默认产品权限';break;
+                                    case 2 :productTypeName = '自定义产品权限';break;
+                                }
+                                d.productTypeName = productTypeName;
+                                dataProductList += createDataProductHtml(d);
+                            });
+                        } else {
+                            dataProductList += "<h3>没有分配数据权限</h3>";
+                        }
+                    } else {
+                        dataProductList += "<h3>数据权限查询失败</h3>";
+                    }
+
+                    obj.html(dataProductList)
+                };
+                ajax.run();
+            };
+
+            var createDataProductHtml = function (product) {
+                var productTypeName = '--';
+
+                switch ("" + product.productType){
+                    case '1' :productTypeName = '默认';break;
+                    case '2' :productTypeName = '自定义';break;
+                }
+                product.productTypeName = productTypeName;
+                if(!product.cropName){
+                    product.cropName = '--';
+                }
+
+                product.isChecked = product.defaultShow ? 'checked' : '';
+
+                var html = ("<div class='file' product_id = '{productId}'><div title='{chinaName}'>{chinaName}</div><div title='{datasetName}'>{datasetName}</div>" +
+                "<div title='{accuracyName}'>{accuracyName}</div><div title='{cropName}'>{cropName}</div><div>{startDate}至{endDate}</div>" +
+                "<div title='{productTypeName}'>{productTypeName}</div><div><input type='radio' name='defaultShow' class='product_defaultShow' {isChecked}></div>" +
+                "<div><img src='images/public/delete.png' class='delDataProduct' product_id = '{productId}' account_id='{accountId}'></div></div>").format(product);
+                return html;
+            }
+
+
+            /**
+             *  添加数据权限
+             */
+            var addDataProductFun = function () {
+                var regionId = $("#txtArea").attr("regionid") || '';
+                var datasetId = $('#dataSet').val();
+                var accuracyId = $('#resolution').val();
+                var cropId = $('#cropList').val();
+                var defaultShow = document.getElementById('defaultShow').checked;
+                var startDate =  (($("#dataTime").val().trim()).split('至')) [0] || '';
+                var endDate = (($("#dataTime").val().trim()).split('至')) [1] || '';
+                var productTypeValue = $("#id_productType").val();
+
+                if (!globalAccountId ){
+                    PopWin.showMessageWin("请先确认该用户是否存在");
+                    return false;
+                }
+                if (!regionId ){
+                    PopWin.showMessageWin("请选择区域");
+                    return false;
+                }
+                if (datasetId == -1){
+                    PopWin.showMessageWin("请选择数据集");
+                    return false;
+                }
+                if ( accuracyId == -1 ){
+                    PopWin.showMessageWin("请选择精度");
+                    return false;
+                }
+                if (cropId == -1 && (datasetId == 1801 || datasetId == 1802 || datasetId == 1803 ) ){
+                    PopWin.showMessageWin("请选择作物");
+                    return false;
+                }
+                if (!startDate|| !endDate ){
+                    PopWin.showMessageWin("请选择日期");
+                    return false;
+                }
+                if ( !productTypeValue){
+                    PopWin.showMessageWin("请选择产品");
+                    return false;
+                }
+
+                var chinaName = $("#txtArea").attr("chinaname");
+                var datasetName = $("#dataSet option:selected").text();
+                var accuracyName = $("#resolution option:selected").text();
+                var cropName = '--';
+                if(cropId != -1){
+                    cropName = $("#cropList option:selected").text();
+                } else {
+                    cropId = '';
+                }
+                var param = {
+                    'regionId':regionId,
+                    'datasetId':datasetId,
+                    'accuracyId':accuracyId,
+                    'cropId':cropId,
+                    'defaultShow':defaultShow,
+                    'startDate':startDate,
+                    'endDate':endDate,
+                    'chinaName':chinaName,
+                    'datasetName':datasetName,
+                    'accuracyName':accuracyName,
+                    'cropName':cropName,
+                    'accountId':globalAccountId,
+                    'productType':productTypeValue
+                };
+                var ajax = new BaseAjax();
+                ajax.opts.url = DATA_PRODUCT.add_dataProduct;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify(param);
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        param.productId = result.data.productId;
+                        $('#dataProduct_list').prepend(createDataProductHtml(param));
+                        $('#dataProduct_list h3').remove();//移除提示信息
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             *  删除数据权限单击事件
+             */
+            var deleteDataProductClickFun = function (evn) {
+                var productId = $(this).attr("product_id");
+                var param = {
+                    'productId':productId,
+                    'accountId':globalAccountId
+                };
+                var ajax = new BaseAjax();
+                ajax.opts.url = DATA_PRODUCT.del_dataProduct;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify(param);
+
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        $(evn.currentTarget).parent().parent().remove();
+                        if($('#dataProduct_list').children().length == 0){
+                            $('#dataProduct_list').html('<h3>没有分配数据权限</h3>');
+                        }
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             *  设置默认数据权限
+             */
+            var settingDefaultShow = function (evn) {
+                var productId = $(this).parent().parent().attr("product_id");
+                var param = {
+                    'productId':productId,
+                    'accountId':globalAccountId
+                };
+                var ajax = new BaseAjax();
+                ajax.opts.url = DATA_PRODUCT.setting_defaultShow;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify(param);
+
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        PopWin.showMessageWin("默认权限设置成功");
+                    } else {
+                        PopWin.showMessageWin("默认权限设置失败");
+                    }
+                };
+                ajax.run();
+            };
+
+            var searchFun = function(){
+                var personName = $("#search_personName").val().trim();
+                var accountName = $("#search_accountName").val().trim();
+
+                var param = {};
+                param.personName = personName;
+                param.accountName = accountName;
+                $("#userGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            }
+
+
+            //用户类型
+            var personTypeCache = [];
+            /**
+             * 获取用户类型下拉框数据
+             * @param parentId = 1700
+             * @version <1> 2018-03-15 wl : created.
+             */
+            var initPersonTypeCacheFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        personTypeCache = result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        });
+                        $("#personType").append(str);
+
+                    }
+                }
+                ajax.run();
+            }
+
+            init();
+        });
+
+        //字符串模板生成
+        String.prototype.format = function() {
+            if (arguments.length == 0) return this;
+            var param = arguments[0];
+            var s = this;
+            if (typeof(param) == 'object') {
+                for (var key in param)
+                    s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+                return s;
+            } else {
+                for (var i = 0; i < arguments.length; i++)
+                    s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+                return s;
+            }
+        }
+
+
+    </script>
+
+</div>

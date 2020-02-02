@@ -1,0 +1,631 @@
+<style type="text/css">
+    *{margin:0;padding:0;}
+    #treeDialog{padding:.5em 0em;}
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div >
+                    <span class="label">角色编码：</span>
+                    <span><input type="text" class="input" id="search_roleCode" /></span>
+                </div>
+                <div >
+                    <span class="label">角色名称：</span>
+                    <span><input type="text" class="input" id="search_roleName" /></span>
+                </div>
+                <div >
+                    <span class="label">所属工程：</span>
+                    <span>
+                        <select id="search_roleType" name="search_roleType"  class="input" style="width:120px;text-align:center;">
+                            <option value="">--请选择--</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input name="Input" type="button" class="btn" id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="roleGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div class="form" id="roleInfo" style="display:none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>所属工程:</td>
+                <td class="two_td2" >
+
+                    <select id="roleType" name="roleType" class="selectType two_selectType">
+                    </select>
+                    <span id="view_roleType" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>角色编码:</td>
+                <td class="two_td2">
+                    <input name="roleCode" id="roleCode"  class="inputType" type="text" />
+                    <span id="view_roleCode" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>角色名称:</td>
+                <td class="two_td2" >
+                    <input type="text" class="inputType" name="roleName" id="roleName">
+                    <span id="view_roleName" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">订单文件阈值:</td>
+                <td class="two_td2" >
+                    <input type="text" class="inputType" name="orderFileNum" id="orderFileNum">
+                    <span id="view_orderFileNum" class="viewType"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="two_td1">角色描述:</td>
+                <td class="two_td2" >
+                    <textarea cols="38" class="textareaType" rows="4"  name="remark" id="remark"></textarea>
+                    <!--<span id="view_remark" class="viewType"></span>-->
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="delDialog"  style="margin-top: 10px;display:none;">
+        是否确认删除所选记录？
+    </div>
+    <div id="treeDialog">
+        <ul id="tree" class="ztree" style="margin-top:0; "></ul>
+    </div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","ztree", "formVerfication","PopWin","commons","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,ztree,formVerfication,PopWin,commons,enums){
+            var init = function(){
+                roleGrid();
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+               initroleTypeCacheFun(system_role_group.system_role_group); //初始化用户组
+
+                $(window).resize(function(){
+                    $("#roleGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+            }
+
+            var chanageTableCss = function(){
+                var divObj = $('#roleGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+            var roleGrid = function(){
+                $("#roleGrid").jqGrid({
+                    url: ROLE_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData:{
+                        'personParam' : {
+                        }
+                    },
+                    jsonReader: {
+
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['roleId','角色编码', '角色名称','所属工程','订单文件阈值','角色描述','操作'],
+                    colModel:[
+                        {name:'roleId',index:'roleId', hidden:true},
+                        {name:'roleCode',index:'roleCode', width:'15%',align:"center", sortable:false},
+                        {name:'roleName',index:'roleName', width:'18%',align:"center", sortable:false},
+                        {name:'roleType',index:'roleType', width:'18%',align:"center", sortable:false,formatter:function(cellvalue,options, rowObject){
+                                for(var i = 0 ; i < roleTypeCache.length ; i++){
+                                    if(roleTypeCache[i].dictId == cellvalue){
+                                        return roleTypeCache[i].dataName;
+                                    }
+                                }
+                                return "";
+                            }},
+                        {name:'orderFileNum',index:'orderFileNum', width:'10%',align:"center", sortable:false},
+                        {name:'remark',index:'remark', width:'25%',align:"center", sortable:false},
+
+                        {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.roleId +"' title='编辑' >" +
+                                    "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.roleId +"' title='查看' >" +
+                                    "<img src='images/public/Trelevance.png' class='linkBtn' data-id='"+ rowObject.roleId +"' title='关联权限' >";
+                            return str;
+                        }}
+                    ],
+                    autowidth:true,
+                    height:'100%',
+                    autoheight:true,
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager2',
+                    sortname: 'role_id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function () {
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#roleGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2017-12-26 lcw : Created.
+             */
+            var tableEvent = function(){
+                $(".editBtn,.linkBtn,.seeBtn").off("click");
+                $(".editBtn").on("click",function(){
+                    editFun($(this).attr("data-id"));
+                })
+                $(".linkBtn").on("click",function(){
+                    relateFun($(this).attr("data-id"));
+                })
+                $(".seeBtn").on("click",function(){
+                    showFun($(this).attr("data-id"));
+                })
+            }
+            var searchFun = function(){
+                var roleCode = $("#search_roleCode").val();
+                var roleName = $("#search_roleName").val();
+//                var roleType = $("#search_roleType").val();
+                var param = {};
+                param.roleCode = roleCode;
+                param.roleName = roleName;
+//                param.roleType = roleType;
+                $("#roleGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            }
+
+            /**
+             * 角色新增
+             * 注意：jQuery ui 的dialog 缓存问题，此处解决方式是先销毁并移除DOM，再添加DOM
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var addFun = function(){
+                $(".inputType2,.inputType,.label,.textareaType").val("");
+                $("#roleCode").attr("disabled", false);
+                showDialog(1);
+            };
+
+            /**
+             * 角色修改
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var editFun = function(id){
+                var ajax = new BaseAjax();
+                ajax.opts.url = ROLE_CONFIG.getById_url + "?roleId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    $("#roleCode").attr("disabled", "disabled");
+                    $("#roleCode").val(result.data.roleCode);
+                    $("#roleName").val(result.data.roleName);
+                    $("#remark").val(result.data.remark);
+                    $("#orderFileNum").val(result.data.orderFileNum)
+
+                   $("#roleType").val(result.data.roleType);
+                    showDialog(2, id);
+                };
+                ajax.run();
+            };
+
+            /**
+             * 删除角色信息
+             * @param id  : 角色信息行的主键ID
+             * @version<1> 2017-12-16 lcw: created.
+             */
+            var deleteFun= function(id){
+                var delDialog = $("#delDialog");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title:'系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons:[{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = ROLE_CONFIG.del_url + "?roleId=" + id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun=function(result){
+                                if(result.flag){
+                                    $("#roleGrid").trigger("reloadGrid");
+                                    delDialog.dialog("destroy");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                }else{
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function(){
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("destroy");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 查看角色信息
+             * @param id :角色主键ID
+             * @version <1> 2017-12-16 lcw: created.
+             */
+            var showFun = function(id){
+                var ajax = new BaseAjax();
+                ajax.opts.url = ROLE_CONFIG.getById_url + "?roleId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    viewTypeShow();
+                    $("#view_roleCode").html(result.data.roleCode);
+                    $("#view_roleName").html(result.data.roleName);
+                    $("#view_roleName").attr("title",result.data.roleName);
+                    $("#view_orderFileNum").html(result.data.orderFileNum);
+//                    $("#view_remark").html(result.data.remark);
+
+                    $("#remark").val(result.data.remark);
+//                    for(var i = 0 ; i < roleTypeCache.length ; i++){
+//                        if(roleTypeCache[i].dictId == result.data.roleType){
+//                            $("#view_roleType").html(roleTypeCache[i].dataName);
+//                            break;
+//                        }
+//                    }
+                    showDialog(3);
+                };
+                ajax.run();
+            };
+
+            var relateFun = function(id){
+                var setting = {
+                    check: {
+                        enable: true,
+                        chkboxType: {"Y":"ps", "N":"ps"}
+                    },
+                    view: {
+                        dblClickExpand: false
+                    },
+                    data: {
+                        simpleData: {
+                            enable: true
+                        }
+                    },
+                    callback: {
+                    }
+                };
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = ROLE_CONFIG.findAll_url + "?roleId="+ id ;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        var zNodes = [];
+                        //初始化树形列表
+                        $.each(result.data, function(index, element){
+                            var row = {};
+                            row.id= element.resId;
+                            row.pId = element.parentId;
+                            row.name = element.resName;
+                            if(element.roleId != null && element.roleId != ""){
+                                row.checked = true;
+                            }
+                            zNodes.push(row);
+                        });
+                        $.fn.zTree.init($("#tree"), setting, zNodes);
+                        //默认初始化展开第一级菜单
+                        var zTree = $.fn.zTree.getZTreeObj("tree");
+                        var nodes = zTree.getNodes();
+                        zTree.expandNode(nodes[0], true, false, true);
+
+                        var treeDialog = $("#treeDialog");
+                        treeDialog.dialog({
+                            autoOpen: false,
+                            title:'权限信息',
+                            height: 400,
+                            width: 270,
+                            modal: true,
+                            buttons:[{
+                                text:"确认",
+                                click:function(){
+                                    var arr = [];
+                                    var zTree = $.fn.zTree.getZTreeObj("tree");
+                                    var nodes = zTree.getCheckedNodes(true);
+                                    $.each(nodes, function(index, element){
+                                        if(element.checked){
+                                            arr.push(element.id);
+                                        }
+                                    })
+
+                                    var param = {};
+                                    param.roleId = id;
+                                    param.resIds = arr;
+                                    var ajax2 = new BaseAjax();
+                                    ajax2.opts.url = ROLE_CONFIG.relateResource_url;
+                                    ajax2.opts.contentType = "application/json";
+                                    ajax2.opts.data = JSON.stringify(param);
+                                    ajax2.opts.successFun = function(result){
+                                        if(result.flag){
+                                            PopWin.showMessageWin("权限配置成功");
+                                            treeDialog.dialog("close");
+                                        }else{
+                                            PopWin.showMessageWin("权限配置失败");
+                                        }
+                                    };
+                                    ajax2.run();
+                                }},{
+                                text:"取消",
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }]
+                        });
+                        treeDialog.dialog("open");
+                    }
+                };
+                ajax.run()
+            }
+
+            /**
+             * 弹出框
+             * @param type  : 1 表示新增， 2表示修改， 3表示查看
+             * @param roleId : 新增时为空， 修改时才使用roleId
+             * @version <1> 2017-12-16 lcw: created.
+             */
+            var showDialog = function(type, roleId){
+                var roleDialog =  $("#roleInfo");
+                var dialogParent = roleDialog.parent();
+                var dialogOwn = roleDialog.clone();
+                if(type == 3 ){ //查看
+                    roleDialog.dialog({
+                        autoOpen: false,
+                        title:'角色信息',
+                        height: 320,
+                        width: 490,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[{
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                }else{ //新增和修改
+                    inputTypeShow();
+                    roleDialog.dialog({
+                        autoOpen: false,
+                        title:'角色信息',
+                        height: 320,
+                        width: 490,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[{
+                            text:"保存",
+                            click:function(){
+                                if(type == 1 ){ //新增
+                                    addSaveFun(roleDialog);
+                                }
+                                if(type ==2 ){
+                                    editSaveFun(roleDialog, roleId);
+                                }
+                            }},{
+                            text:"取消",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                }
+                roleDialog.dialog("open");
+            };
+
+            var roleCodeVerf = function(roleInfo,msg){
+                if(formVerfication.checkInputIsEmpty($('#roleCode'),roleInfo,'角色编码不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#roleCode'),roleInfo,msg)){
+                    return false;
+                }
+                if(formVerfication.checkInputLength(1,20,$('#roleCode'),roleInfo,msg)){
+                    return false;
+                }
+                //增加了 判断编码只能是数字，下划线，字母 或者可以包含中划线
+                if(formVerfication.checkInputIsCharDigitalUnderlineMiddleLine($('#roleCode'),roleInfo,msg)){
+                    return false;
+                }
+                return true;
+            }
+
+            var formVerf = function(){
+                var roleInfo = $('#roleInfo');
+
+                if(!roleCodeVerf(roleInfo,'编码为1-20位字母、数字、下划线或中划线组合')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsEmpty($('#roleName'),roleInfo,'角色名称不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputLength(1,30,$('#roleName'),roleInfo,'角色名称字数为1-30个')){
+                    return false;
+                }
+                return true;
+            }
+
+            /**
+             *新增保存
+             *
+             */
+            var addSaveFun = function(roleDialog){
+                if(!formVerf()){
+                    return ;
+                }
+
+                var role = {};
+                role.roleCode = $("#roleCode").val().trim();
+                role.roleName = $("#roleName").val().trim();
+                role.remark = $("#remark").val().trim();
+                role.orderFileNum = $("#orderFileNum").val().trim()
+               role.roleType = $("#roleType").val().trim();
+
+                var checkAjax = new BaseAjax();
+                checkAjax.opts.url = ROLE_CONFIG.checkRoleCode_url;
+                checkAjax.opts.async = false; //同步
+                checkAjax.opts.data = JSON.stringify(role);
+                checkAjax.opts.successFun = function(result){
+                    if(result.flag){
+                        formVerfication.showPromptInfo($('#roleCode'),$('#roleInfo'),'角色编码已存在,不可重复添加')
+                    }
+                    if(!result.flag){
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = ROLE_CONFIG.add_url;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.data = JSON.stringify(role);
+                        ajax.opts.successFun = function(result){
+                            if(result.flag){
+                                $("#roleGrid").trigger("reloadGrid");
+                                roleDialog.dialog("close");
+                                PopWin.showMessageWin("角色新增成功");
+                            }else{
+                                PopWin.showMessageWin("角色新增失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function (result) {
+                            PopWin.showMessageWin("角色新增失败");
+                        };
+                        ajax.run();
+                    }
+                }
+
+                checkAjax.run();
+            };
+
+            /**
+             * 修改保存
+             * @param roleDialog
+             */
+            var editSaveFun = function(roleDialog, id ){
+                if(!formVerf()){
+                    return ;
+                }
+
+                var role = {};
+                role.roleCode = $("#roleCode").val().trim();
+                role.roleName = $("#roleName").val().trim();
+                role.orderFileNum = $("#orderFileNum").val().trim()
+                role.remark = $("#remark").val().trim();
+               role.roleType = $("#roleType").val().trim();
+                role.roleId = id;
+                var ajax = new BaseAjax();
+                ajax.opts.url = ROLE_CONFIG.edit_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify(role);
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        $("#roleGrid").trigger("reloadGrid");
+                        roleDialog.dialog("close");
+                        PopWin.showMessageWin("角色修改成功");
+                    }else{
+                        PopWin.showMessageWin("角色修改失败");
+                    }
+                };
+                ajax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("角色修改失败");
+                };
+                ajax.run();
+            };
+
+            /**
+             * 显示input输入框，隐藏信息查看
+             */
+            var inputTypeShow = function(){
+                $(".txtRequired").show();
+                $(".viewType").css("display","none");
+                $(".inputType2,.inputType, .selectType,.textareaType").css("display","block");
+                $(".textareaType").removeAttr("readonly");
+            };
+
+            /**
+             * 隐藏input输入框，显示信息查看
+             */
+            var viewTypeShow = function(){
+                $(".txtRequired").hide();
+                $(".inputType2,.inputType,.selectType").css("display","none");
+                $(".textareaType").attr("readonly","readonly");
+                $(".viewType").css("display","block");
+            }
+
+
+
+           //角色组
+           var roleTypeCache = [];
+           /**
+            * 获取用户类型下拉框数据
+            * @param parentId = 1700
+            * @version <1> 2018-03-15 wl : created.
+            */
+           var initroleTypeCacheFun = function(parentId){
+               var ajax = new BaseAjax();
+               ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+               ajax.opts.contentType = "application/json";
+               ajax.opts.async = false;
+               ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+               ajax.opts.successFun = function(result){
+                   var str = "";
+                   if(result.flag){
+                       roleTypeCache = result.data;
+                       $.each(result.data, function(index, element){
+                           str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                       })
+                       $("#roleType").append(str);
+                       $("#search_roleType").append(str);
+
+                   }
+               }
+               ajax.run();
+           }
+
+
+            init();
+        });
+    </script>
+</div>

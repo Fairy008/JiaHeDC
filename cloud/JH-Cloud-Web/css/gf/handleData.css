@@ -1,0 +1,41 @@
+.d1{width:1120px;min-height:960px;border:1px solid #ccc;margin:0 auto;box-shadow:0 0 10px #ccc;z-index:10000;background-color:#fff;margin-top:50px;}
+body{background:url(../../images/gf/innerBG.jpg) no-repeat 0 60px;background-size:100%;font-family:"\9ED1\4F53";}
+.d2{float:left;width:480px;}
+.d3{float:left;width:calc(100% - 480px);}
+.d4{width:378px;border:1px solid #ebecec;margin-top:54px;margin-left:60px;border-radius:3px;}
+.l1{color:#373d41;font-weight:bold;font-size:16px;background-color:#f5f5f6;height: 40px;line-height: 40px;padding-left:24px;}
+.t1,.t2{font-size:14px;color:#d2d2d2;height:26px;line-height: 26px;vertical-align: top;}
+.t2{color:#000;text-overflow:ellipsis;overflow: hidden;white-space: nowrap;max-width:380px;}
+.t3,.t11{padding:23px 14px 0 29px;width:60px;}
+.t11{padding-bottom:16px;}
+.t4{padding-top:23px;}
+.t5{padding:0 14px 0 29px;}
+.s1{width:24px;display: inline-block;}
+.s2{width:6px;display: inline-block;}
+.t6{padding-bottom:22px;}
+.t7{max-width:120px;text-overflow:ellipsis;overflow: hidden;white-space: nowrap;font-size:14px;}
+.l2{padding:15px 28px;}
+.s3{color:#d2d2d2;float:left;}
+.i1{width:80px;height:66px;margin-left:100px;}
+.h1{height:1px;border:none;border-top:1px solid #d2d2d2;margin:14px 0;}
+.d6{border:1px solid #cbcbcb;margin-top:54px;border-width:0 0 0 1px;width:490px;padding-left:95px;}
+.t8{border:1px solid #ebecec;width:100%;border-radius:3px;}
+.l3{height:19px;}
+.s5{font-size:14px;}
+.s4,.s8{width:8px;height:8px;border-radius: 50%;-moz-border-radius:50%;-webkit-border-radius:50%;display: inline-block;background-color:#373d41;margin-right:18px;}
+.l4{position: relative;}
+.s6{position: absolute;top:10px;left:-99px;}
+.s7{color:#d2d2d2;float:right;}
+.l5{height:30px;}
+.s8{background-color:#42a7f4;position:relative;top:4px;}
+.i3{cursor:pointer;}
+.i4{width:350px;height:26px;line-height: 26px;outline:none;border-radius:3px;border:1px solid #e7e7e7;padding:0 3px;color:#000;font-size:12px;}
+.t10{height: 40px;}
+.i6{margin-left:75px;margin-right:5px;position: relative;top:2px;}
+.s10{display: inline-block;padding:10px 22px;background-color:#42a7f4;font-size:12px;color:#fff;border-radius: 3px;cursor: pointer;margin-top:20px;}
+.l6{text-align: center;}
+.s11{height:28px;font-size:14px;border-radius: 3px;border:1px solid #e7e7e7;width:350px;outline: none;}
+.s9{font-size:14px;color:#000;}
+.i5{cursor:pointer;position: relative;top:9px;left:425px;}
+#txtArea{margin: 20px 0 20px 28px;width:320px;}
+.selectedFileList td{height:32px;line-height:32px;width:320px;}

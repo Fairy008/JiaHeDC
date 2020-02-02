@@ -1,0 +1,1043 @@
+<style type="text/css">
+
+    .roleShowName{text-overflow: ellipsis;white-space:nowrap;overflow: hidden;width:130px;display: inline-block;}
+    #userInfo #view_address{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    #roleDialog input[type=checkbox]{margin-right:8px;position: relative;top:8px;vertical-align: top;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">姓名：</span>
+                    <span><input type="text" class="input" id="search_personName" /></span>
+                </div>
+                <div>
+                    <span class="label2">账号：</span>
+                    <span><input type="text" class="input" id="search_accountName" /></span>
+                </div>
+                <div>
+                    <span class="label2">状态：</span>
+                    <span>
+                    <select id="search_dataStatus" class="input" style="width:120px;text-align:center;" >
+                        <option value="">--请选择--</option>
+                        <option value="1">正常</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+
+    </div>
+    <div class="grid">
+        <table id="userGrid"></table>
+        <div id="pager2"></div>
+    </div>
+    <div  class="form" id="userInfo" style="display:none;">
+        <table>
+            <tr>
+                <td class="four_td1">姓<span class="spanSpace"></span>名:</td>
+                <td class="four_td2">
+                    <input name="permPerson.personName" id="personName"  class="inputType" type="text" />
+                    <span id="view_personName" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">昵<span class="spanSpace"></span>称:</td>
+                <td class="four_td2">
+                    <input name="nickName" id="nickName" class="inputType" type="text" />
+                    <span id="view_nickName" class="viewType"></span>
+                </td>
+            </tr>
+            <tr><td class="four_td1">性<span class="spanSpace"></span>别:</td>
+                <td class="four_td2">
+                    <label class="label" id="sex"></label>
+                    <!--<label class="label"><input   type="radio" name="sex" value="1" checked="checked"/><span class="radioText">男</span></label>
+                    <label class="label"><input   type="radio" name="sex" value="2"/><span class="radioText">女</span></label>-->
+                    <span id="view_sex" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">出生日期:</td>
+                <td class="four_td2">
+                    <input name="personBorn" id="personBorn" class="inputType" type="text" readonly/>
+                    <span id="view_personBorn" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">手机号码:</td>
+                <td class="four_td2">
+                    <input type="hidden" id="accountId" >
+                    <input name="mobile" id="mobile" class="inputType" type="text" />
+                    <span id="view_mobile" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">账号名:</td>
+                <td class="four_td2">
+                    <input name="accountCode" id="accountCode" class="inputType" type="text"/>
+                    <span id="view_accountCode" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">邮<span class="spanSpace"></span>箱:</td>
+                <td class="four_td2">
+                    <input name="email" id="email" class="inputType" type="text" />
+                    <span id="view_email" class="viewType"></span>
+                </td>
+                <td class="four_td1 td4">QQ:</td>
+                <td class="four_td2">
+                    <input name="qq" id="qq" class="inputType" type="text" />
+                    <span id="view_qq" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">用户类型:</td>
+                <td class="four_td2" >
+                    <select id="personType" name="personType" class="selectType four_selectType">
+                    </select>
+                    <span id="view_personType" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">用户状态:</td>
+                <td class="four_td2">
+                    <label class="label"><input   type="radio" name="dataStatus" value="1" checked="checked"/><span class="radioText">正常</span></label>
+                    <label class="label"><input   type="radio" name="dataStatus" value="0"/><span class="radioText">禁用</span></label>
+                    <span id="view_dataStatus" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1 td6">联系地址:</td>
+                <td class="four_td3" colspan="3">
+                    <input type="text" class="inputType2" name="address" id="address">
+                    <textarea rows="4" cols="20" id="view_address" class="viewType2" readonly="readonly"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="delDialog" class="dialogStyle"></div>
+    <div id="roleDialog" class="dialogStyle"></div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons){
+            var init = function(){
+                userGrid();
+                dateFun();
+                initSexFun(300);//用户性别
+                initPersonTypeCacheFun(1700);//用户类型
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+                $(window).resize(function(){
+                    $("#userGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $('#search_dataStatus').html('<option value="">--请选择--</option><option value="1">正常</option><option value="0">禁用</option>');
+            }
+
+            var chanageTableCss = function(){
+                var divObj = $('#userGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+            var userGrid = function(){
+                $("#userGrid").jqGrid({
+                    url: USER_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData:{
+                        'personParam' : {
+                        }
+                    },
+                    mtype:'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['personId','accountId','手机号', '账号名', '姓名', '昵称','性别', '出生日期','QQ','邮箱', '注册时间', '用户类型','状态','操作'],
+                    colModel:[
+                        {name:'personId',index:'personId', hidden:true},
+                        {name:'accountId',index:'accountId', hidden:true},
+                        {name:'mobile',index:'mobile',align:'center', width:'10%'},
+                        {name:'accountCode',index:'account_code', width:'8%', align:"center"},
+                        {name:'personName',index:'person_name',align:'center', width:'10%', sortable:false},
+                        {name:'nickName',index:'nickName',align:'center', width:'10%', sortable:false},
+                        {name:'sex',index:'sex', width:'4%',align:'center', sortable:false,formatter:
+                                function(cellvalue, options, rowObject) {
+                                    var len = sexCache.length;
+                                    for(i = 0;i < len;i++){
+                                        if(sexCache[i].dictId == cellvalue){
+                                            return sexCache[i].dataName;
+                                        }
+                                    }
+                                    return "";
+                                }
+                        },
+                        {name:'personBorn',index:'personBorn', width:'10%', align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            return cellvalue  == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                        }},
+                        {name:'qq',index:'qq', width:'8%',align:"center", sortable:false},
+                        {name:'email',index:'email', width:'10%',align:'center', sortable:false},
+                        {name:'createTime',index:'createTime', width:'13%',align:'center', sortable:false},
+                        {name:'personType',index:'personType', width:'15%',align:'center', sortable:false,formatter:function(cellvalue ,options, rowObject){
+                            var len = personTypeCache.length;
+                            for(i = 0;i < len;i++){
+                                if(personTypeCache[i].dictId == cellvalue){
+                                    return personTypeCache[i].dataName;
+                                }
+                            }
+                            return "";
+                        }},
+                        {name:'dataStatus',index:'dataStatus', width:'15%',align:'center', sortable:false,formatter:function(cellvalue ,options, rowObject){
+                            var value = "";
+                            if(cellvalue == '1'){
+                                value = "<span class='statusStyle'>正常</span>" + "<img src='images/public/Ton.png' class='dataStatusBtn' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' data-status='"+ rowObject.dataStatus +"' title='正常' >";
+                            }else{
+                                value = "<span class='statusStyle'>禁用</span>" + "<img src='images/public/Toff.png' class='dataStatusBtn' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' data-status='"+ rowObject.dataStatus +"' title='禁用' >";
+                            }
+                            return value;
+                        }},
+
+                        {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var personType = rowObject.personType;
+                            var linkImage = "images/public/Trelevance.png";
+                            if(personType == "1702" || personType == "" || personType == null){
+                                linkImage = "images/public/TrelevanceG.png";
+                            }
+                            var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' title='编辑' >" +
+                                    "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.personId +"' title='查看' >" +
+                                    "<img src='"+linkImage+"' class='linkBtn' data-id='"+ rowObject.accountId +"' person-type='"+personType+"' title='关联角色' >" +
+                                    "<img src='images/public/Trefresh.png' class='resetPasswordBtn' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' title='重置密码' >";
+//                                    "<img src='images/system/icon18.png' class='personTypeBtn' data-id='"+ rowObject.personId +"' account-id='"+ rowObject.accountId +"' person-type='"+ rowObject.personType +"' title='禁用/启用' >";
+                            return str;
+                        }}
+                    ],
+                    width:'100%',
+                    autowidth:true,
+                    height:'100%',
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager2',
+                    sortname: 'person_id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function(){
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#userGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            var dateFun = function(){
+                dateUtil.timeEventThree("personBorn",null,function(){}); //初始化出生日期控件
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2017-12-26 lcw : Created.
+             */
+            var tableEvent = function(){
+                $(".editBtn,.seeBtn,.linkBtn,.dataStatusBtn, .resetPasswordBtn").off("click");
+                $(".editBtn").on("click",function(){
+                    editFun($(this).attr("data-id"),$(this).attr("account-id"));
+                });
+                $(".seeBtn").on("click",function(){
+                    showFun($(this).attr("data-id"))
+                });
+                $(".linkBtn").on("click",function(){
+                    if($(this).attr("person-type") == "1701"){//只有内部用户才可以点击
+                        relateFun($(this).attr("data-id"))
+                    }
+                });
+                $(".dataStatusBtn").on("click",function(){
+                    setDataStatusFun($(this).attr("data-id"),$(this).attr("account-id"), $(this).attr("data-status"));
+                });
+                //重置密码点击事件
+                $(".resetPasswordBtn").on("click",function(){
+                    resetPasswordBtnFun($(this));
+                });
+            };
+
+            /**
+             * Description: 重置密码
+             * @param obj
+             * @return
+             * @version <1> 2018/8/3 16:21 zhangshen: Created.
+             */
+            var resetPasswordBtnFun = function(obj) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认重置密码？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var accountId = obj.attr("account-id");
+                            var personParam = {
+                                accountId : accountId
+                            };
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = LOGIN_CONFIG.resetUserPwd_url;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.data = JSON.stringify(personParam);
+                            ajax.opts.successFun = function(result){
+                                delDialog.dialog("close");
+                                PopWin.showMessageWin(result.msg);
+                            };
+                            ajax.opts.errorFun = function () {
+                                delDialog.dialog("close");
+                                PopWin.showMessageWin("重置密码失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            var searchFun = function(){
+                var personName = $("#search_personName").val().trim();
+                var accountName = $("#search_accountName").val().trim();
+                var dataStatus = $("#search_dataStatus").val().trim();
+
+                var param = {};
+                param.personName = personName;
+                param.accountName = accountName;
+                param.dataStatus = dataStatus;
+                $("#userGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            }
+
+
+            /**
+             * 用户新增
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var addFun = function(){
+                dateFun();
+                $(".inputType2,.inputType,.label").val("");
+                $("#mobile").attr("disabled", false);
+                $('[name = sex]:radio:first').attr('checked',true);
+                $('[name = dataStatus]:radio:first').attr('checked',true);
+                /*$('[name = personType]:selected:first').attr('selected',true);*/
+                /*$("#personType option[value='1701']").attr("selected","selected");*/
+                $("#personType option:first").prop("selected", 'selected');
+                showDialog(1);
+            };
+
+            /**
+             * 用户修改
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var editFun = function(id,accountId){
+                dateFun();
+                var ajax = new BaseAjax();
+                ajax.opts.url = USER_CONFIG.getById_url + "?personId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    //$("#mobile").attr("disabled", "disabled")
+
+                    var permAccount = result.data.permAccount;
+                    var permPerson = result.data.permPerson;
+
+                    $("input[type='radio'][name='sex'][value='"+ permPerson.sex +"']").attr("checked","checked");
+                    $("input[type='radio'][name='dataStatus'][value='"+ permPerson.dataStatus +"']").attr("checked","checked");
+                    $("#personName").val(permPerson.personName);
+                    $("#nickName").val(permAccount.nickName);
+                    $("#personBorn").val(new Date(permPerson.personBorn).Format("yyyy-MM-dd"));
+                    $("#qq").val(permPerson.qq);
+                    $("#email").val(permPerson.email);
+                    $("#mobile").val(permPerson.mobile);
+                    $("#address").val(permPerson.address);
+                    $("#dataStatus").val(permPerson.dataStatus);
+                    $("#accountId").val(accountId);
+                    $("#personType option[value='"+ permPerson.personType +"']").attr("selected","selected");
+                    $("#accountCode").val(permAccount.accountCode);
+                    showDialog(2, id, accountId);
+                };
+                ajax.run();
+            };
+
+            var deleteFun= function(id){
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title:'系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons:[{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = USER_CONFIG.del_url + "?personId=" + id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun=function(result){
+                                if(result.flag){
+                                    $("#userGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                }else{
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function(){
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 查看详情
+             * @param id
+             * @version <1> 2017-12-18 lcw : created.
+             */
+            var showFun = function(id){
+                viewTypeShow();
+                var ajax = new BaseAjax();
+                ajax.opts.url = USER_CONFIG.getById_url + "?personId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    var permAccount = result.data.permAccount;
+                    var permPerson = result.data.permPerson;
+
+                    $("#view_personName").attr('title',permPerson.personName);
+                    $("#view_personName").html(permPerson.personName);
+                    if(permPerson.personBorn==null){
+                        $("#view_personBorn").html("");
+                    }else {
+                        $("#view_personBorn").html(new Date(permPerson.personBorn).Format("yyyy-MM-dd"));
+                    }
+
+                    var len = sexCache.length;
+                    for(i = 0;i < len;i++){
+                        if(sexCache[i].dictId == permPerson.sex){
+                            $("#view_sex").html(sexCache[i].dataName);
+                        }
+                    }
+                    $("#view_nickName").attr('title',permAccount.nickName);
+                    $("#view_nickName").html(permAccount.nickName);
+                    $("#view_qq").html(permPerson.qq);
+                    var len = personTypeCache.length;
+                    for(i = 0;i < len;i++){
+                        if(personTypeCache[i].dictId == permPerson.personType){
+                            $("#view_personType").html(personTypeCache[i].dataName);
+                        }
+                    }
+                    $("#view_email").attr('title',permPerson.email);
+                    $("#view_email").html(permPerson.email);
+                    $("#view_mobile").html(permPerson.mobile);
+                    $("#view_address").text(permPerson.address);
+                    $("#view_dataStatus").html(permPerson.dataStatus == '1' ? "正常" : "禁用");
+
+                    $("#view_accountCode").attr('title', permPerson.accountCode);
+                    $("#view_accountCode").html(permPerson.accountCode);
+                    showDialog(3);
+                };
+                ajax.run();
+            };
+
+            /**
+             * 关联角色
+             * @param id
+             * @version <1> 2017-12-18 lcw  : created.
+             */
+            var relateFun = function(id){
+                var ajax = new BaseAjax();
+                ajax.opts.url =USER_CONFIG.findAll_url +  "?accountId="+ id ;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        var str = "<div id='roldMsg'>";
+                        var data= result.data;
+                        $.each(data, function(index, element){
+                            str += "<span style='width:162px;height:28px;line-height:28px;display:block;float:left;'><label> ";
+                            if(element.accountId != null && element.accountId != ''){
+                                str += "<input type='checkbox' checked roleId='"+ element.roleId +"'><span class='roleShowName' title='" + element.roleName + "'>" + element.roleName + "</span>";
+                            }else{
+                                str += "<input type='checkbox' roleId='"+ element.roleId +"'><span class='roleShowName' title='" + element.roleName + "'>" + element.roleName + "</span>";
+                            }
+                            str += "</label></span>";
+                            if((index + 1) % 3 == 0){
+                                str += "<br/>"
+                            }
+                        });
+                        str += "</div>";
+                        var roleDialog = $("#roleDialog");
+                        roleDialog.html(str);
+
+                        roleDialog.dialog({
+                            autoOpen: false,
+                            title:'角色信息',
+                            height: 360,
+                            width: 550,
+                            modal: true,
+                            buttons:[{
+                                text:"确认",
+                                click:function(){
+                                    var rows =  $("#roldMsg").find("input:checked");
+                                    var arr = [];
+                                    $(rows).each(function(index, element){
+                                        arr.push($(element).attr("roleid"));
+                                    });
+                                    var param = {};
+                                    param.accountId = id;
+                                    param.roleIds = arr;
+
+                                    var ajax2 = new BaseAjax();
+                                    ajax2.opts.url = USER_CONFIG.relate_url;
+                                    ajax2.opts.contentType = "application/json";
+                                    ajax2.opts.data = JSON.stringify(param);
+                                    ajax2.opts.successFun = function(result){
+                                        if(result.flag){
+                                            PopWin.showMessageWin("角色关联成功");
+                                            roleDialog.dialog("close");
+                                            $("#userGrid").trigger("reloadGrid");
+                                        }else{
+                                            PopWin.showMessageWin("角色关联失败");
+                                        }
+
+
+                                    };
+                                    ajax2.run();
+                                }},{
+                                text:"取消",
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }]
+                        });
+                        roleDialog.dialog("open");
+                    }
+                };
+
+                ajax.run()
+
+
+            };
+
+            /**
+             * 弹出框
+             * @param type  : 1 表示新增， 2表示修改， 3表示查看
+             * @param personId : 新增时为空， 修改时才使用personId
+             * @version <1> 2017-12-16 lcw: created.
+             */
+            var showDialog = function(type, personId, accountId){
+                var userDialog =  $("#userInfo");
+                var dialogParent = userDialog.parent();
+                var dialogOwn = userDialog.clone();
+                if(type == 3 ){ //查看
+                    userDialog.dialog({
+                        autoOpen: false,
+                        title:'用户信息',
+                        height: 400,
+                        width: 550,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[{
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                }else{ //新增和修改
+                    inputTypeShow();
+                    userDialog.dialog({
+                        autoOpen: false,
+                        title:'用户信息',
+                        height: 400,
+                        width: 550,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons:[{
+                            text:"保存",
+                            click:function(){
+                                if(type == 1 ){ //新增
+                                    addSaveFun(userDialog);
+                                }
+                                if(type ==2 ){
+                                    editSaveFun(userDialog, personId, accountId);
+                                }
+                            }},{
+                            text:"取消",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                }
+                userDialog.dialog("open");
+            };
+
+            /*
+             * 检验手机号码输入
+             * @param obj 被验证的对象
+             * @param showTargetObj 信息显示所在的容器对象
+             * @returns {boolean}
+             * @version <1> 2018-02-06 cxj: created.
+             */
+            var checkPhoneInput = function(obj,showTargetObj) {
+                clearErrorInfo(obj,showTargetObj);//清除错误信息
+
+                if(formVerfication.isEmpty(obj.val())){
+                    /*obj.addClass('formInputHighlight');
+                    showTargetObj.append(getHtml('手机号码不能为空'));
+                    return true;*/
+                }else if(!formVerfication.isPhone(obj.val())){
+                    obj.addClass('formInputHighlight');
+                    showTargetObj.append(getHtml('手机号码格式不正确'));
+                    return true;
+                }
+                return false;
+            };
+
+            //清除错误信息
+            var clearErrorInfo = function(obj,showTargetObj){
+                if(showTargetObj.find('.formErrorInfo').length != 0){
+                    obj.parents('body').find('.formInputHighlight').removeClass('formInputHighlight');
+                    showTargetObj.find('.formErrorInfo').remove();
+                }
+            };
+
+            //显示提示内容
+            var getHtml = function(msg){
+                return '<div class="formErrorInfo"><span>' + msg + '</span></div>';
+            };
+
+            var formVerf = function(){
+                var userInfo = $('#userInfo');
+                if(formVerfication.checkInputLength(0,20,$('#personName'),userInfo,'姓名字数不能超过20位')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputLength(0,20,$('#nickName'),userInfo,'昵称字数不能超过20位')){
+                    return false;
+                }
+
+                if(checkPhoneInput($("#mobile"),userInfo)){
+                    return false;
+                }
+
+                if(formVerfication.checkEmailInput($("#email"),userInfo)){
+                    return false;
+                }
+
+                if(formVerfication.checkInputLength(0,20,$('#email'),userInfo,'邮箱字数不能超过20位')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsQQ($('#qq'),userInfo,'qq号为数字且长度为5-15位')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputLength(0,100,$('#address'),userInfo,'联系地址字数不能超过100位')){
+                    return false;
+                }
+
+                var accountCode = $("#accountCode").val().trim();
+                var mobile = $("#mobile").val().trim();
+                if (formVerfication.isEmpty(accountCode) && formVerfication.isEmpty(mobile)) {
+                    formVerfication.showPromptInfo($("#mobile"), $('#userInfo'),'手机号码或账号名必填一个');
+                    return false;
+                }
+
+                return true;
+            };
+
+            /**
+             * 校验账号名 id为null(新增), id不为null(修改)
+             * @version <1>  2018/7/31 zhangshen: Create
+             */
+            var checkAccountCode = function(id) {
+                var accountCode = $("#accountCode").val().trim();
+
+                if (accountCode != "" && accountCode != null) {
+                    var codeCheck = /^[a-zA-Z][a-zA-Z0-9_]+$/;
+                    if (!accountCode.match(codeCheck)) {
+                        formVerfication.showPromptInfo($("#accountCode"),$('#userInfo'),'账号名以字母开头,由字母数字下划线组成');
+                        return false;
+                    }
+
+                    if (!(accountCode.length >=6 && accountCode.length <= 16)) {
+                        formVerfication.showPromptInfo($("#accountCode"),$('#userInfo'),'账号名6到16位');
+                        return false;
+                    }
+
+                    var flag = true;
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = LOGIN_CONFIG.checkAccountCodeExists_url;
+                    ajax.opts.type = "GET";
+                    ajax.opts.async = false;
+                    ajax.opts.data =  {'accountName':accountCode, 'accountId':id};
+                    ajax.opts.successFun = function (data) {
+                        if (!data.data) {
+                            formVerfication.showPromptInfo($("#accountCode"),$('#userInfo'),'该账户名已存在');
+                            flag = false;
+                        }
+                    };
+                    ajax.run();
+
+                    if (!flag) {
+                        return false;
+                    }
+                }
+
+                return true;
+            };
+
+            /**
+             * 校验手机号是否能修改 id为accountId
+             * @version <1>  2018/8/6 zhangshen: Create
+             */
+            var checkMobileExists = function(id) {
+                var mobile = $("#mobile").val().trim();
+                var flag = true;
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOGIN_CONFIG.checkAccountCodeExists_url;
+                ajax.opts.type = "GET";
+                ajax.opts.async = false;
+                ajax.opts.data =  {'accountName':mobile, 'accountId':id};
+                ajax.opts.successFun = function (data) {
+                    if (!data.data) {
+                        formVerfication.showPromptInfo($("#mobile"),$('#userInfo'),'该手机号码已存在');
+                        flag = false;
+                    }
+                };
+                ajax.run();
+
+                if (!flag) {
+                    return false;
+                }
+
+                return flag;
+            };
+
+            /**
+             *新增保存
+             */
+            var addSaveFun = function(userDialog){
+                if(!formVerf()){
+                    return ;
+                }
+
+                if(!checkAccountCode(null)) {//验证accountCode
+                    return ;
+                }
+
+                var person = {};
+                person.personName = $("#personName").val().trim();
+                person.sex = $("input[type='radio'][name='sex']:checked").val();
+                person.personBorn = $("#personBorn").val();
+                person.qq = $("#qq").val().trim();
+                person.email = $("#email").val().trim();
+                person.mobile = $("#mobile").val().trim();
+                person.address = $("#address").val().trim();
+                person.dataStatus =$("input[type='radio'][name='dataStatus']:checked").val();
+                person.personType=$("#personType").val();
+
+                var permAccount = {};
+                permAccount.nickName =$("#nickName").val().trim();
+                permAccount.accountName = $("#mobile").val().trim();//使用手机号作为账号登录信息
+                permAccount.accountCode = $("#accountCode").val().trim();//账号名
+
+                var personParam = {};
+                personParam.permPerson = person; //用户信息
+                personParam.permAccount = permAccount; //  初始化账号信息
+
+                //对手机号进行校验（手机号就是用户账号）
+                var checkAjax = new BaseAjax();
+                checkAjax.opts.url = USER_CONFIG.checkAccountName_url;
+                checkAjax.opts.async = false; //同步
+                checkAjax.opts.data = JSON.stringify({accountName:$("#mobile").val()});
+                checkAjax.opts.successFun = function(result){
+                    if(result.flag){
+                        formVerfication.showPromptInfo($("#mobile"),$('#userInfo'),'该手机号已被使用');
+                    }
+                    if(!result.flag){
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = USER_CONFIG.add_url;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.data = JSON.stringify(personParam);
+                        ajax.opts.successFun = function(result){
+                            if(result.flag){
+                                $("#userGrid").trigger("reloadGrid");
+                                userDialog.dialog("close");
+                                PopWin.showMessageWin("用户新增成功");
+                            }else{
+                                PopWin.showMessageWin("用户新增失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function (result) {
+                            PopWin.showMessageWin("用户新增失败");
+                        };
+                        ajax.run();
+                    }
+
+                }
+                checkAjax.run();
+
+
+
+            };
+
+            /**
+             * 修改保存
+             * @param roleDialog
+             */
+            var editSaveFun = function(userDialog, id, accountId){
+                if(!formVerf()){
+                    return ;
+                }
+
+                if(!checkAccountCode(accountId)) {//验证accountCode
+                    return ;
+                }
+
+                if (!checkMobileExists(accountId)) {//验证手机号码是否存在
+                    return ;
+                }
+
+                var person = {};
+                person.personName = $("#personName").val().trim();
+                person.sex = $("input[type='radio'][name='sex']:checked").val();
+                person.personBorn = $("#personBorn").val();
+                person.qq = $("#qq").val().trim();
+                person.email = $("#email").val().trim();
+                person.mobile = $("#mobile").val().trim();
+                person.address = $("#address").val().trim();
+                person.dataStatus =$("input[type='radio'][name='dataStatus']:checked").val();
+                person.personId = id;
+
+                person.personType=$("#personType").val();
+
+                var account = {};
+                account.nickName = $("#nickName").val().trim();
+                account.accountName = $("#mobile").val().trim();
+
+                if ($("#accountCode").val() != null) {
+                    account.accountCode =  $("#accountCode").val().trim();
+                }
+
+                account.accountId =  $("#accountId").val();
+                var personParam  = {};
+                personParam.permPerson  = person;
+                personParam.permAccount = account;
+
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = USER_CONFIG.edit_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify(personParam);
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        $("#userGrid").trigger("reloadGrid");
+                        userDialog.dialog("close");
+                        PopWin.showMessageWin("用户修改成功");
+                    }else{
+                        PopWin.showMessageWin("用户修改失败");
+                    }
+                };
+                ajax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("用户修改失败");
+                };
+                ajax.run();
+            };
+
+            /**
+             * 启用或警用用户
+             * @param personId
+             * @version <1> 2017-12-25 lcw : created.
+             */
+            var setDataStatusFun = function(personId,accountId,dataStatus){
+                var delDialog = $("#delDialog");
+
+                if(dataStatus == "1"){
+                    dataStatus = "0";
+                    delDialog.html("是否确认禁用该用户？");
+                }else{
+                    dataStatus = "1";
+                    delDialog.html("是否确认启用该用户？");
+                }
+
+                delDialog.dialog({
+                    autoOpen: false,
+                    title:'系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons:[{
+                        text:"是",
+                        click:function(){
+                            var param = {};
+                            var person = {};
+                            person.personId = personId;
+                            person.dataStatus = dataStatus;
+                            person.accountId = accountId;
+                            param.permPerson = person;
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = USER_CONFIG.setPersonDataStatus_url;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.data = JSON.stringify(param);
+                            ajax.opts.successFun=function(result){
+                                if(result.flag){
+                                    if(dataStatus == "1"){
+                                        PopWin.showMessageWin("用户已启用");
+                                    }else{
+                                        PopWin.showMessageWin("用户已禁用");
+                                    }
+                                    $("#userGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                }else{
+                                    if(dataStatus == "1"){
+                                        PopWin.showMessageWin("用户启用失败");
+                                    }else{
+                                        PopWin.showMessageWin("用户禁用失败");
+                                    }
+                                }
+                            };
+                            ajax.opts.errorFun = function(){
+                                PopWin.showMessageWin("操作失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+
+
+            }
+
+            /**
+             * 显示input输入框，隐藏信息查看
+             */
+            var inputTypeShow = function(){
+                $(".txtRequired").show();
+                $(".viewType,.viewType2").css("display","none");
+                $(".inputType2,.inputType,.label,.selectType").css("display","block");
+            };
+
+            /**
+             * 隐藏input输入框，显示信息查看
+             */
+            var viewTypeShow = function(){
+                $(".txtRequired").hide();
+                $(".inputType2,.inputType,.label,.selectType").css("display","none");
+                $(".viewType,.viewType2").css("display","block");
+            }
+
+            //用户性别
+            var sexCache = [];
+            /**
+             * 获取用户性别下拉框数据
+             * @param parentId = 300
+             * @version <1> 2018-03-15 wl : created.
+             */
+            var initSexFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        sexCache = result.data;
+                        $.each(result.data, function(index, element){
+                            if(index==0){
+                                str+='<label class="label"><input   type="radio" name="sex" value="'+element.dictId+'" checked="checked"/><span class="radioText">'+element.dataName+'</span></label>';
+                            }else{
+                                str+='<label class="label"><input   type="radio" name="sex" value="'+element.dictId+'"/><span class="radioText">'+element.dataName+'</span></label>';
+                            }
+
+                        })
+                        $("#sex").append(str);
+                    }
+                }
+                ajax.run();
+            }
+
+            //用户类型
+            var personTypeCache = [];
+            /**
+             * 获取用户类型下拉框数据
+             * @param parentId = 1700
+             * @version <1> 2018-03-15 wl : created.
+             */
+            var initPersonTypeCacheFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        personTypeCache = result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        $("#personType").append(str);
+
+                    }
+                }
+                ajax.run();
+            }
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

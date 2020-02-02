@@ -1,0 +1,621 @@
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">区域：</span>
+                    <span>
+                        <input type="text" id="txtArea" class="input"  placeholder="请选择区域" readonly/>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">作物：</span>
+                    <span>
+                        <select id = "cropId" class="input" style="width:120px;text-align:center;">
+                           <option value="">--请选择作物--</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">生育期名称：</span>
+                    <span>
+                        <select id="search_growthId" class="input" style="width:120px;text-align:center;" >
+                            <option value="">--请选择生育期--</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">说明：</span>
+                    <span>
+                        <input id="search_instruction" type="text" class="input" />
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="growthTempPriodGrid"></table>
+        <div id="pager2"></div>
+    </div>
+    <!-- 数据新增修改 -->
+    <div id="dataTypeInfo" class="form" style="display: none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>区域:</td>
+                <td class="two_td2">
+                    <input type="text" id="region" class="input selectType two_selectType"  placeholder="请选择区域" readonly/>
+                    <!-- <select id="regionId" name="regionId" class="selectType two_selectType">
+                         <option value="3102000006">湖北</option>
+                     </select>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>作物:</td>
+                <td class="two_td2">
+                    <select id="cropsId" name="cropsId" class="selectType two_selectType">
+                        <option value="">--请选择作物--</option>
+                    </select>
+                    <!--   <select id="cropsId" name="cropsId" class="selectType two_selectType">
+                           <option value="514">小麦</option>
+                           <option value="511">油菜</option>
+                       </select>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>生育期名称:</td>
+                <td class="two_td2">
+                    <select id="growthId" class="selectType two_selectType">
+                        <option value="">--请选择生育期--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>说明:</td>
+                <td class="two_td2">
+                    <input name="instruction" id="instruction" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>地温开始范围:</td>
+                <td class="two_td2">
+                    <input name="tempRangeStart" id="tempRangeStart" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>地温结束范围:</td>
+                <td class="two_td2">
+                    <input name="tempRangeEnd" id="tempRangeEnd" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>是否均值:</td>
+                <td class="two_td2">
+                    <select id="ifavg" class="selectType two_selectType">
+                        <option value="1" selected="selected">是</option>
+                        <option value="0" >否</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 操作对话框 -->
+    <div id="delDialog" class="dialogStyle" style="display:none">
+    </div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","commons","multiselect","RegionModule"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,commons,multiselect,RegionModule) {
+
+            var obj = "search_growthId";
+            var regionIdObj = document.getElementById("txtArea");
+            var cropsIdObj = $("#cropId");
+            /*
+             * 初始化
+             */
+            var init = function(){
+                //区域点击事件
+                RegionSelectFun("txtArea","cropId");
+                document.getElementById("cropId").onchange=growthPeriod;//选择作物将在对应的物候期
+                growthTempPriodGrid();
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+
+                $(window).resize(function(){
+                    $("#growthTempPriodGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 区域选择控件
+             * @param regionIdName 区域ID
+             * *@param cropIdName 作物ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var RegionSelectFun = function(regionIdName,cropIdName){
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400};
+                    opts = {url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        var regionId = txtArea.getAttribute("regionId");
+                        if(regionId!=null)
+                        {
+                            queryCropFun(regionId,cropIdName)
+                        }
+                        else{
+                            $('#'+cropIdName).html('<option value="">--请选择作物--</option>');
+                        }
+                    }};
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                    regionSelector.show();
+                };
+                return true;
+            };
+
+            /**
+             * 点击区域时查询作物列表
+             * @param regionId 区域ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var queryCropFun = function(regionId,cropIdName){
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            };
+
+            /**
+             * 初始化作物下拉框
+             * @param crop 查询出的作物对象集合
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var initCropFun = function(crop,cropIdName){
+                var result;
+                result = '<option value="">--请选择作物--</option>';
+                if(crop!=null)
+                {
+                    $.each(crop,function(i,o){
+                        result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                    });
+                }
+                $('#'+cropIdName).html(result);
+            };
+
+            /**
+             * 初始化作物下拉框
+             * @param obj 生育期select对象
+             * @version <1> 2018-4-18 cxw : created.
+             */
+            var growthPeriod = function(){
+                var param = {};
+                var cropsId = $.trim(cropsIdObj.val());
+                var regionId =regionIdObj.getAttribute("regionId");
+                if(cropsId!=null&&regionId!=null&&regionId!=''&&cropsId!='') {
+                    param.regionId = regionId;
+                    param.cropsId = cropsId;
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = CROPS_GROWTH_PERIOD_CONFIG.queryGrowthPeriodList_url;
+                    ajax.opts.contentType = "application/json";
+                    ajax.opts.data = JSON.stringify(param);
+                    ajax.opts.successFun = function (data) {
+                        var growthPeriod = data.data;
+                        initgrowthPeriod(growthPeriod,obj);
+                    };
+                    ajax.run();
+                }
+                else{
+
+                }
+            };
+
+            /**
+             * 初始化生育期下拉框
+             * @param growthPeriod 查询出的生育期对象集合
+             * @param obj 生育期select对象
+             * @version <1> 2018-4-18 cxw : created.
+             */
+            var initgrowthPeriod = function(growthPeriod,obj){
+                var result;
+                result = '<option value="">--请选择生育期--</option>';
+                if(growthPeriod!=null)
+                {
+                    $.each(growthPeriod,function(i,o){
+                        result += '<option value = "' + o.growthId + '">' + o.growthName + '</option>';
+                    });
+                }
+                $('#'+obj).html(result);
+            };
+
+            /**
+             * 物候期地温关系设置记录的渲染
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-09 djh： 修改列的展示顺序，修改状态栏的逻辑.
+             */
+            var growthTempPriodGrid = function () {
+                $("#growthTempPriodGrid").jqGrid({
+                    url: GROWTH_REPORTER_TEMP_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['relativeId','区域名称','作物名称','生育期名称','说明','地温开始范围', '地温结束范围', '是否均值','操作'],
+                    colModel: [
+                        {name: 'relativeId', index: 'relativeId', hidden: true},
+                        {name: 'regionName', index: 'regionName', align: 'center', width: '10%'},
+                        {name: 'cropsName', index: 'cropsName', align: 'center', width: '10%'},
+                        {name: 'growthName', index: 'growthName', align: 'center', width: '15%'},
+                        {name: 'instruction', index: 'instruction', align: 'center', width: '20%'},
+                        {name: 'tempRangeStart', index: 'tempRangeStart', align: 'center', width: '10%'},
+                        {name: 'tempRangeEnd', index: 'tempRangeEnd', align: 'center', width: '10%'},
+                        {name: 'ifavg', index: 'ifavg', align: 'center', width: '8%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == '0'?'否':'是'
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '19%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.relativeId + "' title='编辑' style='margin-right: 3px;'>"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.relativeId + "' title='删除' >";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $(".editBtn,.delBtn").off("click");
+                        $(".editBtn").on("click", function () {
+                            editFun($(this).attr("data-id"));
+                        });
+                        $(".delBtn").on("click", function () {
+                            deleteFun($(this).attr("data-id"));
+                        });
+                    }
+                });
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-09 djh： 修改查询逻辑.
+             */
+            var searchFun = function () {
+                var regionId = document.getElementById("txtArea").getAttribute("regionId");//区域
+                var cropsId = $.trim($("#cropId").val());//作物
+                var growthId = $.trim($("#search_growthId").val());//物候期
+                var instruction = $.trim($("#search_instruction").val());//说明
+                $("#growthTempPriodGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {'regionId': regionId ,'cropsId': cropsId,'growthId':growthId,'instruction': instruction},
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 获取表单新增或者修改的数据
+             *
+             * @version <1> 2018-04-19 lxy： Created.
+             */
+            var getParam = function() {
+                var instruction = $.trim($("#instruction").val());//说明
+                var regionId = document.getElementById("region").getAttribute("regionId");//区域编号
+                var cropsId = $.trim($("#cropsId").val());//作物编号
+                var growthId = $("#growthId").val();//物候期编号
+                var growthName =  $("#growthId").find("option:selected").text();//物候期名称
+                var tempRangeStart = $.trim($("#tempRangeStart").val());//地温开始范围
+                var tempRangeEnd = $.trim($("#tempRangeEnd").val());//地温结束范围
+                var ifavg = $.trim($("#ifavg").val());//是否均值
+                var paramConfig = {
+                    regionId: regionId,
+                    cropsId: cropsId,
+                    growthId:growthId,
+                    growthName: growthName,
+                    instruction:instruction,
+                    tempRangeStart: tempRangeStart,
+                    tempRangeEnd: tempRangeEnd,
+                    ifavg: ifavg
+
+                };
+                return paramConfig;
+            };
+
+            /**
+             * 新增页
+             * @version <1> 2018-04-12 lxy： Created.
+             */
+            var addFun = function() {
+                RegionSelectFun("region","cropsId");//选择区域
+                obj = "growthId";
+                regionIdObj = document.getElementById("region");
+                cropsIdObj = $("#cropsId");
+                document.getElementById("cropsId").onchange = growthPeriod;
+                growthPeriod("cropsId","growthId");
+                clearInput();//清空数据
+                var growthRelativeTempDialog =  $("#dataTypeInfo");
+                var dialogParent = growthRelativeTempDialog.parent();
+                var dialogOwn = growthRelativeTempDialog.clone();
+                growthRelativeTempDialog.dialog({
+                    autoOpen: false,
+                    title:'物候期地温关系新增',
+                    height: 390,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            addSaveFun(growthRelativeTempDialog);
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                growthRelativeTempDialog.dialog("open");
+            };
+
+            /**
+             * 保存
+             * @version <1> 2018-04-12 lxy： Created.
+             */
+            var addSaveFun = function(growthRelativeTempDialog) {
+                if (!formVerf()) {
+                    return;
+                }
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = GROWTH_REPORTER_TEMP_CONFIG.save_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(getParam());
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#growthTempPriodGrid").trigger("reloadGrid");
+                        growthRelativeTempDialog.dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("物候期地温关系设置配置新增失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 删除
+             * @version <1> 2018-04-12 lxy： Created.
+             */
+            var deleteFun = function (id) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = GROWTH_REPORTER_TEMP_CONFIG.del_url+"?relativeId="+id;
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#growthTempPriodGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("物候期地温关系设置删除成功");
+                                } else {
+                                    PopWin.showMessageWin("物候期地温关系设置删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("物候期地温关系设置删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 修改页窗口
+             *
+             * @version <1> 2018-04-12 lxy： Created.
+             */
+            var editFun = function (id) {
+                RegionSelectFun("region","cropsId");
+                obj = "growthId";
+                regionIdObj = document.getElementById("region");
+                cropsIdObj = $("#cropsId");
+                document.getElementById("cropsId").onchange = growthPeriod;
+                growthPeriod("cropsId","growthId");
+                var ajax = new BaseAjax();
+                ajax.opts.url = GROWTH_REPORTER_TEMP_CONFIG.findById_url+"?relativeId="+id;
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result) {
+                    if (result.flag) {
+                        initData(result.data);
+                        var configDialog =  $("#dataTypeInfo");
+                        var dialogParent = configDialog.parent();
+                        var dialogOwn = configDialog.clone();
+                        configDialog.dialog({
+                            autoOpen: false,
+                            title:'物候期地温关系设置修改',
+                            height: 390,
+                            width: 460,
+                            modal: true,
+                            close:function(){
+                                dialogOwn.appendTo(dialogParent);
+                                $(this).dialog("destroy").remove();
+                            },
+                            buttons:[
+                                {
+                                    text:"保存",
+                                    click:function(){
+                                        if (!formVerf()) {
+                                            return;
+                                        }
+                                        var param = getParam();
+                                        param.relativeId = id;
+
+                                        update(configDialog, param);
+                                    }},{
+                                    text:"取消",
+                                    click:function(){
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+                        configDialog.dialog("open");
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 保存更新内容
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var update = function(configDialog, param) {
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = GROWTH_REPORTER_TEMP_CONFIG.update_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(param);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#growthTempPriodGrid").trigger("reloadGrid");
+                        configDialog.dialog("close");
+                        PopWin.showMessageWin("物候期地温关系设置更新成功");
+                    } else {
+                        PopWin.showMessageWin("物候期地温关系设置更新失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("物候期地温关系设置更新失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 填充数据
+             *
+             * @version <1> 2018-04-12 lxy： Created.
+             */
+            var initData = function(data) {
+                $("#region").val(data.regionName);//区域名称
+                $("#region").attr("regionId",data.regionId);//区域编号
+                $("#cropsId").html("<option value = '"+data.cropsId+"' selected>"+data.cropsName+"</option>");//作物编号
+                $("#growthId").html("<option value = '"+data.growthId+"' selected>"+data.growthName+"</option>");//物候期信息
+                $("#tempRangeStart").val(data.tempRangeStart);//开始范围
+                $("#tempRangeEnd").val(data.tempRangeEnd);//结束范围
+                $("#instruction").val(data.instruction);//说明
+                $("#ifavg").find("option[value = '"+data.ifavg+"']").attr("selected","selected");//是否均值
+
+            };
+
+
+            /**
+             * 校验填写信息
+             * @version <1> 2018-04-17 cxw： Created.
+             */
+            var formVerf = function () {
+                var errorDiv = $('#dataTypeInfo');
+
+                if(formVerfication.checkInputIsEmpty($('#region'),errorDiv,'区域不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#cropsId'),errorDiv,'作物不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#growthId'),errorDiv,'生育名称不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsEmpty($('#instruction'),errorDiv,'说明不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsEmpty($('#tempRangeStart'),errorDiv,'地温开始范围不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsPositiveInteger($('#tempRangeStart'),errorDiv,'地温开始范围为正整数')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#tempRangeEnd'),errorDiv,'地温结束范围不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsPositiveInteger($('#tempRangeEnd'),errorDiv,'地温结束范围为正整数')){
+                    return false;
+                }
+                return true;
+            };
+
+            /**
+             * 文本输入内容清空
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var clearInput = function() {
+                $(".inputType").val("");
+                $("#cropsId").find("option").first().attr("selected", "selected");
+                /*$("#regionId").find("option").first().attr("selected", "selected");*/
+                $("#region").val('');
+                $("#region").attr("regionId",'');
+                $("#ifavg").find("option").first().attr("selected", "selected");
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#growthTempPriodGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            init();
+        });
+    </script>
+
+</div>

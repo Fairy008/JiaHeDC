@@ -1,0 +1,811 @@
+<style type="text/css">
+
+    #errorInfo,#show_error{color:red;}
+
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+
+    .inputWidth_250{width:250px;}
+
+    .addTr{margin-top: 2px;;text-align:center;cursor:pointer}
+
+   .datainDiv{
+       min-height:50px;
+       max-height:300px;
+       overflow-y:scroll;
+   }
+    table.dataintable {
+        margin-top:0px;
+        border-collapse:collapse;
+        border:1px solid #efefef;
+        width:100%;
+    }
+    table.dataintable th {
+        vertical-align:baseline;
+        background-color:#45AEDF;
+        border:1px solid #efefef;
+        text-align:left;
+        color:#fff;
+        font-style: normal;
+        line-height: 27px;
+    }
+    table.dataintable td {
+        vertical-align:text-top;
+    }
+    table.dataintable tr:nth-child(odd) {
+        background-color:#F5F5F5;
+    }
+    table.dataintable tr:nth-child(even) {
+        background-color:#fff;
+    }
+    .marginTop10{
+        margin-top: 10px;
+    }
+    .dataintable img{
+        padding-right:0px!important;
+    }
+    .dataintable .inputType{
+        width: 99%;
+    }
+.formErrorInfo{padding-left: 0px!important;}
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">模板名称：</span>
+                    <span><input type="text" class="input" id="search_templateName"/></span>
+                </div>
+                <div>
+                    <span class="label2">模板用途：</span>
+                    <span><input type="text" class="input" id="search_purpose"/></span>
+                </div>
+                <div>
+                    <span class="label2">模板类型：</span>
+                    <span>
+                        <select id="search_type" class="input inputWidth_100" style="text-align:center;"></select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input type="text" class="input" id="search_creatorName" /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="templateGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看模板详情 -->
+<div id="templateInfo" class="form" style="display: none;">
+    <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle">
+        <span id="ui-id-1" class="ui-dialog-title">模板详情</span>
+    </div>
+    <table>
+        <tr>
+            <input type="hidden" id="templateId" >
+            <td class="four_td1"><font color="red">*</font>模板名称:</td>
+            <td class="four_td2">
+                <span id="view_templateName" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>模板用途:</td>
+            <td class="four_td2">
+                <span id="view_purpose" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>模板类型:</td>
+            <td class="four_td2">
+                <span id="view_type" class="viewType"></span>
+            </td>
+        </tr>
+    </table>
+    <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle marginTop10">
+        <span id="ui-id-1" class="ui-dialog-title">属性明细</span>
+    </div>
+    <div class="datainDiv">
+        <table class="dataintable">
+            <tr>
+                <th>字段中文名</th>
+                <th>字段英文名</th>
+            </tr>
+            <tbody class="paramsList">
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 编辑模板详情 -->
+<div id="updateTemplate" class="form" style="display: none;">
+    <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle">
+        <span id="ui-id-1" class="ui-dialog-title">模板详情</span>
+    </div>
+    <table>
+        <tr>
+            <input type="hidden" id="templateId" >
+            <td class="four_td1"><font color="red">*</font>模板名称:</td>
+            <td class="four_td2">
+                <input id="templateName"  class="inputType" type="text" />
+            </td>
+            <td class="four_td1"><font color="red">*</font>模板用途:</td>
+            <td class="four_td2">
+                <input id="purpose"  class="inputType" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>模板类型:</td>
+            <td class="four_td2">
+                <select class="inputType inputWidth_250" id="type"></select>
+            </td>
+        </tr>
+    </table>
+    <div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle marginTop10">
+        <span id="ui-id-1" class="ui-dialog-title">属性明细</span>
+    </div>
+    <table class="dataintable">
+        <tr>
+            <th style="width: 43%;text-align:center;">字段中文名</th>
+            <th style="width: 43%;text-align:center;">字段英文名</th>
+            <th style="width: 10%;text-align:center;"><img src="images/public/addrow.png" class="addTr" /></th>
+        </tr>
+    </table>
+    <div class="datainDiv">
+        <table class="dataintable">
+            <tbody class="paramsList">
+
+            </tbody>
+        </table>
+    </div>
+    <div id="show_error"></div>
+</div>
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums){
+        var processDialog = $("#process");
+        var init = function(){
+
+            loaderGrid();//加载表格
+            commons.findDictList(23000, "search_type");
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);//重置
+            $("#addBtn").on("click",addFun);//新增
+            $(window).resize(function(){
+                $("#templateGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#templateGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var colmodel = [
+            {name: 'templateId', index:'template_id', hidden:true},
+            {name: 'creator', index:'creator', hidden:true},
+            {name: 'templateName', index:'template_name',align: 'center', width: '20%'},
+            {name: 'purpose', index:'purpose',align: 'center', width: '20%'},
+            {name: 'typeName', index: 'typeName',align: 'center', width: '10%'},
+            {name: 'creatorName', index: 'creator', align: 'center', width: '10%'},
+            {name: 'createTime', index: 'create_time', align: 'center', width: '10%' },
+            {name: 'cz', index:'cz', width:'20%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                var str="";
+                str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='"+ rowObject.templateId +"' title='查看详情'>&nbsp;";
+
+//                str += "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.templateId +"' title='编辑'>&nbsp;";
+
+                str += "<img src='images/public/Tdelete.png' class='deleteBtn' data-id='"+ rowObject.templateId +"' title='删除'>&nbsp;";
+
+                return str;
+            }}
+        ];
+
+        var permissionFlag = true;
+
+        var loaderGrid = function(){
+            $("#templateGrid").jqGrid({
+                url: COLLECTION_TASK_NEW.findByPage_url,
+                datatype: "json",
+                postData:{},
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['templateId','创建人','模板名称','模板用途','模板类型','创建人','创建时间','操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#templateGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<span id='errorInfo'></span>");
+                        }
+                        batchStyle();//批量样式
+                        tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#templateGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#templateGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据删除按钮处理
+            if(ids.length == 0){
+                $("#batchDeleteBtn").addClass("btn_grey");
+            }else{
+                $("#batchDeleteBtn").removeClass("btn_grey");
+            }
+
+            var records = $("#templateGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchDeleteBtn").hide("btn_grey");
+            }else{
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function(){
+            $(".detailBtn, .editBtn,.deteleBtn,#batchDeleteBtn").off("click");
+
+            //详情
+            $(".detailBtn").bind("click",function () {
+                var templateId = $(this).attr("data-id");
+                detailTemplateFun(templateId);
+            });
+
+            //编辑
+            $(".editBtn").bind("click",function () {
+                var templateId = $(this).attr("data-id");
+                updateTemplateFun(templateId);
+            });
+
+            //删除
+            $(".deleteBtn").bind("click",function () {
+                var templateId = $(this).attr("data-id");
+                deleteTemplateFun(templateId);
+            });
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(){
+            var ids=[];
+            var rowIds = $("#templateGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#templateGrid").jqGrid('getRowData', id);
+                var templateId=row.templateId;
+                var templateStatus=row.templateStatus;
+                ids.push(templateId)
+            });
+            return ids;
+        }
+
+        /**
+         * 新增模板
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var addFun = function() {
+            updateTemplateFun();
+        }
+
+        /**
+         * 删除模板
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteTemplateFun = function(templateId) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("是否确认删除该模板？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = COLLECTION_TASK_NEW.delTemplateById_url;
+                        ajax.opts.data = JSON.stringify({'templateId':templateId});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#templateGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 编辑模板详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var updateTemplateFun = function(templateId) {
+            var msg="新增";
+            clearTemplateInfo();
+            var buttons=[{
+                text: "保存",
+                click: function () {
+                    addSaveFun(templateId);
+                }
+            },{
+                text:"关闭",
+                click:function(){
+                    $(this).dialog("close");
+                }
+            }];
+            if(templateId!=null && templateId!=''){
+                setTemplateInfo(templateId,1);
+                msg="编辑"
+            }
+            var userDialog =  $("#updateTemplate");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:msg+'模板信息',
+                height: 630,
+                width: 770,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+            //绑定新增事件
+            $(".addTr").click(function () {
+                addFieldModelTr();
+            });
+        };
+
+        /**
+         * 查看模板详情
+         * type 0:详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailTemplateFun = function(templateId) {
+            clearTemplateInfo();
+            var buttons=[{
+                text:"关闭",
+                click:function(){
+                    $(this).dialog("close");
+                }
+            }];
+            setTemplateInfo(templateId,0);
+            var userDialog =  $("#templateInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:'查看模板信息',
+                height: 600,
+                width: 770,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+        };
+
+        /**
+         * 详情赋值
+         * type 0详情 1编辑
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setTemplateInfo=function(templateId,type){
+            var templateInfo = templateDetail(templateId);
+            $("#templateId").val(templateInfo.templateId);
+            $("#templateName").val(templateInfo.templateName);
+            $("#view_templateName").text(templateInfo.templateName);
+            $("#purpose").val(templateInfo.purpose);
+            $("#view_purpose").text(templateInfo.purpose);
+            commons.findDictList(23000, "type",templateInfo.type);
+            $("#view_type").text(templateInfo.typeName);
+            //显示列表
+            var list=templateInfo.templateVO.fieldModelVOList;
+            var tables = $('.paramsList');
+            var row ="";
+            if(list!=null){
+                for(var i=0;i<list.length;i++){
+                    if(type == 0){
+                        row += "<tr class='paramsTr'>" +
+                                "<td>"+list[i].fieldNameCh+"</td>" +
+                                "<td>"+list[i].fieldNameEn+"</td>" +
+                                "</tr>";
+                    }else{
+                        row += "<tr class='paramsTr'>" +
+                                "<td><input type='text' name='fieldNameCh' class='inputType' value='"+list[i].fieldNameCh+"'  /></td>" +
+                                "<td><input type='text' name='fieldNameEn' class='inputType' value='"+list[i].fieldNameEn+"' /></td>" +
+                                "<td style='text-align:center;'><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;cursor:pointer' ></td>" +
+                                "</tr>";
+                    }
+                }
+            }
+
+            tables.append(row);
+            removeTr();
+        }
+
+        var clearTemplateInfo=function(){
+            $("#updateTemplate input").val("");
+            $("#templateId").val("");
+            $("#view_templateName").text("");
+            $("#view_purpose").text("");
+            $("#view_type").text("");
+            $('.paramsList').empty();
+            commons.findDictList(23000, "type");
+        }
+
+        /**
+         * 获取模板值
+         */
+        var getTemplateParam = function () {
+            var templateId = $("#templateId").val();
+            var templateName = $("#templateName").val();
+            var purpose = $("#purpose").val();
+            var type = $("#type").val()
+            var collectionFieldModelVoList = [];
+            $("#updateTemplate .paramsList").find(".paramsTr").each(function () {
+                var fieldNameCn = $(this).find("input[name='fieldNameCh']").val();
+                var fieldNameEn = $(this).find("input[name='fieldNameEn']").val();
+
+                var fielModel = {
+                    'fieldNameCh': fieldNameCn,
+                    'fieldNameEn': fieldNameEn,
+                };
+                collectionFieldModelVoList.push(fielModel);
+            })
+            var templateVO = {
+                fieldModelVOList : collectionFieldModelVoList
+            };
+            var templateParam = {
+                templateId : templateId,
+                templateName: templateName,
+                type: type,
+                purpose: purpose,
+                templateVO: templateVO
+            };
+            return templateParam;
+        }
+
+
+        /**
+         *新增/编辑保存
+         */
+        var addSaveFun = function(templateId){
+            if(!formTemplateVerf()){
+                return ;
+            }
+            showProcess();
+            var url=COLLECTION_TASK_NEW.addTemplateList_url;
+            var msg="新增";
+            if(templateId!=null&&templateId!=''){
+                url=COLLECTION_TASK_NEW.updateTemplateList_url;
+                msg="修改"
+            }
+           var  templateInfo = getTemplateParam();
+            var ajax = new BaseAjax();
+             ajax.opts.url = url;
+             ajax.opts.contentType = "application/json";
+             ajax.opts.data = JSON.stringify(templateInfo);
+             ajax.opts.successFun = function(result){
+                 //关闭进度条
+                 processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                 if(result.flag){
+
+                     $("#templateGrid").trigger("reloadGrid");
+                     $("#updateTemplate").dialog("close");
+                     PopWin.showMessageWin("模板"+msg+"成功");
+
+                 }else{
+
+                     PopWin.showMessageWin("模板"+msg+"失败");
+                 }
+             };
+             ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("模板"+msg+"失败");
+                 //关闭进度条
+                 processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+             };
+             ajax.run();
+        };
+
+        //校验添加模板参数
+        var formTemplateVerf = function () {
+            var userInfo = $('#show_error');
+            if (formVerfication.checkInputIsEmpty($('#templateName'), userInfo, '模板名称不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,15,$(' #templateName'),userInfo, '模板名称不能超过15位')){
+                return false;
+            }
+            if(validTempleName($('#templateId').val(),$('#templateName').val())>0){
+                formVerfication.showErroInfo($('#templateName'),userInfo,'模板名称已存在，请重新填写');
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#purpose'), userInfo, '模板用途不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,15,$('#purpose'),userInfo, '模板用途不能超过15位')){
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#type'), userInfo, '模板类型不能为空')) {
+                return false;
+            }
+            var feildInputs = $("#updateTemplate .paramsList").find("input");
+            var bool = true;
+            if (feildInputs.size() == 0) {
+                formVerfication.showErroInfo($(this),userInfo,'请添加采集字段信息');
+                return false;
+            }
+            if (feildInputs.size() > 0) {
+                $.each(feildInputs, function (i, e) {
+                    if (!$(this).val()) {
+                        bool = false;
+                        $(this).addClass("formInputHighlight")
+                        return;
+                    }
+                });
+            }
+            if (!bool) {
+                formVerfication.showErroInfo($(".paramsList"),userInfo,'属性明细存在未填项');
+                return false;
+            }
+            var fieldNameEnArr = [];
+            var fieldNameEnInputs = $("#updateTemplate .paramsList").find("input[name='fieldNameEn']");
+            var fieldNameChInputs = $("#updateTemplate .paramsList").find("input[name='fieldNameCh']");
+            var enRepeat = true;
+            var isAllEn = true;
+            var isAllCh = true;
+            $.each(fieldNameChInputs,function(){
+                if(formVerfication.checkInputLength(0,10,$(this),userInfo, '字段中文名不能超过10位')){
+                    isAllCh = false;
+                    return false;
+                }
+            });
+            if(!isAllCh){
+                return false;
+            }
+            $.each(fieldNameEnInputs,function(){
+                var result = fieldNameEnArr.indexOf($(this).val());
+                if(result !=-1){
+                    enRepeat = false;
+                    return enRepeat;
+                }else{
+                    fieldNameEnArr.push($(this).val());
+                }
+                if (formVerfication.checkInputIsCharDigitalUnderlineMiddleLine($(this), userInfo, '字段英文名只能包含字母、数字和下划线')) {
+                    isAllEn = false;
+                    return false;
+                }
+                if(formVerfication.checkInputLength(0,10,$(this),userInfo, '字段英文名不能超过10位')){
+                    isAllEn = false;
+                    return false;
+                }
+            });
+            if (!enRepeat) {
+                PopWin.showMessageWin("字段英文名不能重复");
+                return false;
+            }
+            if(!isAllEn){
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var dateFun = function(){
+            $("#search_createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        var searchFun = function() {
+            var template = {};
+            template.templateName = $("#search_templateName").val(); //名称
+            template.purpose= $("#search_purpose").val();//用途
+            template.creatorName=$("#search_creatorName").val();//创建人
+            template.type=$("#search_type").val();//类型
+            $("#templateGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:template,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 根据模板ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var templateDetail = function(templateId){
+            var template={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.getTemplateById_url+"?templateId="+templateId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    template=result.data;
+                }
+            }
+            ajax.run();
+            return template;
+        };
+
+        /**
+         * 验证模板名称是否重复
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var validTempleName = function(templateId,templateName){
+            var num =0;
+            var template={templateId:templateId,templateName:templateName};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.validTemplateName_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(template)
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    num=result.data;
+                }
+            }
+            ajax.run();
+            return num;
+        };
+
+        //添加字段模型行
+        var addFieldModelTr = function () {
+            var tables = $('.paramsList');
+            var row = $("<tr class='paramsTr'>" +
+                    "<td><input type='text' name='fieldNameCh' class='inputType'  /></td>" +
+                    "<td><input type='text' name='fieldNameEn' class='inputType'  /></td>" +
+                    "<td style='text-align:center;'><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;cursor:pointer' ></td>" +
+                    "</tr>");
+            row.appendTo(tables);
+            removeTr();
+        };
+
+
+
+        //移除行
+        var removeTr = function () {
+            $(".removeTr").click(function () {//点击动态移除一行
+                $(this).parent().parent().remove();
+            });
+        }
+
+        init();
+    });
+</script>

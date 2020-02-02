@@ -1,0 +1,60 @@
+<style type="text/css">
+	#reportInfo{font-size:14px;width:500px;margin:0 auto;}
+	#reportInfo table{width: 100%;text-align: left;background: #fff; color: #333;outline: none;margin-top: 10px;}
+	#reportInfo table tr td{height: 34px; line-height: 34px;}
+	#reportInfo  .inputType{width:90%; height: 30px;line-height: 30px;color: #0b0b0b;border-radius: 5px;border:1px solid rgb(212, 212, 212);outline:none;padding:0 3px;}
+	table .td1{padding-right:2px;width:70px;}
+	.s1,.i1,.i2{height: 30px;border:1px solid rgb(212,212,212);outline: none;border-radius:5px;width:92%;}
+	.i1{width:42%;padding:0 5px;}
+	.i2{height: 28px;width:90%;padding:0 5px;}
+	.errorInfo{color:#f00;}
+	.t1{text-align:center;}
+	.ui-widget-header{background:#93c3cd;border:1px solid #93c3cd;}
+	.ui-helper-reset{line-height: 0.5}
+	.ui-tabs .ui-tabs-nav{padding:0;}
+	.ui-tabs .ui-tabs-nav .ui-tabs-anchor{padding:1em 1em;font-size:13px;}
+	.ui-tabs .ui-tabs-nav li.ui-tabs-active{background:#137980; border: none;}
+	.rightMain{min-height: 880px !important;}
+</style>
+<!--<link rel="stylesheet" type="text/css" href="js/lib/jquery-ui/themes/hot-sneaks/jquery-ui.min.css">
+<link rel="stylesheet" type="text/css" href="js/lib/jsgrid-1.5.3/jsgrid.css">
+<link rel="stylesheet" type="text/css" href="js/lib/jsgrid-1.5.3/jsgrid-theme.css">-->
+<div class="searchItems" id="header1">
+	<div class="pic" style="color: #2c4359; margin-bottom: 10px; margin-top: 10px; margin-left: 5px;">雨量地温平均值数据下载（按旬）</div>
+	<div id="tabs" style="border:0;">
+	<!--	<ul>
+			<li><a href="#tabs-1" data-tab = "1">请填写查询提交</a></li>
+		</ul>-->
+		<div id="tabs-1"></div>
+	</div>
+</div>
+<script>
+	require(["jquery","jqueryUi"],function($,jqueryUi){
+		var init = function(){
+			tabEvent();
+			initTabLoad();
+		};
+
+		var initTabLoad = function(){
+			$('#tabs-1').load('module/produce/dataDownGenerate.html');
+		}
+
+		/**
+		 * tab事件
+		 * @version <1> 2017-12-27 cxj : created.
+		 */
+		var tabEvent = function(){
+			$( "#tabs" ).tabs({
+				beforeActivate: function( event, ui ) {
+					var id = $(ui.newPanel[0]).attr('id');
+					if(id == "tabs-1"){
+						$('#' + id).load('module/produce/dataDownGenerate.html');
+					}
+				}
+			});
+		}
+
+		init();
+
+	});
+</script>

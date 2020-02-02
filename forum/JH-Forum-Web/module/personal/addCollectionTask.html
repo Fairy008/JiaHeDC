@@ -1,0 +1,351 @@
+    <style>
+        .content2 .conMain2{min-height: 730px;}
+        .taskMain #listTitle{font-size: 18px;margin-bottom: 20px;border-bottom: 1px solid #ccc;padding-bottom: 20px;width: 90%;}
+
+        .addButton{
+            position: absolute;right: 0;top: 0;cursor:pointer;width: 88px;height:30px;color:#fff;border-radius:10px;background:#65d763;line-height: 30px;text-align:center
+        }
+        .addTaskForm{
+            width: 80%;
+            min-height: 400px;}
+        #addTaskForm ul li {
+            height: 50px;
+            width: 77%;
+            line-height: 50px;
+            margin:0 auto;
+            padding-bottom: 10px;
+            color: #717171;
+            font-size: 14px;
+        }
+        #addTaskForm ul li:last-child{
+            height:120px;
+        }
+        #addTaskForm ul li span label{
+            color:red;
+            padding:2px 8px;
+            vertical-align: middle;
+
+        }
+        #addTaskForm ul li span input{
+            height: 36px;
+            width: 211px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            margin-left: 28px;
+        }
+        #addTaskForm ul li span select{
+            height: 36px;
+            width: 211px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            margin-left: 28px;
+         }
+        #addTaskForm ul li span textarea{
+            height: 106px;
+            width: 392px;
+            margin-top: 17px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            resize: none;
+            margin-left: 28px;
+        }
+        .cancelBtn{
+            width: 171px;
+            height: 38px;
+            border: 1px solid #007bc4;
+            color: #007bc4;
+            display: inline-block;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .saveBtn{
+            width: 173px;
+            height: 40px;
+            background-color: #007bc4;
+            color: #f3f6f6;
+            display: inline-block;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .errorBorder{
+            border:1px solid red;
+        }
+        #workspaceId{width: 392px !important;}
+    </style>
+
+    <div class="taskMain" style="background-color: #ffffff;">
+        <div style="padding-left: 38px;">
+            <p id="listTitle">新建任务</p>
+        </div>
+        <div class="addTaskFormDiv">
+            <form id="addTaskForm" action="">
+                <ul>
+                    <li>
+                        <span class="txtLabel"><label>*</label>任务名称</span>
+                        <span><input id="taskNameId" type="text" name="taskName"/></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>任务类型</span>
+                        <span><select id="taskTypeId" name="taskType"/></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>选择模板</span>
+                        <span><select id="templateTypeId" name="templateTypeId" /></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>开始日期</span>
+                        <span><input id="startDateId" type="text" readonly/></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>结束日期</span>
+                        <span><input id="endDateId" type="text" readonly /></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>单位名称</span>
+                        <span><input id="workspaceId" type="text"/></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel" id="menoId" style="vertical-align: top;margin-left: 54px;">备注</span>
+                        <span><textarea id="remarkId"/></span>
+                    </li>
+                </ul>
+                <div id="errorMsg" style="color:red;width: 58%;margin: 0 auto;"></div>
+                <div style="height:40px;text-align: center;margin-top: 60px; display: flex;justify-content:center;align-items:Center;">
+                    <a class="cancelBtn" id="cancelBtnId">取消</a> <a class="saveBtn" id="saveBtnId">保存</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--<a class="returnTop"></a>-->
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","dateUtil","formVerfication","PopWin"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,dateUtil,formVerfication,PopWin){
+
+        //初始化方法
+        var init = function(){
+            cancelAddCollection();//取消添加采集任务
+            dateFun();//初始化日期
+            loadDictData(1800);//加载数据集
+            loadTemplate();//加载用户模板
+            saveCollectionTask();
+            isLogion();
+
+            formFocus();
+        }
+
+        //去掉提示信息边框
+        var formFocus = function(){
+            $("#addTaskForm input,#addTaskForm select").focus(function(){
+                $(this).removeClass("errorBorder")
+            })
+        }
+
+        //加载数据集
+        var loadTaskTypeJson = {};
+        var loadDictData = function (dictId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    var optList = "<option value=''>--请选择--</option>";
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        loadTaskTypeJson[status.dictId] = status.dataName;
+                        optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                    }
+                    $("#taskTypeId").html(optList);
+                }
+            };
+            ajax.run();
+        };
+        //加载用户模板
+        var loadTemplate = function () {
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK.findTemplateList_url;
+            ajax.opts.async = false;
+            // ajax.opts.data = JSON.stringify({'phone': "15361674006"});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var arry = result.data.list;
+                    var optList = "<option value=''>--请选择--</option>";
+                    for (var i in arry) {
+                        var obj = arry[i];
+                        var dataSet = loadTaskTypeJson[obj.templateType]?loadTaskTypeJson[obj.templateType]:"";
+                        optList += "<option value='" + obj.id + "'>"+dataSet+"-" + obj.templateName + "</option>";
+                    }
+                    $("#templateTypeId").html(optList);
+                }
+            };
+            ajax.run();
+        };
+        //取消
+        function cancelAddCollection(){
+            $("#cancelBtnId").click(function(){
+                // $(".taskMain").load("module/personal/myCollectionTask.html");
+                $(".loadContent").load('personal.html');  //个人中心的第一个默认选中页：我的任务
+
+            });
+        }
+        //保存采集任务
+        function saveCollectionTask(){
+            $("#saveBtnId").click(function(){
+                saveTask();
+            });
+        }
+        //日期函数
+        var dateFun = function () {
+
+            var date = new Date();
+            var _date = date.getFullYear() + "-" + (date.getMonth() +1)+ "-" + date.getDate()
+
+            dateUtil.initTime("startDateId", _date, function () {
+
+            }); //初始化出生日期控件
+            dateUtil.initTime("endDateId", _date, function () {
+            }); //初始化出生日期控件
+        };
+        //保存参数
+        var getParam = function () {
+            var taskName = $("#taskNameId").val();
+            var taskType = $("#taskTypeId").val();
+            var workplace = $("#workspaceId").val();
+            var templateId = $("#templateTypeId").val();
+            var startDate = $("#startDateId").val();
+            var endDate = $("#endDateId").val();
+            var remark = $("#remarkId").val();
+            var loginResult = isLogion();
+            if (!loginResult.flag) return;
+            var userInfo = JSON.parse(loginResult.data);
+            var taskParam = {
+                phone: userInfo.accountName,
+                taskName: taskName,
+                taskType: taskType,
+                workplace: workplace,
+                createor: userInfo.accountName,
+                templateId: templateId,
+                remark: remark,
+                startDate:startDate,
+                endDate:endDate
+            };
+            return taskParam;
+        }
+        //保存大任务
+        var saveTask = function () {
+            var addParam = getParam();
+            if (!formVerf()) {
+                return false
+            }
+            var baseAjax = new BaseAjax();
+            //新增
+            baseAjax.opts.url = COLLECTION_TASK.addTaskInfoList_url;
+            baseAjax.opts.async = false; //同步
+            baseAjax.opts.contentType = "application/json";
+            baseAjax.opts.data = JSON.stringify(addParam);
+            baseAjax.opts.successFun = function (result) {
+                if (result.flag) {
+                    $('form')[0].reset();
+                    // $(".taskMain").load("module/personal/myCollectionTask.html")
+
+                    $(".loadContent").load('personal.html');  //个人中心的第一个默认选中页：我的任务
+                } else {
+                    // PopWin.showMessageWin("保存失败");
+                    // PopWin.showMessageWin(result.msg);
+                    $("#errorMsg").text("*"+result.msg);
+                }
+            };
+            baseAjax.opts.errorFun = function (result) {
+                $("#errorMsg").text("*保存失败");
+            };
+            baseAjax.run();
+        };
+        //校验创建任务参数
+        var formVerf = function () {
+            $("#errorMsg").empty();
+            $('#taskNameId,#taskTypeId,#templateTypeId,#workspaceId,#startDateId,#endDateId').removeClass("errorBorder")
+            var addTaskForm = $("#addTaskForm");
+            var errorMsg = $("#errorMsg");
+            if (formVerfication.checkInputIsEmpty($('#taskNameId'), errorMsg, '任务名不能为空')) {
+                $("#errorMsg").text('*任务名称不能为空');
+                $('#taskNameId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputLength(1,30,$('#taskNameId'),errorMsg,'姓名长度不能超过20个字')) {
+                $("#errorMsg").text('*任务名称不能超过30个字');
+                $('#taskNameId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#taskTypeId'), errorMsg, '任务类型不能为空')) {
+                $("#errorMsg").text('*任务类型不能为空');
+                $('#taskTypeId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#templateTypeId'), errorMsg, '模板类型不能为空')) {
+                $("#errorMsg").text('*模板类型不能为空');
+                $('#templateTypeId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#startDateId'), errorMsg, '开始日期不能为空')) {
+                $("#errorMsg").text('*开始日期不能为空');
+                $('#startDateId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#endDateId'), errorMsg, '结束日期不能为空')) {
+                $("#errorMsg").text('*结束日期不能为空');
+                $('#endDateId').addClass("errorBorder");
+                return false;
+            }
+
+            if($("#startDateId").val() > $("#endDateId").val()){
+                $("#errorMsg").text('*结束日期不能小于开始日期');
+                $('#startDateId').addClass("errorBorder");
+                $('#endDateId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#workspaceId'), errorMsg, '工作单位不能为空')) {
+                $("#errorMsg").text('*工作单位不能为空');
+                $('#workspaceId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputLength(1,30,$('#workspaceId'),errorMsg,'工作单位长度不能超过30个字')) {
+                $("#errorMsg").text('*工作单位不能超过30个字');
+                $('#workspaceId').addClass("errorBorder");
+                return false;
+            }
+
+            //
+            // var startDateL = new Date($('#startDateId').val()).getTime();
+            // var endDateL = new Date($('#endDateId').val()).getTime();
+            // if(startDateL>endDateL){
+            //     return false;
+            // }
+            return true;
+        }
+        //获取用户信息
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+        init();
+    })
+</script>
+

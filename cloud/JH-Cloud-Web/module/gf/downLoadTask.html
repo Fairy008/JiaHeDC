@@ -1,0 +1,1183 @@
+<style type="text/css">
+    #erroInfo{color:red;font-size:12px;}
+
+    h3{font-weight:normal;padding-top:10px;}
+
+    #DetailInfo table .four_td1{width: 80px !important;text-align:right;padding-right:2px;}
+    #DetailInfo table .mul_td1{width:calc(100% - 82px) !important;text-align:left;}
+    /*#DetailInfo table .four_td2{text-align: left;padding-right:20px;width: calc((100% - 306px)/3) !important;}*/
+    #DetailInfo table .four_td2{text-align: left;padding-right:10px;width: calc((100% - 184px)/2) !important;}
+    #DetailInfo{margin: auto;background:#FAFAFA !important; border:1px solid #F3F3F3;}
+    #DetailInfo table{width:100%;text-align: center !important; }
+    #DetailInfo tr td{word-wrap: break-word;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display: inline-block;height: 24px; line-height: 24px;}
+    .file>div:nth-child(1){width:70%;text-align:left;}
+    .file>div:nth-child(2){width:10%;text-align:right;}
+    .file>div:nth-child(3){width:20%;text-align:center;}
+    #file_list{height: 330px; }
+
+    .wait,.download,.success,.fail,.suspend{width: 100px;display: inline-block;}
+    .success{ color: #34b40e;}
+    .fail{ color: #ff0000;}
+    #detailDialog{ font-size:14px;}
+    #detailDialog span{display: inline-block;}
+    .download_search>div{ padding:5px 0px;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">数据分类：</span>
+                    <span>
+                        <select id="search_dataType" class="input" style="width:120px;text-align:center;" >
+                            <option value="">所有分类</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">区域：</span>
+                    <span>
+                        <input type="text" id="txtArea" class="input" placeholder="请选择区域" readonly/>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">数据时间：</span>
+                    <span>
+                        <input type="text" id="search_date" class="input inputWidth_190">
+                    </span>
+                </div>
+                <div>
+                    <span class="label">任务状态：</span>
+                    <span>
+                        <select id="search_status" class="input" style="width:120px;" ></select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dowloadConfigGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <!--BEGIN download param-->
+    <div  class="form" id="downloadDiv" style="display: none;">
+        <div id="erroInfo"></div>
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>数据分类:</td>
+                <td class="two_td2">
+                    <select id="dataType" class="selectType two_selectType"></select>
+                </td>
+            </tr>
+            <tr class="productMeta" style="display:none;">
+                <td class="two_td1">产品类型:</td>
+                <td class="two_td2">
+                    <select id="downloadMetaValue" class="selectType two_selectType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired regionRequired" >*</span>区域:</td>
+                <td class="two_td2 regionTr">
+                    <input name="regionId" id="regionId" class="inputType" placeholder="请选择区域"  type="text" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>数据时间:</td>
+                <td class="two_td2">
+                    <input type="text" id="addDate" class="inputType inputWidth_190">
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">备注:</td>
+                <td class="two_td2">
+                    <input id="remark" class="inputType" type="text" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!--END ADD-->
+
+
+<!--    <div id="detailDialog" style="display:none;">
+        <div id="DetailInfo">
+            <table>
+                <tr>
+                    <td class="four_td1">数据分类:</td>
+                    <td class="four_td2">
+                        <span id="detail_dataTypeName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">区域:</td>
+                    <td class="four_td2">
+                        <span id="detail_chinaName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">影像时间:</td>
+                    <td class="four_td2">
+                        <span id="detail_startAnd" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    &lt;!&ndash;<td class="four_td1">下载地址:</td>&ndash;&gt;
+                    &lt;!&ndash;<td class="four_td2">
+                        <span id="detail_downloadUrl" class="viewType"></span>
+                    </td>&ndash;&gt;
+                    <td class="four_td1">创建人:</td>
+                    <td class="four_td2">
+                        <span id="detail_creatorName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">创建时间:</td>
+                    <td class="four_td2">
+                        <span id="detail_createTime" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">数据总数:</td>
+                    <td class="four_td2">
+                        <span id="download_totalNum" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr style="text-align: left;">
+                    <td class="four_td1">已下载数:</td>
+                    <td class="four_td2">
+                        <span id="download_okNum" class="viewType"></span>
+                    </td>
+
+                    <td class="four_td1">任务状态:</td>
+                    <td class="four_td2">
+                        <span id="download_status" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">备注:</td>
+                    <td class="four_td2">
+                        <span id="download_remark"  title=""></span>
+                    </td>
+                </tr>
+                <tr style="text-align:left;">
+                    <td class="four_td1">失败原因:</td>
+                    <td colspan="5" style="width:760px;text-align:left;">
+                        <span id="download_reason" ></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+       <div class="fileListDiv" >
+            <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div><div>影像时间</div></div>
+            <div class="file_list" id="file_list"></div>
+        </div>
+    </div>-->
+
+    <div id="detailDialog" style="display:none;">
+        <div id="DetailInfo">
+            <table>
+                <tr>
+                    <td class="four_td1">数据分类:</td>
+                    <td class="four_td2">
+                        <span id="detail_dataTypeName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">区域:</td>
+                    <td class="four_td2">
+                        <span id="detail_chinaName" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">创建人:</td>
+                    <td class="four_td2">
+                        <span id="detail_creatorName" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">创建时间:</td>
+                    <td class="four_td2">
+                        <span id="detail_createTime" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr style="text-align: left;">
+                    <td class="four_td1">任务状态:</td>
+                    <td class="four_td2">
+                        <span id="download_status" class="viewType"></span>
+                    </td>
+                    <td class="four_td1">数据时间:</td>
+                    <td class="four_td2">
+                        <span id="detail_startAnd" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr style="text-align:left;">
+                    <td class="four_td1">失败原因:</td>
+                    <td colspan="5" style="width:460px;text-align:left;">
+                        <span id="download_reason" ></span>
+                    </td>
+                </tr>
+                <tr style="text-align:left;">
+                    <td class="four_td1">备注:</td>
+                    <td colspan="5" style="width:460px;text-align:left;">
+                        <span id="download_remark"  title=""></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div id="alertMsg"></div>
+    <div id="showDialog" class="dialogStyle">
+    </div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","dateUtil","RegionModule","commons"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,dateUtil,RegionModule,commons) {
+
+            var init = function(){
+                $(".regionRequired").css("display","none"); //默认为非必填
+                dateFun('search_date');
+                fileSearchDataType();//加载数据分类
+                loadDownloadStatus(800);//加载下载任务状态
+
+                RegionSelectFun("txtArea");
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+                selectDataType()//初始化数据类型选择
+                $(window).resize(function(){
+                    $("#dowloadConfigGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+
+
+                /**
+                 * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+                 * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+                 * @version<1> 2018-05-29 lcw: Created.
+                 */
+                $("#search_date").on("click",function(){
+                    if($("#divArea").css("display")== "block"){
+                        $("#divArea").css("display","none")
+                    }
+                })
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $("#txtArea").removeAttr("regionid");
+                fileSearchDataType();//加载数据分类
+                loadDownloadStatus(800);//加载下载任务状态
+            }
+
+            var chanageTableCss = function(){
+                var divObj = $('#dowloadConfigGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+            /**
+             * 数据类型改变事件
+             * @version<1> 2019-04-03 cxw :created.
+             */
+            var selectDataType =function () {
+                debugger
+                $("#dataType").change(function(){
+                    var dataType = $("#dataType").val();
+                    if(dataType == 7006){
+                     regionInput = '<input name="regionId" id="regionId" class="inputType"  value="中国" regionid="3100000000" regioncode="CHN" regionname="China" chinaname="中国" type="text" readonly/>'
+                      $('.regionTr').html(regionInput)
+                    }
+                    else{
+                        regionInput = '<input name="regionId" id="regionId" class="inputType" placeholder="请选择区域" type="text" readonly/>'
+                        $('.regionTr').html(regionInput)
+                        RegionSelectFun("regionId");
+                    }
+                })
+            }
+
+
+            /**
+             * 区域选择控件
+             *
+             */
+            var RegionSelectFun = function(idName){
+                var txtArea = document.getElementById(idName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400};
+                    opts.url = REGION_CONFIG.findRegion_url;
+                    var regionSelector = new RegionModule.RegionSelector(idName,opts);
+                    regionSelector.show();
+                }
+                return true;
+            }
+
+            var dateFun = function(idName){
+                $("#"+idName).jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+            /**
+             * 选择数据分类
+             */
+            var dataTypSelectFun = function (_downloadMetaValue) {
+
+                var dataType = document.getElementById("dataType");
+
+                dataType.onchange = function () {
+                    var _value = dataType.value;
+                    if(_value == 7002){ //显示产品
+                        $(".productMeta").show();
+                        $(".regionRequired").css("display","inline")
+                        $("#downloadMetaValue").html("");
+
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.async = false;
+                        ajax.opts.data = JSON.stringify({'parentId' : 417});
+                        ajax.opts.successFun = function (result) {
+                            if (result.flag) {
+                                var dataTypeArr = result.data;
+                                var optList = "";
+                                for (var i in dataTypeArr) {
+                                    var dict = dataTypeArr[i];
+                                    dataTypeObj[dict.dictId] = dict.dataName;
+                                    optList += "<option value='" + dict.dataValue + "'>" + dict.dataName + "</option>";
+                                }
+                                $("#downloadMetaValue").html(optList);
+
+                                if(!!_downloadMetaValue){
+                                    $('#downloadMetaValue').val(_downloadMetaValue);
+                                }
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+
+                        };
+                        ajax.run();
+
+
+
+                        // var ajax = new BaseAjax();
+                        // ajax.opts.url = DOWNLOAD_CONFIG.queryByDataType_url;
+                        // ajax.opts.async = true;
+                        // ajax.opts.data = JSON.stringify({'satId':$(this).val()});
+                        // ajax.opts.successFun = function (result) {
+                        //     if (result.flag) {
+                        //         var config = result.data;
+                        //         var optList = "";
+                        //         for (var i in config) {
+                        //             var c = config[i];
+                        //             optList += "<option value='" + c.downloadMetaId + "'>" + c.downloadUrl + "</option>";
+                        //         }
+                        //         $("#downloadMetaId").html(optList);
+                        //         if(!!downloadMetaId){
+                        //             $('#downloadMetaId').val(downloadMetaId);
+                        //         }
+                        //     }
+                        // };
+                        // ajax.opts.errorFun = function () {
+                        //
+                        // };
+                        // ajax.run();
+
+
+
+                    }else{
+                        $(".productMeta").hide();
+                        $(".regionRequired").css("display","none")
+                    }
+
+                }
+
+                $('#dataType').change();
+
+            }
+
+
+            /**
+             * 加载数据分类
+             *
+             * @version <1> 2018-02-05 djh： Created.
+             */
+            var dataTypeObj = {};
+            var fileSearchDataType = function() {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.dataType_url;
+                ajax.opts.async = true;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var dataTypeArr = result.data;
+                        var optList = "<option value=''>--请选择--</option>";
+                        for (var i in dataTypeArr) {
+                            var dict = dataTypeArr[i];
+                            dataTypeObj[dict.dictId] = dict.dataName;
+                            optList += "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                        }
+                        $("#search_dataType").html(optList);
+                        $("#dataType").html(optList);
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+
+            /**
+             * 加载下载任务状态
+             *
+             * @version <1> 2018-03-13 xzg： Created.
+             */
+            var downloadStatus = {};
+            var loadDownloadStatus = function(dictId) {
+                var ajax = new BaseAjax();
+//                ajax.opts.url = DICT_COFING.downloadStatus_url;
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = true;
+                ajax.opts.data = JSON.stringify({'parentId' : dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        var optList = "<option value=''>所有状态</option>";
+                        for (var i in statusArry) {
+                            var status = statusArry[i];
+                            downloadStatus[status.dictId] = status.dataName;
+                            optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                        }
+                        $("#search_status").html(optList);
+                        dowloadConfigGrid();
+
+                        chanageTableCss();
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 下载任务记录的渲染
+             *
+             * @version <1> 2018-02-28 xzg： Created.
+             */
+            var dowloadConfigGrid = function () {
+                $("#dowloadConfigGrid").jqGrid({
+                    url: DOWNLOAD_TASK.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        userFlag:commons.getMyDataFun()
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: 0,
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['downloadId','任务名称','数据分类', '区域', '数据时间', '任务创建人', '创建时间', '任务状态','操作'],
+                    colModel: [
+                        {name: 'downloadId', index: 'downloadId',width:'0%',hidden:true,sortable: false},
+                        {name: 'downloadName', index: 'downloadName',width:'20%'},
+                       /* {name: 'satId', index: 'satId', align: 'center', width: '12%',
+                            formatter:function (cellvalue,options,rowObject) {
+                                return dataTypeObj[cellvalue] || '';
+                            }
+                        },*/
+                        {name: 'dataTypeName', index: 'dataTypeName', align: 'center', width: '12%'},
+                        {name: 'regionChinaName', index: 'china_name', align: 'center', width: '10%', formatter:function (cellvalue,options,rowObject) {
+                            if(rowObject.regionChinaName== undefined ||rowObject.regionChinaName=="")
+                            {
+                                return "全球";
+                            }
+                            return rowObject.regionChinaName ||'';
+                        }
+                        },
+                        {name: 'dateTime', index: 'dateTime', align: 'center', width: '15%',sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                return (rowObject.startDate == null && rowObject.endDate == null) ? "" : (new Date(rowObject.startDate).Format("yyyy-MM-dd") + ' 至 ' +new Date(rowObject.endDate).Format("yyyy-MM-dd"));
+                            }
+                        },
+                        {name: 'creatorName', index: 'creatorName', align: 'center', width: '6%'},
+                        {
+                            name: 'createTime',
+                            index: 'createTime',
+                            width: '10%',
+                            align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+                            }
+                        },
+                        {name: 'downloadStatus', index: 'downloadStatus', align: 'center', width: '8%',
+                            formatter:function (cellvalue,options,rowObject) {
+                                var statusName = "";
+                                switch (downloadStatus[cellvalue]){
+                                    case '待下载' : statusName = "<span class='wait'>待下载</span>";break;
+                                    case '下载中' : statusName = "<span class='download'>下载中</span>";break;
+                                    case '下载成功' : statusName = '<span class="success">下载成功</span>';break;
+                                    case '下载失败' : statusName = "<span class='fail'>下载失败</span>";break;
+                                    case '暂停' : statusName = "<span class='suspend'>已暂停</span>";break;
+                                }
+                                return statusName;
+                            }
+                        },
+                        {
+                            name: 'downloadStatus',
+                            index: 'cz',
+                            width: '10%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.downloadId + "' title='查看明细' >";
+
+                                // str += "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.downloadId + "' title='编辑' >";
+
+//                                if (downloadStatus[cellvalue] == '下载成功'){
+//                                    str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.downloadId + "' title='查看详情' >";
+//                                } else {
+//                                    str += "<img src='images/public/TwatchG.png' class='grayBtn' data-id='" + rowObject.downloadId + "' title='查看详情' >";
+//                                }
+//                                switch (downloadStatus[cellvalue]){
+//                                    case '待下载' : str += "<img src='images/public/waiting.png' title='待下载' >";break;
+//                                    case '下载中' : str += "<img src='images/public/Ttostop.png' class='suspendBtn' data-status='"+ rowObject.downloadStatus +"' data-id='" + rowObject.downloadId + "' title='暂停' >";break;
+//                                    case '下载成功' : str += "<img src='images/public/Tsuccess.png' class='grayBtn' title='下载成功' >";break;
+//                                    case '下载失败' : str += "<img src='images/public/Trefresh.png' class='tryAgainBtn' data-status='"+rowObject.downloadStatus+"' data-id='" + rowObject.downloadId + "' title='重新下载' >";break;
+//                                    case '暂停' : str += "<img src='images/public/Ttostart.png' class='continueBtn' data-status='"+rowObject.downloadStatus+"' data-id='" + rowObject.downloadId + "' title='继续下载' >";break;
+//                                }
+
+
+                                switch (downloadStatus[cellvalue]){
+                                    case '下载失败':
+                                        str+="<img src='images/public/Trefresh.png' class='startBtn' data-id='"+ rowObject.downloadId +"'title='重新下载' >";
+                                        break;
+                                    case '下载成功' :
+                                        str+="<img src='images/public/Trefresh.png' class='startBtn' data-id='"+ rowObject.downloadId +"'title='重新下载' >";
+                                        break;
+                                    default:
+                                        str+="<img src='images/public/TrefreshG.png' title='重新下载' >";
+                                        break;
+                                }
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    //sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+
+                        commons.isNextDisable();
+
+                        $(".startBtn,.suspendBtn,.continueBtn,.tryAgainBtn,.editBtn,.detailBtn").off("click");
+                        $(".startBtn").on("click", function () {
+                            startFun($(this).attr("data-id"));
+                        });
+                        $(".suspendBtn").on("click", function () {
+                            suspendFun($(this).attr("data-id"),$(this).attr("data-status"));
+                        });
+
+                        $(".continueBtn").on("click", function () {
+                            continueFun($(this).attr("data-id"),$(this).attr("data-status"));
+                        });
+
+                        $(".tryAgainBtn").on("click", function () {
+                            tryAgainFun($(this).attr("data-id"),$(this).attr("data-status"));
+                        });
+
+                        $(".detailBtn").on("click", function () {
+                            detailFun($(this).attr("data-id"));
+                        });
+                    }
+                });
+            };
+
+            /**
+             * 重新入库
+             * @version <1> 2017-05-31 wl : created.
+             */
+            var startFun = function(id){
+                var showDialog = $("#showDialog");
+                showDialog.html("是否确认重新下载？");
+                showDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DOWNLOAD_TASK.startAgain_url + "?downloadId=" + id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.async = false; //同步请求
+                            ajax.opts.successFun = function(result){
+                                if (result.flag) {
+                                    $("#dowloadConfigGrid").trigger("reloadGrid");
+                                    showDialog.dialog("close");
+                                    PopWin.showMessageWin("任务正在重新下载");
+                                } else {
+                                    PopWin.showMessageWin(result.msg);
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("任务重新下载失败，请联系技术人员");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                showDialog.dialog("open");
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var searchFun = function () {
+                var dictId = $.trim($("#search_dataType").val());
+                var search_date = ($("#search_date").val().trim()).split('至');
+                $("#dowloadConfigGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData:{
+                        'satId': dictId,
+                        'regionId':$.trim($("#txtArea").attr('regionid')),
+                        'searchStartTime':search_date[0] || '',
+                        'searchEndTime':search_date[1] || '',
+                        'downloadStatus':$.trim($('#search_status').val())
+                    },
+                    page: 1
+                }).trigger("reloadGrid");
+            }
+
+            /**
+             * 清空错误提示信息
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            function clearErrorMessage() {
+                $("#erroInfo").empty();
+            }
+
+            /**
+             * 获取更新或添加的下载任务的数据参数
+             *
+             * @version <1> 2018-03-02 xzg： Created.
+             */
+            var getParam = function() {
+                var addDate = ($("#addDate").val().trim()).split('至');
+                var dataType = $.trim($("#dataType").val());
+                // var downloadMetaId = $.trim($("#downloadMetaId").val());
+                var regionId = $.trim($("#regionId").attr('regionid'));
+                var startDate = addDate[0];
+                var endDate = addDate[1];
+                var remark = $.trim($("#remark").val());
+
+                var downlaodParam = {
+                    'dataType': dataType,
+                    'downloadMetaId': dataType,
+                    'downloadMetaValue':$.trim($("#downloadMetaValue").val()),
+                    'regionId': regionId,
+                    'startDate': startDate,
+                    'endDate': endDate,
+                    'remark': remark,
+                    'regionChinaName':$.trim($('#regionId').attr('chinaname')),
+                    'satId' : dataType,
+                    'satName':$.trim($('#dataType option:selected').text())
+
+                };
+                console.log(downlaodParam)
+                return downlaodParam;
+            }
+
+            /**
+             * 新增下载任务
+             *
+             * @version <1> 2018-03-02 xzg： Created.
+             */
+            var addFun = function() {
+                debugger
+                RegionSelectFun("regionId");
+                var downloadDiv =  $("#downloadDiv");
+                var dialogParent = downloadDiv.parent();
+                var dialogOwn = downloadDiv.clone();
+                downloadDiv.dialog({
+                    autoOpen: false,
+                    title:'新建下载任务',
+                    height: 350,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:'保存',
+                            click: function () {
+                                saveDownload(downloadDiv);
+                            }
+                        },
+                        {
+                            text:'取消',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                downloadDiv.dialog("open");
+
+                //dataTypSelectFun();//2019-03-29注释
+                dateFun("addDate");
+            }
+
+            var formVerf = function () {
+                var downloadInfo  =  $('#downloadDiv');
+                if (formVerfication.checkInputIsEmpty($('#dataType'),downloadInfo,'数据分类不能为空')){
+                    return false;
+                }
+
+
+
+
+                // if (formVerfication.checkInputIsEmpty($('#downloadMetaId'),downloadInfo,'下载地址不能为空')){
+                //     return false;
+                // }
+
+             /*   if($(".regionRequired").css("display") == "inline"){
+                    if (formVerfication.checkInputIsEmpty($('#regionId'),downloadInfo,'区域不能为空')){
+                        return false;
+                    }
+                }*/
+
+
+                if (formVerfication.checkInputIsEmpty($('#addDate'),downloadInfo,'影像时间不能为空')){
+                    return false;
+                }
+                return true;
+            }
+
+            /**
+             * 保存下载任务信息
+             *
+             * @version <1> 2018-03-02 xzg： Created.
+             */
+            var saveDownload = function(downloadDiv) {
+                if (!formVerf()){
+                    return false;
+                }
+
+                var addParam = getParam();
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = DOWNLOAD_TASK.saveDownload_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(addParam);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#dowloadConfigGrid").trigger("reloadGrid");
+                        downloadDiv.dialog("close");
+                        PopWin.showMessageWin("下载任务新增成功");
+                    } else {
+                        PopWin.showMessageWin("下载任务新增失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("下载任务新增失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 根据任务id 暂停下载任务
+             *
+             * @version <1> 2018-03-05 xzg： Created.
+             */
+            var suspendFun = function (downloadId,status) {
+                if(downloadStatus[status] !=  '下载中'){
+                    alertMsg("当前任务不能暂停,请检查状态是否为下载中");
+                    return false;
+                }
+                var suspendDialog = $("<div id='suspendDialog'></div>");
+                suspendDialog.html("是否确认暂停此任务？");
+                var dialogParent = suspendDialog.parent();
+                var dialogOwn = suspendDialog.clone();
+                suspendDialog.dialog({
+                    autoOpen: false,
+                    title: '暂停任务',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"是",
+                            click: function () {
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = DOWNLOAD_TASK.suspend_url;
+                                ajax.opts.data = JSON.stringify({'downloadId': downloadId});
+                                ajax.opts.contentType = "application/json";
+                                ajax.opts.successFun = function (result) {
+                                    $("#dowloadConfigGrid").trigger("reloadGrid");
+                                    suspendDialog.dialog("close");
+                                    if (result.flag) {
+                                        PopWin.showMessageWin("暂停任务成功");
+                                    } else {
+                                        PopWin.showMessageWin(result.msg);
+                                    }
+                                };
+                                ajax.opts.errorFun = function () {
+                                    PopWin.showMessageWin("任务暂停失败，请联系技术人员");
+                                };
+                                ajax.run();
+                            }
+                        },
+                        {
+                            text:"否",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                suspendDialog.dialog("open");
+            };
+
+            /**
+             * 根据任务id 继续下载任务
+             *
+             * @version <1> 2018-03-05 xzg： Created.
+             */
+            var continueFun = function (downloadId,status) {
+                if(downloadStatus[status] !=  '暂停'){
+                    alertMsg("当前任务不能继续执行,请检查状态是否为暂停");
+                    return false;
+                }
+                var continueDialog = $("<div id='continueDialog'></div>");
+                continueDialog.html("是否继续执行此任务？");
+                var dialogParent = continueDialog.parent();
+                var dialogOwn = continueDialog.clone();
+                continueDialog.dialog({
+                    autoOpen: false,
+                    title: '继续执行任务',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"是",
+                            click: function () {
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = DOWNLOAD_TASK.continueDownload_url;
+                                ajax.opts.data = JSON.stringify({'downloadId': downloadId});
+                                ajax.opts.contentType = "application/json";
+                                ajax.opts.successFun = function (result) {
+                                    if (result.flag) {
+                                        $('#continueDialog').dialog("close");
+                                        $("#dowloadConfigGrid").trigger("reloadGrid");
+                                        PopWin.showMessageWin("继续执行任务操作成功");
+                                    } else {
+                                        PopWin.showMessageWin(result.msg);
+                                    }
+                                };
+                                ajax.opts.errorFun = function () {
+                                    PopWin.showMessageWin("继续执行任务操作失败，请联系技术人员");
+                                };
+                                ajax.run();
+                            }
+                        },
+                        {
+                            text:"否",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                continueDialog.dialog("open");
+            };
+
+            /**
+             * 重新执行下载任务
+             *
+             * @version <1> 2018-03-05 xzg： Created.
+             */
+            var tryAgainFun = function (downloadId,status) {
+                if(downloadStatus[status] !=  '下载失败'){
+                    alertMsg("当前任务不能重新执行,请检查状态是否为下载失败");
+                    return false;
+                }
+
+                RegionSelectFun("regionId");
+
+                //查询下载任务信息
+                var findAjax = new BaseAjax();
+                findAjax.opts.url = DOWNLOAD_TASK.findById_url;
+                findAjax.opts.contentType = "application/json";
+                findAjax.opts.data = JSON.stringify({"downloadId":downloadId});
+                findAjax.opts.async = true;
+                findAjax.opts.successFun = function (result) {
+                    var downloadMsg = result.data;
+                    if(!!downloadMsg){
+                        $("#dataType").val(downloadMsg.satId);
+                        $("#addDate").val(downloadMsg.startDate + '至'+downloadMsg.endDate);
+                        $("#remark").val(downloadMsg.remark);
+                        $('#regionId').attr('regionid',downloadMsg.regionId);
+                        $('#regionId').attr('chinaname',downloadMsg.regionChinaName);
+                        $('#regionId').val(downloadMsg.regionChinaName);
+
+                        //绑定数据分类改变事件   暂时没有用
+                        //dataTypSelectFun(downloadMsg.downloadMetaValue); //2019-03-29注释
+                    }
+                };
+                findAjax.run();
+
+                dateFun("addDate");
+
+                var editDialog = $("#downloadDiv");
+                var dialogParent = editDialog.parent();
+                var dialogOwn = editDialog.clone();
+                editDialog.dialog({
+                    autoOpen: false,
+                    title: '重新下载',
+                    height: 350,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"是",
+                            click: function () {
+                                if(!formVerf()){return false;}
+                                var eddParam = getParam();
+                                eddParam.downloadId = downloadId;
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = DOWNLOAD_TASK.tryAgain_url;
+                                ajax.opts.data = JSON.stringify(eddParam);
+                                ajax.opts.contentType = "application/json";
+                                ajax.opts.successFun = function (result) {
+                                    if (result.flag) {
+                                        $("#dowloadConfigGrid").trigger("reloadGrid");
+                                        editDialog.dialog("close");
+                                        PopWin.showMessageWin("任务正在重新下载");
+                                    } else {
+                                        PopWin.showMessageWin(result.msg);
+                                    }
+                                };
+                                ajax.opts.errorFun = function () {
+                                    PopWin.showMessageWin("任务重新下载失败，请联系技术人员");
+                                };
+                                ajax.run();
+                            }
+                        },
+                        {
+                            text:"否",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                editDialog.dialog("open");
+            };
+
+            /**
+             * 任务详情查看
+             *
+             * @version <1> 2018-03-05 xzg： Created.
+             */
+           /* var detailFun = function (downloadId) {
+                var download_name = '任务详情';
+
+                //查询任务详情
+                var task = new BaseAjax();
+                task.opts.url = DOWNLOAD_TASK.findById_url;
+                task.opts.async = true;
+                task.opts.data = JSON.stringify({'downloadId':downloadId});
+                task.opts.successFun = function (result) {
+                    var downloadMsg = result.data;
+                    $('#detail_dataTypeName').html(downloadMsg.dataCode);
+                    $('#detail_chinaName').html(downloadMsg.regionChinaName);
+                    $('#detail_downloadUrl').html(downloadMsg.downloadUrl);
+                    $('#detail_creatorName').html(downloadMsg.creatorName);
+                    $('#detail_createTime').html(downloadMsg.createTime);
+                    $('#detail_startAnd').html(downloadMsg.startDate + ' 至 ' + downloadMsg.endDate);
+                    $('#download_totalNum').html(downloadMsg.totalNum || 0);
+                    $('#download_okNum').html(downloadMsg.okNum || 0);
+                    $('#download_remark').html(downloadMsg.remark || '');
+                    $("#download_remark").attr("title", downloadMsg.remark || '' );
+
+
+                    $('#download_reason').html(downloadMsg.reason || '');
+                    //设置元素title属性
+                    $($('.four_td2')).each(function(i,d){d.setAttribute('title',d.innerText)});
+                    download_name += downloadMsg['downloadName'];
+
+                    var statusNameStr = '';
+                    switch (downloadStatus[downloadMsg.downloadStatus]){
+                        case '待下载' : statusNameStr = "<span class='wait'>待下载</span>";break;
+                        case '下载中' : statusNameStr = "<span class='download'>下载中</span>";break;
+                        case '下载成功' : statusNameStr = '<span class="success">下载成功</span>';break;
+                        case '下载失败' : statusNameStr = "<span class='fail'>下载失败</span>";break;
+                        case '暂停' : statusNameStr = "<span class='suspend'>已暂停</span>";break;
+                    }
+                    $('#download_status').html(statusNameStr);
+                };
+                task.run();
+                //查询下载文件详情
+                var detail = new BaseAjax();
+                detail.opts.url = DOWNLOAD_DETAIL.findDetail_url;
+                detail.opts.async = true;
+                detail.opts.data = JSON.stringify({'downloadId':downloadId});
+                detail.opts.successFun = function (result) {
+                    var detailList = result.data;
+                    var detailHtml = "";
+                    $(detailList).each(function (i,d) {
+                        detailHtml += "<div class='file'><div title='"+d.productName+"'>"+d.productName+"</div><div>"+(d.fileSize || "---")+"</div><div>" + (d.productTime || "---") + "</div></div>";
+
+                    });
+                    if (detailList.length == 0){
+                        detailHtml += "<h3>没有下载的文件</h3>";
+                    }
+                    $('#file_list').html(detailHtml);
+                };
+                detail.run();
+
+                var detailDialog = $("#detailDialog");
+                var dialogParent = detailDialog.parent();
+                var dialogOwn = detailDialog.clone();
+                detailDialog.dialog({
+                    autoOpen: false,
+                    title: download_name,
+                    height: 615,
+                    width: 900,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:'关闭',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                detailDialog.dialog("open");
+            };*/
+
+
+            /**
+             * 任务详情查看
+             *
+             * @version <1> 2018-03-05 xzg： Created.
+             */
+            var detailFun = function (downloadId) {
+                var download_name = '任务详情';
+
+                //查询任务详情
+                var task = new BaseAjax();
+                task.opts.url = DOWNLOAD_TASK.findById_url;
+                task.opts.async = true;
+                task.opts.data = JSON.stringify({'downloadId':downloadId});
+                task.opts.successFun = function (result) {
+                    var downloadMsg = result.data;
+                    $('#detail_dataTypeName').html(downloadMsg.dataTypeName);
+                    $('#detail_chinaName').html(downloadMsg.regionChinaName==null?'全球':downloadMsg.regionChinaName);
+                    $('#detail_creatorName').html(downloadMsg.creatorName);
+                    $('#detail_createTime').html(downloadMsg.createTime);
+                    $('#detail_startAnd').html(downloadMsg.startDate + ' 至 ' + downloadMsg.endDate);
+                    $('#download_remark').html(downloadMsg.remark || '');
+                    $("#download_remark").attr("title", downloadMsg.remark || '' );
+
+                    $('#download_reason').html(downloadMsg.reason || '');
+                    //设置元素title属性
+                    $($('.four_td2')).each(function(i,d){d.setAttribute('title',d.innerText)});
+                    download_name += downloadMsg['downloadName'];
+
+                    var statusNameStr = '';
+                    switch (downloadStatus[downloadMsg.downloadStatus]){
+                        case '待下载' : statusNameStr = "<span class='wait'>待下载</span>";break;
+                        case '下载中' : statusNameStr = "<span class='download'>下载中</span>";break;
+                        case '下载成功' : statusNameStr = '<span class="success">下载成功</span>';break;
+                        case '下载失败' : statusNameStr = "<span class='fail'>下载失败</span>";break;
+                        case '暂停' : statusNameStr = "<span class='suspend'>已暂停</span>";break;
+                    }
+                    $('#download_status').html(statusNameStr);
+                };
+                task.run();
+
+                var detailDialog = $("#detailDialog");
+                var dialogParent = detailDialog.parent();
+                var dialogOwn = detailDialog.clone();
+                detailDialog.dialog({
+                    autoOpen: false,
+                    title: download_name,
+                    height: 400,
+                    width: 600,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:'关闭',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                detailDialog.dialog("open");
+            };
+
+            var alertMsg = function (msg) {
+                var detailDialog = $("#alertMsg");
+                detailDialog.html(msg);
+                detailDialog.dialog({
+                    autoOpen: false,
+                    title: '提示框',
+                    height: 150,
+                    width: 420,
+                    modal: true,
+                    buttons: [
+                        {
+                            text:"关闭",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                detailDialog.dialog("open");
+            }
+
+
+            init();
+        });
+    </script>
+
+</div>

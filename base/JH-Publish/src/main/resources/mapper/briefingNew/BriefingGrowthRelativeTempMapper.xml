@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefingNew.mapping.IBriefingGrowthRelativeTempMapper">
+    <resultMap id="BaseResultMap" type="com.jh.briefingNew.entity.BriefingGrowthRelativeTemp">
+        <id column="relative_id" jdbcType="INTEGER" property="relativeId" />
+        <result column="growth_id" jdbcType="INTEGER" property="growthId" />
+        <result column="growth_name" jdbcType="VARCHAR" property="growthName" />
+        <result column="temp_range_start" jdbcType="INTEGER" property="tempRangeStart" />
+        <result column="temp_range_end" jdbcType="INTEGER" property="tempRangeEnd" />
+        <result column="instruction" jdbcType="VARCHAR" property="instruction" />
+        <result column="ifavg" jdbcType="SMALLINT" property="ifavg" />
+        <result column="if_or" jdbcType="SMALLINT" property="ifOr" />
+        <result column="range_limit" jdbcType="SMALLINT" property="rangeLimit" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        relative_id, growth_id, growth_name, temp_range_start, temp_range_end, instruction,
+        ifavg, if_or, range_limit
+    </sql>
+
+    <!-- 根据growthId（物候期编号）查询对应生长与地温关系信息 -->
+    <select id="queryGrowthRelativeTemp" resultType="com.jh.briefingNew.entity.BriefingGrowthRelativeTemp" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from briefing_growth_relative_temp
+        <where>
+            <if test="growthId != null and growthId != ''" >
+                growth_id = #{growthId}
+            </if>
+        </where>
+        order by temp_range_start
+    </select>
+    </mapper>

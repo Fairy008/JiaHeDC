@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>珈和农情遥感-卫星影像解译助力农业信息化</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="description" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <meta name="Keywords" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+
+    <style>
+        *{margin:0;padding:0}
+        body{
+            min-height:400px;
+            /*font-family: tahoma,arial,"Hiragino Sans GB",宋体,sans-serif*/
+        }
+
+
+        /*回到顶部*/
+        .returnTop{ position: fixed; bottom: 30px;right:30px; color: transparent; width: 38px; font-size: 12px;line-height: 16px;padding: 2px 6px;box-sizing: border-box; height: 38px; background: #fff url("images/public/forum/returnTop.png") center center no-repeat; border:1px solid #e2e2e2; border-radius: 5px;}
+        .returnTop:hover{ background: none; cursor: pointer; color: #555;}
+
+        .loadContent{
+            margin-top:240px;
+            background-color: #ededed;
+        }
+        .body_content{
+            width: calc(100% - 14%);
+            height: auto;
+            margin-left: 54px;
+            box-sizing: border-box;
+            background-color: white;
+            margin-left: 7%;
+            /*margin-left: 110px;*/
+        }
+        #indexBody{
+            background: #ededed url("./img/bigBG.jpg") no-repeat top;
+            background-size: 100% 500px;
+        }
+
+      .sanjiao{
+          display: inline-block;
+          top: 167px;
+          right: 55px;
+          width: 0;
+          height: 0;
+          border-width: 13px;
+          border-style: solid;
+          border-color: transparent transparent transparent #cccccc;
+          position: absolute;
+          display: none;
+      }
+      .erweima{
+          display: inline-block;
+          top: 150px;
+          right: 80px;
+          width: 100px;
+          height: 100px;
+          position: absolute;
+          /* background-color: red; */
+          background: #cccccc url(./images/public/qrcode/datall_wx.jpg) no-repeat center;
+          background-size: 80%;
+          display: none;
+      }
+        #indexRightTop{
+            height: 200px;
+            border-radius: 4px;
+            margin-top: 60px;
+        }
+        .searchBoxContent{
+            display:block;
+        }
+    </style>
+</head>
+<body id="indexBody">
+  <div class="body_content">
+        <div class="rightTop" id="indexRightTop">
+
+        </div>
+        <div style="clear:both"></div>
+        <div class="loadContent">
+
+
+        </div>
+        <div class="onlineTool">
+
+            <a class="talkOnLine orderOnline" href="javascript:void(0)"url="orderData.html" >数据定制</a>
+
+            <a class="talkOnLine chartOnline" >在线咨询</a>
+
+            <a class="talkOnLine weChat_icon">微信公众号</a>
+
+            <a class="talkOnLine topOnline" >返回顶部</a>
+            <a class="sanjiao"></a>
+            <a class="erweima"></a>
+        </div>
+  </div>
+
+<!--回到顶部按钮-->
+<!--<a class="returnTop" style="display: none;">回到顶部</a>-->
+<!--个人中心菜单内容显示-->
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery","commons","urlConfig"],function($,commons,urlConfig){
+
+
+        var init = function(){
+
+            //回到顶部按钮
+            // returnTop();
+            //新开页面
+            detailPageFun();
+        }
+
+
+
+        /**
+         * 加载编写报告/调研/提问页面
+         *
+         */
+        var detailPageFun = function(){
+
+
+            var href = window.location.href;
+            var params = href.split("#");
+            var value = "";
+            if(params[1] != undefined){
+
+
+                $(".rightTop").load("head.html",function(){
+                    $("#searchTextFlag").val(0)
+                })
+
+                $(".loadContent").load(params[1] + ".html")
+            }else{
+
+                $(".rightTop").load("head.html",function(){
+                    $("#searchTextFlag").val(1)
+                })
+
+                $(".loadContent").load("home.html")
+            }
+
+
+        }
+
+
+        //返回定部
+        var returnTop = function(){
+            $('.returnTop').on('click',function(){
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 300);
+            });
+
+            //对页面滚动条滚动的监听
+            $(window).scroll(function(event){
+                var scroH = $(this).scrollTop();//获取滚动条的滑动距离
+                if (scroH > 0) {
+                    $('.returnTop').fadeIn();//淡入
+                } else {
+                    $('.returnTop').fadeOut();//淡出
+                }
+            });
+        };
+
+
+        //点击就刷新cookie
+        $(document).click(function(){
+
+            setInterval(function(){
+                commons.setCookie(COOKIE_CONFIG.cookieName,commons.getCookie(COOKIE_CONFIG.cookieName),120);
+            },60000)
+        });
+
+
+        // '<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42018502001246"><img src="images/login/beian.png" width="20" height="20" align="absmiddle">鄂公网安备 42018502001246号</a>&nbsp;&nbsp;&nbsp; 鄂ICP备13010685号<br>'
+        +'Copyright©武汉珈和科技有限公司 All Rights Reserved<br>'
+
+        init();
+        // window.onload=function (ev) {
+        //     $("#indexRightTop").width($(".loadContent").width()-1);
+        //     var width = $(".loadContent").offset().left
+        //     $("#indexRightTop").css({"left":width+"px"})
+        //     $("#indexBody").css({"background-size":window.screen.width+"px"})
+        //     if(document.body.clientWidth<1400){
+        //         $("#indexBody").css({"background-size":window.screen.width +400+"px"});
+        //     }
+        // }
+
+        window.onresize = function(){
+            $("#indexRightTop").width($(".loadContent").width()-1);
+            var width = $(".loadContent").offset().left
+            $("#indexRightTop").css({"left":width+"px"})
+            $("#indexBody").css({"background-size":window.screen.width +window.scrollLeft+"px"});
+            if(document.body.clientWidth<1400){
+                $("#indexBody").css({"background-size":window.screen.width +400+"px"});
+            }
+            if(document.body.clientWidth>1400){
+                $("#indexBody").css({"background-size":"100%"});
+            }
+        }
+    })
+</script>
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?49cb69fc9f5e1ae723e6ccccb6231fcb";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+</body>
+</html>

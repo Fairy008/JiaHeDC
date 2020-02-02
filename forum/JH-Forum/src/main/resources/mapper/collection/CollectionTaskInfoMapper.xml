@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.collection.mapping.CollectionTaskInfoMapper">
+  <resultMap id="BaseResultMap" type="com.jh.collection.entity.CollectionTaskInfo">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="task_name" jdbcType="VARCHAR" property="taskName" />
+    <result column="task_origin" jdbcType="VARCHAR" property="taskOrigin" />
+    <result column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="task_type" jdbcType="INTEGER" property="taskType" />
+    <result column="crop_id" jdbcType="INTEGER" property="cropId" />
+    <result column="purpose" jdbcType="VARCHAR" property="purpose" />
+    <result column="workplace" jdbcType="VARCHAR" property="workplace" />
+    <result column="template_content" jdbcType="VARCHAR" property="templateContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="start_date" jdbcType="DATE" property="startDate" />
+    <result column="end_date" jdbcType="DATE" property="endDate" />
+    <result column="createor" jdbcType="VARCHAR" property="createor" />
+    <result column="updateor" jdbcType="VARCHAR" property="updateor" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="task_flag" jdbcType="INTEGER" property="taskFlag" />
+    <result column="index_show" jdbcType="INTEGER" property="indexShow" />
+    <result column="index_show_img" jdbcType="VARCHAR" property="indexShowImg" />
+    <result column="item_count" jdbcType="INTEGER" property="itemCount" />
+
+
+    <association property="collectionTemplate" column="template_id" select="com.jh.collection.mapping.CollectionTemplateMapper.selectByPrimaryKey"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, phone, task_name, task_origin, template_id, task_type,crop_id,purpose,workplace,template_content, create_time, update_time,start_date,end_date,
+    createor, updateor, remark, del_flag,task_flag,index_show,index_show_img
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collection_task_info
+    where id = #{id,jdbcType=INTEGER} and del_flag = 1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collection_task_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jh.collection.entity.CollectionTaskInfo">
+    insert into collection_task_info (phone, task_name,
+      task_origin, template_id, task_type,crop_id,purpose,workplace,template_content,
+      create_time, update_time,start_date,end_date, createor,
+      updateor, remark, del_flag,task_flag
+      )
+    values ( #{phone,jdbcType=VARCHAR}, #{taskName,jdbcType=VARCHAR},
+      #{taskOrigin,jdbcType=VARCHAR}, #{templateId,jdbcType=INTEGER}, #{taskType,jdbcType=INTEGER},#{cropId,jdbcType=INTEGER},#{purpose,jdbcType=VARCHAR},#{workplace,jdbcType=VARCHAR},
+      #{templateContent,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},#{startDate,jdbcType=DATE},#{endDate,jdbcType=DATE}, #{createor,jdbcType=VARCHAR},
+      #{updateor,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER},#{taskFlag,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jh.collection.entity.CollectionTaskInfo">
+    insert into collection_task_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="taskName != null">
+        task_name,
+      </if>
+      <if test="taskOrigin != null">
+        task_origin,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="taskType != null">
+        task_type,
+      </if>
+      <if test="cropId != null">
+        crop_id,
+      </if>
+      <if test="purpose != null">
+        purpose,
+      </if>
+      <if test="templateContent != null">
+        template_content,
+      </if>
+      <if test="workplace != null">
+        workplace,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="createor != null">
+        createor,
+      </if>
+      <if test="updateor != null">
+        updateor,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="task_flag != null">
+        task_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskOrigin != null">
+        #{taskOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="taskType != null">
+        #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="cropId != null">
+        #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="purpose != null">
+        #{purpose,jdbcType=INTEGER},
+      </if>
+      <if test="workplace != null">
+        #{workplace,jdbcType=INTEGER},
+      </if>
+      <if test="templateContent != null">
+        #{templateContent,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=DATE},
+      </if>
+      <if test="createor != null">
+        #{createor,jdbcType=VARCHAR},
+      </if>
+      <if test="updateor != null">
+        #{updateor,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="taskFlag != null">
+        #{taskFlag,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jh.collection.entity.CollectionTaskInfo">
+    update collection_task_info
+    <set>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null">
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="taskOrigin != null">
+        task_origin = #{taskOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="taskType != null">
+        task_type = #{taskType,jdbcType=INTEGER},
+      </if>
+      <if test="cropId != null">
+        crop_id = #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="purpose != null">
+        purpose = #{purpose,jdbcType=VARCHAR},
+      </if>
+      <if test="workplace != null">
+        workplace = #{workplace,jdbcType=VARCHAR},
+      </if>
+      <if test="templateContent != null">
+        template_content = #{templateContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=DATE},
+      </if>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=DATE},
+      </if>
+      <if test="createor != null">
+        createor = #{createor,jdbcType=VARCHAR},
+      </if>
+      <if test="updateor != null">
+        updateor = #{updateor,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="taskFlag != null">
+        task_flag = #{taskFlag,jdbcType=INTEGER},
+      </if>
+      <if test="indexShow != null">
+        index_show = #{indexShow,jdbcType=INTEGER},
+      </if>
+      <if test="indexShowImg != null">
+        index_show_img = #{indexShowImg,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jh.collection.entity.CollectionTaskInfo">
+    update collection_task_info
+    set phone = #{phone,jdbcType=VARCHAR},
+      task_name = #{taskName,jdbcType=VARCHAR},
+      task_origin = #{taskOrigin,jdbcType=VARCHAR},
+      template_id = #{templateId,jdbcType=INTEGER},
+      task_type = #{taskType,jdbcType=INTEGER},
+      crop_id = #{cropId,jdbcType=INTEGER},
+      purpose = #{purpose,jdbcType=VARCHAR},
+      workplace = #{workplace,jdbcType=VARCHAR},
+      template_content = #{templateContent,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      start_date = #{startDate,jdbcType=DATE},
+      end_date = #{endDate,jdbcType=DATE},
+      createor = #{createor,jdbcType=VARCHAR},
+      updateor = #{updateor,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=INTEGER},
+      task_flag = #{taskFlag,jdbcType=INTEGER}
+      index_show = #{indexShow,jdbcType=INTEGER},
+      index_show_img = #{indexShowImg,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!--分页查询-->
+  <select id="findByPage" resultMap="BaseResultMap">
+    SELECT
+      info.id, info.phone, info.task_name, info.task_origin, info.template_id, info.task_type,info.crop_id,info.purpose
+      ,info.workplace,info.template_content, info.create_time, info.update_time,info.start_date,info.end_date,
+      info.createor, info.updateor, info.remark, info.del_flag,info.task_flag,info.index_show,info.index_show_img,
+      (select count(*) from collection_task_item where del_flag = 1 and task_info_id = info.id) as item_count
+    FROM collection_task_info info
+    where del_flag = 1
+    <if test="phone!=null and phone !=''">
+      AND phone = #{phone}
+    </if>
+    <if test="taskName!=null and taskName !=''">
+      AND task_name = #{taskName}
+    </if>
+    <if test="taskType!=null and taskType !=''">
+      AND task_type = #{taskType}
+    </if>
+    <if test="cropId!=null and cropId !=''">
+      AND crop_id = #{cropId}
+    </if>
+    <if test="startCreateTime != null and startCreateTime != '' and endCreateTime != null and endCreateTime != ''">
+      AND to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startCreateTime} as VARCHAR) and cast(#{endCreateTime} as VARCHAR)
+    </if>
+    <if test="indexShow != null and indexShow != ''">
+      AND index_show = #{indexShow,jdbcType=INTEGER}
+    </if>
+    order by
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord},id desc
+      </when>
+      <otherwise>
+        /*task_flag asc,*/create_time desc,id desc
+      </otherwise>
+    </choose>
+  </select>
+
+
+  <!--根据手机号查询任务-->
+  <select id="findCollectDataList" resultMap="BaseResultMap" parameterType="com.jh.collection.entity.vo.BbsCollectionTaskVo">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM collection_task_info
+    where del_flag = 1
+    <if test="phone!=null and phone !=''">
+      AND phone = #{phone}
+    </if>
+    <if test="phone!=null and phone !=''">
+      AND phone = #{phone}
+    </if>
+    <if test="regionId!=null and regionId !=''">
+      AND region_id = #{regionId}
+    </if>
+    <if test="startCreateTime != null and startCreateTime != '' and endCreateTime != null and endCreateTime != ''">
+      AND to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startCreateTime} as VARCHAR) and cast(#{endCreateTime} as VARCHAR)
+    </if>
+    order by create_time desc
+
+  </select>
+</mapper>

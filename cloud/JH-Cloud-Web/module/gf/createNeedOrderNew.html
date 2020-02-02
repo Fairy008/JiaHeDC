@@ -1,0 +1,209 @@
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+<style>
+	.formErrorInfo {
+		padding-left: 0%  !important;
+	}
+	.viewType2{
+		border-radius: 5px;
+		resize: none;
+		width: 90% !important;
+		height: 280px;
+	}
+	.orderBtn{
+		width: 100%;
+		text-align: center;
+		margin-top: 5px;
+		float: left;
+	}
+	.zTreeDemoBackground {
+		text-align: right;
+		border-right:none;
+		width: 25% !important;
+	}
+	.dataInfo{
+		padding-left:0px !important;
+	}
+	.infoDiv{
+		margin-top: calc(calc(100% - 380px) * 0.05 );
+		height: auto !important;
+	}
+</style>
+
+<div class="outerDiv">
+	<div class="innerDiv">
+		<div class="modulTitle">
+			<span class="blueBlock"></span>
+			<span class="modulTitleInfo">创建需求订单</span>
+		</div>
+
+		<div class="infoDiv">
+			<div class="zTreeDemoBackground">
+				<span class="txtRequired">*</span>订单需求描述：
+			</div>
+			<div class="dataInfo ">
+				<textarea name="orderDescription" id="orderDescription" class="viewType2"   placeholder="请填写需求订单信息"/>
+			</div>
+			<div style="clear:both;" >
+				<form  id="auditWord" style="width: 100%;text-align: center;float: left; margin-top: 10px;">
+					<div class="two_td1 zTreeDemoBackground" style="line-height: 25px;">数据申请单<span style="color:red;display:none;">*</span>：</div>
+					<div class="dataInfo" style=" text-align: left;">
+						<input type="file" id="uploadAuditForm" name="dataOrderFile" />
+					</div>
+				</form>
+			</div>
+			<div >
+				<div class="zTreeDemoBackground">&nbsp;</div>
+				<div class="rightDict" style="line-height: 35px;"></div>
+			</div>
+		</div>
+		<div class="orderBtn">
+			<button id="addBtn" class="btn" style="padding:.4em 1.5em;" >新增需求订单</button>
+		</div>
+	</div>
+</div>
+<div id="orderDialog" style="display:none;font-size: 14px" ></div>
+<script>
+	require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,enums){
+		var init = function(){
+			tableEvent();
+		};
+
+		/**
+		 * 绑定table表格操作事件
+		 * @version <1> 2017-12-26 lcw : Created.
+		 */
+		var tableEvent = function(){
+			$("#addBtn").off("click");
+			$("#addBtn").on("click",function(){
+				orderDialogFun();
+			})
+
+
+		}
+
+		/**
+		 * 保存需求订单信息
+		 * @param orderDescription 订单需求描述
+		 * @version <1> 2018-03-14 cxw : Created.
+		 */
+		var saveOrderFun = function () {
+			var form  = $('#auditWord')[0];
+			var formdata = new FormData(form)
+			var orderDescription = $('#orderDescription').val().trim();
+			var orderType = order_orderType.XQ; //需求订单
+			formdata.append('orderDescription',orderDescription);
+			formdata.append('orderType',orderType);
+			$.ajax({
+				type : 'POST',
+				url : ORDER_CONFIG.createOrder_url,
+				data : formdata,
+				processData : false,
+				contentType : false,
+				cache : false,
+				timeout : 600000,
+				headers : {"AccessToken":commons.getAccessToken()},
+				success : function(result){
+					if(result.flag){
+						$('#orderDescription').val('');
+						$('#uploadAuditForm').val('');
+						PopWin.showMessageWin(result.msg);
+					}
+					else{
+						PopWin.showMessageWin(result.msg);
+					}
+				},
+				error:function(){
+					PopWin.showMessageWin("创建需求订单失败!");
+					return false;
+				}
+			});
+
+		/*	var orderDescription = $('#orderDescription').val().trim();
+			var param = {};
+			param.orderDescription = orderDescription;
+            param.orderType = order_orderType.XQ; //需求订单
+			var ajax = new BaseAjax();
+			ajax.opts.url = ORDER_CONFIG.createOrder_url;
+			ajax.opts.contentType = "application/json";
+			ajax.opts.async = false; //同步请求
+			ajax.opts.data=JSON.stringify(param);
+			ajax.opts.successFun = function(result){
+			    if(result.flag){
+					$('#orderDescription').val('');
+				}
+                PopWin.showMessageWin(result.msg);
+			};
+			ajax.opts.errorFun = function(){
+				PopWin.showMessageWin("需求订单添加失败!");
+				return false;
+			};
+			ajax.run();*/
+
+		}
+
+		/**
+		 *创建需求订单
+		 * @param orderId 订单ID
+		 * @return
+		 * @version <1> 2018-03-13 cxw： Created.
+		 */
+		var orderDialogFun = function(orderId){
+			if(!formVerf()){
+				return ;
+			}
+			var dataHandleDialog = $('#orderDialog');
+			dataHandleDialog.html("是否确认创建需求订单？");
+			dataHandleDialog.dialog({
+				autoOpen: false,
+				title: '系统提示',
+				height: 160,
+				width: 410,
+				modal: true,
+				buttons:[
+					{
+						text:"是",
+						click:function(){
+							saveOrderFun();
+							$(this).dialog("close");
+						}},{
+						text:"否",
+						click:function(){
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+			dataHandleDialog.dialog("open");
+		};
+
+		var formVerf = function(){
+			var addOrderInfo = $('.rightDict');
+			if(formVerfication.checkInputIsEmpty($('#orderDescription'),addOrderInfo,'需求描述不能为空')){
+				return false;
+			}
+			if(formVerfication.checkInputLength(0,500,$('#orderDescription'),addOrderInfo,'需求描述不能超过500字')){
+				return false;
+			}
+
+			var reportFile = $('#uploadAuditForm').val().trim();//报告文件
+			// if(reportFile == "" || reportFile == null){
+			// 	if(formVerfication.showErrorInfo($('#orderDescription'),addOrderInfo,'请上传数据申请单')){
+			// 		return false;
+			// 	}
+			// }
+            if(reportFile != "" && reportFile != null){
+                var suffix = reportFile.substring(reportFile.lastIndexOf("."), reportFile.length);
+                if(".doc" != suffix && ".docx" != suffix && ".pdf" != suffix && ".jpg" != suffix && ".png" != suffix){
+                    if(formVerfication.showErrorInfo($('#orderDescription'),addOrderInfo,'数据申请单文件类型必须为doc、docx、pdf、jpg、png其中之一')){
+                        return false;
+                    }
+                }
+            }
+
+			// }
+			return true;
+		}
+		init();
+	});
+
+</script>

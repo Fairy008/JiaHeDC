@@ -1,0 +1,307 @@
+<style>
+    .content{ width: 993px;margin:0 auto}
+    /*左侧轮播*/
+    .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+    /*左侧列表**/
+    .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 599px;*/}
+    .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+    .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+    .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+    .list h1 a:hover{ cursor: pointer;}
+    .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+    .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+    .list span.lab:first-of-type{margin-left:8px;}
+    .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+    .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+    .list dl dt.report{ float: right; margin-top:10px;}
+    .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+    .list dl dd p.brief{ height: 54px; margin-top:16.5px;}
+    .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+    .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+    .list dl dd p.info i.time{ margin-right: 24px;}
+    .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+    .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+    .list dl dd p.info span.collect{ background-position: 0px -49px;}
+
+    .personDiv img{width: 70px;height: 70px;border-radius: 50%;margin-top: 38px;}
+
+    .menuDiv dt:not(:last-child){border-bottom:1px solid #EEEEEE;}
+    .menuDiv dt p{text-align: left;padding-left: 31px;line-height: 35px;}
+    .menuDiv dt p.on{border-left: 4px solid #007bc3}
+
+
+    .myFollow div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+
+    .myArticle div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+    #listTitle{font-size: 30px;margin-bottom: 20px;}
+
+
+    .expertName a{font-size: 14px;}
+
+    dl{min-height: 260px;border-bottom: none !important;}
+
+
+    #updatePwd ul{margin-top: 25px;}
+
+    #updatePwd ul li {
+        height: 50px;
+        width: 60%;
+        line-height: 50px;
+        margin:0 auto;
+        padding-bottom: 10px;
+        color: #808080;
+    }
+    #updatePwd ul li:last-child{
+        height:80px;
+    }
+    #updatePwd ul li span label{
+        color:red;
+        padding:2px 8px;
+        vertical-align: middle;
+
+    }
+    #updatePwd ul li span input{
+        height: 35px;
+        width: 212px;
+        border-radius: 5px;
+        border: 1px solid #eaeaea;
+        margin-left: 23px;
+    }
+    #updatePwd ul li span select{
+        height: 35px;
+        width: 71%;
+    }
+    #updatePwd ul li span textarea{
+        height: 50px;
+        width: 70%;
+        margin-top: 17px;
+    }
+    .success{display:none;z-index:99999;position:absolute;left:56%;top:20%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px; height:30px;border:1px solid #00BB24;color:#00BB24;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:165px;}
+    .failure{display:none;z-index:99999;position:absolute;left:56%;top:20%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px;height:30px;border:1px solid #D53C00;color:#D53C00;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:225px;}
+
+
+    #saveBtn{width: 175px;height: 40px;background-color: #007bc4;color: #f3f6f6;display: inline-block;border-radius: 5px;text-align: center;line-height: 40px;cursor: pointer;font-size: 14px;}
+
+</style>
+
+
+<div class="list">
+    <div class="success"><img src="images/public/forum/icon-pass.png" style="float:left;margin-left: 40px;margin-top: 5px;"><span id="successMsg"></span></div>
+    <div class="failure"><img src="images/public/forum/icon-Delete.png" style="float:left;margin-left: 40px;margin-top: 5px;"><span id="failureMsg"></span></div>
+
+    <div style="border-bottom: 1px solid #EEEEEE">
+        <p id="listTitle">安全设置</p>
+    </div>
+    <div class="addTaskFormDiv">
+        <form id="updatePwd" action="">
+            <ul>
+                <li>
+                    <span class="txtLabel" style="vertical-align: top;margin-left: 17px;"><label>*</label>原密码</span>
+                    <span ><input id="oldpwd" type="password" name="oldpwd" placeholder="输入原密码"/></span>
+                    <input id="accountId" type="hidden"/>
+                </li>
+                <li>
+                    <span class="txtLabel" style="vertical-align: top;margin-left: 17px;"><label>*</label>新密码</span>
+                    <span ><input id="npwd" type="password" name="npwd" placeholder="输入新密码"/></span>
+                </li>
+                <li>
+                    <span class="txtLabel"><label>*</label>确认密码</span>
+                    <span><input id="qpwd" type="password" name="qpwd" placeholder="输入确认密码"/></span>
+                </li>
+            </ul>
+            <div id="errorMsg" style="color:red;width: 58%;margin: 0 auto;"></div>
+            <div style="height:200px;text-align: center;line-height: 100px;">
+                <a class="btn3 btn4" id="saveBtn">保存</a>
+            </div>
+        </form>
+    </div>
+</div>
+<div style="clear: both;"></div>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","UserModule","commons","formVerfication","Base64"],function($,Marquee,BaseAjax,UserModule,commons,formVerfication,Base64){
+
+        var init = function () {
+
+
+
+            getUserInfo();
+            //保存
+            $("#saveBtn").click(function(){
+                updateUserPwdFun();
+            });
+        }
+
+
+        var getUserInfo = function () {
+            var result =  isLogion();
+            if (!result.flag || null == result.data){
+                return
+            }
+            var person = JSON.parse(result.data);
+            var accountId = person.accountId;
+            $("#accountId").val(accountId);
+        }
+
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+
+        var updateUserPwdFun = function () {
+            //验证输入是否符合规范
+            if(checkOldPwd() && checkPwd() && confirmPwd()){
+                var param  = {};
+                param.accountId  = $("#accountId").val();
+                param.oldPass  = Base64.encode($("#oldpwd").val());
+                param.newPass = Base64.encode($("#npwd").val());
+                param.truePass = Base64.encode($("#qpwd").val());
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOGIN_CONFIG.updateUserPwd;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify(param);
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        /*$("#successMsg").html("修改成功");
+                        $(".success").show();
+                        window.setTimeout(function(){
+                            $(".success").hide();
+                        },1500);*/
+                        commons.tipMessageShow("修改成功", 3000, true);
+
+                        $("#updatePwd input").val(""); //清空
+
+
+                    }else{
+                        /* $("#failureMsg").html(result.msg);
+                         $(".failure").show();
+                         window.setTimeout(function(){
+                         $(".failure").hide();
+                         },1500);*/
+                       // $("#errorMsg").text('*'+result.msg);
+                        commons.tipMessageShow(result.msg, 3000, false);
+                    }
+                };
+                ajax.opts.errorFun = function (result) {
+                    /*$("#failureMsg").html(result.msg);
+                     $(".failure").show();
+                     window.setTimeout(function(){
+                     $(".failure").hide();
+                     },1500);*/
+                    commons.tipMessageShow(result.msg, 3000, false);
+                };
+                ajax.run();
+            }
+
+        }
+
+
+
+
+        /**
+         * 设置旧密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var checkOldPwd = function() {
+            var obj = $("#oldpwd");
+            var oldpwd = $("#oldpwd").val();
+            if (formVerfication.isEmpty(oldpwd)) {
+                $("#errorMsg").text("*请输入原密码");
+                $("#errorMsg").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            } else if (!formVerfication.isScopeLength(oldpwd, 6, 20)) {
+                $("#errorMsg").text("*原密码为6-20位字母/数字/符号组合");
+                $("#errorMsg").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            }
+            $("#errorMsg").text("");
+            $("#errorMsg").removeClass('red');
+            return true;
+        };
+
+        /**
+         * 校验设置的密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var checkPwd = function() {
+            var obj = $("#npwd");
+            var npwd = $("#npwd").val();
+            if (formVerfication.isEmpty(npwd)) {
+                $("#errorMsg").text("*请输入新密码");
+                $("#errorMsg").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            } else if (!formVerfication.isScopeLength(npwd, 6, 20)) {
+                $("#errorMsg").text("*新密码为6-20位字母/数字/符号组合");
+                obj.addClass('formInputHighlight');
+                $("#errorMsg").addClass('red');
+                return false;
+            }
+            $("#errorMsg").text("");
+            $("#errorMsg").removeClass('red');
+            return true;
+        };
+
+
+        /**
+         * 确认密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var confirmPwd = function () {
+            var qpwd = $("#qpwd").val();
+            if (qpwd == "") {
+                $("#errorMsg").text("*请输入确认密码");
+                $("#errorMsg").addClass('red');
+                $("#qpwd").addClass('formInputHighlight');
+                return false;
+            }
+
+            if (!formVerfication.isScopeLength(qpwd, 6, 20)) {
+                $("#errorMsg").text("*确认密码为6-20位字母/数字/符号组合");
+                $("#qpwd").addClass('formInputHighlight');
+                $("#errorMsg").addClass('red');
+                return false;
+
+            }
+
+            var pwd = Base64.encode($("#npwd").val());
+            if ($("#npwd").val() != $("#qpwd").val()) {
+                $("#errorMsg").text("*确认密码和新密码不一致");
+                $("#errorMsg").addClass('red');
+                $("#qpwd").addClass('formInputHighlight');
+                return false;
+            }
+
+            $("#errorMsg").removeClass('red');
+            return true;
+        }
+
+        init();
+
+
+    })
+</script>
+

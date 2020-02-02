@@ -1,0 +1,638 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../../css/list.css" rel="stylesheet" />
+		<title></title>
+		<style type="text/css">
+			html,
+			body {
+				height: 100%;
+				overflow: hidden;
+				background-color: transparent;
+			}
+
+			.jh-bottom-div {
+				width: auto;
+				padding: 15px;
+				height: 60px;
+				border-top: 1px solid #C0C0C0 !important;
+			}
+
+			.slide-box {
+				padding: 5px;
+				margin-top: 200px;
+				height: 60px;
+				display: -webkit-box;
+				overflow-x: scroll;
+				-webkit-overflow-scrolling: touch;
+			}
+
+			.mui-scroll .mui-control-item.slide-item-selected {
+				text-align: center;
+				line-height: 37px;
+				width: 80px;
+				height: 40px;
+				font-size: 12px;
+				color: white;
+				background-color: #47d600;
+				margin-left: 3px;
+				border: 1px solid #47d600 !important;
+				-moz-border-radius: 5px;
+				/* Gecko browsers */
+				-webkit-border-radius: 5px;
+				/* Webkit browsers */
+				border-radius: 5px;
+				/* W3C syntax */
+			}
+
+			.mui-scroll .mui-control-item.slide-item-start {
+				text-align: center;
+				line-height: 37px;
+				width: 80px;
+				height: 40px;
+				font-size: 12px;
+				color: #47d600;
+				border: 1px solid #47d600 !important;
+				margin-left: 3px;
+				-moz-border-radius: 5px;
+				/* Gecko browsers */
+				-webkit-border-radius: 5px;
+				/* Webkit browsers */
+				border-radius: 5px;
+				/* W3C syntax */
+			}
+
+			.mui-segmented-control .mui-scroll .mui-control-item.slide-item-start .mui-active {
+				color: #00BFFF;
+				background-color: #00BFFF;
+				border-color: #00BFFF;
+			}
+
+			.jh-bottom-span {
+				color: #000000;
+				margin-right: 20px;
+			}
+
+			#imgList img {
+				max-width: 100%;
+				height: auto;
+			}
+
+			.jh-a-img .imgDiv {
+				width: 80px;
+				/* height: 80px; */
+				display: inline-block;
+				position: relative;
+				/* margin-left: 3px; */
+			}
+
+			.mui-scroll .mui-control-item.jh-a-img {
+				border: 1px solid #C0C0C0 !important;
+				padding: 0;
+				margin-left: 5px;
+				width: 80px;
+				height: 80px;
+			}
+
+			.mui-scroll .mui-control-item.jh-a-camera {
+				padding: 0;
+				margin: 0;
+				width: 80px;
+				height: 80px;
+			}
+
+			.mui-scroll .mui-active {
+				color: #000000;
+			}
+		</style>
+		<script type="text/javascript">
+
+		</script>
+
+		<link rel="stylesheet" href="../../../css/app.css" type="text/css" charset="utf-8" />
+	</head>
+	<body>
+
+		<div style="background-color: white;margin-bottom: 20px;">
+			<div id="arealist" style="height: 50px;padding: 5px;" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<div class="mui-scroll">
+					<!-- <a style="color: white;background-color: #47d600;" class="mui-control-item slide-item-start mui-active">
+						田块1
+					</a>
+					<a class="mui-control-item slide-item-start">
+						田块2
+					</a>
+					<a class="mui-control-item slide-item-selected">
+						田块3
+					</a>
+					<a class="mui-control-item slide-item-selected">
+						田块4
+					</a>
+					<a class="mui-control-item slide-item-start">
+						田块5
+					</a>
+					<a class="mui-control-item slide-item-selected">
+						田块6
+					</a>
+					<a class="mui-control-item slide-item-selected">
+						田块7
+					</a> -->
+				</div>
+			</div>
+			<div class="jh-bottom-div">
+				<p>
+					<span class="jh-bottom-span" style="display: none;">面积:&nbsp;
+						<input id="areaEdit" maxlength="2" style="padding-left: 2px;height: 30px;width: 15%;border: 1px solid #C0C0C0 !important;"
+						 type="number" name="area" />亩
+					</span>
+					<span id="areaShow" class="jh-bottom-span">面积:&nbsp;0亩</span>
+					<span class="jh-bottom-span" style="display: none;">作物:&nbsp;
+						<input id="cropEdit" maxlength="2" style="padding-left: 2px;height: 30px;width: 15%;border: 1px solid #C0C0C0 !important;"
+						 type="text" name="area" /></span>
+					<span id="cropShow" class="jh-bottom-span">作物:&nbsp;</span>
+					<button id="editMode" type="button" style="border-width: 0;" class="mui-pull-right jh-show-item-button">
+						<img style="vertical-align: text-bottom;width: 1.1rem;height: 1.1rem;" src="../../../images/button-icon/bianji.png">
+						<span style="font-size: 0.9rem;">编辑</span>
+					</button>
+				</p>
+			</div>
+
+			<div style="height: 85px;padding: 5px;" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<div id="ImgDiv" class="mui-scroll">
+					<a id="addPicA" class="mui-control-item jh-a-camera" style="background-color: #C0C0C0;">
+						<span class="mui-icon mui-icon-camera" style="padding: 0;margin-top: 10px;border: 0px solid #FFFFFF!important;color: white;font-size: 40px;"></span>
+						<p><span style="color: white;font-size: 14px;">添加照片</span></p>
+					</a>
+					<!-- <a class="mui-control-item jh-a-img">
+						<img class="imgDiv" src="../../../images/list-bg/bg1.png">
+					</a>
+					<a class="mui-control-item jh-a-img">
+						<img class="imgDiv" src="../../../images/list-bg/bg2.png">
+					</a>
+					<a class="mui-control-item jh-a-img">
+						<img class="imgDiv" src="../../../images/list-bg/bg3.png">
+					</a>
+					<a class="mui-control-item jh-a-img">
+						<img class="imgDiv" src="../../../images/list-bg/bg4.png">
+					</a> -->
+				</div>
+			</div>
+			<p>&nbsp;</p>
+		</div>
+		<script src="../../../js/mui.js"></script>
+		<script src="../../../js/areaData.js"></script>
+		<script src="../../../js/app.js"></script>
+		<script src="../../../js/upload.js"></script>
+		<script type="text/javascript">
+			mImgDiv = document.getElementById("ImgDiv")
+
+			mui.init({
+				gestureConfig: {
+					longtap: true, //默认为false 
+					hold: true,
+					release: true,
+				},
+				swipeBack: false, //关闭左滑关闭功能
+			});
+
+			mui(".mui-scroll-wrapper").scroll({
+				//bounce: false,//滚动条是否有弹力默认是true
+				//indicators: false, //是否显示滚动条,默认是true
+			});
+			mui.plusReady(function() {})
+
+			//确保plusready执行完毕
+			if (window.plus) {
+				getPremission();
+				cameraReady();
+			} else {
+				document.addEventListener("plusready", cameraReady, false);
+				document.addEventListener("plusready", getPremission, false);
+			}
+
+			function getPremission() {
+				if (mui.os.android == true) {
+					saveFilename = 'file:///storage/emulated/0/mdoc/audio/';
+				} else if (mui.os.ios == true) {
+					saveFilename = '';
+				}
+			}
+
+			function imgUp() {
+				var m = this;
+				plus.nativeUI.actionSheet({
+					cancel: "取消",
+					buttons: [{
+							title: "拍照"
+						},
+						{
+							title: "从相册中选择"
+						}
+					]
+				}, function(e) { //1 是拍照  2 从相册中选择  
+					switch (e.index) {
+						case 1:
+							var imgsize = getAllPicSrc().length;
+							if (imgsize < 6) {
+								appendByCamera();
+							} else {
+								mui.toast('您的图片已经超过6张', {
+									duration: 'short',
+									type: 'div'
+								});
+							}
+							break;
+						case 2:
+							appendByGallery();
+							break;
+					}
+				});
+			}
+
+
+			//照片按钮
+			function cameraReady() {
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".mui-icon-camera", imgUp);
+			}
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					// console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						console.log(path);
+						addPic(path);
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				var imgsize = getAllPicSrc().length;
+				if (imgsize < 6) {
+					var picnum = 6 - imgsize;
+					plus.gallery.pick(function(path) {
+						// document.getElementById("headimg").src = path;
+						for (var i in path.files) {
+							// console.log(path.files[i]);
+							addPic(path.files[i]);
+						}
+					}, function(e) {
+						// console.log("取消选择图片");
+					}, {
+						filter: "image",
+						multiple: true,
+						maximum: picnum,
+						system: false,
+						onmaxed: function() {
+							mui.toast('最多只能选择6张图片', {
+								duration: 'short',
+								type: 'div'
+							});
+						}
+					});
+				} else {
+					mui.toast('您的图片已经超过6张', {
+						duration: 'short',
+						type: 'div'
+					});
+				}
+			}
+			//获取所有图片资源
+			function getAllPicSrc() {
+				var imageList = [];
+				mui.each(mui('.jh-a-img .imgDiv'), function(index, obj) {
+					var item = {
+						"localUrl": obj.src,
+						"url": "",
+					};
+					imageList.push(item);
+				});
+				// console.log(imageList)
+				return imageList;
+			}
+			//创建图片
+			function addPic(src) {
+
+				if (getAllPicSrc().length >= 6) {
+					mui.toast('您的图片已经超过6张,请长按图片删除后再添加', {
+						duration: 'short',
+						type: 'div'
+					});
+				} else {
+					var mA = document.createElement('a');
+					mA.className = "mui-control-item jh-a-img";
+					mA.innerHTML = '<img class="imgDiv" src="' + src + '">'
+					mImgDiv.appendChild(mA);
+				}
+			};
+			//监听图片预览
+			mui('#ImgDiv').on('tap', '.imgDiv', showPic);
+
+			function showPic() {
+				var index = 0;
+				var imglist = getAllPicSrc()
+				console.log(imglist.length)
+				for (var i in imglist) {
+					console.log('result: ' + (imglist[i] == this.src))
+					if (imglist[i] == this.src) {
+						index = i
+					}
+				}
+				var style = {
+					"current": index,
+					"loop": true,
+					"indicator": "number",
+				}
+				plus.nativeUI.previewImage(imglist, style)
+			}
+			//监听删除图片
+			// mui('#ImgDiv').on('longtap', '.imgDiv', removePic);
+
+
+			function removePic() {
+				var picA = this.parentElement;
+				// console.log(picA.innerHTML)
+				plus.nativeUI.confirm('是否删除图片', function(e) {
+					if (e.index == 1) {
+						mImgDiv.removeChild(picA);
+					};
+				}, "提示", ['取消', '确认'])
+			}
+			//清空显示图片
+			function clearImageList() {
+				while (mImgDiv.childNodes.length > 2) {
+					mImgDiv.removeChild(mImgDiv.lastChild)
+				}
+				// var mA = document.createElement('a');
+				// mA.id = "addPic";
+				// mA.setAttribute("style","background-color: #C0C0C0;")
+				// mA.className = "mui-control-item jh-a-camera";
+				// mA.innerHTML = '<span class="mui-icon mui-icon-camera" style="padding: 0;margin-top: 10px;border: 0px solid #FFFFFF!important;color: white;font-size: 40px;"></span><p><span style="color: white;font-size: 14px;">添加照片</span></p>'
+				// mImgDiv.appendChild(mA);
+			}
+			/**
+			 * 操作相关
+			 * */
+
+			document.addEventListener("addAreaItem", addAreaItem)
+
+			function addAreaItem() {
+				var addData = JSON.parse(localStorage.getItem("mapAddAreaItem"))
+				// console.log(JSON.stringify(addData))
+				addItem(addData, true)
+			}
+
+			function removeAreaItem() {
+
+			}
+
+			var areaScroll = mui('#arealist .mui-scroll')[0]
+
+			document.addEventListener("initData", initData)
+			document.addEventListener("changeData", changeData)
+
+			var subtaskId = localStorage.getItem("currentSubTaskId");
+			var policyId
+
+			function initData() {
+				var data = areaInfo.getPolicyList(subtaskId)
+				policyId = areaInfo.getCurrentPolicy();
+				// console.log("data: "+data);
+				// console.log("policyId: "+policyId);
+				var currentData = areaInfo.getAreaById(data, policyId)
+
+				// console.log(JSON.stringify(currentData))
+				if (currentData.length > 0) {
+					if (!(currentData[0].FeatureId == null)) {
+						for (var i = 0; i < currentData.length; i++) {
+							// console.log(JSON.stringify(currentData[i]))
+							if (i == 0) {
+								addItem(currentData[i], true)
+							} else {
+								addItem(currentData[i], false)
+							}
+						}
+					}
+				}
+			}
+
+			function changeData() {
+				var data = areaInfo.getPolicyList(subtaskId)
+				var currentData = areaInfo.getAreaById(data, policyId)
+			}
+
+			function addItem(jsonData, isActive) {
+				// console.log(JSON.stringify(jsonData))
+				var a = document.createElement('a');
+				a.className = "mui-control-item slide-item-start";
+				a.innerHTML = jsonData.areaName
+				a.setAttribute('id', jsonData.FeatureId);
+				areaScroll.appendChild(a)
+
+				if (isActive) {
+					setTimeout(function() {
+						selectArea(a)
+					}, 200);
+				}
+			}
+
+			mui('#arealist .mui-scroll').on('longtap', '.mui-control-item.slide-item-selected', removeItem)
+			mui('#arealist .mui-scroll').on('longtap', '.mui-control-item.slide-item-start', removeItem)
+
+			function removeItem() {
+				var area = this;
+				// console.log(picA.innerHTML)
+				plus.nativeUI.confirm('是否移出田块', function(e) {
+					if (e.index == 1) {
+						areaScroll.removeChild(area)
+						mui.fire(plus.webview.currentWebview().opener(), 'removeAreaItem')
+						var areaId = area.getAttribute("id");
+						console.log(areaId);
+						localStorage.setItem("mapRemoveAreaItem", areaId)
+					};
+				}, "提示", ['取消', '确认'])
+			}
+
+			function clearItem() {
+				while (areaScroll.childNodes.length > 1) {
+					areaScroll.remove(areaScroll.firstElementChild)
+				}
+			}
+
+			//按钮照片
+			var areaShow = document.getElementById('areaShow')
+			var cropShow = document.getElementById('cropShow')
+			var areaEdit = document.getElementById('areaEdit')
+			var cropEdit = document.getElementById('cropEdit')
+			var editMode = document.getElementById('editMode')
+			var addPicA = document.getElementById('addPicA')
+			setTimeout(function() {
+				addPicA.style.display = "none"
+			}, 100);
+
+			editMode.addEventListener('tap', changeEdit)
+
+			var isclick = false
+
+			function changeEdit() {
+				var featureid = targetElement.id
+				if (featureid != null) {
+					var currentShowData = getSelectArea(featureid)
+					if (isclick == false) {
+						isclick = true
+						setEdit()
+						addPicA.style.display = ""
+						mui('#ImgDiv').on('longtap', '.imgDiv', removePic);
+					} else {
+						isclick = false
+						setNotEdit(true)
+						addPicA.style.display = "none"
+						mui('#ImgDiv').off('longtap', '.imgDiv', removePic);
+					}
+				} else {
+					mToastSet("未选中地块")
+				}
+
+			}
+
+			function getSelectArea(featureId) {
+				var data = areaInfo.getPolicyList(subtaskId)
+				policyId = areaInfo.getCurrentPolicy();
+				var currentData = areaInfo.getAreaById(data, policyId)
+				// console.log(JSON.stringify(currentData))
+				for (var i in currentData) {
+					if (currentData[i].FeatureId == featureId) {
+						return currentData[i]
+					}
+				}
+			}
+
+			function setSelectArea(areaData) {
+				var data = areaInfo.getPolicyList(subtaskId)
+				policyId = areaInfo.getCurrentPolicy();
+				var currentData = areaInfo.getAreaById(data, policyId)
+				areaInfo.setAreaItem2Data(subtaskId, policyId, areaData)
+			}
+
+
+			function setEdit() {
+				// if (targetElement != null) {
+				// 	targetElement.classList.remove("slide-item-start")
+				// 	targetElement.classList.add("slide-item-selected")
+				// }
+
+				var FeatureId = targetElement.id
+				var currentShowData = getSelectArea(FeatureId)
+
+				editMode.lastElementChild.innerHTML = "保存";
+				areaShow.style.display = "none";
+				cropShow.style.display = "none";
+				areaEdit.parentElement.style.display = "";
+				areaEdit.value = currentShowData.area ? currentShowData.area : 0;
+				cropEdit.parentElement.style.display = "";
+				cropEdit.value = currentShowData.crop ? currentShowData.crop : "";
+
+			}
+
+			function setInitEdit() {
+				editMode.lastElementChild.innerHTML = "编辑";
+
+			}
+
+			function setNotEdit(isloadEdit) {
+				editMode.lastElementChild.innerHTML = "编辑";
+				var FeatureId = targetElement.id
+				var currentShowData = getSelectArea(FeatureId)
+				// console.log(JSON.stringify(currentShowData))
+				if (isloadEdit == true) {
+					if (areaEdit.value != currentShowData.area) {
+						currentShowData.area = areaEdit.value;
+					}
+					if (cropEdit.value != currentShowData.crop) {
+						currentShowData.crop = cropEdit.value;
+					}
+					//保存
+					if (currentShowData.imageList != getAllPicSrc()) {
+						currentShowData.imageList = getAllPicSrc();
+						console.log(JSON.stringify(currentShowData.imageList))
+					}
+					console.log(JSON.stringify(currentShowData))
+					setSelectArea(currentShowData)
+
+				} else {
+					//初始化图像
+					var images = currentShowData.imageList;
+					if (images != null) {
+						clearImageList()
+						for (var i in images) {
+							addPic(images[i].localUrl)
+						}
+					}
+				}
+				areaEdit.parentElement.style.display = "none";
+				cropEdit.parentElement.style.display = "none";
+				currentShowData.isEdit = false;
+				areaShow.style.display = "";
+				var areaStr = currentShowData.area ? currentShowData.area : 0
+				areaStr = '面积:' + areaStr + '亩'
+				// console.log(areaStr)
+				areaShow.innerHTML = areaStr;
+				cropShow.style.display = "";
+				var cropStr = currentShowData.crop ? currentShowData.crop : ""
+				cropStr = '作物:' + cropStr;
+				// console.log(cropStr)
+				cropShow.innerHTML = cropStr
+			}
+
+			mui('#arealist .mui-scroll').on('tap', '.mui-control-item.slide-item-selected', tapArea)
+			mui('#arealist .mui-scroll').on('tap', '.mui-control-item.slide-item-start', tapArea)
+
+			var frontEl = null;
+			var frontStyle = null;
+			var targetElement = null;
+
+			function tapArea() {
+				targetElement = this;
+				if (frontEl != null) {
+					frontEl.style = frontStyle
+				}
+				frontStyle = this.style
+				this.style.color = "white";
+				this.style.backgroundColor = "#47d600";
+				frontEl = this;
+
+				//获取id
+				var id = this.id;
+				// console.log(id)
+				var jsonData = []
+				jsonData = getSelectArea(id)
+				// console.log(JSON.stringify(jsonData))
+				// if(jsonData!=null){
+				// 	console.log(JSON.stringify(jsonData))
+				// 	data2data(currentShowData, jsonData)
+				// }
+
+				setNotEdit(false)
+
+				//定位
+				localStorage.setItem("mapSetPoint", JSON.stringify(jsonData.center))
+				mui.fire(plus.webview.currentWebview().opener(), 'mapSetPoint')
+
+			}
+
+			function selectArea(targetEl) {
+				// mui.trigger(targetEl, 'touchstart');
+				mui.trigger(targetEl, 'tap');
+			}
+		</script>
+	</body>
+</html>

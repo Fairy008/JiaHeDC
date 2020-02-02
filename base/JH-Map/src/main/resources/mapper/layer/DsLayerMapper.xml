@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.layer.mapping.IDsLayerMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.layer.entity.DsLayer">
+    <id column="layer_id" property="layerId" jdbcType="INTEGER" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="BIGINT" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="ds" property="ds" jdbcType="BIGINT" />
+    <result column="data_time" property="dataTime" jdbcType="DATE" />
+    <result column="crop_id" property="cropId" jdbcType="INTEGER" />
+    <result column="data_type" property="dataType" jdbcType="INTEGER" />
+    <result column="type_name" property="typeName" jdbcType="INTEGER" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="region_code" property="regionCode" jdbcType="VARCHAR" />
+    <result column="crop_name" property="cropName" jdbcType="VARCHAR" />
+    <result column="resolution" property="resolution" jdbcType="INTEGER" />
+    <result column="dataType_value" property="dataTypeValue" jdbcType="VARCHAR" />
+    <result column="resolution_value" property="resolutionValue" jdbcType="VARCHAR" />
+    <result column="publisher" property="publisher" jdbcType="VARCHAR" />
+    <result column="publish_status" property="publishStatus" jdbcType="INTEGER" />
+    <result column="file_path" property="filePath" jdbcType="VARCHAR" />
+    <result column="publish_status_name" property="publishStatusName" jdbcType="VARCHAR" />
+    <result column="publish_time" property="publishTime" jdbcType="DATE" />
+    <result column="publisher_name" property="publisherName" jdbcType="VARCHAR" />
+    <result column="ds_name" property="dsName" jdbcType="VARCHAR" />
+    <result column="reprocess_id" property="reprocessId" jdbcType="INTEGER" />
+    <result column="resultimage_id" property="resultimageId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    layer_id,data_status,del_flag,create_time,creator_name,creator,modify_time,modifier_name,modifier,remark,region_id,file_path,
+    title,name,type, url,ds,data_time,crop_id,data_type,publish_status,publish_time,publisher_name,resolution,publisher
+  </sql>
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.layer.model.DsLayerParam" >
+    SELECT
+	ds.layer_id,
+    ds.data_status,
+    ds.del_flag,
+    ds.create_time,
+    ds.creator_name,
+    ds.creator,
+    ds.modify_time,
+    ds.modifier_name,
+    ds.modifier,
+    ds.remark,
+    ds.region_id,
+    ds.title,
+    ds.name,
+    ds.url,
+    ds.ds,
+    ds.data_time,
+    ds.crop_id,
+    ds.data_type,
+    ds.type,
+    ds.publish_status,
+    ds.publish_time,
+    ds.publisher_name,
+    ds.publisher,
+    ds.resolution ,
+    ds.file_path,
+    d.data_name as crop_name,
+    r.china_name as region_name,
+    r.region_code as region_code,
+    dr.data_name as resolution_value,
+    dt.data_name as type_name,
+    dp.data_name as publish_status_name,
+    dsDict.data_name as ds_name,
+    selliteDict.data_name as dataType_value,
+    ds.resultimage_id
+    FROM
+    ds_layer ds
+    LEFT JOIN init_dict d ON ds.crop_id = d.dict_id
+    AND d.parent_id = 500
+    LEFT JOIN init_dict dr ON ds.resolution = dr.dict_id
+    AND dr.parent_id = 4000
+    AND dr.del_flag = '1'
+    AND dr.data_status = '1'
+    LEFT JOIN init_dict dt ON ds.TYPE = dt.dict_id
+    AND dt.parent_id = 2000
+    AND dt.del_flag = '1'
+    AND dt.data_status = '1'
+    LEFT JOIN init_dict dp ON ds.publish_status = dp.dict_id
+    AND dp.parent_id = 2200
+    AND dp.del_flag = '1'
+    AND dp.data_status = '1'
+
+    LEFT JOIN init_dict dsDict ON ds.ds = dsDict.dict_id
+    AND dsDict.parent_id = 1800
+    AND dsDict.del_flag = '1'
+    AND dsDict.data_status = '1'
+
+      LEFT JOIN init_dict selliteDict ON ds.data_type = selliteDict.dict_id
+      AND selliteDict.parent_id = 400
+      AND selliteDict.del_flag = '1'
+      AND selliteDict.data_status = '1'
+
+    LEFT JOIN init_region r ON ds.region_id = r.region_id
+    AND r.del_flag = '1'
+    AND r.data_status = '1'
+    WHERE
+    ds.del_flag = '1'
+    AND ds.data_status = '1'
+    <if test="dsList != null and dsList.size > 0">
+      AND  ds.ds in
+        <foreach collection="dsList" item="ds" open="(" close=")" separator=",">
+            #{ds,jdbcType=INTEGER}
+        </foreach>
+    </if>
+    <if test="ds!=null and ds!=''">
+      AND  ds.ds = #{ds,jdbcType=INTEGER}
+    </if>
+    <if test="regionId!=null and regionId!=''">
+      AND  ds.region_id = #{regionId,jdbcType=BIGINT}
+    </if>
+    <if test="resolution!=null and resolution!=''">
+      AND  ds.resolution = #{resolution,jdbcType=INTEGER}
+    </if>
+    <if test="cropId!=null and cropId!=''">
+      AND  ds.crop_id = #{cropId,jdbcType=INTEGER}
+    </if>
+    <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(ds.data_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startTime} as VARCHAR) and cast(#{endTime} as VARCHAR)
+    </if>
+    <if test="creator != null and creator != ''">
+      and ds.creator=#{creator,jdbcType=INTEGER}
+    </if>
+    <if test="publisher != null and publisher != ''">
+      and ds.publisher=#{publisher,jdbcType=INTEGER}
+    </if>
+    <if test="publishStatus != null and publishStatus != ''">
+      and ds.publish_status=#{publishStatus,jdbcType=INTEGER}
+    </if>
+    <if test="publisherName!=null and publisherName!=''">
+      AND ds.publisher_name like CONCAT('%', #{publisherName}, '%')
+    </if>
+    <if test="name!=null and name!=''">
+      AND UPPER(ds.name) like CONCAT('%', UPPER(#{name}), '%')
+    </if>
+      ORDER BY
+      <choose>
+        <when test="sidx != null and sidx != ''">
+          ${sidx} ${sord}
+        </when>
+        <otherwise>
+          ds.publish_status desc, ds.data_time desc
+        </otherwise>
+      </choose>
+  </select>
+  <select id="findDsLayerByLayerId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    SELECT
+	ds.layer_id,
+    ds.data_status,
+    ds.del_flag,
+    ds.create_time,
+    ds.creator_name,
+    ds.creator,
+    ds.modify_time,
+    ds.modifier_name,
+    ds.modifier,
+    ds.remark,
+    ds.region_id,
+    ds.title,
+    ds.name,
+    ds.url,
+    ds.ds,
+    ds.data_time,
+    ds.crop_id,
+    ds.data_type,
+    ds.type,
+    ds.publish_status,
+    ds.publish_time,
+    ds.publisher_name,
+    ds.publisher,
+    ds.resolution ,
+    ds.reprocess_id ,
+    ds.file_path,
+    d.data_name as crop_name,
+    r.china_name as region_name,
+    r.region_code as region_code,
+    dr.data_name as resolution_value,
+    dt.data_name as type_name,
+    dp.data_name as publish_status_name,
+        dsDict.data_name as ds_name,
+      selliteDict.data_name as dataType_value
+    FROM
+    ds_layer ds
+    LEFT JOIN init_dict d ON ds.crop_id = d.dict_id
+    AND d.parent_id = 500
+    LEFT JOIN init_dict dr ON ds.resolution = dr.dict_id
+    AND dr.parent_id = 4000
+    AND dr.del_flag = '1'
+    AND dr.data_status = '1'
+    LEFT JOIN init_dict dt ON ds.TYPE = dt.dict_id
+    AND dt.parent_id = 2000
+    AND dt.del_flag = '1'
+    AND dt.data_status = '1'
+    LEFT JOIN init_dict dp ON ds.publish_status = dp.dict_id
+    AND dp.parent_id = 2200
+    AND dp.del_flag = '1'
+    AND dp.data_status = '1'
+    LEFT JOIN init_region r ON ds.region_id = r.region_id
+    AND r.del_flag = '1'
+    AND r.data_status = '1'
+
+     LEFT JOIN init_dict dsDict ON ds.ds = dsDict.dict_id
+    AND dsDict.parent_id = 1800
+    AND dsDict.del_flag = '1'
+    AND dsDict.data_status = '1'
+
+      LEFT JOIN init_dict selliteDict ON ds.data_type = selliteDict.dict_id
+      AND selliteDict.parent_id = 400
+      AND selliteDict.del_flag = '1'
+      AND selliteDict.data_status = '1'
+    WHERE
+    ds.del_flag = '1'
+    AND ds.data_status = '1'
+    AND layer_id = #{layerId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findDsLayer" parameterType="DsLayer" resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List" />
+    from ds_layer where del_flag = '1' and data_status = '1'
+    <if test="resultimageId != null">
+      and resultimage_id = #{resultimageId,jdbcType=INTEGER}
+    </if>
+    <if test="reprocessId != null">
+      and reprocess_id = #{reprocessId, jdbcType=INTEGER}
+    </if>
+  </select>
+
+    <!-- 根据图层主键删除图层数据 -->
+  <delete id="deleteDsLayerByLayerId" parameterType="java.lang.Integer" >
+    delete from ds_layer where layer_id = #{layerId,jdbcType=INTEGER}
+  </delete>
+  <insert id="saveLayer" parameterType="DsLayer" useGeneratedKeys="true" keyProperty="layerId">
+    insert into ds_layer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+      <if test="ds != null" >
+        ds,
+      </if>
+      <if test="dataTime != null" >
+          data_time,
+      </if>
+      <if test="cropId != null" >
+        crop_id,
+      </if>
+      <if test="dataType != null" >
+        data_type,
+      </if>
+      <if test="publishStatus != null">
+          publish_status,
+      </if>
+      <if test="reprocessId != null">
+        reprocess_id,
+      </if>
+      <if test="resultimageId != null">
+        resultimage_id,
+      </if>
+      <if test="filePath != null">
+        file_path,
+      </if>
+      <if test="resolution != null">
+        resolution,
+      </if>
+      create_time,
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="ds != null" >
+        #{ds,jdbcType=BIGINT},
+      </if>
+      <if test="dataTime != null" >
+        #{dataTime,jdbcType=DATE},
+      </if>
+      <if test="cropId != null" >
+        #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="dataType != null" >
+        #{dataType,jdbcType=INTEGER},
+      </if>
+      <if test="publishStatus != null">
+          #{publishStatus,jdbcType=INTEGER},
+      </if>
+      <if test="reprocessId != null">
+        #{reprocessId,jdbcType=INTEGER},
+      </if>
+      <if test="resultimageId != null">
+        #{resultimageId,jdbcType=INTEGER},
+      </if>
+      <if test="filePath != null">
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="resolution != null">
+        #{resolution,jdbcType=INTEGER},
+      </if>
+      now(),
+    </trim>
+  </insert>
+  <update id="updateDsLayer" parameterType="DsLayer" >
+    update ds_layer
+    <set>
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null" >
+        region_id = #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="ds != null" >
+        ds = #{ds,jdbcType=BIGINT},
+      </if>
+      <if test="dataTime != null" >
+          data_time = #{dataTime,jdbcType=VARCHAR},
+      </if>
+      <if test="cropId != null" >
+        crop_id = #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="dataType != null" >
+        data_type = #{dataType,jdbcType=INTEGER},
+      </if>
+        <if test="resolution != null" >
+            resolution = #{resolution,jdbcType=INTEGER},
+        </if>
+      <if test="publishStatus != null" >
+        publish_status = #{publishStatus,jdbcType=INTEGER},
+      </if>
+      <if test="filePath != null">
+        file_path = #{filePath,jdbcType=VARCHAR},
+      </if>
+        modify_time = now()
+    </set>
+    where layer_id = #{layerId,jdbcType=INTEGER}
+  </update>
+
+  <update id="publish" parameterType="com.jh.layer.model.DsLayerParam" >
+    update ds_layer
+    <set >
+      <if test="publishStatus != null" > publish_status = #{publishStatus}, </if>
+      publish_time  = now(),
+      <if test="publisherName != null" > publisher_name = #{publisherName}, </if>
+      <if test="publisher != null" > publisher = #{publisher}, </if>
+    </set>
+    where layer_id in
+    <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+  <!--<select id="findReportCreateLayer" resultMap="BaseResultMap" parameterType="com.jh.layer.model.ReportCreateParam">-->
+    <!--SELECT-->
+        <!--l.layer_id,-->
+        <!--l.data_status,-->
+        <!--l.del_flag,-->
+        <!--l.create_time,-->
+        <!--l.creator_name,-->
+        <!--l.creator,-->
+        <!--l.modify_time,-->
+        <!--l.modifier_name,-->
+        <!--l.modifier,-->
+        <!--l.remark,-->
+        <!--l.region_id,-->
+        <!--l.title,-->
+        <!--l.name,-->
+        <!--l.type,-->
+        <!--l.url,-->
+        <!--l.ds,-->
+        <!--l.data_time,-->
+        <!--l.crop_id,-->
+        <!--l.data_type,-->
+        <!--l.publish_status,-->
+        <!--l.publish_time,-->
+        <!--l.publisher_name,-->
+        <!--l.resolution,-->
+        <!--r.china_name as region_name,-->
+        <!--r.region_code as region_code,-->
+        <!--(select data_name from init_dict where init_dict.parent_id = 500 and init_dict.dict_id = l.crop_id) as crop_name,-->
+        <!--(select data_name from init_dict where init_dict.parent_id = 4000 and init_dict.dict_id = l.resolution) as resolution_value-->
+    <!--FROM-->
+        <!--ds_layer l-->
+    <!--LEFT JOIN init_region r-->
+    <!--ON l.region_id = r.region_id-->
+    <!--WHERE-->
+        <!--l.data_status = '1' AND l.del_flag = '1' AND r.data_status = '1' AND r.del_flag = '1'-->
+        <!--AND publish_status = 2201-->
+        <!--<if test="regionId!=null and regionId!=''">-->
+          <!--AND (l.region_id = #{regionId,jdbcType=INTEGER} OR r.parent_id = #{regionId,jdbcType=INTEGER})-->
+        <!--</if>-->
+        <!--<if test="cropId!=null and cropId!=''">-->
+          <!--AND l.crop_id = #{cropId,jdbcType=INTEGER}-->
+        <!--</if>-->
+        <!--<if test="dataSet!=null and dataSet!=''">-->
+          <!--AND l.ds = #{dataSet,jdbcType=INTEGER}-->
+        <!--</if>-->
+        <!--<if test="resolution!=null and resolution!=''">-->
+          <!--AND l.resolution = #{resolution,jdbcType=INTEGER}-->
+        <!--</if>-->
+        <!--<if test="startTime != null and startTime != '' and endTime != null and endTime != ''">-->
+          <!--and to_char(to_date(cast(l.data_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startTime} as VARCHAR) and cast(#{endTime} as VARCHAR)-->
+        <!--</if>-->
+        <!--ORDER BY l.region_id, l.crop_id, l.layer_id-->
+  <!--</select>-->
+
+    <!-- 批量新增再加工数据与图层关系 -->
+    <insert id="insertRelateReprocessLayer" parameterType="java.util.List">
+        insert into ds_relate_reprocess_layer (reprocess_id,layer_id)
+        values
+        <foreach collection="layers" item="layer" separator="," >
+            (#{layer.reprocessId,jdbcType=INTEGER},#{layer.layerId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+
+    <!-- 批量删除再加工数据与图层关系-按照ReprocessId集合 -->
+    <insert id="deleteRelateReprocessLayerByReprocessIds" parameterType="java.util.List">
+        delete from ds_relate_reprocess_layer
+        where reprocess_id in
+        <foreach collection="layers" item="layer" open="(" close=")" separator="," >
+            #{layer.reprocessId,jdbcType=INTEGER}
+        </foreach>
+    </insert>
+    <!-- 批量删除再加工数据与图层关系-按照layerIds集合 -->
+    <insert id="deleteRelateReprocessLayerByLayerIds" parameterType="java.util.List">
+        delete from ds_relate_reprocess_layer
+        where layer_id in
+        <foreach collection="layers" item="layer" open="(" close=")" separator="," >
+            #{layer.layerId,jdbcType=INTEGER}
+        </foreach>
+    </insert>
+
+    <!-- 根据再处理加工数据来删除图层数据 -->
+    <delete id="deleteDsLayerByRelateReprocessId" parameterType="java.lang.Integer">
+        delete from ds_layer where layer_id in (select layer_id from ds_relate_reprocess_layer where reprocess_id = #{reprocessId,jdbcType=INTEGER})
+    </delete>
+
+
+
+
+  <!--
+   * 根据区域、作物、时间查询图层
+   * 在当前区域下查询图层，如果没有查询父级区域
+   * @param
+   * cropId:作物ID
+   * resolution：分辨率
+   * regionId：区域ID
+   * layerDate：图层时间
+   * @version <1> 2018-05-22 cxw: Created.
+  *-->
+  <select id="findLayer" resultType="HashMap" parameterType="java.util.LinkedHashMap" >
+    SELECT a.layer_id as "layerId",a.region_id as "regionId",a.title,a.name,a.type,a.data_time as "layerDate",a.url,a.crop_id as "cropId", a.file_path as "filePath" FROM ds_layer a
+    WHERE a.del_flag = '1' and a.data_status = '1' and a.publish_status = #{publishStatus}
+      and region_id = #{regionId}
+    AND data_time =to_date(#{layerDate},'yyyy-MM-dd')  AND crop_id = #{cropId} AND resolution = #{resolution} AND ds = #{ds}
+  </select>
+
+  <select id="findLayerByProductIds" parameterType="java.util.List" resultMap="BaseResultMap" >
+    select <include refid="Base_Column_List" />
+    from ds_layer where del_flag = '1' and data_status = '1'
+    and resultimage_id in
+    <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+
+</mapper>

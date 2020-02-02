@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!--<link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="js/ueditor/themes/default/dialogbase.css" />-->
+
+    <style>
+        #articleInfo body{ width: 900px;}
+        #addArticle .content{ width: 984px;  overflow: auto;}
+        /*输入框样式*/
+        #addArticle .input{border: 1px solid #e9e9e9;border-radius: 3px;padding-left:10px;width: 790px;margin-bottom: 15px;height: 44px;}
+
+        #addArticle .labelDiv .myLabel{padding: 12px 0;z-index: 9999;position:absolute;background-color:#fff;border-radius:5px;border:1px solid #d5d5d5;max-width: 709px;}
+        #addArticle .labelDiv .myLabel:before{position: absolute;content: "";width: 0;height: 0;left: 44px;top: -22px;border-bottom: 11px solid #d5d5d5;border-top: 11px solid transparent;border-right: 11px solid transparent;border-left: 11px solid transparent;}
+        #addArticle .labelDiv .myLabel:after{position: absolute;content: "";width: 0;height: 0;left: 45px;top: -20px;border-bottom: 10px solid #fff;border-top: 10px solid transparent;border-right: 10px solid transparent;border-left: 10px solid transparent;}
+
+        #addArticle .labelDiv{padding-top: -20px;}
+        #addArticle .labelDiv .myLabel li{width:98px;height:35px;line-height:35px;padding-left:0;}
+        #addArticle .labelDiv .myLabel .solid{height:1px;padding-left:50px; border-bottom:1px solid #d5d5d5;}
+        #addArticle .labelDiv .myLabel li a{height:35px;line-height:35px; display: block; padding-left:33px; background: url('images/public/forum/users.png') 0 0 no-repeat;}
+        #addArticle .labelDiv .myLabel li a.myHome{ background-position: 14px 9px;}
+        #addArticle .labelDiv .myLabel li a.exit{ background-position: 14px -39px;}
+        #addArticle .labelDiv .myLabel li:hover{cursor:pointer;}
+
+        #addArticle .btn1{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;color:#42A7F4;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}
+        #addArticle .btn2{float:left;width:165px;margin-top: 20px;margin-left: 160px;margin-bottom: 20px;}
+        #addArticle .btn3{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;background-color:#42A7F4;color:#ffffff;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}
+        #addArticle .btn4{float:left;width:165px;margin-top: 20px;margin-left: 60px;margin-bottom: 20px;}
+
+        #addArticle .tags{margin: 5px 9px;float: left;}
+        #addArticle .hotTag h2{font-weight: bold;width: 75px;float: left;}
+        #addArticle .tags a{border: 1px solid #dedddd;font-size: 12px;margin: 8px 8px;line-height: 30px;border-radius: 5px;padding: 3px 6px;}
+        #addArticle .hotTag p.tags a.ons{border: 1px solid #028ec9; color: #028ec9;background:url("images/public/forum/tagChoosed.png") right bottom no-repeat;}
+        #addArticle .errorTip{float: left;font-size: 12px;color: #d5012c;}
+
+
+        #addArticle .success{display:none;z-index:99999;position:absolute;left:50%;bottom:18%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px; height:30px;border:1px solid #00BB24;color:#00BB24;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:165px;}
+        #addArticle .failure{display:none;z-index:99999;position:absolute;left:50%;top:48%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px;height:30px;border:1px solid #D53C00;color:#D53C00;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:165px;}
+
+        #addArticle  .changeIco{margin-right:30px;float: right; font-weight: normal; font-size: 12px; color: #969696; padding-left:17px; background: url("images/public/forum/change.png") left center no-repeat;}
+
+
+        /*form公用样式*/
+        #addArticle .formErrorInfo{margin-top:10px;color:red;padding-left:80px;font-size:14px;}
+        #addArticle .formInputHighlight{box-shadow:0 0 8px #ff0000;border:0px !important;}
+        #addArticle #articleType{
+            width:800px;
+            height:44px;
+            margin-bottom: 15px;
+            border: 1px solid #e9e9e9;
+            border-radius: 3px;
+            padding-left: 10px;
+            margin-left: 3px;
+            margin-top: 3px;
+        }
+
+    </style>
+    <title></title>
+
+</head>
+<body>
+
+<div style="height:100%;">
+    <div class="success"><img src="images/public/forum/icon-pass.png" style="float:left;margin-left: 40px;margin-top: 5px;"><span id="successMsg"></span></div>
+    <div class="content">
+        <div>
+            <select id="articleType"></select>
+        </div>
+        <div>
+            <input type="hidden" id="articleId" />
+            <input type="text" class="input" id="articleTitle" placeholder="此处添加标题，字数不得超过30字"/>
+        </div>
+
+        <script id="editor" type="text/plain" style="width:800px;height:380px;z-index:220"></script>
+        <div id="articleLabel" class="input" style="align:center;margin-top:20px;font-color:gray">点击此处添加标签</div>
+        <div class="labelDiv"><!--<input type="text" class="input" id="articleLabel" placeholder="此处添加标签" readonly/>-->
+            <ul class="myLabel" style="float: left;display: none">
+                <div class="hotTag">
+                    <div style="height:23px;width:100%;margin-left:18px;"><h2>热门标签</h2><span class="errorTip"></span><a class="changeIco">换一批</a></div>
+                    <p class="tags"></p>
+                </div>
+            </ul>
+        </div>
+        <!--失败原因-->
+        <div id="msgInfo"></div>
+        <div>
+            <span class="btn1 btn2" id="publishArticle">发布</span>
+            <span class="btn3 btn4" id="Article">提交</span>
+        </div>
+
+    </div>
+    <!--个人中心菜单内容显示-->
+    <div id="menuInfo" style="display:none;"></div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="js/ueditor/ueditor.all.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","urlConfig","PopWin","formVerfication","enums"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,urlConfig,PopWin,formVerfication,enums){
+
+        /**
+         * 获取url中的参数
+         * @param 参数名称
+         * @return 参数值
+         * @version <1> 2019/3/14 lijie:Created.
+         */
+        var GetQueryString = function (name) {
+            return $("#articleId").val();
+        };
+
+
+
+        var token = commons.getAccessToken();
+        //articleType 11002 表示约调研 articleStatus 12002 待审核  tobePublish = 已发布 待审核
+        var maxLabelNum = 5,articleType = 11002,toBe = 12002,toBePublish = 12004;//标签最多不可超过5个;
+        var articleLabelArr = [];//被选中的标签
+        var articleLabel = "";//标签
+        UE.delEditor('editor');
+        var ue =  UE.getEditor('editor',{"serverUrl":FORUM_COMMENT.upFile+"?AccessToken=" + token,"zIndex":1000});
+        $("#addReport").click(function() {
+            addFun();
+        });
+        // $('.rightTop').load('head.html');//加载头部文件
+
+        var init = function(){
+
+            //showTitle();
+            //查看更多标签
+            lookMore();
+            //tab切换
+            tabFun();
+
+            //加载所有标签
+            findLabelList();
+            //加载热门标签
+            initLabelList();
+
+            //点击标签文本框  隐藏或者展示 标签选择div
+            $("#articleLabel").click(function(){
+                $(".myLabel").toggle(100);
+            });
+
+            //保存
+            $("#Article").click(function(){
+                if (GetQueryString("articleId")) {
+                    var article = articleDetail(GetQueryString("articleId"));
+
+                    addFun(toBe, article.articleType);
+                } else {
+                    addFun(toBe, GetQueryString("articleType"));
+                }
+            });
+            //发布
+            $("#publishArticle").click(function(){
+                if (GetQueryString("articleId")) {
+                    var article = articleDetail(GetQueryString("articleId"));
+
+                    addFun(toBePublish, article.articleType);
+                } else {
+                    addFun(toBePublish, GetQueryString("articleType"));
+                }
+
+            });
+
+            $(".changeIco").click(function(){
+                initLabelList();
+              //  labelCss();
+            });
+
+            //绑定增加行事件
+           /* $("#addTd").bind("click",addLabel);
+            queryLabel();*/
+
+           //编辑则回显值
+            var articleId=GetQueryString("articleId");
+            if(articleId!=null&&articleId!=''){
+                $("#articleId").val(articleId);
+                editFun(articleId);
+            }else{
+                //初始化下拉框
+                commons.findDictList(11000, "articleType",null,"-- 帖子类型 --");
+            }
+
+            //新增区分类别
+           /* var type=GetQueryString("articleType");
+            if(type!=null&&type!=''){
+                $("#articleType").val(type);
+                showTitle(type);
+            }*/
+
+
+        }
+        //根据类型更改名字
+        var showTitle = function (type) {
+          //这里用switch无法匹配
+            if (type == forum_articleType.follow_survey) {//报告
+                $("#typeTitle").text("新增调研")
+            } else if (type == forum_articleType.follow_faq) {
+                $("#typeTitle").text("新增问答")
+            }
+        }
+
+        var editFun=function(articleId){
+            //获取帖子详情
+            var article=articleDetail(articleId);
+            //回显帖子类型
+            commons.findDictList(11000, "articleType" , article.articleType , "-- 帖子类型 --");
+            //回显内容
+            ue.ready(function(){
+                ue.setContent(article.articleContent);
+            })
+            //回显标题
+            $("#articleTitle").val(article.articleTitle);
+            //回显标签
+            articleLabelShow(article);
+        }
+
+        //编辑时回显标签
+        var articleLabelShow = function (article) {
+            articleLabel = article.articleLabel;
+            if (articleLabel) {
+                var labelArr = articleLabel.split(",");
+                if (labelArr && labelArr.length > 0) {
+                    $("#articleLabel").html("");
+                    $.each(labelArr, function (index, obj) {
+                        $.each(labelNameAndColorArr, function (i, o) {
+                            if (o.name == obj) {
+                                var oneSpan = "<span style='margin-left:5px;text-align:center;vertical-align:middle;background-color:"+ o.color +"'>" + o.name +"</span>";
+                                $("#articleLabel").append(oneSpan);
+                                return false;
+                            }
+                        });
+                    });
+                }
+            }
+        };
+
+        /**
+         * 根据帖子ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var articleDetail = function(articleId){
+            var article={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findArticleInfo_url+"?articleId="+articleId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    article=result.data;
+                }
+            }
+            ajax.run();
+            return article;
+        };
+
+
+        var lookMore = function(){
+            $('.lookMore a').on('click',function(){
+                $('.tags').css('height','auto');
+                $('.lookMore').hide();
+            });
+        };
+
+        var tabFun = function(){
+            $('.list h1 a').on('click',function(){
+                $(this).addClass('on').siblings('a').removeClass('on');
+            });
+        };
+
+
+        var formVerf = function(){
+            var msgInfo = $('#msgInfo');
+            if(formVerfication.checkInputIsEmpty($('#articleType'),msgInfo,'帖子类型不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#articleTitle'),msgInfo,'标题不能为空')){
+                return false;
+            }
+            if(!UE.getEditor('editor').hasContents()){
+                clearErrorInfo($('#editor'),msgInfo);
+                $('#editor').addClass('formInputHighlight');
+                msgInfo.append('<div class="formErrorInfo"><span>内容不能为空</span></div>');
+                return false;
+            }
+            return true;
+        }
+
+
+       var addFun =function(status, articleType){
+
+           if(!formVerf()){
+               return false;
+           }
+
+            //首先验证标签是否超过5个
+            if(articleLabelArr.length>maxLabelNum){
+                PopWin.showMessageWin("标签不可超过"+maxLabelNum+"个");
+                return false;
+            }
+
+            <!--获取标签结束-->
+            var article = {};
+            var articleSummary = '';
+            //标题默认只取前30个字符
+           var articleTitle=$("#articleTitle").val();//标题
+           if( articleTitle.length>30){
+               articleTitle=articleTitle.substr(0,30);
+           }
+            article.articleTitle = articleTitle;
+            articleSummary = UE.getEditor('editor').getContentTxt()//摘要
+            if (null != articleSummary && '' != articleSummary) articleSummary = articleSummary.substring(0,200);
+            article.articleSummary = articleSummary;
+            article.articleType = $("#articleType").val();//约调研
+            article.articleStatus = status;
+            article.articleContent = UE.getEditor('editor').getContent();
+            article.articleLabel = articleLabel;
+
+            var checkAjax = new BaseAjax();
+            var url = FORUM_ARTICLE.addArticle_url;
+            var articleId=$("#articleId").val();
+            if(articleId != null && articleId != ''){
+                url = FORUM_ARTICLE.editArticle_url
+                article.articleId=articleId;
+            }
+            article.adminFlag = "1";
+            checkAjax.opts.url = url;
+            checkAjax.opts.async = false; //同步
+            checkAjax.opts.data = JSON.stringify(article);
+            checkAjax.opts.successFun = function(result){
+                if(result.flag){
+                    switch (status){
+                        case toBe:
+                            $("#successMsg").html("保存成功");
+                            $(".success").show();
+                            break;
+                        case toBePublish:
+                            $("#successMsg").html("提交成功");
+                            $(".success").show();
+                            break;
+                    }
+                    window.setTimeout(function(){
+                        $(".success").hide();
+                    },1500);
+
+                    //取消弹窗
+                    $("#addArticle").dialog("close");
+                    //刷新grid
+                    $("#articleGrid").trigger("reloadGrid");//刷新列表
+
+                }else{
+                    switch (status){
+                        case toBe:
+                            $("#failureMsg").html("保存失败");
+                            $(".failure").show();
+                            break;
+                        case toBePublish:
+                            $("#failureMsg").html("提交失败");
+                            $(".failure").show();
+                            break;
+                    }
+
+                    window.setTimeout(function(){
+                        $(".failure").hide();
+                    },1500);
+
+                }
+            }
+
+            checkAjax.run();
+        };
+
+        /**
+         * 获取数据库中所有的标签列表
+         * @version <1> 2019/3/15 13:29 zhangshen:Created.
+         */
+        var labelNameAndColorArr = [];
+        var findLabelList = function () {
+            var forumLabel = {dataStatus: '1', delFlag: '1'};
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumLabel);
+            ajax.opts.async = false;
+            ajax.opts.url = FORUM_LABEL.nolog_findAllLabel_url;
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if (result) {
+                    var list = result.data;
+                    $.each(list,function(i,o){
+                        labelNameAndColorArr.push({"name": o.labelName, "color": o.labelColor});
+                    });
+                }
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        /**
+         * 初始化加载热门标签列表
+         * @version <1> 2019/3/7 13:24 zhangshen:Created.
+         */
+        var initLabelList = function () {
+            var forumLabel = {dataStatus: '1', delFlag: '1'};
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumLabel);
+            ajax.opts.async = false;
+            ajax.opts.url = FORUM_LABEL.nolog_findRandomLabelList_url;
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if (result) {
+                    var list = result.data;
+                    $.each(list,function(i,o){
+                        str += '<a labelColor="'+ o.labelColor +'">' + o.labelName + '</a>';
+                    });
+                }
+                $(".hotTag .tags").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+
+            if ($(".hotTag .tags").height() > 150) {
+                $(".hotTag .tags").css({"height": "150px", "overflow": "hidden"});
+                $(".hotTag .lookMore").show();
+            } else {
+                $(".hotTag .tags").css({"height": "auto", "overflow": "initial"});
+                $(".hotTag .lookMore").hide();
+            }
+
+            //给选中的标签加上样式
+            labelCss();
+        };
+        //给选中的标签加上样式
+        var labelCss = function () {
+            $(".hotTag .tags a").on('click',function(){
+                 articleLabel = "";
+               // $(this).toggleClass('on');
+                if ($(this).hasClass('ons')) {
+                    $(this).removeClass('ons');
+                    $(".errorTip").html("")
+                    //找到这个元素
+                    //删除一个
+                    for(var i=0;i<articleLabelArr.length;i++){
+                       if(articleLabelArr[i][1]==$(this).text()){
+                           articleLabelArr.splice(i,1);
+                       }
+                    };
+
+                  /*  var index = articleLabelArr.indexOf($(this).text());
+                    if (index > -1) {
+                        //删除元素
+                        articleLabelArr.splice(index, 1);
+                    }*/
+                } else {
+                    if(articleLabelArr.length==maxLabelNum){
+                        $(".errorTip").html("标签不可超过"+maxLabelNum+"个")
+                    }else{
+                        articleLabelArr.push([$(this).attr("labelColor"),$(this).text()]);
+                        $(this).addClass('ons');
+                    }
+                }
+
+                //获取数组中已有元素 拼接并显示在input输入框中
+                $("#articleLabel").html("");
+                for(var i=0;i<articleLabelArr.length;i++){
+                    if(i!=articleLabelArr.length-1){
+                        articleLabel += articleLabelArr[i][1]+",";
+                    }else{//最后一个不加"，"
+                        articleLabel += articleLabelArr[i][1];
+                    }
+                    var oneSpan = "<span style='margin-left:5px;text-align:center;vertical-align:middle;background-color:"+articleLabelArr[i][0]+"'>" +articleLabelArr[i][1] +"</span>";
+                    $("#articleLabel").append(oneSpan)
+                };
+                //给标签文本框赋值
+             //   $("#articleLabelColor").html(labelContent);
+            });
+        }
+
+        /**
+         * 获取标签字符串
+         * @version <1> 2019/3/15 13:09 zhangshen:Created.
+         */
+        var getLabelStr = function () {
+            var labelStr = "";
+            $.each($("#articleLabel").find("span"), function(i, o){
+                if ($("#articleLabel").find("span").length == (i+1)) {
+                    labelStr += o.text();
+                } else {
+                    labelStr += o.text() + ",";
+                }
+            });
+            return labelStr;
+        };
+
+        var addLabel=function(){
+            var len=6;//控制最多显示几个
+            var labelTr = $('#firstTd');
+            var newtd = $("<td ><input type='text'  name='articleLabel' class='inputType'  /><img src='images/public/reduce.png' class='removeTd' style='margin-top: 2px;' ></td>");
+
+            labelTr.before(newtd);
+
+            //判断 如果已经有三行 则增加按钮置灰
+            if($(".paramsTr").find("td").size()==len){//这里获取每一行有多少个标签只能以$(".paramsTr").find("td").size()的方式，不能在前面以变量的方式定义，否则会出现清空所有标签后再添加会一次添加好几个的情况
+                //增加按钮置灰 并移除增加行事件
+                $("#firstTd").find("img").unbind("click",addLabel);
+                $("#firstTd").find("img").attr("src","images/public/addGRAY.png");
+            }
+
+            $(".removeTd").click(function() {//点击动态移除一行
+                //判断 如果当前为5行 则增加按钮置蓝色 并移除一行
+                if($(".paramsTr").find("td").size()==len){//这里获取每一行有多少个标签只能以$(".paramsTr").find("td").size()的方式，不能在前面以变量的方式定义，否则会出现清空所有标签后再添加会一次添加好几个的情况
+                    //增加按钮变蓝 并绑定增加行事件
+                    $("#firstTd").find("img").bind("click",addLabel);
+                    $("#firstTd").find("img").attr("src","images/public/addrow.png");
+                }
+                $(this).parent().remove();
+            });
+        }
+
+
+        /**
+         * 查询系统内置的标签
+         * @param regionId 区域ID
+         * @version <1> 2018-3-11 wl : Created.
+         **/
+        var queryLabel = function () {
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_LABEL.nolog_findRandomLabelList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.type = "POST";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun=function(result){
+                if(result.flag){
+                    showLabel(result.data);
+                }
+            };
+            ajax.opts.errorFun = function(){
+
+            };
+            ajax.run();
+        }
+
+
+        var showLabel = function (labelList){
+            var labelHtml = "";
+            if(labelList !=null && labelList!=undefined && labelList.length>0)
+            {
+                labelHtml = ""
+                labelHtml += "<tr>";
+                for(var a in labelList)
+                {
+                    if((labelList[a].labelId)!=null){
+                        labelHtml += "<td><div  class='Check'><input class = 'labelCheck' type='checkbox' name='label' value='" + labelList[a].labelId + "'><span class='label' title='" + labelList[a].labelName +"'>"+labelList[a].labelName + "</span></div></td>";
+                    }
+                    else {
+                        labelHtml += "<td><div  class='Check'><input class = 'labelCheck' type='checkbox' name='label' value='" + labelList[a].labelId + "'><span class='label' title='" + labelList[a].labelName +"'>"+labelList[a].labelName + "</span></div></td>";
+                    }
+                    if(a>0&&((parseInt(a)+1)%4)==0)
+                    {
+                        labelHtml+="</tr><tr>";
+                    }
+                }
+                labelHtml+="</tr>";
+            }
+
+            $("#Label").html(labelHtml);
+
+            var  checkbox=$("input[name='crop']");
+            checkbox.each(function(index){
+                if(this.checked==true){
+                    $(this).parent().css('background','#00A7ED');
+                }
+                $(this).click(function(){
+                    if(this.checked==true){
+                        $(this).parent().css('background','#00A7ED');
+                    }
+                    else{
+                        $(this).parent().css('background','#d3d3d3');
+                    }
+                })
+            })
+        }
+
+        //清除错误信息
+        var clearErrorInfo = function(obj,showTargetObj){
+            if(showTargetObj.find('.formErrorInfo').length != 0){
+                obj.parents('body').find('.formInputHighlight').removeClass('formInputHighlight');
+                showTargetObj.find('.formErrorInfo').remove();
+            }
+        };
+
+
+
+        init();
+    })
+</script>
+</body>
+</html>

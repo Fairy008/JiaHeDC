@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="1800">
+    <title>数据统计报表</title>
+    <!--修改favcon，springboot默认是绿色叶子-->
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <!--<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>-->
+    <!-- 样式 -->
+    <style type="text/css">
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        body{
+            background: #031c38 no-repeat fixed center;
+        }
+        .clear{
+            clear: both;
+        }
+        .outerDiv{
+            margin: 0px auto;
+            background: #031c38 no-repeat fixed center;
+        }
+        .outerDiv h1{
+            font-family: "新宋体 Bold", 新宋体;
+            font-weight: 700;
+            font-style: normal;
+            font-size: 20px;
+            color: rgb(107, 236, 249);
+            text-align: center;
+            height: 50px;
+            line-height: 50px;
+        }
+        .div_content{
+            width: 80%;
+            margin: 0px auto;
+        }
+        .div_left, .div_center, .div_right{
+            float: left;
+        }
+        .div_left, .div_right{
+            width: 33%;
+            /*height: 500px;*/
+        }
+        .div_left{
+            margin: 0px 10px;
+        }
+        .div_right{
+            margin-left: 10px;
+        }
+        .div_center{
+            width: calc(32% - 23px);
+        }
+        .div_border{
+            border: 1px solid #002E49;
+            /*border-radius: 10px;*/
+        }
+        .div_center1{
+            width: 100%;
+            height: 200px;
+            margin-bottom: 5px;
+            padding: 5px 0px;
+        }
+        .div_content h3{
+            color: #fff;
+            text-align: center;
+            font-size: 14px;
+            font-family: 'Arial Normal', 'Arial';
+            height: 55px;
+            line-height: 55px;
+        }
+        .div_total1{
+            float: left;
+            width: calc(50% - 18px);
+            height: 90px;
+            margin: 5px;
+        }
+        .div_total2{
+            float: left;
+            width: 24%;
+            height: 90px;
+            margin: 5px 0px;
+        }
+        .div_total3{
+            float: left;
+            width: calc(25% - 8px);
+            height: 160px;
+            margin: 5px 3px;
+            background: url("images/public/dataDouble.png") no-repeat bottom center;
+        }
+        .div_total1 span, .div_total2 span{
+            font-size: 18px;
+            display: inline-block;
+            width: 70%;
+            text-align: left;
+            float: right;
+        }
+        .div_total1 span{
+            background: url("images/public/dataBlue.png") no-repeat center center;
+        }
+        .div_total2 span{
+            background: url("images/public/dataGreen.png") no-repeat center center;
+        }
+        .div_total3 span{
+            font-size: 16px;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+        }
+        .div_total1 span, .div_total3 span{
+            color: #03BEF0;
+        }
+        .div_total2 span{
+            color: #00F5D0;
+        }
+        .div_total3 samp{
+            color: #fff;
+            margin-left: 3px;
+        }
+        .div_center2{
+            width: 100%;
+            height: 425px;
+            margin-bottom: 5px;
+        }
+        .div_center3{
+            width: 100%;
+            height: 205px;
+        }
+        .chartDiv{
+            float:left; height: 100%;
+        }
+        samp{
+            font-size: 14px;
+            font-family: 'Arial Normal', 'Arial';
+        }
+        .div_height{
+            width: 100%;
+            height: 423px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="outerDiv">
+    <h1>数据统计平台</h1>
+    <div class="div_content">
+        <div class="div_left">
+            <div id="chartLeft1" class="div_border chartDiv div_height"></div>
+            <!--<div id="chartLeft2" class="div_border chartDiv div_height"></div>-->
+            <div id="chartLeft3" class="div_border chartDiv div_height"></div>
+            <!--<div id="chartLeft4" class="div_border chartDiv div_height"></div>-->
+        </div>
+        <div class="div_center">
+            <div class="div_border div_center1">
+                <div class="div_border div_total1">
+                    <h3>数据总景数(景)</h3>
+                    <div><span id="loaderTotal">0</span><span></span></div>
+                </div>
+                <div class="div_border div_total2">
+                    <h3>今天(景)</h3>
+                    <div><span id="loaderTotalToday">0</span></div>
+                </div>
+                <div class="div_border div_total2" style="margin-left: 5px">
+                    <h3>昨天(景)</h3>
+                    <div><span id="loaderTotalYesterday">0</span></div>
+                </div>
+
+                <div class="div_border div_total1">
+                    <h3>下载总景数(景)</h3>
+                    <div><span id="downloadTotal">0</span></div>
+                </div>
+                <div class="div_border div_total2">
+                    <h3>今天(景)</h3>
+                    <div><span id="downloadTotalToday">0</span></div>
+                </div>
+                <div class="div_border div_total2" style="margin-left: 5px">
+                    <h3>昨天(景)</h3>
+                    <div><span id="downloadTotalYesterday">0</span></div>
+                </div>
+            </div>
+            <div class="div_border div_center2">
+                <h3 style="height: 40px; line-height: 40px;">今天入库(条)</h3>
+                <div class="div_border div_total3">
+                    <h3>GF1(条)</h3>
+                    <span id="loaderTodayGF1">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF2(条)</h3>
+                    <span id="loaderTodayGF2">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF3(条)</h3>
+                    <span id="loaderTodayGF3">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF4(条)</h3>
+                    <span id="loaderTodayGF4">0<samp>条</samp></span>
+                </div>
+                <div class="clear"></div>
+
+                <h3 style="height: 40px; line-height: 40px;">今天下载(条)</h3>
+                <div class="div_border div_total3">
+                    <h3>GF1(条)</h3>
+                    <span id="downloadTodayGF1">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF2(条)</h3>
+                    <span id="downloadTodayGF2">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF3(条)</h3>
+                    <span id="downloadTodayGF3">0<samp>条</samp></span>
+                </div>
+                <div class="div_border div_total3">
+                    <h3>GF4(条)</h3>
+                    <span id="downloadTodayGF4">0<samp>条</samp></span>
+                </div>
+            </div>
+            <div class="div_border div_center3">
+                <div id="chartCenter1" class="chartDiv" style="width: 49%;"></div>
+                <div id="chartCenter2" class="chartDiv" style="width: 49%;"></div>
+            </div>
+        </div>
+        <div class="div_right">
+            <div id="chartRight1" class="div_border chartDiv div_height"></div>
+            <!--<div id="chartRight2" class="div_border chartDiv div_height"></div>-->
+            <div id="chartRight3" class="div_border chartDiv div_height"></div>
+            <!--<div id="chartRight4" class="div_border chartDiv div_height"></div>-->
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+</body>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/lib/module/config.js"></script>
+
+<script type="text/javascript">
+    require(["jquery",  "BaseAjax", "formVerfication","PopWin","echarts","jqueryUi"], function ($, BaseAjax, formVerfication,PopWin,echarts,jqueryUi) {
+        var bg = '#031c38';//'#001731'
+
+        /**
+         * Description: 初始化函数
+         * @version <1> 2018/8/15 13:14 zhangshen: Created.
+         */
+        var init = function() {
+            var data = dataInit();
+
+            $("#loaderTotal").text(data.loaderTotal);
+            $("#loaderTotalToday").text(data.loaderTotalToday);
+            $("#loaderTotalYesterday").text(data.loaderTotalYesterday);
+
+            $("#downloadTotal").text(data.downloadTotal);
+            $("#downloadTotalToday").text(data.downloadTotalToday);
+            $("#downloadTotalYesterday").text(data.downloadTotalYesterday);
+
+            $("#loaderTodayGF1").html(data.listsLoaderSeven[0].loaderDataList[0].value + '<samp>条</samp>');
+            $("#loaderTodayGF2").html(data.listsLoaderSeven[0].loaderDataList[1].value + '<samp>条</samp>');
+            $("#loaderTodayGF3").html(data.listsLoaderSeven[0].loaderDataList[2].value + '<samp>条</samp>');
+            $("#loaderTodayGF4").html(data.listsLoaderSeven[0].loaderDataList[3].value + '<samp>条</samp>');
+
+            $("#downloadTodayGF1").html(data.listsDownloadSeven[0].dataDownDataList[0].value + '<samp>条</samp>');
+            $("#downloadTodayGF2").html(data.listsDownloadSeven[0].dataDownDataList[1].value + '<samp>条</samp>');
+            $("#downloadTodayGF3").html(data.listsDownloadSeven[0].dataDownDataList[2].value + '<samp>条</samp>');
+            $("#downloadTodayGF4").html(data.listsDownloadSeven[0].dataDownDataList[3].value + '<samp>条</samp>');
+
+            chartLeft1Init(data);
+            /*chartLeft2Init(data);*/
+            chartLeft3Init(data);
+            chartRight1Init(data);
+            /*chartRight2Init(data);*/
+            chartRight3Init(data);
+            //chartRight4Init();
+
+            //chartCenter1Init(data);
+            //chartCenter2Init(data);
+            dataInit2();
+        };
+
+        var dataInit = function() {
+            var data = null;
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOADER_CONFIG.getEchartsShowData_url;
+            ajax.opts.type = "POST";
+            ajax.opts.async = false;
+            ajax.opts.contentType = "application/json";
+            //ajax.opts.data = JSON.stringify();
+            ajax.opts.successFun = function (result) {
+
+                console.log(result)
+
+
+
+                if(result.flag){
+                    data = result.data;
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+
+            };
+            ajax.run();
+
+            return data;
+        };
+
+        var dataInit2 = function() {
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOADER_CONFIG.getEchartsShowData2_url;
+            ajax.opts.type = "POST";
+            //ajax.opts.async = false;
+            ajax.opts.contentType = "application/json";
+            //ajax.opts.data = JSON.stringify();
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var data = result.data;
+                    chartCenter1Init(data);
+                    chartCenter2Init(data);
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+
+            };
+            ajax.run();
+        };
+
+        var chartCenter1Init = function (data) {
+            var CPUUsed = data.CPUUsed;
+
+            var dom = document.getElementById("chartCenter1");
+            var myChart = echarts.init(dom);
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: 'CPU使用率' + CPUUsed + "%",
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 14
+                    },
+                    left: 'center',
+                    bottom :'10%'
+                },
+                tooltip : {
+                    formatter: "{a} <br/>{b} : {c}%"
+                },
+                toolbox: {
+                    feature: {
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                series: [
+                    {
+                        name: 'CPU已用',
+                        axisLine: {//仪表盘轴线相关配置。
+                            lineStyle: {
+                                width: 12
+                            }
+                        },
+                        splitLine: {//分隔线样式。
+                            length: 12
+                        },
+                        axisLabel: {//刻度标签。
+                            fontSize: 10
+                        },
+                        type: 'gauge',
+                        detail: {formatter:'{value}%', fontSize: 14},
+                        data: [{value: CPUUsed, name: ''}]
+                    }
+                ]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartCenter2Init = function (data) {
+            var size = data.size;//总共多少G
+            var avail = data.avail;//剩余多少G
+            var used = data.used;//已用多少G
+            var use = data.use;//已用百分比
+            var sizeUnit = data.sizeUnit;//总共多少G
+            var availUnit = data.availUnit;//剩余多少G
+            var usedUnit = data.usedUnit;//已用多少G
+            var useUnit = data.useUnit;//已用百分比
+
+            var dom = document.getElementById("chartCenter2");
+            var myChart = echarts.init(dom);
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: '存储占比' + useUnit,
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 14
+                    },
+                    left: 'center',
+                    bottom :'10%'
+                },
+                toolbox: {
+                    feature: {
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                },
+                tooltip : {
+                    formatter: "{a} <br/>{b} : {c}"
+                },
+                series: [
+                    {
+                        name: '存储已用',
+                        axisLine: {//仪表盘轴线相关配置。
+                            lineStyle: {
+                                width: 12
+                            }
+                        },
+                        splitLine: {//分隔线样式。
+                            length: 12
+                        },
+                        axisLabel: {//刻度标签。
+                            fontSize: 10
+                        },
+                        type: 'gauge',
+                        max: size,
+                        detail: {formatter:'{value}' + usedUnit.substr(usedUnit.length-1,1), fontSize: 14},
+                        data: [{value: used, name: ''}]
+                    }
+                ]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartLeft1Init = function(data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsLoaderSeven;
+            $(list).each(function (i,d) {
+                var li = d.loaderDataList;
+                $(li).each(function (i,d) {
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartLeft1");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title : {
+                    text: '高分入库数据',
+                    textStyle: {
+                        fontWeight: 'normal',//标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff',
+                        fontSize: 12
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                /*grid: {
+                    show: true,
+                    left: '8%',
+                    top: 60,
+                    right: '5%',
+                    bottom: 40
+                },*/
+                calculable : true,
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis: {
+                    splitLine:{show: false},//去除网格线
+                    show: true,
+                    type: 'category',
+                    //data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15'],
+                    data: dateArr,
+                    axisLabel: {
+                        fontSize: 12
+                        //rotate: 45
+                    }
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value',
+                    axisLabel: {
+                        fontSize: 12
+                    }
+                },
+                series: [{
+                    name:'GF1',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [20, 25, 16, 13, 22, 9, 10],
+                    data: gf1Arr,
+                    type: 'bar'
+                },{
+                    name:'GF2',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [3, 5, 8, 2, 13, 15, 3],
+                    data: gf2Arr,
+                    type: 'bar'
+                },{
+                    name:'GF3',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [1, 4, 12, 21, 4, 3, 4],
+                    data: gf3Arr,
+                    type: 'bar'
+                },{
+                    name:'GF4',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [2, 15, 9, 25, 13, 25, 30],
+                    data: gf4Arr,
+                    type: 'bar'
+                }]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartLeft2Init = function(data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsLoaderSeven;
+            $(list).each(function (i,d) {
+                var li = d.loaderDataList;
+                $(li).each(function (i,d) {
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartLeft2");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: 'GF入库数据折线图',
+                    textStyle: {
+                        fontWeight: 'normal',//标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                legend: {
+                    data:['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff'
+                    }
+                },
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'category',
+                    data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15']
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value'
+                },
+                series: [{
+                    name:'GF1',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    data: [10, 8, 7, 9, 12, 8, 9],
+                    type: 'line',
+                    smooth: true
+                },
+                    {
+                        name:'GF2',
+                        type:'line',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        smooth: true,
+                        data: [2, 5, 8, 3, 8, 6, 3]
+                    },
+                    {
+                        name:'GF3',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        type:'line',
+                        smooth: true,
+                        data: [1, 4, 12, 8, 4, 3, 4]
+                    },
+                    {
+                        name:'GF4',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        type:'line',
+                        smooth: true,
+                        data: [2, 7, 9, 12, 9, 10, 6]
+                    }]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartLeft3Init = function(data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsLoaderSeven;
+            $(list).each(function (i,d) {
+                var li = d.loaderDataList;
+                $(li).each(function (i,d) {
+                    if (d.value == 0)   d.value = null;
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartLeft3");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: '高分入库数据',
+                    textStyle: {
+                        fontWeight: 'normal',              //标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                legend: {
+                    data: ['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis:  {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value'
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'category',
+                    axisLabel : {
+                        margin: 14
+                    },
+                    //data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15']
+                    data: dateArr
+                },
+                series: [
+                    {
+                        name: 'GF1',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [20, 25, 16, 13, 22, 9, 10]
+                        data: gf1Arr
+                    },
+                    {
+                        name: 'GF2',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [3, 5, 8, 2, 13, 15, 3]
+                        data: gf2Arr
+                    },
+                    {
+                        name: 'GF3',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [1, 4, 12, 21, 4, 3, 4]
+                        data: gf3Arr
+                    },
+                    {
+                        name: 'GF4',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [2, 15, 9, 25, 13, 25, 30]
+                        data: gf4Arr
+                    }
+                ]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartRight1Init = function (data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsDownloadSeven;
+            $(list).each(function (i,d) {
+                var li = d.dataDownDataList;
+                $(li).each(function (i,d) {
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartRight1");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title : {
+                    text: '高分下载数据',
+                    textStyle: {
+                        fontWeight: 'normal',//标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip : {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff'
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                calculable : true,
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'category',
+                    //data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15']
+                    data: dateArr,
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value'
+                },
+                series: [{
+                    name:'GF1',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [20, 25, 16, 13, 22, 9, 10],
+                    data: gf1Arr,
+                    type: 'bar'
+                },{
+                    name:'GF2',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [3, 5, 8, 2, 13, 15, 3],
+                    data: gf2Arr,
+                    type: 'bar'
+                },{
+                    name:'GF3',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [1, 4, 12, 21, 4, 3, 4],
+                    data: gf3Arr,
+                    type: 'bar'
+                },{
+                    name:'GF4',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    //data: [2, 15, 9, 25, 13, 25, 30],
+                    data: gf4Arr,
+                    type: 'bar'
+                }]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartRight2Init = function(data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsDownloadSeven;
+            $(list).each(function (i,d) {
+                var li = d.dataDownDataList;
+                $(li).each(function (i,d) {
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartRight2");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: 'GF下载数据折线图',
+                    textStyle: {
+                        fontWeight: 'normal',              //标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                legend: {
+                    data:['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff'
+                    }
+                },
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'category',
+                    data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15']
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value'
+                },
+                series: [{
+                    name:'GF1',
+                    label: {
+                        normal: {
+                            show: true,
+                            position: 'top'
+                        }
+                    },
+                    data: [10, 8, 7, 9, 12, 15, 9],
+                    type: 'line',
+                    smooth: true
+                },
+                    {
+                        name:'GF2',
+                        type:'line',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        smooth: true,
+                        data: [2, 5, 8, 3, 13, 15, 3]
+                    },
+                    {
+                        name:'GF3',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        type:'line',
+                        smooth: true,
+                        data: [1, 4, 12, 12, 4, 3, 4]
+                    },
+                    {
+                        name:'GF4',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top'
+                            }
+                        },
+                        type:'line',
+                        smooth: true,
+                        data: [2, 15, 9, 12, 13, 10, 14]
+                    }]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartRight3Init = function(data) {
+            var dateArr = [];
+            var gf1Arr = [];
+            var gf2Arr = [];
+            var gf3Arr = [];
+            var gf4Arr = [];
+            var list = data.listsDownloadSeven;
+            $(list).each(function (i,d) {
+                var li = d.dataDownDataList;
+                $(li).each(function (i,d) {
+                    if (d.value === 0) d.value = null;
+                    if (d.name == "GF1") {
+                        gf1Arr.push(d.value);
+                        dateArr.push(d.date);
+                    } else if (d.name == "GF2") {
+                        gf2Arr.push(d.value);
+                    } else if (d.name == "GF3") {
+                        gf3Arr.push(d.value);
+                    } else if (d.name == "GF4") {
+                        gf4Arr.push(d.value);
+                    }
+                });
+            });
+
+            var dom = document.getElementById("chartRight3");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                backgroundColor: bg,//背景色
+                title: {
+                    text: '高分下载数据',
+                    textStyle: {
+                        fontWeight: 'normal',              //标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                legend: {
+                    data: ['GF1','GF2','GF3','GF4'],
+                    textStyle: {
+                        color:'#fff'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                axisLabel: {
+                    color: '#fff'
+                },
+                xAxis:  {
+                    splitLine:{show: false},//去除网格线
+                    type: 'value'
+                },
+                yAxis: {
+                    splitLine:{show: false},//去除网格线
+                    type: 'category',
+                    axisLabel : {
+                        margin: 14
+                    },
+                    //data: ['2018-08-09', '2018-08-10', '2018-08-11', '2018-08-12', '2018-08-13', '2018-08-14', '2018-08-15']
+                    data: dateArr
+                },
+                series: [
+                    {
+                        name: 'GF1',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [20, 25, 16, 13, 22, 9, 10]
+                        data: gf1Arr
+                    },
+                    {
+                        name: 'GF2',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [3, 5, 8, 2, 13, 15, 3]
+                        data: gf2Arr
+                    },
+                    {
+                        name: 'GF3',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [1, 4, 12, 21, 4, 3, 4]
+                        data: gf3Arr
+                    },
+                    {
+                        name: 'GF4',
+                        type: 'bar',
+                        stack: '总量',
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'insideRight'
+                            }
+                        },
+                        //data: [2, 15, 9, 25, 13, 25, 30]
+                        data: gf4Arr
+                    }
+                ]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+        var chartRight4Init = function() {
+            var dom = document.getElementById("chartRight4");
+            var myChart = echarts.init(dom);
+
+            var option = {
+                title: {
+                    text: '今天高分下载数据',
+                    textStyle: {
+                        fontWeight: 'normal',//标题颜色
+                        color: '#fff',
+                        fontSize: 14
+                    }
+                },
+                backgroundColor: '#031c38',
+                //color: ['#3398DB'],
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        //dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true}/*,
+                        saveAsImage : {show: true}*/
+                    }
+                },
+                axisLabel: {
+                    color: '#fff'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : ['张三', '李四', '王五', '赵六', '七', '八', '九'],
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'高分下载数据',
+                        type:'bar',
+                        barWidth: '60%',
+                        data:[2, 6, 4, 9, 5, 8, 2]
+                    }
+                ]
+            };
+
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        };
+
+
+        init();
+    });
+</script>
+
+</html>

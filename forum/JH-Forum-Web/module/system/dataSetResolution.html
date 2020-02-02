@@ -1,0 +1,623 @@
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+<style>
+
+    .tableStyle{
+        width: 100%;
+        cellpadding:0;
+        cellspacing:0;
+        border-bottom: #00A7ED 1px solid;
+    }
+    #saveArea  tr td{
+        vertical-align: middle;
+        word-wrap: break-word;
+        color:#333;
+        white-space: nowrap;
+        padding:5%;
+        width: 15%;
+    }
+
+    .allStyle{
+        font-weight: normal;
+        font-size: 14px!important;
+        line-height: 0px;
+        letter-spacing: 0px;
+        color: #00a7ec;
+        font-family: MicrosoftYaHei;
+        padding-left: 5px;
+    }
+    .allCheck{
+        font-family: MicrosoftYaHei;
+        font-size: 12px!important;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 0px;
+        letter-spacing: 0px;
+        color: #3d3d3d;
+        padding-left: 5px;
+    }
+    input{
+        cursor:pointer;
+        vertical-align: middle
+    }
+    .Check{
+        width: 130px;
+        height: 28px;
+        background-color: #d3d3d3;
+        border-radius: 2px;
+        text-align: center;
+        line-height: 28px;
+    }
+    .cropcheck{
+        width: 12px;
+        height: 12px;
+        background-color: #f5f5f6;
+        border-radius: 2px;
+    }
+    .crop{
+        font-family: MicrosoftYaHei;
+        font-size: 12px!important;
+        font-weight: normal;
+        font-stretch: normal;
+        line-height: 0px;
+        letter-spacing: 0px;
+        color: #ffffff;
+        padding-left: 5px;
+    }
+    .sheader{
+        width: 100%;
+        height: 30px;
+        border-bottom: #00A7ED 1px solid;
+    }
+    .CheckAll{
+        display: inline;
+        float: right;
+    }
+    .areadetail{
+        display: inline;
+        float: left;
+    }
+    .btn{
+        padding: .2em 1.0em;
+        border-radius: 2px;
+        border: none;
+        background: #00A7ED;
+        color: #FFFFFF;
+        font-family: MicrosoftYaHei;
+        font-size: 12px!important;
+        cursor: pointer;
+        outline: none;
+        width: 73px;
+        height: 28px;
+    }
+    #regionTree_1_a{
+        pointer-events: none;
+    }
+    #regionTree_1_switch{
+        pointer-events: none;
+    }
+</style>
+
+<div class="outerDiv">
+    <div class="innerDiv">
+        <div class="modulTitle">
+            <span class="blueBlock"></span>
+            <span class="modulTitleInfo">数据集精度配置</span>
+        </div>
+        <div class="infoDiv">
+            <div class="zTreeDemoBackground">
+                <ul id="regionTree" class="ztree"></ul>
+            </div>
+
+            <div class="dataInfo rightDict">
+                <div style="width:100%">
+                    <div id="img"><span id="areaTitle" style="color: #00a7ec; font-weight: bold;font-size:16px !important;"></span></div>
+                    <div class="addProductData">
+                        <div class="sheader"><div class="areadetail"><input type='checkbox' id='allAndNotAll'><span class='allCheck'>全选</span></div></div>
+                        <table id="saveArea" class="tableStyle">
+
+                        </table>
+                    </div>
+
+                    <div align="center" id="btnSave" style="display: block">
+                        <input class="btn" type="button" id = "saveD" value="保存"/>
+                        <!--  <input class="btn" type="button" id = "cancelBtn" value="取消"/>
+                      </div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="showDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+<script type="text/javascript">
+
+    require(["jquery", "ztree", "BaseAjax", "formVerfication",'PopWin',"commons"], function ($, ztree, BaseAjax, formVerfication,PopWin,commons) {
+
+        function init(){
+            defaultLoadData();
+        };
+        var log, param={ },className = "dark", startTime = 0, endTime = 0, perCount = 100, perTime = 100, currentTreeNode;
+        var trid,trnode,treeId,treeName;
+        var setting = {
+            async: {
+                enable: true,
+                contentType: "application/json",
+                url: DICT_COFING.queryDictListByPid_url,
+                enable:true,
+                headers:{"AccessToken":commons.getAccessToken()},
+                dataFilter:ajaxDataFilter, //拦截ajax,预处理返回结果
+                autoParam:["id", "name", "pId","isParent"],
+                otherParam:param,
+            },
+            view: {
+                expandSpeed:"",
+                selectedMulti: false
+            },
+            check:{
+                enable:true,
+                chkStyle:"radio",
+                chkboxType: { "Y": "s", "N": "ps" }
+            },
+            edit: {
+                enable: false,
+                editNameSelectAll: true,
+                showRemoveBtn:false
+            },
+            data: {
+                keep:{
+                    parent:false
+                },
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                onClick:onClickFunction,
+                beforeExpand: beforeExpand,
+                onAsyncSuccess: onAsyncSuccess,
+                onAsyncError: onAsyncError,
+                onCheck:onCheckFunction
+            }
+        };
+
+        /**
+         *拦截处理ResultMessage返回内容，使之满足zTree要求格式
+         * dataFilter回调函数
+         * enable:true enable属性配置为true
+         * @version<1> 2018-02-06 lcw : Created.
+         */
+        function ajaxDataFilter(treeId,parentNode, responseData){
+            if(responseData.flag){
+                return responseData.data;
+            }
+        }
+
+        //用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
+        function beforeExpand(treeId, treeNode) {
+            param.id = treeNode.id;
+            if (!treeNode.isAjaxing) {
+                startTime = new Date();
+                treeNode.times = 1;
+                ajaxGetNodes(treeNode, "refresh");
+                return true;
+            } else {
+                alert("zTree 正在下载数据中，请稍后展开节点。。。");
+                return false;
+            }
+        }
+
+        //用于捕获异步加载正常结束的事件回调函数
+        function onAsyncSuccess(event, treeId, treeNode, msg) {
+            if (!msg || msg.length == 0) {
+                return;
+            }
+            if(treeNode == null){
+                return ;
+            }
+            var zTree = $.fn.zTree.getZTreeObj("regionTree"),
+                totalCount = treeNode == null?0:treeNode.count;
+            if (treeNode.children.length < totalCount) {
+                setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
+            } else {
+                treeNode.icon = "";
+                zTree.updateNode(treeNode);
+                zTree.selectNode(treeNode.children[0]);
+                var node = treeNode.children[0];
+                node.checked = true;
+                zTree.updateNode(node);
+                getDatasetAndResolutionById(node.id,node.name,'show');
+            }
+        }
+
+        //用于捕获异步加载出现异常错误的事件回调函数
+        function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+            var zTree = $.fn.zTree.getZTreeObj("regionTree");
+            alert("异步获取数据出现异常。");
+            treeNode.icon = "";
+            zTree.updateNode(treeNode);
+        }
+
+        //刷新树
+        function ajaxGetNodes(treeNode, reloadType) {
+            var zTree = $.fn.zTree.getZTreeObj("regionTree");
+            if (reloadType == "refresh") {
+//				treeNode.icon = "../../../css/zTreeStyle/img/loading.gif";
+                treeNode.isParent=true;
+                zTree.updateNode(treeNode);
+            }
+            zTree.reAsyncChildNodes(treeNode, reloadType, true);
+        }
+
+        //过滤加载数据
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) return null;
+            for (var i=0, l=childNodes.length; i<l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
+
+        //点击事件（添加区域，显示区域详情,删除区域）
+        function onClickFunction(event, treeId, treeNode,clickFlag) {
+            //清除默认加载选择区域样式
+            document.getElementById("regionTree_2_a").style.backgroundColor="";
+            var tag = $(event.target || event.srcElement).attr("class")
+            if(+treeNode.id){
+                //每次切换之前先清空以前的croplist内容
+                $("#saveArea").html("");
+                var zTree = $.fn.zTree.getZTreeObj("regionTree");
+                var node = zTree.getNodeByParam("id",treeNode.id);
+                node.checked = true;
+                zTree.updateNode(node);
+                getDatasetAndResolutionById(treeNode.id,treeNode.name,'show');
+
+            }
+        };
+
+        function onCheckFunction(event, treeId, treeNode,clickFlag) {
+            //清除默认加载选择区域样式
+            document.getElementById("regionTree_2_a").style.backgroundColor="";
+            var tag = $(event.target || event.srcElement).attr("class")
+            if(+treeNode.id){
+                //每次切换之前先清空以前的croplist内容
+                $("#saveArea").html("");
+
+                getDatasetAndResolutionById(treeNode.id,treeNode.name,'show');
+
+            }
+        };
+
+
+
+        //获取区域参数 和 作物参数
+        var  getParam = function(){
+
+            //获取ztree中所有被勾选的regionId
+            //获取右侧所有被勾选的cropId
+            var treeObj = $.fn.zTree.getZTreeObj("regionTree");
+            var nodes = treeObj.getCheckedNodes(true);
+            var dataSetId = [];
+            var resolutionIds = [];
+
+            if(nodes == undefined || nodes == null || nodes.length < 1){
+                PopWin.showMessageWin('请勾选需要配置的数据集');
+                return false;
+            }
+
+            dataSetId = nodes[0].id;
+
+            //获取选中的复选框值
+            $('input[name="crop"]:checked').each(function(){
+                //向数组中添加元素
+                resolutionIds.push(parseInt($(this).val()));
+
+            });
+
+            if(resolutionIds.length<=0){
+                PopWin.showMessageWin('请选择需要配置的精度');
+                return false;
+            }
+
+            var paramData = {
+                dataSetId:dataSetId,
+                resolutionIds:resolutionIds
+            }
+            return paramData;
+        }
+
+
+
+        //初始化数据区域树型
+        var zNodes = [];
+        var defaultLoadData = function(){
+            var varyAjax = new BaseAjax();
+            varyAjax.opts.url = DICT_COFING.queryDictListByPid_url,
+            varyAjax.opts.type = "POST";
+            varyAjax.opts.contentType = "application/json";
+            varyAjax.opts.data = JSON.stringify({"id":9,"name":"数据集产品","pId":1,"isParent":true});
+            varyAjax.opts.async = true; //同步请求
+            varyAjax.opts.successFun = function(result){
+                if(result.flag){
+                    var data = result.data;
+                    var firstId ;
+                    for(var temp in data)
+                    {
+                        if(data[temp].id != 1800){
+                            continue;
+                        }
+                        var treeData = {
+                            id:"",
+                            pId:"",
+                            name:"",
+                            regionLevel:"",
+                            regionCode:"",
+                            isParent:true
+                        };
+                        firstId = data[2].id;
+                        treeData.id =  data[temp].id;
+                        treeData.pId = data[temp].pId;
+                        treeData.name =  data[temp].name;
+                        treeData.regionLevel =  data[temp].regionLevel;
+                        treeData.regionCode = data[temp].regionCode;
+                        zNodes.push(treeData)
+                        //clearRightData();
+                    }
+
+                    //加载树型
+                    $(document).ready(function(){
+                        $.fn.zTree.init($("#regionTree"), setting, zNodes);
+                        //初始化区域选择，默认选择第一个区域
+                        if(document.getElementById("regionTree_2_a")){
+                            document.getElementById("regionTree_2_a").style.backgroundColor="#e5e5e5";
+                        }
+                        var zTree = $.fn.zTree.getZTreeObj("regionTree");
+                        var nodes = zTree.getNodes();
+                        for (var i = 0; i < nodes.length; i++) { //设置节点展开
+                            if(i == 0){
+                                nodes[i].chkDisabled = true;
+                                nodes[i].nocheck = true;
+                                nodes[i].disableClick = true;
+                            }
+                            zTree.expandNode(nodes[i], true, false, true);
+                        }
+                    });
+                }
+            };
+            varyAjax.opts.errorFun = function(){
+                $.fn.zTree.init($("#regionTree"), setting, zNodes);
+            };
+            varyAjax.run();
+        };
+
+        /**
+         * 根据区域查询作物
+         * @param regionId 区域ID
+         * @version <1> 2018-1-24 cxw : Created.
+         **/
+        var getDatasetAndResolutionById = function (dataSetId,regionName,type) {
+            $("#areaTitle").html(regionName+'精度配置');
+            $("#btnSave").show();
+            var paramData = {
+                dataSetId:dataSetId,
+                parentIds:4000
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryResolutionListByDSId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data =  JSON.stringify(paramData);
+            ajax.opts.type = "POST";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun=function(result){
+                if(result.flag){
+                    /*if(type=='edit'){
+                        //显示保存按钮
+                        $("#areaTitle").html(regionName+'区域作物信息配置');
+                        $("#btnSave").show();
+                    }
+                    if(type=='show'){
+                        //隐藏保存按钮
+                        $("#areaTitle").html(regionName+'区域作物信息详情');
+                        $("#btnSave").hide();
+                    }*/
+                    initResolutionTab(result.data);
+                }
+            };
+            ajax.opts.errorFun = function(){
+
+            };
+            ajax.run();
+        }
+
+        /**
+         * 将查询出的区域数据加载到表格
+         * @param cropArr 作物数据
+         * @version <1> 2018-1-24 cxw : Created.
+         **/
+        var initResolutionTab = function (cropArr) {
+            var tabHtml = "";
+
+            if(cropArr !=null && cropArr!=undefined && cropArr.length>0)
+            {
+                tabHtml = ""
+                tabHtml += "<tr>";
+                for(var a in cropArr)
+                {
+                    if((cropArr[a].dataId)!=null){
+                        tabHtml += "<td><div class='Check'><input class = 'cropCheck' type='checkbox' name='crop' value='" + cropArr[a].dictId + "' checked='checked'><span class='crop' title='" + cropArr[a].dataName +"'>"+cropArr[a].dataName + "</span></div></td>";
+                    }
+                    else {
+                        tabHtml += "<td><div  class='Check'><input class = 'cropCheck' type='checkbox' name='crop' value='" + cropArr[a].dictId + "'><span class='crop' title='" + cropArr[a].dataName +"'>"+cropArr[a].dataName + "</span></div></td>";
+                    }
+                    if(a>0&&((parseInt(a)+1)%4)==0)
+                    {
+                        tabHtml+="</tr><tr>";
+                    }
+                }
+                tabHtml+="</tr>";
+            }
+
+            $("#saveArea").html(tabHtml);
+            var allCheckNum = $("input[name='crop']").length;
+            var checkedNum = $("input[name='crop']:checked").length;
+            if(allCheckNum==checkedNum){
+                $("#allAndNotAll").prop("checked", true);
+            }else{
+                $("#allAndNotAll").prop("checked", false);
+            }
+
+            $("#allAndNotAll").click(function() {
+                var isChecked = $(this).prop("checked");
+                $("input[name='crop']").prop("checked", isChecked);
+                var ischecked=$("input[name='crop']").attr("checked");
+                var checked=$("input[name='crop']");
+                if(checked.is(':checked')){
+                    checked.parent().css('background','#00A7ED');
+                }
+                else{
+                    checked.parent().css('background','#d3d3d3');
+                }
+            });
+
+            var  checkbox=$("input[name='crop']");
+            checkbox.each(function(index){
+                if(this.checked==true){
+                    $(this).parent().css('background','#00A7ED');
+                }
+                $(this).click(function(){
+                    if(this.checked==true){
+                        $(this).parent().css('background','#00A7ED');
+                    }
+                    else{
+                        $(this).parent().css('background','#d3d3d3');
+                    }
+                })
+            })
+        }
+
+        /**
+         * 保存区域与作物关联数据
+         * regionId 区域ID
+         * cropId 作物ID
+         * @version <1> 2018-1-25 cxw : Created.
+         **/
+        var saveFun = function (paramArr) {
+            //var paramArr = getParam();
+            var varyAjax = new BaseAjax();
+            varyAjax.opts.url = DICT_COFING.addDatasetAndResolutionData_url;
+            varyAjax.opts.type = "POST";
+            varyAjax.opts.contentType = "application/json";
+            varyAjax.opts.async = false; //同步请求
+            varyAjax.opts.data = JSON.stringify(paramArr);
+            varyAjax.opts.successFun = function(result){
+                if(result.flag){
+                    var zTree = $.fn.zTree.getZTreeObj("regionTree");
+                    zTree.refresh();
+                    zTree.checkAllNodes(false);
+                    var treeObj = $.fn.zTree.getZTreeObj("regionTree");
+                    var nodes = treeObj.getCheckedNodes(true);
+                    var checkedNode = nodes[0];
+                    getDatasetAndResolutionById(checkedNode.id,checkedNode.name,'show');
+
+                    $("#showDialog").dialog("close");
+                    PopWin.showMessageWin('保存成功');
+                }
+            };
+            varyAjax.opts.errorFun = function(){
+                return false;
+                $("#showDialog").dialog("close");
+                PopWin.showMessageWin('保存失败');
+            };
+            varyAjax.run();
+
+        }
+
+        //刷新当前节点
+        var refreshNode = function(dataArea){
+
+            if(dataArea.regionId){
+                var dataAreaZtree =  $.fn.zTree.getZTreeObj('regionTree');
+                var treeNode = dataAreaZtree.getNodesByParam('id',dataArea.regionId);
+                if(treeNode.length==0)
+                {
+                    defaultLoadData();
+                }
+                else
+                {
+                    treeNode[0].name = treeNode[0].chinaName = dataArea.chinaName;
+                    treeNode[0].dataStatus = dataArea.dataStatus;
+                    dataAreaZtree.refresh();
+                }
+            }
+            else {
+                setTimeout(function () {
+                    //defaultLoadData();
+                    beforeExpand(trid,trnode)//刷新当前节点（新）
+                },500);
+            }
+        }
+
+        //保存区域信息
+        document.getElementById("saveD").onclick= function(){
+
+            //$(".rightDict").remove(".formErrorInfo");
+            var param=getParam();
+            if(param==false){
+                return false;
+            }
+            showDialog("确认保存配置吗？",function() {
+
+                saveFun(param);
+            });
+        };
+
+
+
+        //弹出框通用方法
+        var showDialog=function(msg,yesFun,noFun){
+            var reloadDialog = $("#showDialog");
+            $("#msg").html(msg)
+            reloadDialog.dialog({
+                autoOpen: false,
+                title:'系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons:[
+                    {
+                        text:"是",
+                        click:function(){
+                            yesFun();
+                            $(this).dialog("close");
+                        }
+                    },
+                    {
+                        text:"否",
+                        click:function(){
+                            if(!noFun && noFun instanceof Function){
+                                noFun();
+                            }
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+
+            reloadDialog.dialog("open");
+        };
+
+        init();
+
+        // 添加和修改界面取消按钮的点击事件
+        /*$("#cancelBtn").click(function() {
+            $('.formInputHighlight').removeClass('formInputHighlight')//清除错误样式
+            getDatasetAndResolutionById(currentTreeNode.id,currentTreeNode.name, 'show');
+        });*/
+
+
+    });
+
+</script>
+

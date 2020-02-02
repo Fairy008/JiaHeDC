@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			#divMap{
+				height:500px;
+				width:100%;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="divMap">
+			<span>test</span>
+			
+		</div>
+		
+ 		 <script type="text/javascript" src="js/lib/require/require.js"></script>
+         <script type="text/javascript" src="js/require.config.js"></script>
+		 <script type="text/javascript">
+			require(["jquery","ol","MapModule"],function($,ol,MapModule){
+				var init = function(){
+					map.initMap()
+				}
+				
+				
+				  /**
+				     * 1. 区域选择后，地图移到区域中心点
+				     * 2. 区域选择后，地图加载区域的下一级区域图层
+				     * @version <1> 2017-11-07 Hayden:Created.
+				     *
+				     * 3. 加载省级图层
+				     * @version <1> 2018-01-16 XuZhenguo:Created.
+				     */
+				    //图层层级配置
+				    var layerIndex = {
+				        'bgLayer':1,
+				        'parentLayer':2,
+				        'gfLayer':3,
+				        'countryLayer':4,
+				        'tifLayer':95,
+				        'colorLayer':5,
+				        'childLayer':6,
+				        'railwayLayer':8,
+				        'highwayLayer':7
+				    };
+				
+				var map = {
+					initMap:function(){
+						   var url = DS_Layer.Layer_Init_URL;
+			            mapTool = new MapModule.MapTool("divMap",{"maxZoom":12,"minZoom":3,"url":url});
+			            mapTool.createMap();
+			
+			            //加载WMS世界底图
+			            var layerName = "JiaHeDC:ly_WORLD";
+			            // var opts={filter:"PARENT_ID IS  NULL"};
+			            var opts={'zIndex':layerIndex.bgLayer};
+			            mapTool.addTileWMSLayer(layerName,opts);
+			
+					}
+				}
+				
+				
+				init()
+			})
+			
+		</script>
+	</body>
+</html>

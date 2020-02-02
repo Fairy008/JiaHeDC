@@ -1,0 +1,2630 @@
+<!--采集任务 @version 2018-11-21 xy: Created.-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<style>
+    .btn {
+        padding-right: 0em !important;
+    }
+
+    .timeRang {
+        float: left;
+    }
+
+    .textareaStyle {
+        width: 95%;
+        font-size: 12px;
+        border-radius: 3px;
+        border: 1px solid #dfdfdf;
+        resize: none;
+        margin-top: 4px;
+        padding: 4px;
+        color: #000000
+    }
+
+    .div_head {
+        background-color: #46B4F1;
+        width: 100%;
+        color: rgb(255, 255, 255);
+        font-size: 14px !important;
+        line-height: 40px;
+        font-weight: normal;
+        height: 40px;
+        text-indent: 10px;
+        position:relative;
+    }
+
+    .div_btn {
+        background-color: #46B4F1;
+        border-color: rgb(163, 208, 253);
+        width: 95px;
+        height: 40px;
+        border-width: 1px;
+        border-style: solid;
+        text-align: center;
+        line-height: 20px;
+        margin: 0 auto;
+        color: #fff;
+        border-radius: 5px;
+    }
+
+    .table_bottom {
+        width: 200px;
+        margin: 0 auto;
+        margin-top: 30px;
+        padding-bottom:30px;
+    }
+
+    .banner {
+        width: 200px;
+        height: 200px;
+        margin: 10px;
+        background: #cccccc;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .banner ul {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 100;
+    }
+
+    .banner ul li {
+        display: block;
+        width: 500px;
+        height: 300px;
+        float: left;
+    }
+
+    .banner .con {
+        position: absolute;
+        left: 45%;
+        bottom: 3%;
+        z-index: 101;
+    }
+
+    .banner .con a {
+        float: left;
+        margin-right: 8px;
+        display: block;
+        width: 8px;
+        height: 8px;
+        border-radius: 100%;
+        background: #000;
+        z-index: 101;
+    }
+
+    .banner .con a.active {
+        background: #fff;
+    }
+
+    .banner .u {
+        width: 20px;
+        background: rgba(255, 255, 255, 0.5);
+        display: none;
+        text-align: center;
+        cursor: pointer
+    }
+
+    .banner .left {
+        position: absolute;
+        top: 40%;
+        left: 2%;
+        z-index: 103;
+        font-weight: bold;
+        font-size: 24px
+    }
+
+    .banner .right {
+        position: absolute;
+        top: 40%;
+        right: 2%;
+        z-index: 103;
+        font-weight: bold;
+        font-size: 24px
+    }
+
+    .deletePng {
+        position: absolute;
+        top: -5px;
+        right: 0px;
+        width: 20px;
+        height: 20px;
+        z-index: 9999;
+        display: none
+    }
+    .rightMain{
+        height: initial !important;
+        min-height:100% !important
+    }
+    .form table tr td img {
+        padding-right: 0px !important;
+    }
+    .colModelTd{
+        display: inline-flex;
+        align-items: center;
+    }
+    .user .userContent li{
+        width: initial !important;
+    }
+    .user img{
+        vertical-align: inherit;
+    }
+    .button_style{
+        background-color: #1caf9a;
+        color: #fff;
+        width: 100px;
+        height: 30px;
+        font-size: 14px;
+        border-radius: 3px;
+        border: 0px;
+        margin:10px 300px;
+    }
+    #preview{
+        text-align: center;
+    }
+</style>
+</head>
+<body >
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow" id="searchRow">
+            <div class="searchBGleft">
+                <div>
+                    <span class="label2">任务名称：</span>
+                    <span><input type="text" class="input" id="taskNameId"/></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span>
+                    <select id="cropSearch" class="input inputWidth_100" style="text-align:center;">
+                        <!--<option value="">&#45;&#45;请选择作物&#45;&#45;</option>
+                        <option value="00">水稻</option>
+                        <option value="01">小麦</option>
+                        <option value="02">玉米</option>-->
+                    </select>
+                </span>
+                </div>
+                <div>
+                    <span class="label2">任务类型：</span>
+                    <span>
+                    <select id="taskTypeSearch" class="input inputWidth_100" style="text-align:center;">
+                        <!--<option value="">&#45;&#45;请选择模板类型&#45;&#45;</option>
+                        <option value="00">产量估算</option>
+                        <option value="01">病虫害调查</option>
+                        <option value="01">长势分析</option>-->
+                    </select>
+                </span>
+                </div>
+
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input" id="createTimeId" readonly/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询  " id="queryBtn" style="padding-right:0em !important"/>&nbsp;&nbsp;
+                <input type="button" class="btn " value="重置  " id="resetBtn" style="padding-right:0em !important"/>
+                <input type="button" class="btn " value="新增" id="addBtn" style="padding-right:13px !important"/>
+            </div>
+        </div>
+    </div>
+    <div class="grid" id="grid">
+        <table id="taskBox"></table>
+        <div id="pager2"></div>
+    </div>
+    <!-- 确认对话框 -->
+    <div id="confirmDialog" class="dialogStyle" style="display:none">
+    </div>
+    <!--新增任务Dialog-->
+    <div id="addTaskInfo" class="form" style="display: none;">
+        <div class="div_head" id="taskInfoTitle">新建任务</div>
+        <div style="width:800px;margin:0 auto;padding-right: 100px;">
+            <div id="addTaskInfoTable">
+                <table class="dataintable">
+                    <tr>
+                        <td class="four_td1">
+                            <span class="txtRequired">*</span>任务名称:
+                        </td>
+                        <td class="four_td2">
+                            <input id="taskTypeNameInputId" class="inputType" type="text"/>
+                        </td>
+                        <td class="four_td1">
+                            <span class="txtRequired">*</span>任务类型:
+                        </td>
+                        <td class="four_td2">
+                            <select id="taskTypeInputId" name="taskOrigin" class="selectType two_selectType">
+                                <option value="">--请选择--</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="four_td1">
+                            <span class="txtRequired">*</span>单位名称:
+                        </td>
+                        <td class="four_td2">
+                            <input id="workplaceId" class="inputType" type="text"/>
+                        </td>
+                        <td class="four_td1">
+                            <span class=""></span>创建人:
+                        </td>
+                        <td class="four_td2">
+                            <input id="createorId" class="inputType" type="text"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="four_td1">
+                            <span class="txtRequired">*</span>创建日期:
+                        </td>
+                        <td class="four_td2">
+                            <input id="startDateId" class="inputType" type="text" readonly/>
+                        </td>
+                        <td class="four_td1">
+                            <span class="txtRequired">*</span>结束日期:
+                        </td>
+                        <td class="four_td2">
+                            <input id="endDateId" class="inputType" type="text" readonly/>
+                        </td>
+                    </tr>
+                    <tr rows="5">
+                        <td class="four_td1" style="vertical-align: top">
+                            <div class="justify">备注:<span class='p'></span></div>
+                        </td>
+                        <td colspan="3"><textarea class="textareaStyle" id="taskInfoRemarkId" cols="30"
+                                                  rows="5"></textarea>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="table_bottom" style="padding-left: 50px;">
+                <input class="div_btn" type="button" value="取消" id="cancelTaskInfo"/>
+                <input class="div_btn" type="button" value="下一步" id="nextTaskInfo"/>
+                <input class="div_btn" type="button" value="保存" id="editTaskInfo" style="display:none"/>
+            </div>
+        </div>
+    </div>
+    <!--END ADD-->
+    <div id="delDialog" class="dialogStyle"></div>
+    <!--新建任务-选择模板Dialog-->
+    <div id="selectTemplateDialog" class="dialogStyle">
+        <div class="div_head">新增任务---模板选择</div>
+        <div style="margin-top:10px;">
+            <span><input type="text" id="templateNameId" placeholder="模板名称" style="height:25px;margin:5px 5px"/></span>
+            <span>
+                <select id="cropQueryId" class="input inputWidth_100"
+                        style="text-align:center;height:30px;    width: 150px">
+                    <!--<option value="">&#45;&#45;请选择&#45;&#45;</option>
+                    <option value="1">小麦</option>
+                    <option value="2">油菜</option>
+                    <option value="3">大豆</option>-->
+                </select>
+            </span>
+            <span>
+                <select id="templateTypeQueryId" class="input inputWidth_100"
+                        style="text-align:center;height:30px;    width: 150px">
+                    <!--<option value="">&#45;&#45;请选择&#45;&#45;</option>
+                    <option value="1">产量估算</option>
+                    <option value="2">病虫害调查</option>
+                    <option value="3">长势分析</option>-->
+                </select>
+            </span>
+            <span style="margin-left:20px;"><input type="button" class="div_btn" id="queryTemplateBtn" value="查询"
+                                                   style="cursor:pointer;height:30px;"/></span>
+            <span style=""><input type="button" class="div_btn" id="addTemplateBtn" value="新增"
+                                  style="cursor:pointer;height:30px;"/></span>
+        </div>
+        <div>
+            <table class=""
+                   style="width:100%;text-align:center;border-collapse:separate; border-spacing:0px 10px;margin-top:10px;"
+                   border="0" id = "templateData">
+                <!--<tr>
+                    <th style="width: 2%;text-align:center;"></th>
+                    <th style="width: 10%;text-align:center;">模板名称</th>
+                    <th style="width: 8%;text-align:center;">创建人</th>
+                    <th style="width: 10%;text-align:center;">创建时间</th>
+                    <th style="width: 15%;text-align:center;">修改时间</th>
+                    <th style="width: 15%;text-align:center;">模板类型</th>
+                    <th style="width: 5%;text-align:center;">作物</th>
+                    <th style="width: 15%;text-align:center;">单位</th>
+                    <th style="width: 10%;text-align:center;">用途</th>
+                    <th style="width: 20%;text-align:center;">操作</th>
+                </tr>
+                <tbody id="templateData">
+
+                </tbody>-->
+            </table>
+            <div id="page2"></div>
+        </div>
+        <div class="table_bottom">
+            <input class="div_btn" type="button" value="上一步" id="backTaskInfo"/>
+            <input class="div_btn" type="button" value="保存" id="saveTaskInfo"/>
+        </div>
+    </div>
+    <!--新增模板dialog-->
+    <div id="addTemplateDialog" class="form" style="display: none;">
+        <div class="div_head" id = "templateTitleInfo">
+            新增任务---新增模板
+        </div>
+        <div id="conditionDiv" style="width:800px;margin:0 auto">
+            <table>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>模板名称:
+                    </td>
+                    <td class="four_td2">
+                        <input id="templateNameInputId" class="inputType" type="text"/>
+                    </td>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>单位:
+                    </td>
+                    <td class="four_td2">
+                        <input id="workspaceInputId" class="inputType" type="text"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>模板类型:
+                    </td>
+                    <td class="four_td2">
+                        <select id="templateTypeId" class="selectType two_selectType">
+                        </select>
+                    </td>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>作物:
+                    </td>
+                    <td class="four_td2">
+                        <select id="cropInputId" class="selectType two_selectType" >
+                            <!--<option value="">&#45;&#45;请选择&#45;&#45;</option>
+                            <option value="1">大豆</option>
+                            <option value="2">小麦</option>
+                            <option value="3">玉米</option>-->
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>用途:
+                    </td>
+                    <td class="four_td2">
+                        <input id="purposeInputId" class="inputType" type="text"/>
+                    </td>
+                    <td class="four_td1" id="templateFlagLableId">
+                        <span class="txtRequired">*</span>是否公用:
+                    </td>
+                    <td class="four_td2" id = "templateFlagValueId">
+                        <input name="templateFlag" value="1" type="radio" >是&nbsp;
+                        <input name="templateFlag" value="2" type="radio" checked="checked"><span>否</span>
+                    </td>
+                    <!--<td class="four_td1">
+                        <span class="txtRequired">*</span>空间类型:
+                    </td>
+                    <td class="four_td2">
+                        <select id="spaceTypeId" class="selectType two_selectType" style="width: 55%;">
+                            <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                            <option value="00">点</option>
+                            <option value="01">线</option>
+                            <option value="02">面</option>
+                        </select>
+                    </td>-->
+                </tr>
+            </table>
+            <table class="dataintable">
+                <tr>
+                    <th style="width: 15%;text-align:center;">字段中文名</th>
+                    <th style="width: 15%;text-align:center;">字段英文名</th>
+                    <!--<th style="width: 10%;text-align:center;">字段类型</th>
+                    <th style="width: 35%;text-align:center;">计算公式</th>-->
+                    <th style="width: 5%;text-align:center;"><img src="images/public/addrow.png" id="addTr3"
+                                                                  style='margin-top: 2px;;text-align:center;cursor:pointer'>
+                    </th>
+                </tr>
+                <tbody id="paramsList3">
+                </tbody>
+            </table>
+        </div>
+        <div class="table_bottom">
+            <input type="hidden" id="templateIdValue" value=""/>
+            <input class="div_btn" type="button" value="取消" id="cancelTemplate"/>
+            <input class="div_btn" type="button" value="保存" id="saveTemplate"/>
+        </div>
+    </div>
+    <!--添加子任务-->
+    <div id="addTaskItemDialog" class="form" style="display: none;">
+        <div class="div_head" id="addTaskItemTitle">新增采集任务---湖北省水稻产量估算</div>
+        <div id="addTaskItemDialogTable" style="width:800px;margin:0 auto">
+            <table class="dataintable">
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>我的任务:
+                    </td>
+                    <td class="four_td2">
+                        <span id="taskItemInputId"></span>
+                    </td>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>调查时间:
+                    </td>
+                    <td class="four_td2">
+                        <input id="surveyTimeInputId" class="inputType" type="text" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>调查地址:
+                    </td>
+                    <td class="four_td2">
+                        <input id="surveyAddressInputId" class="inputType" type="text"/>
+                    </td>
+                    <!--<td class="four_td1">
+                        <span class="txtRequired">*</span>状态:
+                    </td>
+                    <td class="four_td2">
+                        <select id="collectionStatusInputId" name="collectionStatus" class="selectType two_selectType">
+                            <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                        </select>
+                    </td>-->
+                    <td class="four_td1">
+                        <span class="txtRequired"></span>调查作物:
+                    </td>
+                    <td class="four_td2">
+                        <span id = "cropNameInputId"></span>
+                        <!--<select id="cropNameInputId" name="cropNameInput" class="selectType two_selectType" disabled="disabled">
+                            <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                        </select>-->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>位置信息:
+                    </td>
+                    <td class="four_td2">
+                        <input id="positionInputId" class="inputType" type="text"/>
+                    </td>
+                    <td class="four_td1">
+                        <span class=""></span>备注:
+                    </td>
+                    <td class="four_td2">
+                        <input id="taskItemRemark" class="inputType" type="text"/>
+                    </td>
+                </tr>
+                <tbody id="taskItemTable">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="table_bottom">
+            <input type="hidden" value="" id="taskInfoIdValue"/>
+            <input type="hidden" value="" id="taskItemIdValue"/>
+            <input class="div_btn" type="button" value="取消" id="cancelTaskItem"/>
+            <input class="div_btn" type="button" value="保存" id="saveTaskItem"/>
+        </div>
+    </div>
+    <div id="seeTaskItemDialog" class="form" style="display: none;">
+        <div class="div_head" id="seeTaskItemTitle">查看采集任务---湖北省水稻产量估算</div>
+        <div>
+            <table class="dataintable">
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>我的任务:
+                    </td>
+                    <td class="four_td2">
+                        <span id="taskItemSpanId"></span>
+                    </td>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>调查时间:
+                    </td>
+                    <td class="four_td2">
+                        <span id="surveyTimeSpanId"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>调查地址:
+                    </td>
+                    <td class="four_td2">
+                        <span id="surveyAddressSpanId"></span>
+                    </td>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>状态:
+                    </td>
+                    <td class="four_td2">
+                        <span id="collectionStatusSpan"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1">
+                        <span class="txtRequired">*</span>位置信息:
+                    </td>
+                    <td class="four_td2">
+                        <span id="positionSpanId"></span>
+                    </td>
+                    <td class="four_td1">
+                        <span class=""></span>备注:
+                    </td>
+                    <td class="four_td2">
+                        <span id="taskItemRemarkSpanId"></span>
+                    </td>
+                </tr>
+                <tbody id="seeTaskItemTable">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="table_bottom">
+            <input class="div_btn" type="button" value="返回" id="backTaskItem"/>
+        </div>
+    </div>
+    <!--子任务分页查询-->
+    <div class="grid" id="taskItemListDialog" style="display:none">
+        <div class="div_head">
+            <span id="taskDetailName">任务详情列表--湖北水稻产量估算</span>
+            <span id = "backTaskInfoList" style="position : absolute;right:20px;cursor:pointer">返回列表</span>
+        </div>
+        <table id="taskItemList"></table>
+        <div id="page"></div>
+    </div>
+    <!--任务详情列表-->
+    <!--<div id="taskItemListDialog" class="dialogStyle">
+        <div class="div_head">
+            <span id="taskDetailName">任务详情列表&#45;&#45;湖北水稻产量估算</span>
+            <span id = "backTaskInfoList" style="position : absolute;right:20px;cursor:pointer">返回列表</span>
+        </div>
+        <div class='' style="margin-top: 10px">
+            <table class=""
+                   style="width:100%;text-align:center;border-collapse:separate; border-spacing:0px 10px;margin-top:10px;"
+                   border="0">
+                <tr>
+                    <th style="width: 10%;text-align:center;">采集任务名</th>
+                    <th style="width: 10%;text-align:center;">创建人</th>
+                    <th style="width: 10%;text-align:center;">开始时间</th>
+                    <th style="width: 15%;text-align:center;">结束时间</th>
+                    <th style="width: 15%;text-align:center;">任务名</th>
+                    <th style="width: 10%;text-align:center;">作物</th>
+                    <th style="width: 8%;text-align:center;">关联模板</th>
+                    <th style="width: 5%;text-align:center;">类型</th>
+                    <th style="width: 10%;text-align:center;">用途</th>
+                    <th style="width: 15%;text-align:center;">操作</th>
+                </tr>
+                <tbody id="taskItemList">
+
+                </tbody>
+            </table>
+        </div>
+    </div>-->
+</div>
+
+<!-- 上传轮播图 -->
+<div id="taskInfo" class="form" style="display: none;">
+    <table>
+        <tr>
+            <td class="four_td2">
+                <div id="preview" >
+                    <input type="hidden" value="images/public/index_img_defaut.jpg" id="defaut_img" />
+                    <img id="imghead" src='' style="width:672px;height:297px;border: solid honeydew 1px">
+                </div>
+                <input type="text" size="20" name="upfile" id="upfile" style="display:none" disabled="true">
+                <div></div>
+                <input type="button" class="button_style" value="切换图片" onclick="path.click()" >
+                <input type="file" name="path" id="path" style="display:none" accept="image/gif,image/jpeg,image/png">
+            </td>
+        </tr>
+    </table>
+</div>
+    <!--<script src="/module/collection/voice-2.0.js"></script>-->
+    <script type="text/javascript">
+        // RongIMLib.RongIMVoice.init();
+        require(["jquery", "jqGrid", "jqueryUi", "dateUtil", "BaseAjax", "formVerfication", "RegionModule", "PopWin", "commons", "custom_settings"], function ($, jqGrid, jqueryUi, dateUtil, BaseAjax, formVerfication, RegionModule, PopWin, commons, custom_settings) {
+//         var processDialog = $("#process");
+            var init = function () {
+                dateFun();//初始化创建时间 和 报告时间控件
+                $("#queryBtn").bind("click", searchFun);//点击查询
+                $("#resetBtn").bind("click", resetFun);//点击重置
+                $("#addBtn").bind("click", showDialog);
+                loaderGrid();//初始化grid
+                loaderTaskItemGrid(1);//chush
+                // loadTaskType(8100);//加载下载任务类型
+                loadTaskType(1800);//加载下载任务类型
+                // loadCollectionStatus(8200);//加载采集状态
+                // loadtemplateType(8300);//加载模板类型
+                loadtemplateType(1800);//加载模板类型
+                loadCrops(500);//加载农作物
+                //初始化模板列表
+                // getTemplateList();
+                loaderTemplateGrid();
+                $(window).resize(function () {
+                    $("#taskBox").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+                /**
+                 * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+                 * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+                 */
+                $("#createTimeId").on("click", function () {
+                    if ($("#divArea").css("display") == "block") {
+                        $("#divArea").css("display", "none")
+                    }
+                })
+
+            };
+            var chanageTableCss = function () {
+                var divObj = $('#taskBox').parent('div');
+                divObj.addClass('tableStyle');
+                /*divObj.css({'maxHeight': ($(".rightMain").height() - $(".searchItems").height() - $(".ui-jqgrid-hdiv").height()) - $("#pager2").height() - 50 + "px"});*/
+            };
+
+            /**
+             * Description: 初始化grid
+             */
+
+            var loaderGrid = function () {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                $("#taskBox").jqGrid({
+                    url: COLLECTION_TASK.queryTaskInfoList_url,
+                    datatype: "json",
+                    postData: {
+                        phone: accountName
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['id', '任务名', '任务类型'/*, '空间类型'*/, '单位', '作物', '用途', '创建人', '创建时间', '操作'],
+                    colModel: [
+                        {name: 'id', index: 'id', hidden: true},
+                        {name: 'taskName', index: 'task_name', align: 'center', width: '20%'},
+                        {
+                            name: 'taskType', index: 'task_type', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : loadTaskTypeJson[cellvalue];
+                            }
+                        },
+                        /*{name: 'collectionTemplate.spaceTypeMsg', index: 'space_type', align: 'center', width: '10%'},*/
+                        {name: 'workplace', index: 'workplace', align: 'center', width: '20%'},
+                        {
+                            name: 'cropId', index: 'crop_id', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : cropsJson[cellvalue];
+                            }
+                        },
+                        {name: 'purpose', index: 'purpose', align: 'center', width: '20%'},
+                        {name: 'createor', index: 'createor', align: 'center', width: '10%'},
+                        {
+                            name: 'createTime',
+                            index: 'create_time',
+                            width: '10%',
+                            align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '15%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var add = "<img src='images/public/add.png' class='addItemBtn' data-id='" + rowObject.id + "' data-no='0' title='添加' >";
+                                var edit = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.id + "' data-no='0' title='编辑' >";
+                                var view = "<img src='images/public/Twatch.png' class='seeBtn' data-id='" + rowObject.id + "' data-taskName='" + rowObject.taskName + "' data-no='0' title='查看' >";
+                                var exportBtn = "";
+                                if (rowObject.itemCount > 0){
+                                    exportBtn = "<img src='images/public/download.png' class='exportBtn' data-id='" + rowObject.id + "' title='导出'>";
+                                } else {//如果没有子任务则无法下载数据
+                                    exportBtn = "<img src='images/public/downloadG.png' class='exportBtnG' disabled='disabled' data-id='" + rowObject.id + "' title='无数据'>";
+                                }
+
+                                var index ="";
+                                if(rowObject.indexShow == 0) {
+                                    index += "<img src='images/public/icon-Addhot.png' style='width:30px!important;' class='hotBtn img_c' data-id='" + rowObject.id + "' title='首页轮播'> ";
+                                }else{
+                                    index += "<img src='images/public/icon-removehot.png' style='width:30px!important;' class='nohotBtn img_c' data-id='" + rowObject.id + "' title='取消首页轮播'> ";
+                                }
+                                var del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.id + "' title='删除'>";
+
+                                var str = edit + view + exportBtn +index+ del;
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 10,
+                    multiselect: false,//复选框
+                    rowList: [10, 30],
+                    pager: '#pager2',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#taskBox").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+            //子任务分页查询
+            var loaderTaskItemGrid = function (taskInfoId) {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                $("#taskItemList").jqGrid({
+                    url: COLLECTION_TASK.queryTaskItemList_url,
+                    datatype: "json",
+                    postData: {
+                        /*phone: accountName,*/
+                        taskInfoId: taskInfoId
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['id', '调查地址', '创建人', '开始时间', '结束时间', '作物', '关联模板','类型','用途','操作'],
+                    colModel: [
+                        {name: 'id', index: 'id', hidden: true},
+                        {name: 'surveyAddress', index: 'survey_address', align: 'center', width: '20%'},
+                        {name: 'createor', index: 'createor', align: 'center', width: '10%'},
+                        /*{name: 'collectionTemplate.spaceTypeMsg', index: 'space_type', align: 'center', width: '10%'},*/
+                        {
+                            name: 'createTime',
+                            index: 'create_time',
+                            width: '10%',
+                            align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+                            }
+                        },
+                        {
+                            name: 'updateTime',
+                            index: 'update_time',
+                            width: '10%',
+                            align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+                            }
+                        },
+                        {
+                            name: 'collectionTaskInfo.cropId', index: 'crop_id', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : cropsJson[cellvalue];
+                            }
+                        },
+                        {name: 'collectionTaskInfo.templateId', index: 'template_id', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue ? "是" : "否";
+                            }
+                        },
+                        {
+                            name: 'collectionTaskInfo.taskType', index: 'task_type', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : loadTaskTypeJson[cellvalue];
+                            }
+                        },
+                        {name: 'collectionTaskInfo.purpose', index: 'purpose', align: 'center', width: '20%'},
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '15%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var edit = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.id + "' data-no='0' title='编辑' >";
+                                var view = "<img src='images/public/Twatch.png' class='seeBtn' data-id='" + rowObject.id + "' data-no='0' title='查看' >";
+                                var del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.id + "' title='删除'>";
+                                var opreate = edit + del;
+                                return opreate;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 10,
+                    multiselect: false,//复选框
+                    rowList: [10, 30],
+                    pager: '#page',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        // tableEvent();
+                        $("#taskItemList").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+            //模板分页查询
+            var loaderTemplateGrid = function () {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var templateName = $("#templateNameId").val();
+                var cropId = $("#cropQueryId").val();
+                var templateType = $("#templateTypeQueryId").val();
+                $("#templateData").jqGrid({
+                    url: COLLECTION_TASK.queryTemplateList_url,
+                    datatype: "json",
+                    postData: {
+                        phone: accountName/*,
+                        templateName: templateName,
+                        cropId: cropId,
+                        templateType: templateType*/
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page2",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['单选', '模板名称', '创建人', '创建时间', '修改时间', '模板类型', '作物','单位','用途','公用模板','操作'],
+                    colModel: [
+                        {
+                            name: 'id', index: 'id', hidden: false,width: '4%',align: 'center',
+                            formatter: function (cellvalue, options, rowObject) {
+                                var radioStr = "<input type='radio' name='templateId' value=" + rowObject.id + ">";
+                                return radioStr;
+                            }
+                        },
+                        {name: 'templateName', index: 'template_name', align: 'center', width: '20%'},
+                        {name: 'createor', index: 'createor', align: 'center', width: '10%'},
+                        /*{name: 'collectionTemplate.spaceTypeMsg', index: 'space_type', align: 'center', width: '10%'},*/
+                        {
+                            name: 'createTime',index: 'create_time',width: '10%',align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                            }
+                        },
+                        {
+                            name: 'updateTime',index: 'update_time',width: '10%',align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                            }
+                        },
+                        {
+                            name: 'templateType', index: 'template_type', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : templateTypeJson[cellvalue];
+                            }
+                        },
+                        {
+                            name: 'cropId', index: 'crop_id', align: 'center', width: '10%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : cropsJson[cellvalue];
+                            }
+                        },
+                        {name: 'workplace', index: 'workplace', align: 'center', width: '10%'},
+                        {name: 'purpose', index: 'purpose', align: 'center', width: '20%'},
+                        {
+                            name: 'templateFlag', index: 'template_flag', align: 'center', width: '5%',
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == 1 ? "是" : "否";
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '15%',
+                            align: "center",
+                            sortable: false,
+                            /*classes:"colModelTd",*/
+                            formatter: function (cellvalue, options, rowObject) {
+                                var personType=commons.getCookie("personType");
+                                var edit = '';
+                                var del = '';
+                                if(personType == '1701' || (personType != '1701' && rowObject.templateFlag == 2)) {//内部用户
+                                    edit = "<img src='images/public/Tedit.png' class='editTemplateBtn' data-id='" + rowObject.id + "' data-no='0' title='编辑' style='margin-top:5px'>";
+                                    del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.id + "' title='删除' style='margin-top:5px'>";
+                                }
+                                /*var view = "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ id +"' data-no='0' title='查看' >";*/
+                                /*var del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + id + "' title='删除'>";*/
+                                var opreate = edit + del;
+                                return opreate;
+                            }
+                        }
+                    ],
+                    rownumbers:false,
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 10,
+                    multiselect: false,//复选框
+                    rowList: [10, 30],
+                    pager: '#page2',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        // tableEvent();
+                        $("#templateData").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            }
+            var tableEvent = function () {
+                $(".addItemBtn,.editBtn,.seeBtn,.delBtn,.exportBtn,.hotbtn,.nohotbtn").off("click");
+                $(".addItemBtn").on("click", function () {
+                    addItemFun($(this).attr("data-id"));
+                });
+                $(".editBtn").on("click", function () {
+                    editFun($(this).attr("data-id"));
+                });
+                $(".seeBtn").on("click", function () {
+                    $("#seeTaskItemDialog").hide();
+                    $("#addTemplateDialog").hide();
+
+                    $("#searchRow").hide();
+                    $("#grid").hide();
+                    $("#taskInfoIdValue").val($(this).attr("data-id"));
+
+                    // loaderTaskItemGrid($(this).attr("data-id"));
+                    seeTaskItem($(this).attr("data-id"));
+                    // getTaskItemList($(this).attr("data-id"));
+                    var taskName = $(this).attr("data-taskName");
+                    $("#taskDetailName").text(taskName);
+                    // showFun($(this).attr("data-id"))
+                    $taskItemListDialog.show();
+                    $selectTemplateDialog.hide();
+                    $addTaskInfo.hide();
+                    $addTaskItemDialog.hide();
+                });
+
+                //标记最热
+                $(".hotBtn").bind("click",function () {
+                    var id = $(this).attr("data-id");
+                    //signArticleFun(id,1);
+                    indexShowFun(id);
+                });
+
+                //取消最热
+                $(".nohotBtn").bind("click",function () {
+                    var id = $(this).attr("data-id");
+                    signArticleFun(id,0);
+                });
+
+                $(".delBtn").on("click", function () {
+                    delFun($(this).attr("data-id"))
+                });
+                $(".exportBtn").on("click", function () {
+
+                    $('#iframeExcel').remove();
+                    $('#iframeZip').remove();
+
+                    var id = $(this).attr("data-id")
+
+                    var iframeExcel = document.createElement("iframe");
+                    iframeExcel.style.display = "none";
+                    iframeExcel.style.height = 0;
+                    iframeExcel.id = 'iframeExcel';
+                    iframeExcel.src = COLLECTION_TASK.exportTaskInfoById_url + "?id=" + id + "&AccessToken=" + commons.getAccessToken();
+                    document.body.appendChild(iframeExcel);
+
+
+                    var iframe = document.getElementById("iframeExcel");
+                    if (iframe.attachEvent) {
+                        iframe.attachEvent("onload", function() {
+                            //iframe加载完成后你需要进行的操作
+                        });
+                    } else {
+                        iframe.onload = function() {
+                            //iframe加载完成后你需要进行的操作
+                            // var a = $("#iframeExcel").contents().find("pre").click();
+                        };
+                    }
+
+                    var downloadMediaUrl = window.project_path+ "jh-forum/collection/taskInfo/downloadMedia";
+
+                    var iframeZip = document.createElement("iframe");
+                    iframeZip.style.display = "none";
+                    iframeZip.style.height = 0;
+                    iframeZip.id = 'iframeZip';
+                    iframeZip.src = downloadMediaUrl + "?id=" + id + "&AccessToken=" + commons.getAccessToken();
+                    document.body.appendChild(iframeZip);
+
+                });
+            };
+
+
+
+
+            //本地图片在上传之前的预览效果
+            //图片上传预览
+            function previewImage(file){
+
+                if (file.files && file.files[0]){
+                    var img = document.getElementById('imghead');
+                    img.onload = function(){
+
+                    }
+                    var reader = new FileReader();
+                    //读取file完成之后加载
+                    reader.onload = function(evt){
+                        img.src = evt.target.result;
+                    }
+                    //开始读取file
+                    reader.readAsDataURL(file.files[0]);
+                }else{
+                    $("#imghead").attr("src",$("#defaut_img").val());
+                }
+
+            }
+
+            /**
+             *保存轮播
+             */
+            var addSaveFun = function(taskId){
+                if(!$('#path')[0].files[0]){
+                    PopWin.showMessageWin("请添加轮播图片");
+                    return ;
+                }
+                var url=COLLECTION_TASK.indexShowTaskInfoList_url;
+                var formData = new FormData();
+                formData.append('taskFile', $('#path')[0].files[0]);
+                formData.append('id', taskId);
+                formData.append('indexShow', "1");
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    cache: false,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {"AccessToken": commons.getAccessToken()},
+                    success:function(result){
+                        if(result.flag){
+                            $("#taskBox").trigger("reloadGrid");
+                            $("#taskInfo").dialog("close");
+                            PopWin.showMessageWin("设置首页轮播图成功");
+                        }else{
+                            PopWin.showMessageWin("设置首页轮播图失败");
+                        }
+                    }
+                });
+            };
+
+            /**
+             * 根据任务ID获取详情
+             * @version <1> 2018-06-12 lijie : created.
+             */
+            var taskInfoDetail = function(taskId){
+                var taskInfo={};
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTaskInfoeById_url+"?id="+taskId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        taskInfo=result.data;
+                    }
+                }
+                ajax.run();
+                return taskInfo;
+            };
+
+            /**
+             * 上传首页轮播图
+             * @version <1> 2018-09-27 lijie： Created.
+             */
+            var indexShowFun = function(taskId) {
+                //头像绑定change事件
+                $("#path").change(function(){
+                    $("#upfile").val(this.value);
+                    previewImage(this);
+                });
+                //查询是否有默认地址
+                var taskInfo=taskInfoDetail(taskId);
+                if(taskInfo.indexShowImg){
+                    var url=download_config.DOWNLOD_URL+taskInfo.indexShowImg;
+                    $("#imghead").attr("src",url);
+                    $("#defaut_img").val(url);
+                }else{
+                    $("#imghead").attr("src","images/public/index_img_defaut.jpg");
+                    $("#defaut_img").val("images/public/index_img_defaut.jpg");
+                }
+
+                var buttons=[];
+                var close ={
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                };
+
+                var save= {
+                    text: "上传",
+                    click: function () {
+                        addSaveFun(taskId);
+                    }
+                }
+                buttons.push(save);
+                buttons.push(close);
+                var userDialog =  $("#taskInfo");
+                var dialogParent = userDialog.parent();
+                var dialogOwn = userDialog.clone();
+                userDialog.dialog({
+                    autoOpen: false,
+                    title:'上传首页轮播图',
+                    height: 480,
+                    width: 730,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:buttons
+                });
+                userDialog.dialog("open");
+            };
+
+
+            /**
+             * 标记最热和最新
+             * @version <1> 2019-03-11 lijie： Created
+             * ids：帖子ID
+             * value :1 标记 0 取消
+             */
+            var signArticleFun = function(id,value) {
+                var confirmDialog = $("#confirmDialog");//操作确认对话框
+                var dialogParent = confirmDialog.parent();
+                var dialogOwn = confirmDialog.clone();
+                var paramData={};
+                paramData.id=id;
+                paramData.indexShow=value;
+                var url=COLLECTION_TASK.updateTaskInfoList_url;
+                var flagMsg="";
+                if(value ==0){
+                    flagMsg="取消"
+                }else if(value== 1){
+                    flagMsg="标记"
+                }
+                confirmDialog.html("是否"+flagMsg+"首页轮播？");
+                confirmDialog.dialog({
+                    autoOpen: false,
+                    title: '提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            //显示进度条 关闭提示框
+                            confirmDialog.dialog("close");
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = url;
+                            ajax.opts.data = JSON.stringify(paramData);
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#taskBox").trigger("reloadGrid");//刷新列表
+                                    PopWin.showMessageWin(flagMsg+"首页轮播成功");
+                                } else {
+                                    PopWin.showMessageWin(flagMsg+"首页轮播失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("系统错误：标记首页轮播失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                confirmDialog.dialog("open");
+            };
+
+
+            //查看子任务
+            var seeTaskItem = function(taskInfoId){
+                var param = {};
+                param.taskInfoId = taskInfoId;
+                $("#taskItemList").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: param,
+                    page: 1
+                }).trigger("reloadGrid");
+            }
+            var delFun = function (id, type, taskItemId) {
+                var url = COLLECTION_TASK.delTaskInfoById_url;
+                if (type == 'delTemplate') {
+                    url = COLLECTION_TASK.delTemplateById_url;
+                } else if (type == 'delMedia') {
+                    url = COLLECTION_TASK.delMediaById_url;
+                } else if(type == "delTaskItem"){
+                    url = COLLECTION_TASK.delTaskItemById_url;
+                }
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text: "是",
+                        click: function () {
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = url + "?id=" + id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    if (type == 'delTemplate') {
+                                        // getTemplateList();
+                                        // loaderTemplateGrid();
+                                        $("#templateData").trigger("reloadGrid");
+                                    } else if (type == 'delMedia') {
+                                        editItemTask(taskItemId);
+                                    } else if(type=="delTaskItem"){
+                                        $("#taskItemList").trigger("reloadGrid");
+                                    }else {
+                                        $("#taskBox").trigger("reloadGrid");
+                                    }
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    if(result.msg){
+                                        PopWin.showMessageWin(result.msg);
+                                    }else{
+                                        PopWin.showMessageWin("记录行删除失败");
+                                    }
+                                    delDialog.dialog("close");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }
+                    }, {
+                        text: "否",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+            //新增模板
+            var saveTemplate = function () {
+                if (!formTemplateVerf()) {
+                    return false;
+                }
+                var templateId = $("#templateIdValue").val();
+                var addTemplateParam = getTemplateParam();
+                var baseAjax = new BaseAjax();
+                //新增
+                baseAjax.opts.url = COLLECTION_TASK.addTemplateList_url;
+                if (templateId && templateId > 0) {
+                    //修改
+                    baseAjax.opts.url = COLLECTION_TASK.updateTemplateList_url;
+                    addTemplateParam.id = templateId;
+                }
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(addTemplateParam);
+                console.info(">>>addTemplateParam:" + baseAjax.opts.data);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#addTemplateDialog").hide();
+                        // getTemplateList();
+                        // loaderTemplateGrid();
+                        $("#templateData").trigger("reloadGrid");
+                        $selectTemplateDialog.show();
+                        PopWin.showMessageWin("保存成功");
+                    } else {
+                        // PopWin.showMessageWin("保存失败");
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("保存失败");
+                };
+                baseAjax.run();
+            }
+            //新增子任务
+            var addTaskItemDialog = function (type, id, taskInfoId) {
+                var height = $(document.body).height() - 550;//高度
+                var width = $(document.body).width() * 0.40;//宽度
+                var addTaskItemDialogDiv = $("#addTaskItemDialog");
+                var dialogParent = addTaskItemDialogDiv.parent();
+                var dialogOwn = addTaskItemDialogDiv.clone();
+                var title = '新增采集子任务-湖北省水稻产量估算';
+                if (type == 'edit') {
+                    title = '编辑采集子任务-湖北省水稻产量估算';
+                } else {
+                    resetItemForm();
+                }
+                addTaskItemDialogDiv.dialog({
+                    autoOpen: false,
+                    title: title,
+                    height: height,
+                    width: width,
+                    modal: true,
+                    close: function () {
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text: '取消',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }, {
+                            text: '保存',
+                            click: function () {
+                                // saveTask(addTaskDiv,type,id);
+                                saveTaskItem("", "", taskInfoId);
+                            }
+                        }
+                    ]
+                });
+                addTaskItemDialogDiv.dialog("open");
+            }
+            //新增模板
+            $("#addTemplateBtn").bind("click", function () {
+                $("#templateTitleInfo").text("新增任务---新增模板");
+                //重置表单
+                $("#templateNameInputId").val("");
+                $("#workspaceInputId").val("");
+                $("#templateTypeId").val("");
+                $("#cropInputId").val("");
+                $("#purposeInputId").val("");
+                $("#paramsList3").empty();
+                var personType=commons.getCookie("personType");
+                if(personType == '1701'){//内部用户
+                    $("#templateFlagLableId").show();
+                    $("#templateFlagValueId").show();
+                }else{
+                    $("#templateFlagLableId").hide();
+                    $("#templateFlagValueId").hide();
+                }
+                $("#addTemplateDialog").show();
+                $selectTemplateDialog.hide();
+                $addTaskInfo.hide();
+                $addTaskItemDialog.hide();
+            })
+            //新增子任务
+            var addItemFun = function (taskInfoId) {
+                $("#taskItemTable").empty();
+                var $taskItemTable = $("#taskItemTable");
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTaskInfoeById_url + "?id=" + taskInfoId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function (result) {
+                    // console.info(">>>>task:" + JSON.stringify(result));
+                    if (result.flag) {
+                        var taskInfo = result.data;
+                        $("#taskItemInputId").text(taskInfo.taskName);
+                        $("#addTaskItemTitle").text("新增子任务---" + taskInfo.taskName);
+                        if (taskInfo.collectionTemplate) {
+                            var collectionFeildList = taskInfo.collectionTemplate.collectionFieldModelVoList;
+                            var feild = "";
+                            if (collectionFeildList && collectionFeildList.length > 0) {
+                                $.each(collectionFeildList, function (i, e) {
+                                    var feildNameCh = e.fieldNameCh;
+                                    var feildNameEn = e.fieldNameEn ? e.fieldNameEn : "";
+                                    var feildName = feildNameCh + "-" + feildNameEn;
+                                    if (i % 2 == 0) {
+                                        feild += "<tr><td class='four_td1'>" + feildNameCh + ":</td><td class='four_td2'><input type='hidden' class='feildName' value=" + feildName + "><input class='inputType feildValue' type='text' /></td>";
+                                    }
+                                    if (i > 0 && i % 2 > 0) {
+                                        feild += "<td class='four_td1'>" + feildNameCh + ":</td><td class='four_td2'><input type='hidden' class='feildName' value=" + feildName + "><input class='inputType feildValue' type='text' /></td></tr>";
+                                    }
+                                    if (i % 2 == 0 && i == collectionFeildList.length - 1) {
+                                        feild += "</tr>";
+                                    }
+                                });
+                                $taskItemTable.append(feild);
+                            }
+                        }
+                    }
+                    $("#taskInfoIdValue").val(taskInfoId);
+                    $("#addTaskItemDialog").show();
+                    $taskItemListDialog.hide();
+                    $addTaskInfo.hide();
+                    $selectTemplateDialog.hide();
+                    $("#seeTaskItemDialog").hide();
+                }
+                ajax.run();
+            }
+            //查看子任务列表
+            var showFun = function () {
+                // taskItemListDialog();
+            }
+            //编辑任务来源
+            var editFun = function (id) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTaskInfoeById_url + "?id=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function (result) {
+                    var taskInfo = result.data;
+                    // console.info(">>>>task:" + JSON.stringify(taskInfo));
+                    //回显任务
+                    var taskName = taskInfo.taskName;
+                    var workplace = taskInfo.workplace;
+                    var templateId = taskInfo.templateId;
+                    var taskType = taskInfo.taskType;
+                    var createor = taskInfo.createor;
+                    var startDate = new Date(taskInfo.startDate).Format("yyyy-MM-dd");
+                    var endDate = new Date(taskInfo.endDate).Format("yyyy-MM-dd");
+                    var remark = taskInfo.remark;
+
+                    var taskName = $("#taskTypeNameInputId").val(taskName);
+                    var workplace = $("#workplaceId").val(workplace);
+                    var createor = $("#createorId").val(createor);
+                    $("#startDateId").val(startDate);
+                    $("#endDateId").val(startDate);
+                    var taskInfoRemark = $("#taskInfoRemarkId").val(remark);
+                    $('#taskTypeInputId').find('option[value=' + taskType + ']').attr('selected', 'selected');
+                    showDialog('edit', id);
+                };
+                ajax.run();
+            };
+            var deleteFun = function (id) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text: "是",
+                        click: function () {
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = COLLECTION_TASK.addTask_url + "?id=" + id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#taskBox").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }
+                    }, {
+                        text: "否",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+            var taskItemformVerf = function () {
+                var addTaskItem = $("#addTaskItemDialogTable");
+                /*if (formVerfication.checkInputIsEmpty($('#taskItemInputId'),addTaskItem,'我的任务不能为空')){
+                    return false;
+                }*/
+                if (formVerfication.checkInputIsEmpty($('#surveyTimeInputId'), addTaskItem, '调查时间不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#surveyAddressInputId'), addTaskItem, '调查地址不能为空')) {
+                    return false;
+                }
+                /*if (formVerfication.checkInputIsEmpty($('#cropNameInputId'), addTaskItem, '作物不能为空')) {
+                    return false;
+                }*/
+                return true;
+            }
+            //校验添加模板参数
+            var formTemplateVerf = function () {
+                var addTemplate = $("#addTemplateDialog");
+                if (formVerfication.checkInputIsEmpty($('#templateNameInputId'), addTemplate, '模板名称不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#workspaceInputId'), addTemplate, '工作单位不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#templateTypeId'), addTemplate, '模板类型不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#cropInputId'), addTemplate, '作物不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#purposeInputId'), addTemplate, '用途不能为空')) {
+                    return false;
+                }
+                /*if (formVerfication.checkInputIsEmpty($('#spaceTypeId'), addTemplate, '空间类型不能为空')) {
+                    return false;
+                }*/
+                var feildInputs = $("#paramsList3").find("input");
+                var bool = true;
+                if (feildInputs.size() == 0) {
+                    PopWin.showMessageWin("请添加采集字段信息");
+                    return false;
+                }
+                if (feildInputs.size() > 0) {
+                    $.each(feildInputs, function (i, e) {
+                        if (!$(this).val()) {
+                            bool = false;
+                            return;
+                        }
+                    });
+                }
+                if (!bool) {
+                    PopWin.showMessageWin("任务字段存在未填的项");
+                    return false;
+                }
+                var fieldNameEnArr = [];
+                var fieldNameEnInputs = $("#paramsList3").find("input[name='fieldNameEn']");
+                var enRepeat = true;
+                $.each(fieldNameEnInputs,function(){
+                    var result = fieldNameEnArr.indexOf($(this).val());
+                    if(result !=-1){
+                        enRepeat = false;
+                        return enRepeat;
+                    }else{
+                        fieldNameEnArr.push($(this).val());
+                    }
+                });
+                if (!enRepeat) {
+                    PopWin.showMessageWin("模板内英文名不能重复");
+                    return false;
+                }
+                return true;
+            }
+            var taskInfoForm = {};//缓存任务表单信息
+            var formVerf = function () {
+                var addTaskInfo = $("#addTaskInfoTable");
+                if (formVerfication.checkInputIsEmpty($('#taskTypeNameInputId'), addTaskInfo, '任务名不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputLength(0,30,$('#taskTypeNameInputId'),addTaskInfo,'任务名称不能超过30个汉字')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputIsEmpty($('#taskTypeInputId'), addTaskInfo, '任务类型不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputIsEmpty($('#workplaceId'), addTaskInfo, '工作单位不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#startDateId'), addTaskInfo, '开始日期不能为空')) {
+                    return false;
+                }
+                if (formVerfication.checkInputIsEmpty($('#endDateId'), addTaskInfo, '结束日期不能为空')) {
+                    return false;
+                }
+                var startDateL = new Date($('#startDateId').val()).getTime();
+                var endDateL = new Date($('#endDateId').val()).getTime();
+                if(startDateL>endDateL){
+                    PopWin.showMessageWin("开始时间不能大于结束时间");
+                    return false;
+                }
+                //将值保存起来进行下一步
+                taskInfoForm = {
+                    taskName: $('#taskTypeNameInputId').val(),
+                    taskType: $('#taskTypeInputId').val(),
+                    taskOrigin: $('#taskOriginId').val(),
+                    remark: $('#taskInfoRemarkId').val(),
+                    createor: $('#createorId').val()
+                }
+                return true;
+            }
+            //点击上一步保存表单信息
+            var saveTaskInfoForm = function () {
+                $('#taskTypeNameInputId').val(taskInfoForm.taskName);
+                // $('#taskTypeInputId').val(taskInfoForm.taskType);
+                $('#taskOriginId').val(taskInfoForm.taskOrigin);
+                $('#taskInfoRemarkId').val(taskInfoForm.remark);
+                $('#createorId').val(taskInfoForm.createor);
+
+                $('#taskTypeInputId').find('option[value=' + taskInfoForm.taskType + ']').attr('selected', 'selected');
+            }
+            //重置子任务表单
+            var resetItemForm = function () {
+                // $("#taskItemInputId").val("");
+                $("#surveyTimeInputId").val("");
+                $("#surveyAddressInputId").val("");
+                $("#taskItemRemark").val("");
+                // $("#collectionStatusInputId option:first").prop("selected", "selected");
+            }
+            //创建子任务
+            var saveTaskItem = function (taskInfoId) {
+                if (!taskItemformVerf()) {
+                    return false;
+                }
+                var taskItemId = $("#taskItemIdValue").val();
+                var baseAjax = new BaseAjax();
+                var addTaskItemParam = getTaskItemParam(taskInfoId);
+                //新增
+                baseAjax.opts.url = COLLECTION_TASK.addTaskItemList_url;
+                if (taskItemId && taskItemId > 0) {
+                    //修改
+                    baseAjax.opts.url = COLLECTION_TASK.updateTaskItemList_url;
+                    addTaskItemParam.id = taskItemId;
+                }
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(addTaskItemParam);
+                console.info(">>>taskItemParam:" + baseAjax.opts.data);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        PopWin.showMessageWin("保存成功");
+                        $addTaskItemDialog.hide();
+                        $taskItemListDialog.show();
+                        // getTaskItemList();
+                        loaderTaskItemGrid();
+                        resetItemForm();
+                    } else {
+                        PopWin.showMessageWin("保存失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("保存失败");
+                };
+                baseAjax.run();
+            }
+            //新建任务大分类
+            var saveTask = function (type, id) {
+                var templateId = $("#templateData").find("input:radio:checked").val();
+
+                var addParam = getParam();
+                var baseAjax = new BaseAjax();
+                //新增
+                baseAjax.opts.url = COLLECTION_TASK.addTaskInfoList_url;
+                if (type == 'edit') {
+                    //修改
+                    baseAjax.opts.url = COLLECTION_TASK.updateTaskInfoList_url;
+                    addParam.id = id;
+                }
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(addParam);
+                console.info(">>>taskParam:" + baseAjax.opts.data);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#taskBox").trigger("reloadGrid");
+                        PopWin.showMessageWin("保存成功");
+                        $addTaskInfo.hide();
+                        $selectTemplateDialog.hide();
+                    } else {
+                        // PopWin.showMessageWin("保存失败");
+                        PopWin.showMessageWin(result.msg);
+
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("保存失败");
+                };
+                baseAjax.run();
+            };
+
+            var getTemplateParam = function () {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var templateName = $("#templateNameInputId").val();
+                var workplace = $("#workspaceInputId").val()
+                var templateType = $("#templateTypeId").val()
+                var cropId = $("#cropInputId").val();
+                var purpose = $("#purposeInputId").val();
+                var spaceType = $("#spaceType").val();
+                var collectionFieldModelVoList = [];
+                $("#paramsList3").find(".paramsTr").each(function () {
+                    var fieldNameCn = $(this).find("input[name='fieldNameCh']").val();
+                    var fieldNameEn = $(this).find("input[name='fieldNameEn']").val();
+                    var fieldType = $(this).find("select[name='fieldType']").val();
+                    var calculation = $(this).find("input[name='calculation']").val();
+
+                    var fielModel = {
+                        'fieldNameCh': fieldNameCn,
+                        'fieldType': fieldType,
+                        'fieldNameEn': fieldNameEn,
+                        'calculation': calculation,
+                        'spaceType': spaceType
+                    };
+                    collectionFieldModelVoList.push(fielModel);
+                })
+                var templateFlag = $("input[type='radio'][name='templateFlag']:checked").val();//模板标识
+                var templateParam = {
+                    createor: $(".userCenter .user").html(),
+                    phone: accountName,
+                    templateName: templateName,
+                    workplace: workplace,
+                    templateType: templateType,
+                    cropId: cropId,
+                    purpose: purpose,
+                    templateFlag:templateFlag,
+                    collectionFieldModelVoList: collectionFieldModelVoList
+                };
+                return templateParam;
+            }
+            //封装创建子任务参数
+            var getTaskItemParam = function (taskInfoId) {
+                // var itemName = $("#taskItemInputId").val();
+                var surveyTime = new Date($("#surveyTimeInputId").val()).Format("yyyy-MM-dd hh:mm:ss");
+                var surveyAddress = $("#surveyAddressInputId").val();
+                // var collectionStatus = $("#cropNameInputId").val();
+                var remark = $("#taskItemRemark").val();
+                var position = $("#positionInputId").val();
+
+                var templateFeilds = $("#taskItemTable").find("tr td.four_td2");
+                var collectionFieldModelVoList = [];
+                if (templateFeilds.size() > 0) {
+                    $.each(templateFeilds, function (i, e) {
+                        var feildName = $(this).find(".feildName").val();
+                        if(feildName){
+                            var feildNameCh = feildName.split("-")[0];
+                            var feildNameEn = feildName.split("-")[1];
+                            var collectionValue = $(this).find(".feildValue").val();
+                            var fielModel = {
+                                'fieldNameCh': feildNameCh,
+                                'fieldNameEn': feildNameEn,
+                                'collectionValue': collectionValue
+                            };
+                            collectionFieldModelVoList.push(fielModel);
+                        }
+                    })
+                }
+                var taskItemParam = {
+                    taskInfoId: taskInfoId,
+                    // itemName:itemName,
+                    surveyTime: surveyTime,
+                    surveyAddress: surveyAddress,
+                    // collectionStatus: collectionStatus,
+                    remark: remark,
+                    position: position,
+                    createor: $(".userCenter .user").html()
+                }
+                taskItemParam.collectionFieldModelVoList = collectionFieldModelVoList;
+                return taskItemParam;
+            }
+            //封装创建任务参数
+            var getParam = function () {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var taskName = $("#taskTypeNameInputId").val();
+                var taskType = $("#taskTypeInputId").val();
+                var workplace = $("#workplaceId").val();
+                var createor = $("#createorId").val();
+                var taskInfoRemark = $("#taskInfoRemarkId").val();
+                var templateId = $("#templateData").find("input:radio:checked").val();
+                var startDate = $("#startDateId").val();
+                var endDate = $("#endDateId").val();
+
+                var taskParam = {
+                    phone: accountName,
+                    taskName: taskName,
+                    taskType: taskType,
+                    workplace: workplace,
+                    createor: createor,
+                    templateId: templateId,
+                    remark: taskInfoRemark,
+                    startDate:startDate,
+                    endDate:endDate
+                };
+                return taskParam;
+            }
+            /**
+             * Description: 根据指定的查询条件，查询对应的记录并重新渲染
+             */
+            var searchFun = function () {
+                $selectTemplateDialog.hide();
+                $addTaskInfo.hide();
+                $addTaskItemDialog.hide();
+                $taskItemListDialog.hide();
+                $("#seeTaskItemDialog").hide();
+                $("#addTemplateDialog").hide();
+                $("#seeTaskItemDialog").hide();
+
+                var taskName = $("#taskNameId").val().trim();//任务名
+                var createTime = ($("#createTimeId").val().trim()).split('至');//创建时间
+                var cropId = $("#cropSearch").val().trim();
+                var taskType = $("#taskTypeSearch").val().trim();
+
+                var param = {};
+                param.taskName = taskName;
+                param.cropId = cropId;
+                param.taskType = taskType;
+
+                param.startCreateTime = createTime[0] || '';
+                param.endCreateTime = createTime[1] || '';
+                $("#taskBox").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: param,
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * Description: 重置
+             */
+            var resetFun = function () {
+                $("#taskNameId").val("");
+                $("#cropSearch option:first").prop("selected", "selected");
+                $("#taskTypeSearch option:first").prop("selected", "selected");
+                $("#createTimeId").val("");
+            };
+            //dialog重置
+            var resetDialog = function () {
+
+                $("#taskTypeNameInputId").val("");
+                $("#workplaceId").val("");
+                $("#createorId").val("");
+                $("#taskInfoRemarkId").val("");
+                $("#startDateId").val("");
+                $("#endDateId").val("");
+
+                $("#taskTypeInputId option:first").prop("selected", "selected");
+            };
+            /**
+             * 初始化创建时间 和 报告时间控件
+             * @version <1> 2018-04-27 zhangshen : Created.
+             */
+            var dateFun = function () {
+                $("#createTimeId").jeDate({
+                    range: "至",
+                    multiPane: false,
+                    format: 'YYYY-MM-DD'
+                });
+
+                dateUtil.timeEvent_Self2("surveyTimeInputId", function () {
+                }); //初始化出生日期控件
+                dateUtil.timeEvent_Self2("startDateId", function () {
+                }); //初始化出生日期控件
+                dateUtil.timeEvent_Self2("endDateId", function () {
+            }); //初始化出生日期控件
+        };
+
+            /**
+             * 初始化编辑的报告时间控件
+             */
+            var initEditReportTime = function () {
+                $("#edit_reportTime").jeDate({
+                    multiPane: true,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+            //添加字段模型行
+            var addFieldModelTr = function () {
+                var tables = $('#paramsList3');
+                var row = $("<tr class='paramsTr'>" +
+                    "<td><input type='text' name='fieldNameCh' class='inputType'  /></td>" +
+                    "<td><input type='text' name='fieldNameEn' class='inputType'  /></td>" +
+                    /*"<td><select name='fieldType' class='input inputWidth_100' style='text-align:center;width:160px;height:30px' >" +
+                    " <option value=''>&#45;&#45;请选择&#45;&#45;</option>" +
+                    " <option value='00' selected>文字</option>" +
+                    " <option value='01'>整数</option>" +
+                    " <option value='02'>大文本</option>" +
+                    " <option value='03'>日期和时间</option>" +
+                    " <option value='04'>小数(两位)</option>" +
+                    " </select></td>" +
+                    /!*"<td><input type='text' name='fieldType' class='inputType'/></td>"+*!/
+                    "<td><input type='text' name='calculation' class='inputType' value='false'/></td>" +*/
+                    "<td style='text-align:center;'><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;cursor:pointer' ></td>" +
+                    "</tr>");
+                row.appendTo(tables);
+                removeTr();
+            };
+            $("#addTr3").bind("click", function () {
+                addFieldModelTr();
+            });
+            var removeTr = function () {
+                $(".removeTr").click(function () {//点击动态移除一行
+                    $(this).parent().parent().remove();
+                });
+            }
+            //新增任务---模板选择
+            var getTemplateList = function () {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.queryTemplateList_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+
+                var templateName = $("#templateNameId").val();
+                var cropId = $("#cropQueryId").val();
+                var templateType = $("#templateTypeQueryId").val();
+                var queryParam = {
+                    rowNum: 0,
+                    phone: accountName,
+                    templateName: templateName,
+                    cropId: cropId,
+                    templateType: templateType
+                };//
+                ajax.opts.data = JSON.stringify(queryParam);
+                ajax.opts.successFun = function (result) {
+                    $("#templateData").empty();
+                    if (result.total) {
+                        $.each(result.list, function (index, element) {
+                            var id = element.id;
+                            var templateName = element.templateName;
+                            var createor = element.createor ? element.createor : "";
+                            var createTime = element.createTime ? new Date(element.createTime).Format("yyyy-MM-dd") : "";
+                            var updateTime = element.updateTime ? new Date(element.updateTime).Format("yyyy-MM-dd") : "";
+                            var templateType = element.templateType;
+                            var cropId = element.cropId;
+                            var workplace = element.workplace;
+                            var purpose = element.purpose;
+                            var templateFlag = element.templateFlag;
+                            var personType=commons.getCookie("personType");
+                            var edit = '';
+                            var del = '';
+                            if(personType == '1701' || (personType != '1701' && templateFlag == 2)) {//内部用户
+                                edit = "<img src='images/public/Tedit.png' class='editTemplateBtn' data-id='" + id + "' data-no='0' title='编辑' >";
+                                del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + id + "' title='删除'>";
+                            }
+                            /*var view = "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ id +"' data-no='0' title='查看' >";*/
+                            /*var del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + id + "' title='删除'>";*/
+                            var opreate = edit + del;
+                            var item = "<tr><td><input type='radio' name='templateId' value=" + id + "></td>"
+                            item += "<td >" + templateName + "</td><td >" + createor + "</td><td >" + createTime + "</td><td >" + updateTime + "</td><td >" + templateTypeJson[templateType] + "</td>" +
+                                "<td >" + cropsJson[cropId] + "</td><td >" + workplace + "</td><td >" + purpose + "</td><td >" + opreate + "</td>"
+                            item += "</tr>"
+                            $("#templateData").append(item);
+                        });
+                    }
+                };
+                ajax.run();
+            }
+            //编辑模板
+            $("#templateData").on("click", ".editTemplateBtn", function () {
+                $("#templateTitleInfo").text("新增任务---编辑模板");
+                var personType=commons.getCookie("personType");
+                if(personType == '1701'){//内部用户
+                    $("#templateFlagLableId").show();
+                    $("#templateFlagValueId").show();
+                }else{
+                    $("#templateFlagLableId").hide();
+                    $("#templateFlagValueId").hide();
+                }
+                $("#addTemplateDialog").show();
+                $selectTemplateDialog.hide();
+                var templateId = $(this).data("id");
+                $("#templateIdValue").val(templateId);
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTemplateById_url + "?id=" + templateId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function (result) {
+                    var template = result.data;
+                    // console.info(">>>>task:" + JSON.stringify(template));
+                    //回显任务
+                    var templateName = template.templateName;
+                    var cropId = template.cropId;
+                    var templateType = template.templateType;
+                    var purpose = template.purpose;
+                    var workplace = template.workplace;
+                    var templateFlag = template.templateFlag;
+                    var collectionFieldModelVoList = template.collectionFieldModelVoList;
+
+                    $("#templateNameInputId").val(templateName);
+                    $("#purposeInputId").val(purpose);
+                    $("#workspaceInputId").val(workplace);
+
+                    $('#cropInputId').find('option[value=' + cropId + ']').attr('selected', 'selected');
+                    $('#templateTypeId').find('option[value=' + templateType + ']').attr('selected', 'selected');
+
+                    $("input[type='radio'][name='templateFlag'][value='"+ templateFlag +"']").attr("checked","checked");
+
+                    var tables = $('#paramsList3');
+                    tables.empty();
+                    $.each(collectionFieldModelVoList, function (i, e) {
+                        var fieldNameCh = e.fieldNameCh;
+                        var fieldNameEn = e.fieldNameEn;
+                        var fieldType = e.fieldType;
+                        var calculation = e.calculation;
+
+                        var row = $("<tr class='paramsTr'>" +
+                            "<td><input type='text' name='fieldNameCh' class='inputType'  value = '" + fieldNameCh + "'/></td>" +
+                            "<td><input type='text' name='fieldNameEn' class='inputType'  value = '" + fieldNameEn + "'/></td>" +
+                            /*"<td><select name='fieldType' class='input inputWidth_100' style='text-align:center;width:160px;height:30px' >" +
+                            " <option value=''>&#45;&#45;请选择&#45;&#45;</option>" +
+                            " <option value='00'>文字</option>" +
+                            " <option value='01'>整数</option>" +
+                            " <option value='02'>大文本</option>" +
+                            " <option value='03'>日期和时间</option>" +
+                            " <option value='04'>小数(两位)</option>" +
+                            " </select></td>" +*/
+                            /*"<td><select name='segment' class='inputType'><option value='true' >是</option><option value='false' selected='selected'>否</option></select></td>"+*/
+                            /*"<td><input type='text' name='fieldType' class='inputType' value = '"+fieldType+"'/></td>"+*/
+                            /*"<td><input type='text' name='calculation' class='inputType' value='" + calculation + "'/></td>" +*/
+                            "<td style='text-align:center;'><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;cursor:pointer' ></td>" +
+                            "</tr>");
+                        row.appendTo(tables);
+                        tables.find("tr").eq(i).find("select[name='fieldType']").find('option[value=' + fieldType + ']').attr('selected', 'selected');
+                        /*tables.find("tr").eq(i).find("select[name='isEdit']").find('option[value='+isEdit+']').attr('selected','selected');
+                        tables.find("tr").eq(i).find("select[name='segment']").find('option[value='+segment+']').attr('selected','selected');*/
+
+                    });
+
+                    // $("#taskNameInput").val(taskOrigin.taskName);
+                    // $("#cropNameInput").val(taskOrigin.cropName);
+                    // $("#diseaseSpeciesInput").val(taskOrigin.diseaseSpecies);
+                    // $("#taskOriginInput").val(taskOrigin.diseaseSpecies);
+                    // $("#remark").val(taskOrigin.remark);
+                    // $("#addTaskOriginDiv").dialog("open");
+                };
+                ajax.run();
+            })
+            $("#templateData").on("click", ".editBtn", function () {
+                var templateId = $(this).data("id");
+            })
+            //查看模板
+            $("#templateData").on("click", ".seeBtn", function () {
+                var templateId = $(this).data("id");
+
+            })
+            //删除模板
+            $("#templateData").on("click", ".delBtn", function () {
+                delFun($(this).data("id"), "delTemplate");
+            });
+            //子任务列表
+            var getTaskItemList = function (taskId) {
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.queryTaskItemList_url
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+
+                var templateName = $("#templateNameId").val();
+                var cropId = $("#cropQueryId").val();
+                var templateType = $("#templateTypeQueryId").val();
+                var queryParam = {
+                    rowNum: 0,
+                    taskInfoId: taskId/*,
+                    phone : accountName*/
+                };//
+                ajax.opts.data = JSON.stringify(queryParam);
+                ajax.opts.successFun = function (result) {
+                    $("#taskItemList").empty();
+                    if (result.total) {
+                        $.each(result.list, function (index, element) {
+                            var id = element.id;
+                            var itemName = element.collectionTaskInfo.taskName;//子任务名
+                            var createor = element.createor ? element.createor : "";//创建人
+                            var createTime = element.createTime ? new Date(element.createTime).Format("yyyy-MM-dd") : "";//开始时间
+                            var updateTime = element.updateTime ? new Date(element.updateTime).Format("yyyy-MM-dd") : "";//结束时间
+                            var taskName = element.collectionTaskInfo.taskName;
+                            var taskType = element.collectionTaskInfo.taskType;
+                            var cropName = element.collectionTaskInfo.cropId
+                            var purpose = element.collectionTaskInfo.purpose;
+                            var isRelationTemplate = !element.collectionTaskInfo.templateId ? "否" : "是";
+                            var edit = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + id + "' data-no='0' title='编辑' >";
+                            var view = "<img src='images/public/Twatch.png' class='seeBtn' data-id='" + id + "' data-no='0' title='查看' >";
+                            var del = "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + id + "' title='删除'>";
+                            var opreate = edit + del;
+                            var item = "<tr><td>" + itemName + "</td>"
+                            item += "<td >" + createor + "</td><td >" + createTime + "</td><td >" + updateTime + "</td><td >" + taskName + "</td>" +
+                                "<td >" + cropsJson[cropName] + "</td><td >" + isRelationTemplate + "</td><td>" + loadTaskTypeJson[taskType] + "</td><td>" + purpose + "</td><td>" + opreate + "</td>"
+                            item += "</tr>"
+                            $("#taskItemList").append(item);
+                        });
+                    }
+                };
+                ajax.run();
+            }
+            //编辑子任务
+            $("#taskItemList").on("click", ".editBtn", function () {
+                var taskItemId = $(this).data("id");
+                editItemTask(taskItemId);
+            })
+            var editItemTask = function (taskItemId) {
+                $("#seeTaskItemTable").empty();
+                $("#taskItemIdValue").val(taskItemId);
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTaskItemeById_url + "?id=" + taskItemId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function (result) {
+                    var taskItem = result.data;
+                    // console.info(">>>>task:" + JSON.stringify(taskItem));
+                    $("#taskItemInputId").text(taskItem.collectionTaskInfo.taskName);
+                    $("#addTaskItemTitle").text("编辑子任务---" + taskItem.collectionTaskInfo.taskName);
+                    // var itemName = taskItem.itemName;
+                    var surveyTime = taskItem.surveyTime;
+                    var surveyAddress = taskItem.surveyAddress
+                    var cropId = taskItem.collectionTaskInfo.cropId;
+                    var remark = taskItem.remark;
+                    var position = taskItem.position;
+
+                    // $("#taskItemInputId").val(itemName);
+                    $("#surveyTimeInputId").val(new Date(surveyTime).Format("yyyy-MM-dd"));
+                    $("#surveyAddressInputId").val(surveyAddress);
+                    $("#taskItemRemark").val(remark);
+                    // $('#cropNameInputId').find('option[value=' + cropId + ']').attr('selected', 'selected');
+                    $('#cropNameInputId').text(cropsJson[cropId]);
+                    $("#positionInputId").val(position);
+                    var pngMediaList = taskItem.pngMediaList;
+                    var awrMediaList = taskItem.amrMediaList;
+                    // alert(pngMediaList.length);
+                    var collectionFeildList = taskItem.collectionFieldModelVoList
+                    $("#taskItemTable").empty();
+                    if (collectionFeildList && collectionFeildList.length > 0) {
+                        var feild = "";
+                        $.each(collectionFeildList, function (i, e) {
+                            var feildNameCh = e.fieldNameCh;
+                            var feildNameEn = e.fieldNameEn ? e.fieldNameEn : "";
+                            var feildName = feildNameCh + "-" + feildNameEn;
+                            var collectionValue = e.collectionValue;
+                            if(feildNameCh && feildNameCh.length>6){
+                                feildNameCh = feildNameCh.substring(0,6)+"...";
+                            }
+                            if (i % 2 == 0) {
+                                feild += "<tr><td class='four_td1' title='" + e.fieldNameCh + "'>" + feildNameCh + ":</td><td class='four_td2'><input type='hidden' class='feildName' value=" + feildName + "><input class='inputType feildValue' type='text' value=" + collectionValue + "></td>";
+                            }
+                            if (i > 0 && i % 2 > 0) {
+                                feild += "<td class='four_td1' title='" + e.fieldNameCh + "'>" + feildNameCh + ":</td><td class='four_td2'><input type='hidden' class='feildName' value=" + feildName + "><input class='inputType feildValue' type='text' value=" + collectionValue + "></td></tr>";
+                            }
+                            if (i % 2 == 0 && i == collectionFeildList.length - 1) {
+                                feild += "</tr>";
+                            }
+                        });
+                        $("#taskItemTable").append(feild);
+                    }
+                    if (awrMediaList && awrMediaList.length > 0) {
+                        var amrStr = '<tr>';
+                        amrStr += '<td class="four_td1" style="vertical-align: top">录音:</td>';
+                        amrStr += '<td class="four_td2" colspan="2"><ul>';
+                        $.each(awrMediaList, function (i, e) {
+                            // var mediaBase64 = e.mediaBase64;
+                            var len = e.mediaPath.length;
+                            // var amrMediaPath = media_path + e.mediaPath;
+                            var amrMediaPath = COLLECTION_TASK.downloadMeidaById_url + e.id+"?AccessToken="+commons.getAccessToken();
+                            /*amrStr += '<li><span>' + e.createTime + '.amr </span><span><a data-id = "' + mediaBase64 + '" class="amrPlay" style="cursor:pointer">播放</a>&nbsp;&nbsp;</span><a class="delAmr" data-id="' + e.id + '" data-taskItemId="' + taskItemId + '" style="cursor:pointer">删除</a></li>'*/
+                            amrStr +=  '<li><span><audio src="'+amrMediaPath+'" id="luyin" controls="controls" style="width:320px;"></span><a class="delAmr" data-id="' + e.id + '" data-taskItemId="' + taskItemId + '" style="cursor:pointer;color:red;line-height:60px;vertical-align: top"> 删除</a></li>'
+                        });
+                        amrStr += '</ul></td></tr>';
+                        $("#taskItemTable").append(amrStr);
+                    }
+                    if (pngMediaList && pngMediaList.length > 0) {
+                        var pngStr = '<tr>';
+                        pngStr += '<td class="four_td1" style="vertical-align: top">样本图片:</td>';
+                        pngStr += '<td class="four_td2"><div class="banner"><ul>'
+                        $.each(pngMediaList, function (i, e) {
+                            // var pngMediaPath = COLLECTION_TASK.getMediaResource_url + e.id + "?AccessToken=" + commons.getAccessToken();
+                            // var pngMediaPath = media_path + e.mediaPath;
+                            var pngMediaPath = COLLECTION_TASK.downloadMeidaById_url+ e.id + "?AccessToken=" + commons.getAccessToken();
+                            pngStr += '<li><span style="position: relative;"><a href="' + pngMediaPath + '" target="_blank" ><img src="' + pngMediaPath + '" width="200" height="200"></a><img src="images/public/delete.png" class="deletePng" data-id="' + e.id + '" data-taskItemId="' + taskItemId + '"/></span></li>';
+                        });
+                        pngStr += '</ul>' +
+                            '<div class="con"></div>' +
+                            '<div class="u left"><</div>' +
+                            '<div class="u right">></div>'
+                        '</td></tr>';
+                        $("#taskItemTable").append(pngStr);
+                    }
+                    lunbo();
+                    $addTaskItemDialog.show();
+                    $selectTemplateDialog.hide();
+                    $addTaskInfo.hide();
+                    $taskItemListDialog.hide();
+                    // addTaskItemDialog("edit",taskItemId);
+                };
+                ajax.run();
+            }
+            //播放音频
+            /*$("#taskItemTable").on("click", ".amrPlay", function () {
+                var mediaBase64 = $(this).data("id");
+                RongIMLib.RongIMVoice.play(mediaBase64);
+            })*/
+            //删除音频
+            $("#taskItemTable").on("click", ".delAmr", function () {
+                var id = $(this).data("id");
+                var taskItemId = $(this).attr("data-taskItemId");
+                delFun(id, "delMedia", taskItemId);
+            })
+            //查看子任务
+            $("#taskItemList").on("click", ".seeBtn", function () {
+                $("#taskItemTable").empty();
+                // taskItemSpanId surveyTimeSpanId surveyAddressSpanId collectionStatusSpan positionSpanId taskItemRemarkSpanId
+                var taskItemId = $(this).data("id");
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTION_TASK.getTaskItemeById_url + "?id=" + taskItemId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function (result) {
+                    var taskItem = result.data;
+                    var surveyTime = taskItem.surveyTime;
+                    var surveyAddress = taskItem.surveyAddress
+                    var collectionStatus = loadCollectionStatusJson[taskItem.collectionStatus];
+                    var remark = taskItem.remark;
+                    var position = taskItem.position;
+                    var taskName = taskItem.collectionTaskInfo.taskName;
+                    $("#taskItemSpanId").text(taskName);
+                    $("#surveyTimeSpanId").text(new Date(surveyTime).Format("yyyy-MM-dd"));
+                    $("#surveyAddressSpanId").text(surveyAddress);
+                    $("#collectionStatusSpan").text(collectionStatus);
+                    $("#positionSpanId").text(position);
+                    $("#taskItemRemarkSpanId").text(taskName);
+
+                    var pngMediaList = taskItem.pngMediaList;
+                    var awrMediaList = taskItem.amrMediaList;
+                    var collectionFeildList = taskItem.collectionFieldModelVoList;
+                    $("#seeTaskItemTable").empty();
+                    if (collectionFeildList && collectionFeildList.length > 0) {
+                        var feild = "";
+                        $.each(collectionFeildList, function (i, e) {
+                            var feildNameCh = e.fieldNameCh;
+                            var feildNameEn = e.fieldNameEn ? e.fieldNameEn : "";
+                            var feildName = feildNameCh + "-" + feildNameEn;
+                            var collectionValue = e.collectionValue;
+                            if (i % 2 == 0) {
+                                feild += "<tr><td class='four_td1'>" + feildNameCh + ":</td><td class='four_td2'>" + collectionValue + "</td>";
+                            }
+                            if (i > 0 && i % 2 > 0) {
+                                feild += "<td class='four_td1'>" + feildNameCh + ":</td><td class='four_td2'>" + collectionValue + "</td></tr>";
+                            }
+                            if (i % 2 == 0 && i == collectionFeildList.length - 1) {
+                                feild += "</tr>";
+                            }
+                        });
+                        $("#seeTaskItemTable").append(feild);
+
+                    }
+                    if (awrMediaList && awrMediaList.length > 0) {
+                        var arwStr = '<tr>';
+                        arwStr += '<td class="four_td1" style="vertical-align: top">录音:</td>';
+                        arwStr += '<td class="four_td2"><ul>';
+                        $.each(awrMediaList, function (i, e) {
+                            var mediaBase64 = e.mediaBase64;
+                            // var awrMediaPath = COLLECTION_TASK.getMediaResource_url + e.id+"?AccessToken="+commons.getAccessToken();
+                            arwStr += '<li><span>' + e.createTime + '.amr </span><span><a data-id="' + mediaBase64 + '" class="amrPlay" style="cursor:pointer">播放</a></span></li>'
+                        });
+                        arwStr += '</ul></td></tr>';
+                        $("#seeTaskItemTable").append(arwStr);
+                    }
+                    if (pngMediaList && pngMediaList.length > 0) {
+                        var pngStr = '<tr>';
+                        pngStr += '<td class="four_td1" style="vertical-align: top">样本图片:</td>';
+                        pngStr += '<td class="four_td2"><div class="banner"><ul>'
+                        $.each(pngMediaList, function (i, e) {
+                            var pngMediaPath = COLLECTION_TASK.getMediaResource_url + e.id + "?AccessToken=" + commons.getAccessToken();
+                            pngStr += '<li><a href="' + pngMediaPath + '" target="_blank"><img src="' + pngMediaPath + '" width="200" height="200"></a></li>';
+                        });
+                        pngStr += '</ul>' +
+                            '<div class="con"></div>' +
+                            '<div class="u left"><</div>' +
+                            '<div class="u right">></div>'
+                        '</td></tr>';
+                        $("#seeTaskItemTable").append(pngStr);
+                    }
+                    $("#seeTaskItemDialog").show();
+                    lunbo();
+                    $addTaskItemDialog.hide();
+                    $selectTemplateDialog.hide();
+                    $addTaskInfo.hide();
+                    $taskItemListDialog.hide();
+                }
+                ajax.run()
+            });
+            //播放音频
+            /*$("#seeTaskItemTable").on("click", ".amrPlay", function () {
+                var mediaBase64 = $(this).data("id");
+                RongIMLib.RongIMVoice.play(mediaBase64);
+            })*/
+            //返回
+            $("#backTaskItem").click(function () {
+                $("#seeTaskItemDialog").hide();
+                $taskItemListDialog.show();
+            });
+            //删除子任务
+            $("#taskItemList").on("click", ".delBtn", function () {
+                delFun($(this).data("id"), "delTaskItem");
+            });
+            var fieldModelList = [];
+            var $addTaskInfo = $("#addTaskInfo");//新增大分类任务div
+            var $cancelTaskInfo = $("#cancelTaskInfo");//取消新增大任务
+            var $nextTaskInfo = $("#nextTaskInfo");//创建任务下一步
+            var $selectTemplateDialog = $("#selectTemplateDialog");//选择模板div
+
+            var $backTaskInfo = $("#backTaskInfo");//返回上一步
+            var $saveTaskInfo = $("#saveTaskInfo");//保存任务
+
+            var $cancelTaskItem = $("#cancelTaskItem");
+            var $saveTaskItem = $("#saveTaskItem");
+
+            var $addTaskItemDialog = $("#addTaskItemDialog");
+            var $templateData = $("#templateData");
+
+            var $editTaskInfo = $("#editTaskInfo");
+            var $taskItemListDialog = $("#taskItemListDialog")
+            var $cancelTemplate = $("#cancelTemplate");//取消模板
+            var $saveTemplate = $("#saveTemplate");//保存模板
+            var $queryTemplateBtn = $("#queryTemplateBtn");//查询模板
+            var $backTaskInfoList = $("#backTaskInfoList");//返回大任务列表
+
+            //新建任务模板
+            var showDialog = function (type, id) {
+                $("#addTaskInfo").show();
+                if (type == 'edit') {
+                    $("#taskInfoTitle").text("编辑任务");
+                    $editTaskInfo.attr("data-id", id);
+                    $nextTaskInfo.hide();
+                    $editTaskInfo.show();
+                } else {
+                    $("#taskInfoTitle").text("新增任务");
+                    resetDialog();
+                    $("#createorId").val($(".userCenter .user").html());//创建者自动填入
+                    $nextTaskInfo.show();
+                    $editTaskInfo.hide();
+                    $("#addTemplateDialog").hide();
+                }
+                $selectTemplateDialog.hide();
+                $addTaskItemDialog.hide();
+                $taskItemListDialog.hide();
+            }
+            //取消创建任务
+            $cancelTaskInfo.click(function () {
+                $addTaskInfo.hide();
+            });
+            //创建任务下一步
+            $nextTaskInfo.click(function () {
+                if (!formVerf()) {
+                    return false
+                }
+                $addTaskInfo.hide();
+                $selectTemplateDialog.show();
+            });
+            //新建任务返回上一步
+            $backTaskInfo.click(function () {
+                $addTaskInfo.show();
+                $selectTemplateDialog.hide();
+            });
+            //保存任务
+            $saveTaskInfo.click(function () {
+                if (!formVerf()) {
+                    return false
+                }
+                saveTask();
+            });
+            //更新任务
+            $editTaskInfo.click(function () {
+                if (!formVerf()) {
+                    return false
+                }
+                var id = $(this).data("id");
+                saveTask("edit", id);
+            })
+            //保存子任务
+            $saveTaskItem.click(function () {
+                var taskInfoId = $("#taskInfoIdValue").val();
+                saveTaskItem(taskInfoId);
+            });
+            //取消
+            $cancelTaskItem.click(function () {
+                $addTaskItemDialog.hide();
+                // loaderTaskItemGrid();
+                // getTaskItemList();
+                $taskItemListDialog.show();
+            });
+            //点击行选中模板
+            $templateData.on("click", "tr", function () {
+                $(this).find("input[type='radio']").prop("checked", true);
+            });
+
+            //取消创建模板
+            $cancelTemplate.click(function () {
+                $("#addTemplateDialog").hide();
+                $selectTemplateDialog.show();
+            });
+            //创建模板
+            $saveTemplate.click(function () {
+                saveTemplate();
+            })
+            //查询模板
+            $queryTemplateBtn.click(function () {
+                // getTemplateList();
+                // loaderTemplateGrid();
+                var accountName = $(".user").attr("accountName");//账户名(手机号)
+                var templateName = $("#templateNameId").val().trim();;
+                var cropId = $("#cropQueryId").val().trim();;
+                var templateType = $("#templateTypeQueryId").val().trim();
+
+                var param = {};
+                param.phone = accountName;
+                param.templateName = templateName;
+                param.cropId = cropId;
+                param.templateType = templateType;
+
+                $("#templateData").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: param,
+                    page: 1
+                }).trigger("reloadGrid");
+            });
+            //返回大任务列表
+            $backTaskInfoList.click(function () {
+                $("#searchRow").show();
+                $("#grid").show();
+                $taskItemListDialog.hide();
+            })
+
+            var loadTaskTypeJson = {};
+            var loadTaskType = function (dictId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId': dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        var optList = "<option value=''>--请选择--</option>";
+                        for (var i in statusArry) {
+                            var status = statusArry[i];
+                            loadTaskTypeJson[status.dictId] = status.dataName;
+                            optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                        }
+                        $("#taskTypeInputId").html(optList);
+                        $("#taskTypeSearch").html(optList);
+                    }
+                };
+                ajax.run();
+            };
+            var loadCollectionStatusJson = {};
+            var loadCollectionStatus = function (dictId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId': dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        var optList = "<option value=''>--请选择--</option>";
+                        for (var i in statusArry) {
+                            var status = statusArry[i];
+                            loadCollectionStatusJson[status.dictId] = status.dataName;
+                            optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                        }
+                        // $("#collectionStatusInputId").html(optList);
+                    }
+                };
+                ajax.run();
+            };
+            var templateTypeJson = {};
+            var loadtemplateType = function (dictId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId': dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        var optList = "<option value=''>--请选择模板类型--</option>";
+                        for (var i in statusArry) {
+                            var status = statusArry[i];
+                            templateTypeJson[status.dictId] = status.dataName;
+                            optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                        }
+                        $("#templateTypeId").html(optList);
+                        $("#templateTypeQueryId").html(optList);
+
+                    }
+                };
+                ajax.run();
+            };
+            var cropsJson = {};
+            var loadCrops = function (dictId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId': dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        var optList = "<option value=''>--请选择作物--</option>";
+                        for (var i in statusArry) {
+                            var status = statusArry[i];
+                            cropsJson[status.dictId] = status.dataName;
+                            optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                        }
+                        $("#cropInputId").html(optList);
+                        $("#cropSearch").html(optList);
+                        $("#cropQueryId").html(optList);
+                        // $("#cropNameInputId").html(optList);
+
+                    }
+                };
+                ajax.run();
+            };
+            init();
+            //媒体资源图片轮播
+            var p;
+            var lunbo = function () {
+                var index = 0;
+                var imgnum = $('.banner ul li').length;
+                var nmun = '';
+                var imgwidth = $('.banner ul li').width();
+                var allimgwidth = imgwidth * imgnum;
+
+                $('.banner ul').css('width', allimgwidth);
+                $('.banner').hover(function () {
+                    window.clearInterval(p);
+                    p = null;
+                    $('.banner .u').fadeIn();
+                }, function () {
+                    pic();
+                    $('.banner .u').fadeOut();
+                });
+                $('.banner ul li').hover(function () {
+                    $(this).find(".deletePng").show();
+                }, function () {
+                    $(this).find(".deletePng").hide();
+                });
+                //删除轮播图片
+                $(".deletePng").click(function () {
+                    var meidiaId = $(this).data("id");
+                    var taskItemId = $(this).attr("data-taskItemId");
+                    delFun(meidiaId, "delMedia", taskItemId);
+                })
+
+                function pic() {
+                    window.clearInterval(p);
+                    p = null;
+                    if(imgnum>1) {
+                        p = setInterval(function () {
+                            index++;
+                            if (index >= imgnum) {
+                                index = 0;
+                            }
+                            selectimg(index);
+                        }, 5000);
+                    }
+                }
+
+                function selectimg(index) {
+                    $('.banner ul').animate({'margin-left': '-' + imgwidth * index + 'px'}, 600);
+                    $('.con a').eq(index).addClass('active').siblings('a').removeClass('active');
+                }
+
+                $('.banner .left').click(function () {
+                    index -= 1;
+                    if (index < 0) {
+                        index = imgnum - 1;
+                    }
+                    selectimg(index);
+                });
+                $('.banner .right').click(function () {
+                    index += 1;
+                    if (index > imgnum - 1) {
+                        index = 0;
+                    }
+                    selectimg(index);
+                });
+                for (var ni = 0; ni < imgnum; ni++) {
+                    nmun += "<a href='javascript:;'></a>";
+                }
+                $('.banner .con').html(nmun);
+                $('.banner .con a').eq(0).addClass('active');
+
+                $('.con a').each(function (i) {
+                    $(this).click(function () {
+                        index = i;
+                        $('.banner ul').animate({'margin-left': '-' + imgwidth * i + 'px'}, 600);
+                        $('.con a').eq(index).addClass('active').siblings('a').removeClass('active');
+                    });
+                });
+                pic();
+            }
+        });
+    </script>
+    </body>
+</html>

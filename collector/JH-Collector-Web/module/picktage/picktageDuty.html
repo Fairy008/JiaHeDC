@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div{
+            /*position: relative;*/
+            /*margin:12px;*/
+            /*padding-top:10px;*/
+            /*width:calc(100% - 24px);*/
+            /*height:calc(100% - 84px);*/
+            /*background:#fff;*/
+            /*box-shadow:0px 0px 3px 3px #e5e8ed;*/
+            /*overflow-y: auto;*/
+        }
+
+        .left_div{
+            width: 298px;
+            height:calc(100% - 0px);
+            display: inline-block;
+            background: #fff;
+            /*border: 1px solid red;*/
+            margin-top: 12px;
+            margin-left: 12px;
+            /*box-shadow:0px 0px 1px 1px #e5e8ed;*/
+            border: 1px solid #dbdbdb;
+        }
+
+        .right_div{
+            float: right;
+            margin-top: 12px;
+            width: calc(100% - 325px);
+            height:calc(100% - 0px);
+            display: inline-block;
+            /*border: 1px solid red;*/
+            /*background: #fff;*/
+            /*border: 1px solid #dbdbdb;*/
+            /*box-shadow:0px 0px 1px 1px #e5e8ed;*/
+        }
+
+        .right_div_top{
+            height: 50px;
+            width: 100%;
+            border: 1px solid #dbdbdb;
+            background: #fff;
+        }
+
+        .right_div_middle{
+            height: calc(100% - 64px);;
+            width: 100%;
+            border: 1px solid #dbdbdb;
+            margin-top: 12px;
+            background: #fff;
+        }
+
+        .search_div{
+            width: 273px;
+            height: 28px;
+            margin: 10px auto;
+        }
+
+        .search_div input{
+            width: 230px;
+            height: 100%;
+            float: left;
+            border: 1px solid #eaeaea;
+        }
+
+        .search_div button{
+            width: 30px;
+            height: 30px;
+            background: url("images/collector/addTask.png") no-repeat center center;
+            background-color: #eca700;
+            float: right;
+            border: 0;
+
+        }
+
+        .search_div img{
+            margin-left: -9%;
+            padding-top: 3px;
+        }
+
+        .search_type {
+            height: 28px;
+            line-height: 28px;
+            cursor: pointer;
+        }
+
+        .search_type .downListNode {
+            width: 24px;
+            display: inline-block;
+            margin-left: 7px;
+        }
+
+        .ulNode {
+            width: 100%;
+        }
+
+
+        .search_list {
+            padding: 5px 5px;
+            margin: 0 auto;
+            border-radius: 8px;
+            width: 270px;
+            border: 1px solid #eaeaea;
+            background: url("images/collector/taskBG.png") no-repeat right center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .highLight_li{
+            border: 2px solid #eba600;
+        }
+
+        .search_list .title {
+            height: 30px;
+            line-height: 30px;
+            color: #eca802;
+        }
+
+        .search_list p {
+            height: 22px;
+            line-height: 22px;
+        }
+
+        .search_list .title span:last-child,
+        .search_list p:last-child span:last-child {
+            float: right;
+            padding-right: 5px;
+        }
+
+        .search_list .numNode span {
+            background-color: #00d100;
+            padding: 0 .5em;
+            padding-right: 8px;
+            float: left;
+            color: #ffffff;
+        }
+
+        .search_list .numNode span:last-child {
+            margin: 0 .4em;
+            float: right;
+            padding-right: 8px;
+        }
+
+        .search_list .valueNode span:last-child {
+            margin: 0 .4em;
+            float: right;
+            padding-right: 8px;
+        }
+
+        .right_div_top span{
+            line-height: 50px;
+            color: #212121;
+            margin-left: 25px;
+        }
+
+        .right_div_top span input{
+            height: 28px;
+            width: 213px;
+            border: 1px solid #eaeaea;
+        }
+
+        .right_div_top span select{
+            height: 31px;
+            width: 132px;
+            border: 1px solid #eaeaea;
+        }
+
+        .right_div_top button{
+            width: 50px;
+            height: 28px;
+            color: #ffffff;
+            background-color: #1f4451;
+            border: 0;
+            border-radius: 5px;
+            float: right;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+
+        .uploaded,.completed{
+            color: #31b40b;
+        }
+
+        .no_upload,.no_start{
+            color: #dfdfdf;
+        }
+
+        .started{
+            color: #059dca;
+        }
+
+        /*jggrid相关样式*/
+        .ui-jqgrid .ui-jqgrid-htable th div{
+            height: 50px;
+            line-height: 50px;
+        }
+
+        .ui-jqgrid tr.jqgrow{
+            height: 38px;
+        }
+
+        .ui-jqgrid td input,.ui-widget input{
+            margin-left: 35px;
+            width: 14px;
+            height: 14px;
+            background-color: #ffffff;
+            border: 1px solid #eaeaea;
+        }
+
+
+        .ui-jqgrid .ui-jqgrid-pager{
+            /*margin-top: 107px !important;*/
+        }
+
+        .editBtn,.seeBtn,.uploadBtn{
+            margin-right: 20px;
+        }
+
+        .ui-widget-header{
+            background: none;
+            border-bottom: 1px solid #eaeaea;
+            border-radius: 0px;
+            height: 40px;
+            line-height: 40px;
+        }
+
+        .ui-dialog .ui-dialog-title{
+            background: none;
+            color: #0a0a0a;
+            font-size: 16px !important;
+            font-weight: normal !important;
+            height: 40px;
+            line-height: 40px;
+        }
+
+
+
+        .form select,.form input{
+            width: 250px;
+            height: 30px;
+            border: 1px solid #eaeaea;
+            margin-left: 0;
+        }
+
+        .form span{
+            margin-left: 30px;
+        }
+
+        .form tr{
+            height: 45px;
+        }
+
+        .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset{
+            float: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 65px;
+        }
+
+        .ui-dialog .ui-dialog-buttonpane button{
+            height: 28px;
+            width: 49px;
+        }
+
+        .ui-dialog .ui-dialog-buttonpane{
+            margin-top: 0;
+        }
+
+        .ui-dialog .ui-dialog-content{
+            padding: 0em 1em;
+        }
+
+        .ui-dialog .ui-dialog-content{
+            height: 155px !important;
+        }
+
+        .title span{
+            font-size: 16px !important;
+        }
+
+        .numNode span,.valueNode span,.endDate_view span{
+            font-size: 13px !important;
+        }
+
+
+    </style>
+</head>
+<body>
+    <!--左侧区域-->
+    <div class="left_div">
+        <div class="search_div">
+            <input id="search_duty" type="text" placeholder="  请输入区域/创建人" onblur="this.placeholder='  请输入区域/创建人'"
+              onfocus="this.placeholder=''">
+            <img id="search_duty_img" src="images/collector/search.png">
+            <button type="button" id="addBtn"></button>
+        </div>
+        <div class="duty_list_div">
+            <div class="search_type">
+                <span class="downListNode"><img src="images/collector/downList.png"> </span><span>全部</span>
+            </div>
+            <ul class="ulNode">
+<!--                <li class="search_list highLight_li">-->
+<!--                    <p class="title"><span>湖北省黄梅县</span><span><img src="images/collector/downloadGreen.png"></span></p>-->
+<!--                    <p class="numNode"><span>总保单：20000</span><span>已定标保单：20000</span></p>-->
+<!--                    <p class="valueNode"><span>创建时间：2019-05-09</span><span>创建人:欧阳花花</span></p>-->
+<!--                    <p class="endDate_view"><span>截止时间:2019-08-01</span><span><img src="images/collector/delete.png"></span></p>-->
+<!--                </li>-->
+<!--                <li class="search_list">-->
+<!--                    <p class="title"><span>湖北省黄梅县</span><span><img src="images/collector/downloadGreen.png"></span></p>-->
+<!--                    <p class="numNode"><span>总保单：20000</span><span>已定标保单：20000</span></p>-->
+<!--                    <p class="valueNode"><span>创建时间：2019-05-09</span><span>创建人:欧阳花花</span></p>-->
+<!--                    <p class="endDate_view"><span>截止时间:2019-08-01</span><span><img src="images/collector/delete.png"></span></p>-->
+<!--                </li>-->
+<!--                <li class="search_list">-->
+<!--                    <p class="title"><span>湖北省黄梅县</span><span><img src="images/collector/downloadGreen.png"></span></p>-->
+<!--                    <p class="numNode"><span>总保单：20000</span><span>已定标保单：20000</span></p>-->
+<!--                    <p class="valueNode"><span>创建时间：2019-05-09</span><span>创建人:欧阳花花</span></p>-->
+<!--                    <p class="endDate_view"><span>截止时间:2019-08-01</span><span><img src="images/collector/delete.png"></span></p>-->
+<!--                </li>-->
+            </ul>
+        </div>
+    </div>
+    <!--右侧区域-->
+    <div class="right_div">
+        <div class="right_div_top">
+            <span>
+                行政村
+                <input id="serach_village" type="text">
+            </span>
+            <span>
+                定标人
+                <input id="search_calibrator" type="text">
+            </span>
+            <span>
+                任务状态
+                <select id="search_task_status"></select>
+            </span>
+            <button id="resetBtn">重置</button>
+            <button id="queryBtn">查询</button>
+        </div>
+        <div class="right_div_middle">
+            <table id="picktageDutyGrid"></table>
+            <div id="pager1"></div>
+        </div>
+
+    </div>
+
+    <div class="form" id="addPickDutyDialog" style="display: none;">
+        <table>
+            <tr>
+               <td>
+                   <span>任务区域</span>
+               </td>
+                <td>
+                    <select>
+                        <option>石老屋村</option>
+                        <option>下新村</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>参与者</span>
+                </td>
+                <td>
+                    <select>
+                        <option>张三</option>
+                        <option>李四</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span>截至时间</span>
+                </td>
+                <td>
+                    <input type="text" name="endDate" id="endDate" readonly>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+
+    <!--删除弹框-->
+   <div id="delDialog" class="dialogStyle"></div>
+</body>
+<script>
+    require(["jquery","jqGrid","jqueryUi","BaseAjax","PopWin","commons","dateUtil"],function($,jqGrid,jqueryUi, BaseAjax,PopWin,commons,dateUtil) {
+
+        var init = function(){
+
+            initCollectionStatus();
+            /**
+             * 初始化日期控件
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            dateFun();
+
+            /**
+             * 主任务列表查询
+             * @version <1> 2019/8/1 xzg:Created.
+             */
+            $("#search_duty_img").bind('click',function () {
+                task.loadTaskList();
+            }).click();
+
+            /**
+             * 绑定新增定标任务事件
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            $("#addBtn").bind('click',function () {
+                task.addTask()
+            });
+
+            /**
+             *查询按钮
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            $('#queryBtn').bind('click',function () {
+                //任务id
+                var taskId = $('.highLight_li').attr('taskid');
+                subTask.querySubTaskList(taskId);
+            });
+
+            /**
+             *重置按钮
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            $('#resetBtn').bind('click',function () {
+                resetFun();
+            });
+
+            /**
+             * 绑定页面左侧定标任务点击事件
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            $(".ulNode").on('click','.search_list',function () {
+                $(".search_list").removeClass('highLight_li');
+                $(this).addClass('highLight_li');
+                //任务切换时，右侧GRID的子任务列表也需要随之切换
+                var taskId = $(this).attr('taskId');
+                subTask.querySubTaskList(taskId);
+            });
+
+
+            initJqGridFun();
+
+        }
+
+        /**
+         * 初始化数据采集状态
+         */
+        var globalCollectionStatus = [];
+        var initCollectionStatus = function () {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictListByPid_url;
+            ajax.opts.data = JSON.stringify({'id':8200});
+            ajax.opts.successFun = function(result){
+                if (result.flag) {
+                    var optionStr = "<option value=''>所有</option>";
+                    $(result.data).each(function (i,d) {
+                        globalCollectionStatus[d.id] = d.name;
+                         optionStr += "<option value='" + d.id + "'>" + d.name + "</option>";
+                    });
+                    $('#search_task_status').append(optionStr);
+                }else{
+                    console.error("采集状态失败");
+                }
+            };
+            ajax.opts.errorFun = function(){
+                console.error("采集状态异常")
+            };
+            ajax.run();
+        }
+
+        var initJqGridFun = function () {
+            $("#picktageDutyGrid").jqGrid({
+                // data: grid_data,//当 datatype 为"local" 时需填写
+                url: COLLECTOR_CONFIG.querySubTaskList,
+                datatype: "json", //数据来源，本地数据（local，json,jsonp,xml等）
+                postData:{
+                    'taskId' : 0,
+                    'calibrator':'',
+                    'subtaskStatus':''
+                },
+                mtype:'GET',
+                jsonReader:{
+                    root: "data",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                height: 'auto',//高度，表格高度。可为数值、百分比或'auto'
+                width:'auto',
+                colNames:['行政村', '定标人','开始时间','保单总数','已定标保单数','数据包','任务状态','操作'],
+                colModel:[
+                    // {name:'subtask_id',index:'subtaskId',width:'1', align:"center",hidden:true},
+                    {name:'village',index:'village', width:'10%',align:"center"},
+                    {name:'calibrator',index:'calibrator', width:'10%', align:"center"},
+                    {name:'startDate',index:'startDate',align:'center', width:'10%',},
+                    {name:'policNum',index:'policNum',align:'center', width:'10%',},
+                    {name:'policNumFinish',index:'policNumFinish',align:'center', width:'10%',},
+                    {name:'dataPackage',index:'dataPackage',align:'center', width:'8%',formatter:function(cellvalue ,options, rowObject){
+                            var value = "";
+                            if(cellvalue == '1'){
+                                value = "<span class='uploaded'>已上传</span>" ;
+                            }else{
+                                value = "<span class='no_upload'>未上传</span>";
+                            }
+                            return value;
+                        }},
+                    {name:'subtaskStatus',index:'subtaskStatus',align:'center', width:'8%',formatter:function(cellvalue ,options, rowObject){
+                            return globalCollectionStatus[cellvalue] || "";
+                        }},
+                    {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var dataPackage = rowObject.data_package;
+                            var taskStatus = rowObject.task_status;
+
+                            var uploadImg = "images/collector/uploadBlue.png";
+                            if (taskStatus != '1') {//未开始状态下才能上传
+                                uploadImg = "images/collector/uploadGray.png";
+                            }
+
+                            var downloadImage = "images/collector/downloadBlue.png";
+                            if(dataPackage != "1"){//未上传，则下载按钮置灰
+                                downloadImage = "images/collector/downloadGray.png";
+                            }
+                            var str = "<img src='images/collector/seeBlue.png' data-id='' class='seeBtn'  title='查看' >" +
+                                "<img src='"+uploadImg+"' class='uploadBtn'  title='上传' >" +
+                                "<img src='"+downloadImage+"' class='downloadBtn' title='下载' >";
+                            return str;
+                        }}
+
+                ],
+                viewrecords: true,//是否在浏览导航栏显示记录总数
+                rowNum: 17,//每页显示记录数
+                // rowList: [10, 20, 30],//用于改变显示行数的下拉列表框的元素数组。
+                pager: "#pager1",//分页、按钮所在的浏览导航栏
+                // altRows: true,//设置为交替行表格,默认为false
+                //toppager: true,//是否在上面显示浏览导航栏
+                multiselect: true,//是否多选
+                multiselectWidth : 48,
+                //multikey: "ctrlKey",//是否只能用Ctrl按键多选
+                // multiboxonly: true,//是否只能点击复选框多选
+                // subGrid : true,
+                //sortname:'id',//默认的排序列名
+                //sortorder:'asc',//默认的排序方式（asc升序，desc降序）
+                autowidth: true,//自动宽
+                loadComplete:function(xhr){
+                    // tableEvent();
+                    $("#picktageDutyGrid").setGridWidth($(".rightMain").width() - 325);
+
+                    $('.seeBtn').bind('click',function () {
+                        var subtask_id= $(this).attr('data-id');
+                        subTask.showSubtaskInfo(subtask_id);
+                    });
+
+                    $('.uploadBtn').bind('click',function () {
+                        var subtask_id= $(this).attr('data-id');
+                    });
+
+                    $('.downloadBtn').bind('click',function () {
+                        var subtask_id= $(this).attr('data-id');
+                    });
+
+                }
+            });
+        }
+
+        var grid_data = [
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"2",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"0",data_package:"0",task_status:"1"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"2"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"},
+            {subtask_id:"1",village:"石老屋村",creator_name:"张三",start_date:"2019-06-10",polic_num:"2000",polic_num_finish:"1000",data_package:"1",task_status:"3"}
+
+        ];
+
+        /**
+         * 初始化日期控件
+         */
+        var dateFun = function(){
+            dateUtil.timeEventThree("endDate",null,function(){}); //初始化出生日期控件
+        };
+
+
+        /**
+         *采集任务类
+         * @version <1> 2019/7/25 mason:Created.
+         */
+        var task = {
+            /**
+             * 查询采集任务列表
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            loadTaskList : function () {
+                var ajax = new BaseAjax();
+                ajax.opts.url = COLLECTOR_CONFIG.queryTaskList;
+                ajax.opts.type = "get";
+                ajax.opts.data = {
+                    'keyWord':$('#search_duty').val() || ''
+                };
+                ajax.opts.successFun = function (result) {
+                    if (result.flag){
+                        $('.ulNode li').remove();
+                        var data = result.data;
+                        //返回的任务列表不为空
+                        if (null != data && data.length > 0){
+                            for (var i=0;i<data.length;i++) {
+                                var li = '<li class="search_list" taskId="'+data[i].taskId+'">'
+                                           + '<p class="title"><span>'+data[i].taskName+'</span><span><img class="exportSubtask" src="images/collector/downloadGreen.png"></span></p>'
+                                           + '<p class="numNode"><span>总保单：'+(data[i].insurancePolicyNum || 0)+'</span><span>已定标保单：'+(data[i].calibratedPolicyNumber || 0)+'</span></p>'
+                                           + '<p class="valueNode"><span>创建时间：'+(data[i].startTime || "")+'</span><span>创建人:'+(data[i].creatorName || "")+'</span></p>'
+                                           + '<p class="endDate_view"><span>截止时间:'+(data[i].endTime || "")+'</span><span><img class="deleteTask" src="images/collector/delete.png"></span></p>'
+                                       + '</li>';
+                                $('.ulNode').append(li);
+
+                                if (0 == i){
+                                    console.log(data[i].taskId);
+                                    //根据任务id查询子任务列表
+                                    subTask.querySubTaskList(data[i].taskId);
+                                    //给第一个任务加上高亮选中效果
+                                    $('.ulNode .search_list:first-child').addClass('highLight_li');
+                                }
+                            }
+                        }
+
+                        //绑定导出子任务按钮事件
+                        $('.exportSubtask').bind('click',function () {
+                            var taskId = $(this).parent().attr('taskId');
+                            task.exportSubtask(taskId);
+                        });
+
+                        //绑定任务删除按钮
+                        $('.deleteTask').bind('click',function () {
+                            var taskId = $(this).parent().attr('taskId');
+                            task.deleteTask(taskId);
+                        });
+
+
+                    } else{
+                        console.log("查询采集任务列表返回失败");
+                    }
+
+                };
+                ajax.opts.errorFun = function () {
+                    console.log("查询采集任务列表异常");
+                };
+                ajax.run();
+            },
+            /**
+             * 导出任务的子任务为Excel
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            exportSubtask : function (taskId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = "";
+                ajax.opts.data = "";
+                ajax.opts.successFun = function(result){
+                    if (result.flag) {
+                        var data = result.data;
+                        var fileName =  result.data.fileName;
+                        var title = ['行政村','定标人','开始日期','保单总数','已定标保单数','数据包','任务状态'];
+                        JSONToExcelConvertor(data,fileName,title,null);
+                    }else{
+                        console.error("导出子任务返回失败");
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    console.error("导出子任务查询失败")
+                };
+                ajax.run();
+
+            },
+            /**
+             * 删除任务
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            deleteTask : function (taskId) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除该任务？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title:'系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons:[{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = COLLECTOR_CONFIG.deleteTask + "?taskId=" + taskId;
+                            ajax.opts.type = "get";
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun=function(result){
+                                if(result.flag){
+                                    task.loadTaskList();//重新加载任务列表
+                                    // $("#subsidyGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("删除成功");
+                                }else{
+                                    PopWin.showMessageWin("删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function(){
+                                PopWin.showMessageWin("删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            },
+            /**
+             * 新增任务
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            addTask : function () {
+                var addDialog = $("#addPickDutyDialog");
+                var dialogParent = addDialog.parent();
+                var dialogOwn = addDialog.clone();
+                addDialog.dialog({
+                    autoOpen: false,
+                    title:'新建任务',
+                    height: 270,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:[{
+                        text:"保存",
+                        click:function(){
+                            // if(type == 1 ){ //新增
+                            //     addSaveFun(userDialog);
+                            // }
+                            // if(type ==2 ){
+                            //     editSaveFun(userDialog, personId, accountId);
+                            // }
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                addDialog.dialog("open");
+            }
+
+        }
+
+        /**
+         *子任务类
+         * @version <1> 2019/7/25 mason:Created.
+         */
+        var subTask = {
+            /**
+             * 查询子任务列表
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            querySubTaskList : function (taskId) {
+                $("#picktageDutyGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:{
+                        'taskId' : taskId,
+                        'calibrator':$("#search_calibrator").val(),
+                        'subtaskStatus':$('#search_task_status').val()
+                    },
+                    page:1
+                }).trigger("reloadGrid");
+            },
+            /**
+             * 查询子任务详情
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            showSubtaskInfo : function (subtask_id) {
+                $('.rightMain').load('module/picktage/picktageDetail.html?subtask_id=' + subtask_id);
+            },
+            /**
+             *
+             * @param
+             * @return 上传子任务数据包
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            uploadSubtaskData : function(){
+
+            },
+            /**
+             * 下载子任务的数据包
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            downloadSubtaskData : function () {
+
+            },
+            /**
+             * 批量下载子任务数据包
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            batchDownloadSubtaskData : function () {
+
+            }
+
+        }
+
+
+
+        /**
+         * 导出JSON数据为excel文件
+         * @param JSONData 需要导出的数据
+         * @param FileName 导出的文件名
+         * @param title 表头，即首行，以数组的形式传入    var title=['用户名','性别','城市','签名','经验']
+         * @param filter 自定义过滤栏（不需要导出的行） var filter=['id','logins']
+         * @return none
+         * @version <1> 2019/7/26 mason:Created.
+         */
+        var JSONToExcelConvertor = function(JSONData, FileName,title,filter) {
+            if(!JSONData)
+                return;
+            //转化json为object
+            var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
+
+            var excel = "<table>";
+
+            //设置表头
+            var row = "<tr>";
+
+            if(title)
+            {
+                //使用标题项
+                for (var i in title) {
+                    row += "<th align='center'>" + title[i] + '</th>';
+                }
+
+            }
+            else{
+                //不使用标题项
+                for (var i in arrData[0]) {
+                    row += "<th align='center'>" + i + '</th>';
+                }
+            }
+
+            excel += row + "</tr>";
+
+            //设置数据
+            for (var i = 0; i < arrData.length; i++) {
+                var row = "<tr>";
+
+                for (var index in arrData[i]) {
+                    //判断是否有过滤行
+                    if(filter)
+                    {
+                        if(filter.indexOf(index)==-1)
+                        {
+                            var value = arrData[i][index] == null ? "" : arrData[i][index];
+                            row += '<td>' + value + '</td>';
+                        }
+                    }
+                    else
+                    {
+                        var value = arrData[i][index] == null ? "" : arrData[i][index];
+                        row += "<td align='center'>" + value + "</td>";
+                    }
+                }
+
+                excel += row + "</tr>";
+            }
+
+            excel += "</table>";
+
+            var excelFile = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:x='urn:schemas-microsoft-com:office:excel' xmlns='http://www.w3.org/TR/REC-html40'>";
+            excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel; charset=UTF-8">';
+            excelFile += '<meta http-equiv="content-type" content="application/vnd.ms-excel';
+            excelFile += '; charset=UTF-8">';
+            excelFile += "<head>";
+            excelFile += "<!--[if gte mso 9]>";
+            excelFile += "<xml>";
+            excelFile += "<x:ExcelWorkbook>";
+            excelFile += "<x:ExcelWorksheets>";
+            excelFile += "<x:ExcelWorksheet>";
+            excelFile += "<x:Name>";
+            excelFile += "{worksheet}";
+            excelFile += "</x:Name>";
+            excelFile += "<x:WorksheetOptions>";
+            excelFile += "<x:DisplayGridlines/>";
+            excelFile += "</x:WorksheetOptions>";
+            excelFile += "</x:ExcelWorksheet>";
+            excelFile += "</x:ExcelWorksheets>";
+            excelFile += "</x:ExcelWorkbook>";
+            excelFile += "</xml>";
+            excelFile += "<![endif]-->";
+            excelFile += "</head>";
+            excelFile += "<body>";
+            excelFile += excel;
+            excelFile += "</body>";
+            excelFile += "</html>";
+
+
+            var uri = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(excelFile);
+
+            var link = document.createElement("a");
+            link.href = uri;
+
+            link.style = "visibility:hidden";
+            link.download = FileName + ".xls";
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+
+        /**
+         * 查询重置方法
+         * @param
+         * @return
+         * @version <1> 2019/7/26 mason:Created.
+         */
+        var resetFun = function(){
+            $('#serach_village').val(null);
+            $('#search_calibrator').val(null);
+            $('#search_task_status').val(0);
+        }
+
+        init()
+
+    })
+
+</script>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <meta charset="utf-8">
+    <!--<link rel="stylesheet" href="js/report/addReport.css">-->
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="css/jquery.ui.css">
+    <link rel="stylesheet" href="css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/daterangepicker-bs3.css" />
+
+    <style>
+        *{margin:0;padding:0;}
+        ul li{list-style-type: none;font-size: 13px;}
+        html,body{ height:100%;min-width:1366px;background-color:#F3F3F3;}
+        .report{width:100%;overflow-y: hidden;height:calc(100%);min-height:600px;}
+        /*左侧地图样式*/
+        .leftData{position:relative;float:left;overflow-y: hidden;width:calc(100% - 450px);height:calc(100%);}
+        .leftData #divMap{ z-index: 1; width:100%;height:calc(100% ); background-color: #93dbff;position:relative;}
+        /*---公司logo---*/
+        #tabLogo{height:50px;line-height:50px;width:360px;position:absolute;top:25px;left:15px;z-index:3;background-color:#fff;text-align:center;border-radius:50px;}
+        #tabLogo .logo{ display: block; height: 40px;background: url(images/public/forum/logo.png) 0 0 no-repeat; margin:5px 15px 0px 20px; float: left; width: 120px; }
+        #tabLogo .logo:hover{cursor:pointer;}
+        /*.leftTab ul{height:50px;line-height:50px;}*/
+        /*.tab_left{border: 1px #2195fb solid;border-radius: 5px;box-sizing: border-box; line-height: 30px; height: 30px;margin-right:5px; color: #333;cursor: pointer;display: inline-block; padding: 0 18px;letter-spacing: 0;width: 90px;}*/
+
+        .leftTab span{display:block;width:90px;float:left;box-sizing: border-box;background-color:#fff;text-align:center;font-size: 13px;
+            border:1px solid #007AC5;letter-spacing: 0;cursor:pointer;height:30px;line-height:30px;margin:10px 0px 0px 0px;}
+        .leftTab span:first-child{border-radius:5px 0px 0px 5px;}
+        .leftTab span:last-child{border-radius:0px 5px 5px 0px;}
+
+
+
+
+        #mouse-position{position:absolute;bottom:50px;right:3px;color:red !important;font-size:18px !important;z-index:199;}
+        /* 显示鼠标信息的自定义样式设置 */
+        .custom-mouse-position {color: #000;font-size: 18px;font-family: "宋体";}
+
+
+        /**右侧查数据写报告样式*/
+        .rightData{height:calc(100%);float:right;width:450px;overflow-y: auto;font-size:14px;}
+
+
+        .rightData .tab_title{height:38px;line-height:38px;margin:10px 10px 10px 10px;}
+        .rightData .tab_title span{display:block;width:50%;float:left;box-sizing: border-box;background-color:#fff;padding:0 18px;text-align:center;
+            border:1px solid #007AC5;letter-spacing: 0;cursor:pointer;}
+        .rightData #readData{border-radius:5px 0px 0px 5px;-moz-border-radius: 5px 0px 0px 5px;-webkit-border-radius:5px 0px 0px 5px;border-right:0;}
+        .rightData #writeReport{border-radius:0px 5px 5px 0px;-moz-border-radius: 0px 5px 5px 0px;-webkit-border-radius:0px 5px 5px 0px;}
+
+        .active {color: #ffffff;background-color: #007AC5 !important; }
+
+
+        .rightData .tab_content{height:calc(100% - 58px);margin:10px 10px 0px 10px;}
+        /*看数据*/
+        #dataContent{height:calc(100% - 10px);}
+        /*写报告*/
+        #reportContent{height:calc(100% - 10px);background-color:#fff; }
+
+        /**看数据=---查询数据区域样式*/
+        .rightData .tab_content .searchInput{ background-color: #fff;    border-radius: 2px; padding:12px 5px;}
+        .rightData .tab_content .searchInput dd{margin:5px 0px;}
+         #txtRegion{width:308px;}
+        .rightData .tab_content .searchInput label{width:80px;text-align:right;padding-right:3px;display:inline-block;}
+        .rightData .tab_content .searchInput span{display:inline-block;}
+        .inputBox input{width:144px; height: 30px;border-radius: 5px;line-height: 20px;border: 1px solid #b9b7b7;padding-left:5px;}
+
+        /**看数据 ----- 表格样式**/
+        .rightData .tab_content .dataTable{display:block;background-color:#fff; height:calc(100% - 120px );margin:8px 0px 5px 0;/*min-height: 790px*/}
+
+        /** 写报告样式*/
+        #reportTitle,#hotTag{padding-top:10px;text-align: center;}
+        #titleComtent,#hotTagComtent{height: 30px;width: 98%;border: 1px solid #b9b7b7;border-radius: 3px;}
+        #hotTagComtent{margin-top: 10px;width: 98%; margin-left: 4px;}
+        .tabBtn{margin:5px 0;text-align:center;position:relative;z-index:100;}
+        .reportBtn{cursor: pointer;text-align: center; width: 45%;height: 38px;margin-right:5px;color: #007AC5;cursor: pointer; font-size: 13px; border-radius: 5px;border: 1px solid #007AC5; background-color: #ffffff;}
+        .btnCol {background-color: #007AC5 !important;color:#fff !important;}
+        /*form公用样式*/
+        .formErrorInfo{margin-top:10px;color:red;font-size:14px;}
+        .formInputHighlight{box-shadow:0 0 8px #ff0000;border:0px !important;}
+
+        #msgInfo{height:30px; z-index:101;position:absolute;top:-32px;left:10px;text-align:left;padding-left:15px;}
+
+
+        /*热门标签*/
+        .tags{margin: 5px 9px;float: left;}
+        .hotTag h2{font-weight: bold;width: 115px;float: left;}
+        /*.tags a{border: 1px solid #dedddd;font-size: 12px;margin: 8px 8px;line-height: 30px;border-radius: 5px;padding: 3px 6px;}*/
+
+        .tags a{border: 1px solid #dedddd;font-size: 12px;margin: 3px 6px;line-height: 24px;border-radius: 5px;padding: 0px 4px; float: left;cursor: pointer;}
+
+        .hotTag p.tags a.ons{border: 1px solid #028ec9; color: #028ec9;background:url("images/public/forum/tagChoosed.png") right bottom no-repeat;}
+        .errorTip{float: left;font-size: 12px;color: #d5012c;}
+
+        .labelDiv .myLabel{padding: 12px 0;z-index: 9999;position:absolute;background-color:#fff;border-radius:5px;border:1px solid #d5d5d5;max-width: 395px;    margin-left: 2px}
+        .labelDiv .myLabel:before{position: absolute;content: "";width: 0;height: 0;left: 44px;top: -22px;border-bottom: 11px solid #d5d5d5;border-top: 11px solid transparent;border-right: 11px solid transparent;border-left: 11px solid transparent;}
+        .labelDiv .myLabel:after{position: absolute;content: "";width: 0;height: 0;left: 45px;top: -20px;border-bottom: 10px solid #fff;border-top: 10px solid transparent;border-right: 10px solid transparent;border-left: 10px solid transparent;}
+
+        .labelDiv{padding-top: 20px;}
+        .labelDiv .myLabel li{width:98px;height:35px;line-height:35px;padding-left:0;}
+        .labelDiv .myLabel .solid{height:1px;padding-left:50px; border-bottom:1px solid #d5d5d5;}
+        .labelDiv .myLabel li a{height:35px;line-height:35px; display: block; padding-left:33px; background: url('images/public/forum/users.png') 0 0 no-repeat;}
+        .labelDiv .myLabel li a.myHome{ background-position: 14px 9px;}
+        .labelDiv .myLabel li a.exit{ background-position: 14px -39px;}
+        .labelDiv .myLabel li:hover{cursor:pointer;}
+        .changeIco{cursor:pointer;margin-right:30px;float: right; font-weight: normal; font-size: 12px; color: #969696; padding-left:17px; background: url("images/public/forum/change.png") left center no-repeat;}
+
+
+        /**jsGrid表格样式*/
+        .jsgrid-pager{text-align:center;}
+        .jsgrid-table tr td:first-child{padding-left:18px;}
+        tr.highlight td.jsgrid-cell { background-color: #c4e2ff;}
+        .dataTable .jsgrid-cell{height:24px;line-height:24px;}
+        .jsgrid-grid-body,.jsgrid-grid-header { overflow-y: auto!important;}
+
+
+        /**************时间轴************/
+        .botContent{width:calc(100% - 20px);min-width:886px; position:absolute;bottom:0px;height:45px;left:0px;z-index:200;overflow:hidden;display:none;}
+        .botContent .sHr{width:100%;text-align:center;margin:0 auto;position:absolute;top:18px;left:10px;}
+        .botContent .sPrev{position:absolute;top:0px;left:10px;width:37px;height:37px;z-index:201;}
+        .botContent .sNext{position:absolute;top:0px;width:37px;height:37px;right:0px;z-index:201;}
+        .botContent .sPrev.noclick::before,.botContent .sNext.noclick::before{content: '';width: 37px; height: 37px; border-radius: 50%; position: absolute; top:0; left:0; background: rgba( 255, 255, 255, 0.4);}
+        .botContent .dotSan{cursor:pointer; width:16px;height:16px; display: block; margin: 0 auto; background-color:#007FFF;border-radius:8px;}
+        .botContent .dot i{ display: none; width: 100%; height: 16px; position: absolute; left:0; margin: 0 auto;}
+        .botContent .dotValue{width:70px;height:16px;color:#fff;}
+        .botContent .dotSan.on{background-color : #d38600;color:#d38600;}
+        .botContent .dotSan.on.forbidden{background-color : #ccc;}
+        .timeDot .dot{ height: 30px; float: left; text-align: center; margin-top:2px; position: relative;}
+        .timeDot .hiddenDiv{ position: absolute; left:0; height: 37px; overflow: hidden; width: 99999px;bottom:0; }
+
+
+        #chartList{position:relative;display:none;    height: calc(100%);}
+        #chartList ul{height:300px;}
+        /********报表展示*********/
+        #chartList .toggleBtn{ height: 36px; width:36px; display: block; border-radius: 50%; background: #22a1d9 url(images/public/arrow.png) 12px 15px no-repeat; position: absolute; z-index: 5;right: calc(50%);top:-15px}
+        #chartList .toggleBtn:hover{ cursor: pointer;}
+        #chartList .toggleBtn.up{ background-position: -38px 12px; top:-30px;}
+
+
+        #chartList  ul{ height: calc(100%);padding: 10px 10px;background-color:rgba(0,0,0,0.75);}
+        #chartList  ul li{  width: calc(100%/3 - 10px);padding:5px; height: calc(100%); float: left;  border-bottom: 1px solid #a7a7a7; overflow: hidden; min-height: 300px;}
+        #chartList  ul li>div{  width: 100%; height: 270px;  box-sizing: border-box; }
+        #chartList  ul li:last-child{ border-bottom: 0;}
+        #chartList  ul li:hover{cursor: pointer;}
+        #chartList table caption{color: #FFFFFF;font-size: 16px;margin-bottom: 15px;width:100%;}
+        /*#botTable caption{width:400px;}*/
+        #botTable {width:100%;}
+        /**无数据*/
+        .noDataBox{ display: none; background: url('images/no_data.png') center center no-repeat; width: 100%; height: 100%; position: absolute; bottom: -30px;}
+        .botTableBox{width:100%;margin:0 auto;}
+        .botTableBox h2,.reportBox h2{color:#fff;text-align:center;height:20px;line-height:20px;font-size:16px;}
+
+        /*#botGrid{height:250px !important;}*/
+        #botGrid th,#botGrid td{background-color:#3F423F ;color:#fff;}
+        .jsgrid-nodata-row td{border:0 !important;}
+        /*.jsgrid-header-row > .jsgrid-header-cell{background:rgba(0,0,0,0) !important;}*/
+
+        /*报告*/
+        #tle{ text-align: center; font-weight: bold; margin: 18px 8px 8px 0;}
+        #text,#text1,#text2{text-align: justify;padding-bottom: 5px;}
+        .reportBox .reportTxt {  height: 234px;  padding: 8px;background: rgba( 255, 255, 255, 0.3); font-size: 12px; color: #fff;line-height: 18px;overflow-y: auto;overflow-x:hidden; }
+
+
+        /*调研任务详情数据*/
+        #popup{ display:none;position:absolute;background-color:white; padding:25px 5px 10px 0px;; border-radius:5px;border:1px solid #cccccc;bottom:45px; left:-49px; min-width: 140px;}
+        #popup:after,#popup:before{top:100%; border:solid transparent;content:" ";height:0px;width:0px; position:absolute;pointer-events:none;}
+        #popup:after{ border-top-color:white;border-width:10px;left:48px; margin-left:-10px;}
+        #popup-closer {text-decoration:none; position:absolute;  top:1px;right:1px;}
+        #popup-closer img{width: 16px;height: 16px;}
+        #popup-content{ font-size:14px; font-family:"宋体"; }
+        #popup-content .markerInfo { font-weight:bold; }
+        /*弹框样式*/
+        #popBox {display: none; background-color: #FFFFFF;z-index: 11; width: 450px; height: 400px; position:absolute; top:100px; left:50%; margin:auto;}
+
+        #popBox .close{ padding-right: 11px; background-color: #F8F8F8;height: 35px; line-height: 35px;}
+
+        /*关闭按钮*/
+        #popBox .close a { text-decoration: none;color: #2D2C3B;}
+        /*图片左右滚动*/
+        .rollBox{width:490px;overflow:hidden;padding:5px 5px 5px 5px;}
+        .rollBox .LeftBotton{height:52px;width:30px;background:url(images/public/prePage.png) no-repeat 0px 0;overflow:hidden;float:left;display:inline;margin:25px 0 0 0;cursor:pointer;}
+        .rollBox .RightBotton{height:52px;width:35px;background:url(images/public/nextPage.png) no-repeat 0px 0;overflow:hidden;float:left;display:inline;margin:25px 0 0 0;cursor:pointer;}
+        .rollBox .Cont{width:420px;overflow:hidden;float:left;}
+        .rollBox .ScrCont{width:10000000px;}
+        .rollBox .Cont .pic{width:105px;float:left;text-align:center;}
+        .rollBox .Cont .pic img{padding:4px;background:#fff;border:1px solid #ccc;display:block;margin:0 auto;}
+        .rollBox .Cont .pic p{line-height:26px;color:#505050;}
+        .rollBox .Cont a:link,.rollBox .Cont a:visited{color:#626466;text-decoration:none;}
+        .rollBox .Cont a:hover{color:#f00;text-decoration:underline;}
+        .rollBox #List1,.rollBox #List2{float:left;}
+        .text_bold{font-weight: bold;color:black}
+        .collection_left{ display:inline-block;width: 85px !important;text-align: right;font-size: 13px;color:grey;}
+        .collection_right{ display:inline-block;font-size: 13px;font-weight: 550;padding-left: 15px;}
+        #collectionData::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
+            scrollbar-arrow-color:red;
+
+        }
+        #collectionData::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            background: rgba(100,100,100,0.2);
+            scrollbar-arrow-color:red;
+        }
+        #collectionData::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /*去掉双击出现蓝色背景*/
+        body{
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+    </style>
+    <title>珈和农情遥感 | 写报告</title>
+</head>
+<body>
+
+<!--页面基础布局-->
+<div class="report">
+    <div class="leftData">
+        <div id="divMap">
+            <!--时间轴-->
+            <div class="botContent" data-id="showDiv">
+                <a class="sPrev"><img src="images/time_icon_left.png" alt="向左" title=""></a>
+                <hr class="sHr">
+                <a class="sNext"><img src="images/time_icon_right.png" alt="向右" title=""></a>
+            </div>
+            <div id="mouse-position"></div>
+            <!-- 标注 -->
+            <div id="popup" class="ol-popup">
+                <a href="javascript:void(0);" id="popup-closer" class="ol-popup-closer"><img src="images/public/forum/icon-Delete.png" style="vertical-align: middle;"></a>
+                <div id="popup-content" style="position: relative"></div>
+            </div>
+        </div>
+        <div id = "tabLogo">
+            <span class="logo"></span>
+            <span class="leftTab">
+                 <span class="tab_left active" data-id="1" id="tab_yg">遥感数据</span>
+                    <span class="tab_left" data-id="2"  id="tab_dy">调研数据</span>
+                <!--<ul>-->
+                    <!--<li class="tab_left active" data-id="1" id="tab_yg">遥感数据</li>-->
+                    <!--<li class="tab_left" data-id="2"  id="tab_dy">调研数据</li>-->
+                <!--</ul>-->
+            </span>
+        </div>
+
+        <div id="chartList">
+            <div class="toggleBtn" id = "botBtn" ></div>
+            <!--数据echart饼图-->
+            <!--降雨、地温、气温显示chartLi3,chartLi5,botTableBox-->
+            <!--分布、估产： chartLi1,chartLi2, botTableBox-->
+            <!--长势： chartLi1, chartLi4, botTableBox-->
+            <ul>
+
+                <li>
+                    <div id="chartLi1"></div>
+                </li>
+                <li >
+                    <div id="chartLi2"></div>
+                </li>
+                <li >
+                    <div id="chartLi3"></div>
+                </li>
+                <li >
+                    <div id="chartLi4"></div>
+                </li>
+                <li>
+                    <div class="botTableBox">
+                        <h2 ></h2>
+                        <div id="botGrid"></div>
+                        <!--<table id="botTable">-->
+                            <!--<caption style="color: #FFFFFF;"></caption>-->
+                            <!--<thead></thead>-->
+                            <!--<tbody></tbody>-->
+                        <!--</table>-->
+                    </div>
+                </li>
+                <li>
+                    <div class="reportBox" id="chartLi5" style="height: 100%;">
+                        <h2></h2>
+                        <div class="reportTxt"><div></div></div>
+                    </div>
+                </li>
+            </ul>
+            <!--无数据提示-->
+            <div class="noDataBox"></div>
+        </div>
+
+
+
+        <!--弹框显示采集数据-->
+        <div id="popBox">
+            <!--<div class="close">
+                &lt;!&ndash;<span style="float:left;text-indent: 15px;font-weight: bold">调研数据</span>&ndash;&gt;
+                <a href="javascript:void(0)" onclick="closeBox()" style="float:right"><img src="images/public/forum/closed.png" style="vertical-align: middle;"></a>
+            </div>-->
+            <div class="content" style="clear:both;width:480px">
+                <ul id="collectionData" style="max-height: 250px;/*height: 250px*/;padding-left: 15px;line-height: 25px;overflow-y: auto;">
+                    <li><span class="collection_left" >任务名称</span><span id="cllecdtionTask" class="collection_right"></span></li>
+                    <li><span class="collection_left" >调查时间</span><span id="collectionDate" class="collection_right"></span></li>
+                    <li><span class="collection_left" >调查作物</span><span id="collectionCrop" class="collection_right"></span></li>
+                    <!--<li><span class="collection_left" >位置信息</span><span id="collectionPosition" class="collection_right"></span></li>-->
+                    <li><span class="collection_left" >调查地址</span><span id="collectionAddress" class="collection_right"></span></li>
+                </ul>
+                <div class="rollBox">
+                    <div class="LeftBotton" onmousedown="ISL_GoUp()" onmouseup="ISL_StopUp()" onmouseout="ISL_StopUp()"></div>
+                    <div class="Cont" id="ISL_Cont">
+                        <div class="ScrCont">
+                            <div id="List1">
+
+
+                            </div>
+                            <div id="List2"></div>
+                        </div>
+                    </div>
+                    <div class="RightBotton" onmousedown="ISL_GoDown()" onmouseup="ISL_StopDown()" onmouseout="ISL_StopDown()"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="rightData">
+        <div class="tab_title">
+            <span class="active" data-id="dataContent" id="readData">看数据</span>
+            <span id="writeReport"  data-id="reportContent">写报告</span>
+        </div>
+
+        <div class="tab_content">
+            <!--看数据-->
+            <div id="dataContent" >
+                <dl class="searchInput">
+                    <dd><label>区域：</label><span class="inputBox"><input level="2" parentid="3100000000" chinaName ="湖北省" regionid="3102000006" regionCode = "CHN-HU" value="湖北省"  type="text" id="txtRegion" readonly="readonly"></span></dd>
+                    <dd><label>日期：</label><span class="inputBox"><input type="text" readonly  id="startDate" class="dataInput"/>&nbsp;&nbsp;
+                    <input type="text" readonly  id="endDate" class="dataInput"/></span></dd>
+                </dl>
+                <!--表格数据-->
+                <dl class="dataTable">
+                    <div id="listGrid"  ></div>
+                </dl>
+            </div>
+            <!--写报告-->
+            <div id="reportContent" style="display:none;">
+
+                <div  id = 'reportTitle' ><input type="text" class="input" id = 'titleComtent' placeholder="此处添加文章标题" /></div>
+                <div style="position:relative;">
+                    <div id="hotTagComtent" class="input" style="align:center;text-align: left; line-height: 30px; font-size: 14px;color: #757171" >此处添加热门标签</div>
+                    <div  id = 'hotTag' class="labelDiv"><!--<input type="text" class="input" id = 'hotTagComtent'  placeholder="此处添加热门标签" />-->
+                        <ul class="myLabel" style="float: left;display: none">
+                            <div class="hotTag">
+                                <div style="height:23px;width:100%;margin-left:18px;"><h2>热门标签</h2><span class="errorTip"></span><a class="changeIco">换一批</a></div>
+                                <p class="tags"></p>
+                            </div>
+                        </ul>
+                    </div>
+
+                </div>
+                <div style="z-index: 100;margin:0 auto;">
+                    <script id="editor" type="text/plain" style="width:420px;min-height:300px;margin:0 auto;z-index: 1;position:static;">
+                    </script>
+                </div>
+                <div class="tabBtn" >
+                    <div id="msgInfo"></div>
+                    <button id="addReport" class="reportBtn ">存草稿</button>
+                    <button id="publishReport" class="reportBtn btnCol">保存提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 放大图片 -->
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:100;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+</div>
+
+<!--右边结束-->
+<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.all.js"></script>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/report/imageOperator.js"></script>
+<script type="text/javascript" src="js/report/addReport.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

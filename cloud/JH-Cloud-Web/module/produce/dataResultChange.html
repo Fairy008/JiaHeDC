@@ -1,0 +1,119 @@
+<style type="text/css">
+
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">xxx：</span>
+                    <span><select id="search_satName" class="input inputWidth_100 satNameSelect" onfocus="this.style.color='#000000'" ></select></span>
+                </div>
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_creatorName" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_createTime" /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+            </div>
+        </div>
+        <!--<div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">关键字：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_words" /></span>
+                </div>
+                <div>
+                    <span class="label2">数据日期：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_productTime" readonly /></span>
+                </div>
+            </div>
+        </div>-->
+    </div>
+    <div class="grid">
+        <table id="dataResultChangeGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons){
+        var init = function() {
+            loaderGrid();//加载表格
+            dateFun();//初始化创建时间控件
+        };
+
+        var loaderGrid = function(){
+            $("#dataResultChangeGrid").jqGrid({
+                url: DATA_MANAGEMENT_CONFIG.findDataResultChangeByPage_url,
+                datatype: "json",
+                postData:{
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['reprocessId','卫星','传感器','关键字','文件路径', '文件大小', '数据日期','创建人','创建时间'],
+                colModel:[
+                    {name: 'reprocessId', index:'reprocessId', hidden:true},
+                    {name: 'satellite', index: 'satellite', align: 'center', width: '5%', sortable: false},
+                    {name: 'sensor', index: 'sensor', align: 'center', width: '8%', sortable: false},
+                    {name: 'words', index: 'words', align: 'center', width: '10%', sortable: false},
+                    {name: 'path', index: 'path', align: 'left', width: '40%', sortable: false},
+                    {name: 'fileSize', index: 'fileSize', align: 'right', width: '4%', sortable: false},
+                    {name: 'productTime', index: 'productTime', align: 'center', width: '6%', sortable: false},
+                    {name: 'creatorName', index:'creatorName', width:'6%',align:'center', sortable:true},
+                    {name: 'createTime', index:'createTime', width:'8%', align:"center", sortable:true}
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    tableEvent();//绑定table表格操作事件
+                    $("#dataReprocessGrid").setGridWidth($(".rightMain").width() - 30);
+                }
+            });
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-05-02 zhangshen : Created.
+         */
+        var tableEvent = function(){
+
+        };
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-05-02 zhangshen : Created.
+         */
+        var dateFun = function(){
+            $("#search_createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        init();
+    });
+</script>

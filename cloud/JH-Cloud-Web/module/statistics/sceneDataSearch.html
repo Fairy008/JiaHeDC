@@ -1,0 +1,242 @@
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+
+<style type="text/css">
+ .main{width:1000px;margin:10px auto 0 auto;}
+ .searchBGleft>div:first-child{width:30% !important;}
+ .searchBGleft>div:last-child{width:70% !important;}
+ #searchMsg{color:red;padding-left:10px;}
+
+ .outerDiv>h3{text-align:center;font-size:24px !important;margin:45px 0 0 0;height:30px;line-height:30px;}
+
+ .result{width:1000px; height:calc(100% - 160px);border:1px solid #ccc;margin:10px auto 0px auto;overflow-y:auto;}
+ .result .tips{color:red;padding:10px 0 0 25px; }
+ .result span{width:100px; height:28px; line-height:28px; border:1px solid #ccc;margin:5px 50px 5px 5px;display:block; float:left;text-align:center;background-color:#ddd;}
+ .result .resultTitle{height:26px;line-height:26px; background-color:#00A7ED;width:calc(100% - 10px);color:#fff;padding:0 0 0 10px;font-size:16px !important;}
+</style>
+
+
+<!--查询条件-->
+<div class="outerDiv content ">
+    <h3>未入库高分数据检索</h3>
+    <div class="searchItems main">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="">卫星：</span>
+                    <span><select id="search_satName" class="input  satNameSelect"  onfocus="this.style.color='#000000'" ></select></span>
+                </div>
+
+                <div class="sceneMsg">
+                    <span class="">景序列号区间：</span>
+                    <span><input type="text" id="sceneStart" name="sceneStart" style="width:80px !important;" placeholder="景序列号起">
+                        - <input type="text" id="sceneEnd" name="sceneEnd" style="width:80px !important;" placeholder="景序列号止"> </span>
+                    <span id="searchMsg"></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+            </div>
+        </div>
+    </div>
+    <div class="result">
+        <p class="resultTitle">未入库高分数据景序列号列表</p>
+        <div class="resultHtml"></div>
+
+    </div>
+</div>
+
+<!--数据显示-->
+<div id="showDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+<script type="text/javascript">
+
+    require(["jquery", "ztree", "BaseAjax", "formVerfication",'PopWin',"commons"], function ($, ztree, BaseAjax, formVerfication,popWin, commons) {
+
+
+        var Dict_DataSat_Flag = 400;//数据集：卫星
+
+        var Dict_DataSat_Default = 401; //卫星默认值
+        var init = function(){
+            getDataDictOption("satNameSelect",Dict_DataSat_Flag, Dict_DataSat_Default );
+
+            $("#queryBtn").bind("click", searchFun);
+
+            $("#sceneStart").keyup(function(){
+
+                if(formVerfication.isEmpty($("#sceneStart").val())){
+                    $("#searchMsg").html("")
+                    $("#sceneStart").css("border", "1px solid #EEEEEE")
+                }else{
+
+                    $("#sceneEnd").css("border", "1px solid #EEEEEE")
+                    if(!formVerfication.isPositiveInteger($("#sceneStart").val())){
+                        $("#searchMsg").html("景序列号只能输入数字")
+                        $("#sceneStart").css("border", "1px solid red")
+                        return false;
+                    }else{
+                        $("#searchMsg").html("")
+                        $("#sceneStart").css("border", "1px solid #EEEEEE")
+                        return true;
+                    }
+                }
+            })
+
+            $("#sceneEnd").keyup(function(){
+
+                if(formVerfication.isEmpty($("#sceneEnd").val())){
+                    $("#searchMsg").html("")
+                    $("#sceneEnd").css("border", "1px solid #EEEEEE")
+                }else{
+
+                    $("#sceneStart").css("border", "1px solid #EEEEEE")
+                    if(!formVerfication.isPositiveInteger($("#sceneEnd").val())){
+                        $("#searchMsg").html("景序列号只能输入数字")
+                        $("#sceneEnd").css("border", "1px solid red")
+                        return false;
+                    }else{
+                        $("#searchMsg").html("")
+                        $("#sceneEnd").css("border", "1px solid #EEEEEE")
+                        return true;
+                    }
+
+                }
+            })
+
+
+        }
+
+
+
+        /**
+         * 查询数据字典数据
+         * @param selectClass ： 类选择器
+         * @paran dictId : 上级节点ID
+         * 数据集下拉框查询参数： "dsSelect","1"
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+
+        var satelliteCache = [];
+        var getDataDictOption = function(selectClass, dictId, defaultValue) {
+
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DICT_COFING.queryDictByParentId_url;
+            baseAjax.opts.data = JSON.stringify({'parentId': dictId});
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    if(selectClass == "satNameSelect"){
+                        satelliteCache = resultData.data;
+                    }
+
+                    $('.' + selectClass).html("");
+                    var dataStatusArray = resultData.data;
+                    var optionHtml = "";
+                    if(defaultValue == undefined || defaultValue == null || defaultValue == ""){
+                        optionHtml += "<option value=''>--请选择--</option>";
+                    }
+
+
+                    for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                        var dataStatus = dataStatusArray[i];
+                        if(dataStatus.dataValue.indexOf("GF") != -1){
+
+
+                            if(dataStatus.dictId == defaultValue){
+                                optionHtml += '<option value="' + dataStatus.dataValue + '" name="'+ dataStatus.dataName +'" data-id="' + dataStatus.dictId + '" selected>' + dataStatus.dataName + '</option>';
+                            }else{
+                                optionHtml += '<option value="' + dataStatus.dataValue + '" name="'+ dataStatus.dataName +'" data-id="' + dataStatus.dictId + '">' + dataStatus.dataName + '</option>';
+                            }
+                        }
+                    }
+                    $('.' + selectClass).append(optionHtml);
+                } else {
+
+                }
+            }
+            baseAjax.run();
+        };
+
+
+        /**
+         * 检索连续区间缺少的数据
+         */
+        var searchFun  = function(){
+
+
+            var satellite = $("#search_satName").val().trim()
+            var sceneStart = $("#sceneStart").val()
+            var sceneEnd = $("#sceneEnd").val()
+
+
+            if((sceneStart == null || sceneStart == "")  && (sceneEnd == null || sceneEnd == "")){
+                $("#sceneStart,#sceneEnd").css("border", "1px solid red")
+                $("#searchMsg").html("请输入景序列号区间")
+                return
+            }
+
+
+            if(sceneStart != null && sceneStart != ""){
+                if(!formVerfication.isPositiveInteger(sceneStart)){
+                    return false;
+                }
+            }
+
+            if(sceneEnd != null && sceneEnd != ''){
+
+                if(!formVerfication.isPositiveInteger(sceneEnd)){
+                    return false;
+                }
+            }
+
+            if((sceneStart == null || sceneStart == "")  && (sceneEnd != null && sceneEnd != "")){
+                sceneStart = sceneEnd;
+            }
+
+            if((sceneStart != null && sceneStart != "")  && (sceneEnd == null || sceneEnd == "")){
+                sceneEnd = sceneStart;
+            }
+
+
+
+            $(".resultHtml").html("")
+
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DATA_STORAGE.queryNoSceneDatas;
+            baseAjax.opts.data = JSON.stringify({
+                'satellite':satellite,
+                'sceneStart':sceneStart,
+                'sceneEnd':sceneEnd
+
+            });
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    var data = resultData.data;
+                    if(data.length == 0 ){
+                        $(".resultHtml").append("<p class='tips'>未检索到当前景序列号区间未入库的高分数据。</p>")
+                    }else{
+                        var _html = ""
+                        $.each(data, function(index, element){
+                            _html += "<span>" + element + "</span>";
+                        })
+                        $(".resultHtml").append(_html)
+                    }
+
+
+                }else{
+
+                }
+            }
+            baseAjax.run();
+
+
+        }
+
+
+
+
+        init();
+
+
+    });
+</script>

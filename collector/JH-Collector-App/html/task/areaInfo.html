@@ -1,0 +1,1420 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<style type="text/css">
+			.mui-input-row label {
+				width: 8.125rem !important;
+			}
+
+			.mui-input-row input {
+				width: calc(100% - 8.125rem) !important;
+			}
+
+			.imgDiv {
+				display: inline-block;
+				position: relative;
+				margin: 0.1rem;
+			}
+
+			.textarea {
+				margin-top: 0.6rem;
+				padding-left: 8rem;
+			}
+
+			.textarea-div {
+				background-color: #FFFFFF !important;
+				height: auto;
+				padding: 0.25rem;
+				border: 1px solid #CCCCCC !important;
+				padding-right: 2rem;
+			}
+
+			.jh-left-div {
+				float: left;
+				margin-top: 0.5rem;
+				margin-right: 0.5rem;
+				background-color: #FFFFFF;
+				width: 4rem;
+				height: 4rem;
+				border: 0.0625rem solid #CCCCCC;
+				text-align: center;
+			}
+
+			.jh-left-icon {
+				margin-top: 0.5rem;
+				font-size: 2rem;
+				color: #CCCCCC;
+			}
+
+			.jh-left-text {
+				font-size: 1rem;
+				color: #CCCCCC;
+			}
+
+			.dlist {
+				padding: 0px;
+				margin: 1em;
+				background: #fff;
+				border: 1px solid #ddd;
+				-webkit-border-radius: 3px;
+				border-radius: 3px;
+			}
+
+			.ditem {
+				overflow: hidden;
+				list-style-type: none;
+				font-size: 1em;
+				padding: 0.5em;
+				border-bottom: inset 0px #ebebeb;
+				vertical-align: middle;
+			}
+
+			.ditem:active {
+				background: #f4f4f4;
+			}
+
+			.ditem:last-child {
+				border-bottom: inset 0px #ebebeb;
+			}
+
+			.ditem-empty {
+				overflow: hidden;
+				list-style-type: none;
+				font-size: 1em;
+				padding: 1em;
+				vertical-align: middle;
+			}
+
+			.iplay {
+				display: block;
+				background: no-repeat right center url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABYCAYAAAADWlKCAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAKwwAACsMBNCkkqwAAABZ0RVh0Q3JlYXRpb24gVGltZQAwOS8xMi8xM5w+I3MAAAAcdEVYdFNvZnR3YXJlAEFkb2JlIEZpcmV3b3JrcyBDUzVxteM2AAAD9UlEQVR4nO2b3XETMRRGDwzvoYOkg5hRAVkqiKmAdIA7wHSQVECoALsC1gXciV0BTge4gvCwgnHk9d/+WF8m97ztxrlXs8fS1Urym6enJxwd3uZugPMcFyKGCxHDhYjhQsRwIWK4EDFciBguRAwXIoYLEcOFiOFCxHAhYrgQMVyIGC5EDBcihgsRw4WI4ULEcCFiuBAx3uVuwDGY2XtgCBTAALjc8tEFMAdKYBJC+HOK9nXBm5dwUM7MCmAEXDcMMQVuQwhlV23qC2khZjYAboGrjkLOgFEIYd5RvM6RrSFmdgs80J0MYqyHGFsSuR4S60TJ9vrwCEziZ+YhhGXy/xdU9aWgqjfnW+IsgEKtvkgJiUPUPfUyZsD42DoQ68+Y+p62AG6UhjAZITt6xopq3L9vGf+Gqh6dJX+S6ilKNaRkU8YCGLSVARBjDGLMdS5jbgkkhMQiWyejSGtEG2KsghopKoU++5AV68ZDcrvXYWTH8Pghdz1R6CHpN3MFDPsc02PsYcy1qy0nJ6uQOANKZz+jfcOUmd3H6W1jYo5RcvsqtikbuXtI+kBmBxbwz8DczMZtksdcsz1tOinZhMRxPF2bGh8R4gz4amZLMxu2aEqa8zq2LQs5e0j6EB8bLv6dAz/NrGwyjMWcj3vadjJyCimS60nLeFfAbzO7bfANT3MXLdvSmJxCBsl12VHcL8AyvpkfSpo7bdvJyCkkfQfocv5/Bnw3s/mBs6Y097aFzd7JPcv6T5dv5GtcAr/2TZN7yt0IGSE908k0+RS8FiEvhhd1yKEFUw5YAVBApoe0XQrZwgL4GEIY7pLRU+5G5OwhC57PZgbAsqPYK6rdxUMXC9Npbro8fzJy9pB0qll0FPcOuDhCRl3ubEvwOYWUyXXb5YoZ1X7GqMHSfZq7bNmWxuQUki5XnDdc+n4EPoUQiiabSzFnejKl7TJOY7IJid/iaXJ7fESIFfCNas+9zQNMc05zHnjIPctKx/mrA9egflCJGLd5eDFXukGWdddQYU+95PlDWVE97GXPeS+oivf6saBZCKHoM+8+cvcQ2NyhOwMmfW4SxdgTNs9oZd0tBAEhsRDfJbcvgbIPKTtOnNzlPnECAkPWP8xsTv3ZrJ1v2UfmuKDqGRt5QgjZ9kDWyd5D1iioP1U4P3KzqZYYY5v0om38rpDpIeCHrUFMCPjPEeSE/COetf3SU/i7EEL2GVUdSjXkGfGBfWDzIFsb/q93dRizU2R7yDr+o09R/GfRzsmRrSGvFRcihgsRw4WI4ULEcCFiuBAxXIgYLkQMFyKGCxHDhYjhQsRwIWK4EDFciBguRAwXIoYLEcOFiOFCxHAhYrgQMf4CVuqCm+17t3sAAAAASUVORK5CYII=);
+				background-size: 50px 44px;
+				-ms-touch-action: auto;
+			}
+
+			.aname {
+				font-size: 16px;
+			}
+
+			.ainf {
+				font-size: 12px;
+			}
+
+			.mui-preview-image.mui-fullscreen {
+				position: fixed;
+				z-index: 20;
+				background-color: #000;
+			}
+
+			.mui-preview-header,
+			.mui-preview-footer {
+				position: absolute;
+				width: 100%;
+				left: 0;
+				z-index: 10;
+			}
+
+			.mui-preview-header {
+				height: 44px;
+				top: 0;
+			}
+
+			.mui-preview-footer {
+				height: 50px;
+				bottom: 0px;
+			}
+
+			.mui-preview-header .mui-preview-indicator {
+				display: block;
+				line-height: 25px;
+				color: #fff;
+				text-align: center;
+				margin: 15px auto 4;
+				width: 70px;
+				background-color: rgba(0, 0, 0, 0.4);
+				border-radius: 12px;
+				font-size: 16px;
+			}
+
+			.mui-preview-image {
+				display: none;
+				-webkit-animation-duration: 0.5s;
+				animation-duration: 0.5s;
+				-webkit-animation-fill-mode: both;
+				animation-fill-mode: both;
+			}
+
+			.mui-preview-image.mui-preview-in {
+				-webkit-animation-name: fadeIn;
+				animation-name: fadeIn;
+			}
+
+			.mui-preview-image.mui-preview-out {
+				background: none;
+				-webkit-animation-name: fadeOut;
+				animation-name: fadeOut;
+			}
+
+			.mui-preview-image.mui-preview-out .mui-preview-header,
+			.mui-preview-image.mui-preview-out .mui-preview-footer {
+				display: none;
+			}
+
+			.mui-zoom-scroller {
+				position: absolute;
+				display: -webkit-box;
+				display: -webkit-flex;
+				display: flex;
+				-webkit-box-align: center;
+				-webkit-align-items: center;
+				align-items: center;
+				-webkit-box-pack: center;
+				-webkit-justify-content: center;
+				justify-content: center;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				margin: 0;
+				-webkit-backface-visibility: hidden;
+			}
+
+			.mui-zoom {
+				-webkit-transform-style: preserve-3d;
+				transform-style: preserve-3d;
+			}
+
+			.mui-slider .mui-slider-group .mui-slider-item img {
+				width: auto;
+				height: auto;
+				max-width: 100%;
+				max-height: 100%;
+			}
+
+			.mui-android-4-1 .mui-slider .mui-slider-group .mui-slider-item img {
+				width: 100%;
+			}
+
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-slider-group .mui-slider-item {
+				display: inline-table;
+			}
+
+			.mui-android-4-1 .mui-slider.mui-preview-image .mui-zoom-scroller img {
+				display: table-cell;
+				vertical-align: middle;
+			}
+
+			.mui-preview-loading {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				top: 0;
+				left: 0;
+				display: none;
+			}
+
+			.mui-preview-loading.mui-active {
+				display: block;
+			}
+
+			.mui-preview-loading .mui-spinner-white {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				margin-left: -25px;
+				margin-top: -25px;
+				height: 50px;
+				width: 50px;
+			}
+
+			.mui-preview-image img.mui-transitioning {
+				-webkit-transition: -webkit-transform 0.5s ease, opacity 0.5s ease;
+				transition: transform 0.5s ease, opacity 0.5s ease;
+			}
+
+			@-webkit-keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			@keyframes fadeIn {
+				0% {
+					opacity: 0;
+				}
+
+				100% {
+					opacity: 1;
+				}
+			}
+
+			@-webkit-keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			@keyframes fadeOut {
+				0% {
+					opacity: 1;
+				}
+
+				100% {
+					opacity: 0;
+				}
+			}
+
+			#imgList img {
+				max-width: 100%;
+				height: auto;
+			}
+
+			.jh-input-size {
+				margin-top: -0.0625rem;
+				padding-left: 0.25rem;
+			}
+
+			.rprogress {
+				position: absolute;
+				left: 50%;
+				top: 6rem;
+				width: 8.75rem;
+				height: 8.75rem;
+				margin-left: -4.375rem;
+				/* margin-top: -4.375rem; */
+				background-color: rgba(0, 0, 0, 0.9);
+				display: none;
+			}
+
+			.rsalert {
+				font-size: 0.75rem;
+				color: #bbb;
+				text-align: center;
+				position: absolute;
+				border-radius: 0.3125rem;
+				width: 8.125rem;
+				margin: 0.3125rem 0.3125rem;
+				padding: 0.3125rem;
+				left: 0px;
+				bottom: 0px;
+			}
+
+			.jh-btn-font-size {
+				font-size: 1.1rem;
+			}
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<header class="mui-bar mui-bar-nav" style="background-image: url(../../images/img-icon/topBG.png);">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="taskName" class="mui-title">田块编号</h1>
+		</header>
+
+		<div class="mui-content mui-scroll-wrapper" style=" margin-top: -4rem;margin-bottom: 3.125rem;">
+			<div class="mui-scroll" style="padding: 0.625rem;">
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">保单号</label>
+					<input id="collectName" type="text" class="mui-input-clear jh-btn-font-size" placeholder="请输入采集任务名称" />
+				</div>
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">农户姓名</label>
+					<input id="collectName" disabled="disabled" type="text" class="mui-input-clear jh-btn-font-size" placeholder="不可编辑" />
+				</div>
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">身份证号</label>
+					<input id="collectName" disabled="disabled" type="text" class="mui-input-clear jh-btn-font-size" placeholder="不可编辑" />
+				</div>
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">电话号码</label>
+					<input id="collectName" disabled="disabled" type="text" class="mui-input-clear jh-btn-font-size" placeholder="不可编辑" />
+				</div>
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">作物类型</label>
+					<input id="collectName" disabled="disabled" type="text" class="mui-input-clear jh-btn-font-size" placeholder="不可编辑" />
+				</div>
+				<div class="mui-input-row jh-input-size">
+					<label class="jh-btn-font-size">承保面积</label>
+					<input id="collectName" type="text" class="mui-input-clear jh-btn-font-size" placeholder="田块面积[保单面积]" />
+				</div>
+				<div class="mui-input-row textarea-div" style="margin-top: -0.0625rem;display: ;">
+					<label class="jh-btn-font-size">田块位置</label>
+					<div id="mAddressName" disabled="true" class="textarea jh-btn-font-size">
+					</div>
+				</div>
+
+				<ul id="valuelist" class="mui-table-view" style="border-width:0rem;margin-top: 1rem;border: #CCCCCC;">
+				</ul>
+				<!-- <div id='sound-alert' class="rprogress">
+					<div class="mui-icon mui-icon-mic re-icon-mic" style="color: #FFFFFF;font-size:4rem;width: 4rem;height: 4rem;position: absolute;
+						left: 50%;top: 50%;margin-left: -2rem;margin-top: -2rem;"></div>
+					<div id="audio_tips" class="rsalert">正在录音</div>
+				</div> -->
+				<div id="buttonArea" class="buttonArea">
+					<div class="jh-left-div">
+						<span id="headImage" class="mui-icon mui-icon-camera jh-left-icon"></span>
+						<p><span class="jh-left-text">图片</span></p>
+					</div>
+					<!-- <div class="jh-left-div">
+						<span id="soundButton" class="mui-icon mui-icon-mic jh-left-icon"></span>
+						<p><span class="jh-left-text">录音</span></p>
+					</div> -->
+				</div>
+				<ul id="imgList" style="margin-top: 5.5rem;border-width:0rem;margin-left: -40px;">
+					<!-- <div class="imgDiv">
+						<img id="image" src="../../images/60x60.gif" style="margin-bottom: 3rem;">
+					</div> -->
+				</ul>
+				<!-- <ul id="SnList" class="dlist" style="border-width:0rem ;text-align:left;">
+				</ul> -->
+
+			</div>
+		</div>
+		<nav class="mui-bar mui-bar-tab" style="height: 4rem;padding: 0.2rem;border:0rem solid#FFFFFF !important;">
+			<button id="save" type="button" class="mui-btn mui-btn-primary" style="height: 3rem;">保存</button>
+		</nav>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/mui.poppicker.js"></script>
+		<script src="../../js/mui.picker.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/mui.zoom.js"></script>
+		<script src="../../js/mui.previewimage.js"></script>
+		<script type="text/javascript">
+			var self;
+			var taskName = document.getElementById('taskName');
+			var collectName = document.getElementById('collectName');
+			// var researchTime = document.getElementById('researchTime');
+			var mUl = document.getElementById('imgList');
+			// var mSUl = document.getElementById('SnList');
+			var mFUl = document.getElementById('valuelist');
+			// var mPointList = document.getElementById('mPointList');
+			var mAddressName = document.getElementById('mAddressName');
+			// var areaStr = document.getElementById('areaStr');
+			var boxSoundAlert = document.getElementById('sound-alert');
+			// var soundButton = document.getElementById('soundButton');
+			var spaceDistance = '\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0';
+			var bodyData = {
+				itemId: "",
+				taskId: null,
+				itemName: "",
+				surveyTime: "",
+				position: "",
+				surveyAddress: "",
+				cltMediaSourceList: [],
+				templateVO: {
+					fieldModelVOList: [],
+				},
+				soundSrc: [],
+				contentXml: null,
+				surveyTimeStr: null,
+			};
+			var saveFilename = '';
+
+
+			function getPremission() {
+				// rSound = plus.audio.getRecorder();
+
+				// console.log('this is ios:'+mui.os.ios);
+				// console.log('this is ios:'+mui.os.android);
+				// console.log('mui.os.android:' + mui.os.android);
+				if (mui.os.android == true) {
+					saveFilename = 'file:///storage/emulated/0/mdoc/audio/';
+					//...操作
+					// plus.android.requestPermissions(['android.permission.RECORD_AUDIO'], function(e) {
+					// 	// console.log('123');
+					// 	if (e.deniedAlways.length > 0) { //权限被永久拒绝
+					// 		// 弹出提示框解释为何需要声音权限，引导用户打开设置页面开启
+					// 		console.log('Always Denied!!! ' + e.deniedAlways.toString());
+					// 	}
+					// 	if (e.deniedPresent.length > 0) { //权限被临时拒绝
+					// 		// 弹出提示框解释为何需要声音权限，可再次调用plus.android.requestPermissions申请权限
+					// 		console.log('Present Denied!!! ' + e.deniedPresent.toString());
+					// 	}
+					// 	if (e.granted.length > 0) { //权限被允许
+					// 		//调用依赖获取声音权限的代码
+					// 		console.log('Granted!!! ' + e.granted.toString());
+					// 	}
+					// }, function(e) {
+					// 	console.log('Request Permissions error:' + JSON.stringify(e));
+					// });
+				} else if (mui.os.ios == true) {
+					// console.log('this is ios');
+					saveFilename = '';
+				}
+			}
+
+			mui.init({
+				gestureConfig: {
+					longtap: true, //默认为false 
+					hold: true,
+					release: true,
+				},
+				swipeBack: false, //关闭左滑关闭功能
+			});
+			mui.previewImage();
+			mui('.mui-scroll-wrapper').scroll();
+
+			//获取原始窗口的高度
+			var originalHeight = document.documentElement.clientHeight || document.body.clientHeight;
+			mui.plusReady(function() {
+				// 				//防止软件盘压缩界面
+				// 				window.onresize = function() {
+				// 					//软键盘弹起与隐藏  都会引起窗口的高度发生变化
+				// 					var resizeHeight = document.documentElement.clientHeight || document.body.clientHeight;
+				// 					if (resizeHeight * 1 < originalHeight * 1) { //resizeHeight<originalHeight证明窗口被挤压了
+				// 						plus.webview.currentWebview().setStyle({
+				// 							height: originalHeight
+				// 						});
+				// 					}
+				// 				}
+			});
+			//监听返回 返回销毁窗口
+			mui('mui-bar-nav').on('tap', '.mui-action-back', function() {
+				plus.webview.currentWebview().close();
+			});
+
+			//页面初始化
+			function initData() {
+				self = plus.webview.currentWebview();
+				// console.log(self.linkTask);
+				console.log(self.collectMode);
+				//新建任务时候预先设置采集点名称
+				taskName.innerHTML=self.linkTask[1];
+				// console.log(taskName.innerHTML);
+				if (self.collectMode == 'buildTaskItemFromIndex' || (self.collectMode == 'buildTaskItem')) {
+					var strKey = lstorage.getItemListKey(self.linkTask[0]);
+					console.log(strKey);
+					var mTaskData = JSON.parse(plus.storage.getItem(strKey));
+					// console.log(JSON.stringify(mTaskData));
+					var now = new Date();
+					mtime = now.toTimeString().substr(0, 5);
+					// console.log(mtime);
+
+					if (mTaskData.data.length == 0) {
+						collectName.value = '采集点1 ' + '(' + mtime + ')';
+					} else {
+						collectName.value = '采集点' + (mTaskData.data.length + 1) + ' (' + mtime + ')';
+					}
+				}
+				if (self.collectMode) {
+					switch (self.collectMode) {
+						case 'buildTaskItemFromIndex':
+							bodyData.soundSrc = self.soundSrc;
+							bodyData.taskId = self.linkTask[0];
+							bodyData.taskName = self.linkTask[1];
+							bodyData.surveyAddress = self.regionName;
+							initPageData(self);
+							break;
+						case 'buildTaskItem':
+							bodyData.soundSrc = self.soundSrc;
+							bodyData.taskId = self.linkTask[0];
+							bodyData.taskName = self.linkTask[1];
+							bodyData.surveyAddress = self.regionName;
+							initPageData(self);
+
+							break;
+						case 'checkTaskItem':
+							checkEditPageData(self);
+							// collectName.setAttribute('disabled', 'true');
+							document.getElementById('save').innerHTML = '返回';
+							// document.getElementById('buttonArea').setAttribute('display', 'none');
+							// document.getElementById('soundButton').removeEventListener();
+							var buttonArea = document.getElementById('buttonArea');
+							buttonArea.parentElement.removeChild(buttonArea);
+							mUl.style.marginTop = "1rem";
+							setTimeout(function() {
+								// researchTime.removeEventListener('tap', researchHand); //移除时间选择
+
+								// mui('body').off('tap', '.mui-icon-camera', myimgUp);
+								// soundButton.removeEventListener('hold', mhold);
+								// soundButton.removeEventListener('release', mrelease);
+
+								mui('#SnList').off('longtap', '.ditem'); //移除声音删除事件
+								mui('#imgList').off('longtap', '.imageSrc'); //移除图像删除事件
+							}, 200);
+							break;
+						case 'editTaskItem':
+							checkEditPageData(self);
+							break;
+					}
+				}
+			}
+			// document.getElementById('buttonArea').parentElement.removeChild(buttonArea);
+			// mFUl.style.marginTop="1px";
+			//监听采集点,使其不超过十五个字符
+			collectName.addEventListener('input', minputlimit);
+
+			function minputlimit() {
+				if (this.value.length > 15) {
+					mui.toast('采集点名称不能超过15位', {
+						duration: 'short',
+						type: 'div'
+					});
+					this.value = this.value.substr(0, 15);
+				}
+			}
+			//主界面采集点入口进入页面加载初始化
+			function initPageData(self) {
+				bodyData.soundSrc = self.soundSrc;
+				// getEntryList(bodyData, function(entryList) {
+				// 	for (var i in entryList) {
+				// 		mSUl.innerHTML = '';
+				// 		createEntryItem(entryList[i]);
+				// 	}
+				// })
+				if (self.linkTask) {
+					// console.log('linkTask:' + self.linkTask);
+					//任务名
+					taskName.innerHTML = self.linkTask[1];
+					//字段名和值
+					var mTaskId = bodyData.taskId;
+					// console.log('获取任务id' + mTaskId);
+					var fieldModelVOList = lstorage.getTPByTaskID(mTaskId);
+					bodyData.templateVO.fieldModelVOList = fieldModelVOList;
+					// console.log('collectlist ' + JSON.stringify(fieldModelVOList));
+					addFValueList(fieldModelVOList);
+				}
+				// console.log('cameraSrc  ' + self.cameraSrc);
+				if (self.cameraSrc && self.cameraSrc != '') {
+					//此处暂时未与发送的数据提相关联,后期修改
+					addPic(self.cameraSrc);
+				}
+				// console.log('pointList  ' + self.pointList);
+				//位置信息
+				// bodyData.position=;**************
+				var posStrL = [];
+				if (self.pointList) {
+					bodyData.position = getPosiStr(self.pointList);
+					// mPointList.innerHTML = bodyData.position.split("lat/lng:").toString()
+					// 	.replace(new RegExp(",", "gm"), " ").replace("[", "").replace("]", "");
+				}
+				//调查地址
+				mAddressName.innerHTML = bodyData.surveyAddress;
+				//调查面积
+				// if (self.areaStr) {
+				// 	areaStr.value = self.areaStr;
+				// }
+			};
+			//查看编辑采集点入口进入页面初始化
+			function checkEditPageData(self) {
+				// console.log(self.keyStr);
+				// console.log(self.taskName);
+				console.log('进入位置' + self.itemIndex);
+				bodyData = Index2ItemData(self.keyStr, self.itemIndex); //获取采集点数据
+				// console.log(JSON.stringify(bodyData));
+				if (bodyData) {
+					//同步声音文件到界面
+					// if (bodyData.soundSrc) {
+					// 	mSUl.innerHTML = '';
+					// 	getEntryList(bodyData, function(entryList) {
+					// 		for (var i in entryList) {
+					// 			createEntryItem(entryList[i]);
+					// 		}
+					// 	});
+					// };
+					taskName.innerHTML = self.taskName;
+					console.log('任务名：' + self.taskName);
+					//录音资源暂时空缺
+					collectName.value = bodyData.itemName;
+					// if (bodyData.surveyTimeStr) {
+					// 	researchTime.innerText = '调查时间' + spaceDistance + bodyData.surveyTimeStr;
+					// } else {
+					// 	researchTime.innerText = '调查时间';
+					// }
+					// console.log(bodyData.position);
+					// mPointList.innerHTML = bodyData.position.split("lat/lng:").toString()
+					// 	.replace(new RegExp(",", "gm"), " ").replace("[", "").replace("]", "");
+					mAddressName.innerHTML = bodyData.surveyAddress;
+					fieldModelVOList = transXml2Flist(bodyData.contentXml);
+					// console.log(JSON.stringify(fieldModelVOList));
+
+					if (bodyData.templateVO == null) {
+						bodyData.templateVO = {
+							fieldModelVOList: [],
+						};
+					}
+					// console.log(JSON.stringify(bodyData));
+					bodyData.templateVO.fieldModelVOList = fieldModelVOList;
+					// console.log(JSON.stringify(bodyData));
+					addFValueList(bodyData.templateVO.fieldModelVOList);
+					// console.log(JSON.stringify(bodyData));
+					if (bodyData.localPicSource) { //加载图片
+						var picSrc = bodyData.localPicSource;
+						if (picSrc.length > 0) {
+							for (var n in picSrc) {
+								addPic(picSrc[n]);
+							}
+						}
+					}
+				}
+			};
+			//根据xml转换到flist
+			function transXml2Flist(xmlstr) {
+				xmlstr = xmlstr.replace(new RegExp('"', 'gm'), '');
+				// console.log(xmlstr);
+				xmlstr = xmlstr.split('<item fieldNameCh=');
+				var list = [];
+				var value;
+				for (var n in xmlstr) {
+					if (n != 0) {
+						var a = xmlstr[n].split('fieldNameEn=');
+						var fieldNameCh = a[0].replace(/\s+/g, "");
+						// console.log(fieldNameCh);
+						a = a[1].split(' value=');
+						var fieldNameEn = a[0].replace(/\s+/g, "");
+						a = a[1].split('/>')
+						var value = a[0].replace(/\s+/g, "");
+						item = {
+							fieldNameCh: fieldNameCh,
+							fieldNameEn: fieldNameEn,
+							value: value
+						}
+						list.push(item);
+					}
+				}
+				// console.log(JSON.stringify(list));
+				return list;
+			}
+			//根据index 获取采集点内容
+			function Index2ItemData(keyStr, index) {
+				var taskData = plus.storage.getItem(keyStr);
+				taskData = JSON.parse(taskData);
+				var list = taskData.data;
+				for (var n in list) {
+					if (n == index) {
+						return list[n];
+					}
+				}
+				return '';
+			}
+			// 			//获取声音文件对象
+			// 			function getEntryList(mBodyData, callback) {
+			// 				var EntryList = [];
+			// 				// console.log(JSON.stringify(mBodyData));
+			// 				if (mBodyData.soundSrc) {
+			// 					for (var n in mBodyData.soundSrc) {
+			// 						plus.io.resolveLocalFileSystemURL(mBodyData.soundSrc[n], function(entry) {
+			// 							// createItem(entry);
+			// 							//转换为播放录音的对象
+			// 							EntryList.push(entry);
+			// 							// console.log(EntryList.length);
+			// 							// console.log(mBodyData.soundSrc.length);
+			// 							if (EntryList.length == mBodyData.soundSrc.length) {
+			// 								callback(EntryList);
+			// 							}
+			// 						}, function(e) {
+			// 							mui.toast('获取录音失败', {
+			// 								duration: 'short',
+			// 								type: 'div'
+			// 							});
+			// 						});
+			// 					}
+			// 				}
+			// 			}
+			// 			//创建声音对象
+			// 			function createEntryItem(entry) {
+			// 				var li = document.createElement('li');
+			// 				li.className = 'ditem';
+			// 				li.innerHTML = '<span class="iplay"><font class="aname">' +
+			// 					'</font><br/><font class="ainf"></font></span>'
+			// 				li.setAttribute('onclick', 'playAudio(this)');
+			// 				mSUl.insertBefore(li, mSUl.childNodes[0]);
+			// 				li.querySelector('.aname').innerText = entry.name;
+			// 				li.querySelector('.ainf').innerText = '...';
+			// 				li.entry = entry;
+			// 				updateInformation(li);
+			// 				// console.log('li_'+li);
+			// 			}
+			// 			//删除声音对象
+			// 			mui('#SnList').on('longtap', '.ditem', function() {
+			// 				var snLi = this;
+			// 				mui.confirm('是否删除录音文件', '提示', ['取消', '确认'], function(e) {
+			// 					if (e.index == 1) {
+			// 						mSUl.removeChild(snLi);
+			// 						var index = obtadinIndex(mSUl, snLi);
+			// 						console.log(obtadinIndex(mSUl, snLi));
+			// 						bodyData.soundSrc.splice(index, 1);
+			// 					};
+			// 				}, 'div')
+			// 			});
+			// 
+			function obtadinIndex(ul, li) {
+				list = ul.getElementsByTagName("li");
+				for (var n in list) {
+					// console.log(li);
+					// console.log(list[n]);
+					if (list[n] == li) {
+						return n;
+					}
+				}
+				return null;
+			}
+			// 播放音频文件
+			function playAudio(li) {
+				if (!li || !li.entry) {
+					mui.toast('无效的音频文件', {
+						duration: 'short',
+						type: 'div'
+					});
+					return;
+				}
+				mui.toast('播放音频文件', {
+					duration: 'short',
+					type: 'div'
+				});
+				console.log(li.entry.toLocalURL());
+				startPlay(li.entry.toLocalURL());
+			};
+			//获取播放时间长度
+			function getSoundTime(url, callback) {
+				var p = plus.audio.createPlayer(url);
+				var d = p.getDuration();
+				if (d == 0) {
+					setTimeout(function() {
+						// 兼容无法及时获取总时长的情况
+						if (!d) {
+							d = p.getDuration();
+							console.log('总时常:' + d);
+							callback(d);
+						}
+					}, 1000);
+				} else {
+					callback(d);
+				}
+
+			}
+			// 开始播放
+			function startPlay(url) {
+				var p = plus.audio.createPlayer(url);
+				console.log('803' + p)
+				p.play(function() {
+					mui.toast('播放完成！', {
+						duration: 'short',
+						type: 'div'
+					});
+					// 播放完成
+					if (p) {
+						p.stop();
+						p = null;
+					}
+				}, function(e) {
+					mui.toast('播放音频文件"' + url + '"失败：' + e.message, {
+						duration: 'short',
+						type: 'div'
+					});
+				});
+			}
+			// 获取录音文件信息
+			function updateInformation(li) {
+				if (!li || !li.entry) {
+					return;
+				}
+				var entry = li.entry;
+				entry.getMetadata(function(metadata) {
+					li.querySelector('.ainf').innerText = dateToStr(metadata.modificationTime);
+				}, function(e) {
+					mui.toast('获取文件"' + entry.name + '"信息失败：' + e.message, {
+						duration: 'short',
+						type: 'div'
+					});
+				});
+			}
+
+			function dateToStr(d) {
+				return (d.getFullYear() + "-" + ultZeroize(d.getMonth() + 1) + "-" + ultZeroize(d.getDate()) + " " + ultZeroize(d.getHours()) +
+					":" + ultZeroize(d.getMinutes()) + ":" + ultZeroize(d.getSeconds()));
+			};
+
+			function ultZeroize(v, l) {
+				var z = "";
+				l = l || 2;
+				v = String(v);
+				for (var i = 0; i < l - v.length; i++) {
+					z += "0";
+				}
+				return z + v;
+			};
+
+			//获取系统position字符串
+			function getPosiStr(pointList) {
+				var posStrL = [];
+				if (self.pointList != []) {
+					posStrL.push('[');
+					for (var i in self.pointList) {
+						posStrL.push('lat/lng:(' + self.pointList[i] + '),');
+					}
+					posStrL.push(']');
+					var posStr = posStrL.join("");
+				}
+				return posStr;
+			}
+			//字段表转context
+			function transContentXml(feildVlist) {
+				var flist = feildVlist;
+				var str = '';
+				var CXA = [];
+				CXA.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><attir>');
+				for (var n in flist) {
+					CXA.push('<item fieldNameCh="' + flist[n].fieldNameCh + '" fieldNameEn="' +
+						flist[n].fieldNameEn + '" value="' + flist[n].value + '"/>');
+				}
+				CXA.push('</attir>');
+				str = CXA.join();
+				str = str.replace(new RegExp(",", "gm"), " ");
+				// console.log(str);
+				return str;
+			}
+			//添加字段列表
+			function addFValueList(feildVlist) {
+				var flist = feildVlist;
+				mFUl.innerHTML = '';
+				for (var n in flist) {
+					var mli = addFValue(flist[n]);
+					mFUl.appendChild(mli);
+				}
+			}
+			//addFvalue单行
+			function addFValue(FValueItem) {
+				var mLi = document.createElement('li');
+				mLi.innerHTML = '<label>' + FValueItem.fieldNameCh + '</label>' +
+					'<input class="jh-btn-font-size input' + FValueItem.fieldNameCh +
+					'" value="' + (FValueItem.value == null ? '' : FValueItem.value) +
+					'" type="text" maxlength="30" class="jh-f-value jh-btn-font-size" style="width: 10rem;border: #FFFFFF;" placeholder="值">'
+				mLi.setAttribute('class', 'mui-table-view-cell');
+				mLi.setAttribute('style', 'padding-top: ;padding-bottom:0 ;text-align: left;border: #CCCCCC;');
+				mLi.setAttribute('id', 'li' + FValueItem.fieldNameCh);
+				return mLi;
+			}
+
+			//创建图片
+			function addPic(src) {
+				// compressImage(src,'80%','80%',100);
+				// addWaterMark(src,function(canvasObj){
+				// 	var mDiv = document.createElement('div');
+				// mDiv.className = "imgDiv";
+				// mDiv.innerHTML =
+				// 	'<div class="imgDiv">' +
+				// 	'<img class="imageSrc" src="' + canvasObj.toDataURL() + '" data-preview-src="" width="70px">' +
+				// 	'<a id="icon-close" class="mui-pull-right "></div>';
+				// mUl.appendChild(mDiv);
+				// console.log(mDiv.innerHTML);
+				// });
+				// Canvas2Image.saveAsPNG(canvasObj, width, height, "32132134dwadadwa.png");
+				// console.log(src)
+				if (getAllPicSrc().length >= 6) {
+					mui.toast('您的图片已经超过6张,请长按图片删除后再添加', {
+						duration: 'short',
+						type: 'div'
+					});
+				} else {
+					var mDiv = document.createElement('div');
+					mDiv.className = "imgDiv";
+					mDiv.innerHTML =
+						'<div class="imgDiv">' +
+						'<img class="imageSrc" src="' + src + '" data-preview-src="" width="100rem">' +
+						'<a id="icon-close" class="mui-pull-right "></div>';
+					mUl.appendChild(mDiv);
+				}
+			};
+			//监听删除图片
+			mui('#imgList').on('longtap', '.imageSrc', function() {
+				var picDIv = this.parentElement.parentElement;
+				mui.confirm('是否删除图片', '提示', ['取消', '确认'], function(e) {
+					if (e.index == 1) {
+						mUl.removeChild(picDIv);
+					};
+				}, 'div')
+			});
+			//获取所有图片资源
+			function getAllPicSrc() {
+				var imageList = [];
+				if (mUl.innerHTML == '') {
+					return imageList;
+				} else {
+					mui.each(mui('#imgList img'), function(index, obj) {
+						var picsrc = obj.getAttribute('src');
+						imageList.push(picsrc);
+					});
+				}
+				return imageList;
+			}
+			//系统按钮
+			function cameraReady() {
+				// 弹出系统选择按钮框  
+				mui("body").on("tap", ".mui-icon-camera", myimgUp);
+			}
+
+			function myimgUp() {
+				var n = document.getElementsByClassName('mui-table-view-cell');
+				// console.log(n.length)
+				// console.log(document.getElementsByClassName('mui-table-view-cell')[0].lastElementChild.value);
+				for (var i = 0; i < n.length; i++) {
+					// console.log(n[i].lastElementChild.value)
+					n[i].lastElementChild.blur();
+				}
+				page.imgUp();
+			}
+			//确保plusready执行完毕
+			if (window.plus) {
+				getPremission();
+				cameraReady();
+				initData();
+			} else {
+				document.addEventListener("plusready", cameraReady, false);
+				document.addEventListener("plusready", initData, false);
+				document.addEventListener("plusready", getPremission, false);
+			}
+
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								var imgsize = getAllPicSrc().length;
+								if (imgsize < 6) {
+									appendByCamera();
+								} else {
+									mui.toast('您的图片已经超过6张', {
+										duration: 'short',
+										type: 'div'
+									});
+								}
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+			}
+
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					// console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						console.log(path);
+						addPic(path);
+					}, function(e) {
+						mui.toast("读取拍照文件错误：" + e.message);
+					});
+
+				});
+			}
+			// 从相册添加文件
+			function appendByGallery() {
+				var imgsize = getAllPicSrc().length;
+				if (imgsize < 6) {
+					var picnum = 6 - imgsize;
+					plus.gallery.pick(function(path) {
+						// document.getElementById("headimg").src = path;
+						for (var i in path.files) {
+							// console.log(path.files[i]);
+							addPic(path.files[i]);
+						}
+					}, function(e) {
+						// console.log("取消选择图片");
+					}, {
+						filter: "image",
+						multiple: true,
+						maximum: picnum,
+						system: false,
+						onmaxed: function() {
+							mui.toast('最多只能选择6张图片', {
+								duration: 'short',
+								type: 'div'
+							});
+						}
+					});
+				} else {
+					mui.toast('您的图片已经超过6张', {
+						duration: 'short',
+						type: 'div'
+					});
+				}
+			}
+
+			var cropMode = new mui.PopPicker();
+			cropMode.setData([{
+					value: 'xm',
+					text: '小麦'
+				},
+				{
+					value: 'ym',
+					text: '玉米'
+				},
+				{
+					value: 'hs',
+					text: '红薯'
+				}
+			]);
+			//长按录音
+
+			// soundButton.addEventListener('tap', function(e) {
+			// 	appendSound(this);
+			// });
+
+			var isRecord = false;
+			var rSound = null;
+			//添加录音文件
+			// soundButton.addEventListener('hold', mhold);
+
+			function mhold() {
+				isRecord = true;
+				if (isRecord) {
+					setSoundAlertVisable(true);
+					startRecord(this);
+				}
+			}
+			// soundButton.addEventListener('release', mrelease);
+
+			function mrelease() {
+				if (isRecord) {
+					stopRecord(this);
+					setSoundAlertVisable(false);
+					isRecord = false;
+				}
+			}
+
+			function startRecord(el) {
+				isRecord = true;
+				if (isRecord) {
+					el.classList.remove('mui-icon-mic');
+					el.classList.add('mui-icon-micoff');
+					rSound = plus.audio.getRecorder();
+					if (rSound == null) {
+						mui.toast('录音失败', {
+							duration: 'short',
+							type: 'div'
+						});
+						return
+					}
+					rSound.record({
+						format: "amr",
+						filename: saveFilename
+					}, function(p) {
+						mui.toast('录音完成', {
+							duration: 'short',
+							type: 'div'
+						});
+
+						getSoundTime(p, function(soundtime) {
+							console.log(soundtime);
+						})
+						if (bodyData.soundSrc == null) {
+							bodyData.soundSrc = [];
+						}
+
+						// console.log(JSON.stringify(bodyData.soundSrc));
+						// console.log(JSON.stringify(bodyData.soundSrc));
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							// createItem(entry);
+							var path = entry.toLocalURL();
+							bodyData.soundSrc.push(path)
+							console.log(JSON.stringify(bodyData.soundSrc));
+							createEntryItem(entry);
+							//转换为播放录音的对象
+						}, function(e) {
+							mui.toast('转换录音失败' + e.message, {
+								duration: 'short',
+								type: 'div'
+							});
+						});
+					}, function(e) {
+						mui.toast('录音失败' + e, {
+							duration: 'short',
+							type: 'div'
+						});
+					});
+				}
+			};
+
+			function stopRecord(el) {
+				if (isRecord) {
+					console.log()
+					el.classList.remove('mui-icon-micoff');
+					el.classList.add('mui-icon-mic');
+					rSound.stop();
+					isRecord = false;
+				}
+			};
+
+			var setSoundAlertVisable = function(show) {
+				if (show) {
+					boxSoundAlert.style.display = 'block';
+					boxSoundAlert.style.opacity = 1;
+				} else {
+					boxSoundAlert.style.opacity = 0;
+					//fadeOut 完成再真正隐藏
+					setTimeout(function() {
+						boxSoundAlert.style.display = 'none';
+					}, 200);
+				}
+			};
+
+			function appendSound(el) {
+				//点击录音按钮
+				isRecord = !isRecord;
+				if (isRecord) {
+					el.classList.remove('mui-icon-mic');
+					el.classList.add('mui-icon-micoff');
+					rSound = plus.audio.getRecorder();
+					if (rSound == null) {
+						mui.toast('录音失败', {
+							duration: 'short',
+							type: 'div'
+						});
+					}
+					rSound.record({
+						filename: saveFilename
+					}, function(p) {
+						console.log('file://' + p);
+						getSoundTime(p, function(soundtime) {
+							console.log(soundtime);
+						})
+						if (bodyData.soundSrc == null) {
+							bodyData.soundSrc = [];
+						}
+
+						// console.log(JSON.stringify(bodyData.soundSrc));
+
+						// console.log(JSON.stringify(bodyData.soundSrc));
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							// createItem(entry);
+							var path = entry.toLocalURL()
+							bodyData.soundSrc.push(path);
+							createEntryItem(entry);
+							//转换为播放录音的对象
+						}, function(e) {
+							mui.toast('录音失败' + e.message, {
+								duration: 'short',
+								type: 'div'
+							});
+						});
+					}, function(e) {
+						mui.toast('录音失败' + e.message, {
+							duration: 'short',
+							type: 'div'
+						});
+					});
+				} else {
+					el.classList.remove('mui-icon-micoff');
+					el.classList.add('mui-icon-mic');
+					rSound.stop();
+				}
+			}
+
+			// 			//researchTime监听函数
+			// 			function researchHand() {
+			// 				var options = {};
+			// 				if (researchTime.picker) {
+			// 					researchTime.picker.show(function(rs) {
+			// 						researchTime.innerText = '调查时间' + spaceDistance + rs.text;
+			// 						bodyData.surveyTimeStr = rs.text;
+			// 						//释放资源
+			// 						researchTime.picker.dispose();
+			// 						researchTime.picker = null;
+			// 					});
+			// 				} else {
+			// 					researchTime.picker = new mui.DtPicker(options);
+			// 					researchTime.picker.show(function(rs) {
+			// 						researchTime.innerText = '调查时间' + spaceDistance + rs.text;
+			// 						console.log(getdate()) 
+			// 						console.log(rs.text) 
+			// 						bodyData.surveyTimeStr = rs.text;
+			// 						researchTime.picker.dispose();
+			// 						researchTime.picker = null;
+			// 					});
+			// 				}
+			// 			}
+			// 
+			// 			researchTime.addEventListener('tap', researchHand, false);
+			// 
+			//新建未同步采集点
+			function unShift2PStorage() {
+				bodyData.surveyTimeStr = getdate();
+				bodyData.localPicSource = getAllPicSrc();
+				bodyData.itemName = collectName.value;
+				// console.log(JSON.stringify(bodyData.templateVO.fieldModelVOList));
+				for (var n in bodyData.templateVO.fieldModelVOList) {
+					var mValue = mui('.mui-table-view-cell input.input' + bodyData.templateVO.fieldModelVOList[n].fieldNameCh)[0].value;
+					bodyData.templateVO.fieldModelVOList[n].value = mValue;
+				}
+				bodyData.contentXml = transContentXml(bodyData.templateVO.fieldModelVOList);
+				// console.log(JSON.stringify(bodyData));
+				bodyData.isUpData = false;
+				var strKey = lstorage.getItemListKey(bodyData.taskId);
+				console.log(strKey);
+				var taskData = plus.storage.getItem(strKey);
+				// console.log(taskData);
+				taskData = JSON.parse(taskData);
+				// console.log(JSON.stringify(taskData));
+
+				taskData.data.unshift(bodyData);
+				// console.log(JSON.stringify(taskData));
+				taskData = JSON.stringify(taskData);
+				plus.storage.setItem(strKey, taskData);
+			}
+
+			//更新采集点
+			function updata2PStorage() {
+				console.log(getdate());
+				bodyData.surveyTimeStr = getdate();
+				// console.log(JSON.stringify(bodyData.soundSrc));
+				bodyData.localPicSource = getAllPicSrc();
+				console.log('本地图片路径' + JSON.stringify(bodyData.localPicSource));
+				bodyData.itemName = collectName.value;
+				for (var n in bodyData.templateVO.fieldModelVOList) {
+					var mValue = mui('.mui-table-view-cell input.input' + bodyData.templateVO.fieldModelVOList[n].fieldNameCh)[0].value;
+					bodyData.templateVO.fieldModelVOList[n].value = mValue;
+					// console.log('FValue ' + bodyData.templateVO.fieldModelVOList[n].value);
+				}
+				// console.log(JSON.stringify(bodyData.templateVO.fieldModelVOList));
+				bodyData.contentXml = transContentXml(bodyData.templateVO.fieldModelVOList);
+				// console.log(bodyData.contentXml);
+				var strKey = lstorage.getItemListKey(bodyData.taskId);
+				// console.log(strKey);
+				var taskData = plus.storage.getItem(strKey);
+				taskData = JSON.parse(taskData);
+
+				// console.log(JSON.stringify(taskData.data));
+				for (var n in taskData.data) {
+					// console.log(' alldata ' + JSON.stringify(taskData.data[n]));
+					if (n == self.itemIndex) {
+						console.log('更新位置' + self.itemIndex);
+						//比对json对象
+						var compareData = taskData.data[n];
+						//测试用,json对比存在一些问题,两个字符串一致的json对象判断不同
+						// var isSame = JsonObj.Compare(bodyData, compareData);
+						// console.log(JSON.stringify(bodyData));
+						// console.log(JSON.stringify(compareData));
+						// console.log(JSON.stringify(bodyData) == JSON.stringify(compareData));
+						var isSame = (JSON.stringify(bodyData) == JSON.stringify(compareData));
+						if (bodyData.itemId == null || (bodyData.itemId == '')) {
+							isSame = false;
+						}
+						bodyData.isUpData = isSame;
+						// console.log('同步标签：' + bodyData.isUpData);
+						taskData.data[n] = bodyData;
+						// console.log(JSON.stringify(taskData.data[n]));
+					}
+				}
+
+				taskData = JSON.stringify(taskData);
+				plus.storage.setItem(strKey, taskData);
+				// console.log(plus.storage.getItem(strKey));
+				//查找到对应项目
+				plus.nativeUI.toast('更新采集点成功', {
+					'verticalAlign': 'center'
+				});
+				// mui.toast('更新采集点成功',{ duration:'short', type:'div' });
+
+			}
+			//非空校验
+			function notEmpty(callback) {
+				if (collectName.value == '') {
+					mui.toast('采集名称为空!', {
+						duration: 'short',
+						type: 'div'
+					});
+				} else {
+					callback();
+				}
+				// else if (researchTime.innerText == '调查时间') {
+				// 	plus.nativeUI.toast('调查时间为空!', {
+				// 		'verticalAlign': 'center'
+				// 	});
+				// } 
+
+			}
+
+			document.getElementById('save').addEventListener('tap', function(e) {
+				var thisWeb = plus.webview.currentWebview();
+				// console.log(collectName.value);
+				console.log('页面进入方式：' + thisWeb.collectMode);
+				// var a = plus.webview.currentWebview();
+				// console.log(a.id+"   "+a.opener().id+"  "+a.opener().opener().id);
+				switch (thisWeb.collectMode) {
+					case 'buildTaskItemFromIndex':
+						notEmpty(function() {
+							unShift2PStorage();
+							mui.fire(self.opener(), 'initMapShow')
+							// mui.fire(plus.webview.getWebviewById('collection-list.html'), 'upDataTaskList')
+							thisWeb.close();
+
+						});
+						break;
+					case 'buildTaskItem':
+						notEmpty(function() {
+							unShift2PStorage();
+							var grandfather = thisWeb.opener().opener();
+							mui.fire(grandfather, 'showMuiToast')
+							// mui.fire(plus.webview.getWebviewById('collection-list.html'), 'upDataTaskList')
+							thisWeb.opener().close();
+
+							// mui.toast('创建采集点成功',{ duration:'short', type:'div' });
+							thisWeb.close();
+						});
+						break;
+					case 'buildTaskItemTasklist':
+						notEmpty(function() {
+							unShift2PStorage();
+							var grandfather = thisWeb.opener().opener();
+							mui.fire(grandfather, 'showMuiToast');
+							// mui.fire(plus.webview.getWebviewById('collection-list.html'), 'upDataTaskList')
+							thisWeb.opener().close();
+							thisWeb.close();
+						});
+						break;
+					case 'checkTaskItem':
+						plus.webview.currentWebview().close();
+						thisWeb.close();
+						break;
+					case 'editTaskItem':
+						notEmpty(function() {
+							updata2PStorage();
+							var father = thisWeb.opener();
+							mui.fire(father, 'upDataTaskList');
+							thisWeb.close();
+						});
+						break;
+				}
+
+			}, );
+		</script>
+	</body>
+
+</html>

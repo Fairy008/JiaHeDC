@@ -1,0 +1,657 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.ITemplateReporterMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.TemplateReporter">
+    <id column="reporter_id" jdbcType="BIGINT" property="reporterId" />
+    <result column="reporter_name" jdbcType="VARCHAR" property="reporterName" />
+    <result column="reporter_content" jdbcType="VARCHAR" property="reporterContent" />
+      <result column="reporter_mobile_content" jdbcType="VARCHAR" property="reporterMobileContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="audis_state" jdbcType="SMALLINT" property="audisState" />
+    <result column="region_id" jdbcType="BIGINT" property="regionId" />
+    <result column="crops_id" jdbcType="INTEGER" property="cropsId" />
+    <result column="report_data_time_start" jdbcType="DATE" property="reportDataTimeStart" />
+    <result column="report_data_time_end" jdbcType="DATE" property="reportDataTimeEnd" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="template_id" jdbcType="INTEGER" property="templateId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    reporter_id, reporter_name, reporter_content,reporter_mobile_content,create_time, creator, audis_state,
+    region_id, crops_id, report_data_time_start, report_data_time_end, modify_time, modifier,
+    template_id
+  </sql>
+  <select id="getBriefReporterByReporterId" parameterType="com.jh.briefing.entity.TemplateReporter" resultType="com.jh.briefing.model.TemplateReporterParam">
+     SELECT
+        reporter.reporter_id reporterId,
+        reporter.reporter_name reporterName,
+        reporter_content reporterContent,
+        reporter_mobile_content reporterMobileContent,
+        region.china_name regionName,
+        region.region_id regionId,
+        reporter.crops_id cropsId,
+        region.level ,
+        dict.data_name cropsName,
+        report_data_time_start reportDataTimeStart,
+        report_data_time_end reportDataTimeEnd,
+        reporter.creator,
+        account.nick_name creatorNickName,
+        reporter.create_time createTime,
+        reporter.modifier,
+        account1.nick_name modifierNickName,
+        reporter.modify_time modifyTime,
+        reporter.audis_state audisState
+    FROM
+        briefing_reporter reporter
+        LEFT JOIN init_region region ON reporter.region_id = region.region_id
+        LEFT JOIN init_dict dict ON reporter.crops_id = dict.dict_id
+        LEFT JOIN sys_perm_account account ON reporter.creator = account.account_name
+        LEFT JOIN sys_perm_account account1 ON reporter.modifier = account1.account_name
+      where reporter_id = #{reporterId,jdbcType=BIGINT}
+  </select>
+  <delete id="delete" parameterType="com.jh.briefing.entity.TemplateReporter">
+    delete from briefing_reporter
+    where reporter_id = #{reporterId,jdbcType=BIGINT}
+  </delete>
+  <insert id="save" parameterType="com.jh.briefing.entity.TemplateReporter">
+    insert into briefing_reporter
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reporterId != null">
+        reporter_id,
+      </if>
+      <if test="reporterName != null">
+        reporter_name,
+      </if>
+      <if test="reporterContent != null">
+        reporter_content,
+      </if>
+        <if test="reporterMobileContent != null">
+            reporter_mobile_content,
+        </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="audisState != null">
+        audis_state,
+      </if>
+      <if test="regionId != null">
+        region_id,
+      </if>
+      <if test="cropsId != null">
+        crops_id,
+      </if>
+      <if test="reportDataTimeStart != null">
+        report_data_time_start,
+      </if>
+      <if test="reportDataTimeEnd != null">
+        report_data_time_end,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+      <if test="modifier != null">
+        modifier,
+      </if>
+      <if test="templateId != null">
+        template_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reporterId != null">
+        #{reporterId,jdbcType=BIGINT},
+      </if>
+      <if test="reporterName != null">
+        #{reporterName,jdbcType=VARCHAR},
+      </if>
+      <if test="reporterContent != null">
+        #{reporterContent,jdbcType=VARCHAR},
+      </if>
+        <if test="reporterMobileContent != null">
+            #{reporterMobileContent,jdbcType=VARCHAR},
+        </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="audisState != null">
+        #{audisState,jdbcType=SMALLINT},
+      </if>
+      <if test="regionId != null">
+        #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="cropsId != null">
+        #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="reportDataTimeStart != null">
+        #{reportDataTimeStart,jdbcType=DATE},
+      </if>
+      <if test="reportDataTimeEnd != null">
+        #{reportDataTimeEnd,jdbcType=DATE},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null">
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        #{templateId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+    <!-- 批量修改简报发布状态 -->
+    <update id="updateAudisStatusInIds" parameterType="com.jh.briefing.model.TemplateReporterParam">
+        update briefing_reporter set audis_state = #{audisState,jdbcType=SMALLINT},modify_time = now(),modifier=#{modifier}
+        <where>
+            reporter_id in
+            <foreach collection="reporterIds" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </where>
+    </update>
+  <update id="update" parameterType="com.jh.briefing.entity.TemplateReporter">
+    update briefing_reporter
+    <set>
+      <if test="reporterName != null">
+        reporter_name = #{reporterName,jdbcType=VARCHAR},
+      </if>
+      <if test="reporterContent != null">
+        reporter_content = #{reporterContent,jdbcType=VARCHAR},
+      </if>
+        <if test="reporterMobileContent != null">
+            reporter_mobile_content = #{reporterMobileContent,jdbcType=VARCHAR},
+        </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="audisState != null">
+        audis_state = #{audisState,jdbcType=SMALLINT},
+      </if>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="cropsId != null">
+        crops_id = #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="reportDataTimeStart != null">
+        report_data_time_start = #{reportDataTimeStart,jdbcType=DATE},
+      </if>
+      <if test="reportDataTimeEnd != null">
+        report_data_time_end = #{reportDataTimeEnd,jdbcType=DATE},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null">
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="templateId != null">
+        template_id = #{templateId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where reporter_id = #{reporterId,jdbcType=BIGINT}
+  </update>
+
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.briefing.model.TemplateReporterParam">
+    select
+    <include refid="Base_Column_List" />
+    from briefing_reporter order by audis_state
+  </select>
+
+  <!-- 查询分页 -->
+  <select id="queryByPage" resultType="com.jh.briefing.model.TemplateReporterParam"
+          parameterType="com.jh.briefing.model.TemplateReporterParam">
+    select
+       reporter.reporter_id reporterId,
+       reporter.reporter_name reporterName,
+       region.china_name regionName,
+       dict.data_name cropsName,
+       reporter.creator,
+       account.nick_name creatorNickName,
+       reporter.create_time createTime,
+       reporter.modifier,
+       account1.nick_name modifierNickName,
+       reporter.modify_time modifyTime,
+       reporter.audis_state audisState
+    from briefing_reporter reporter
+    left join init_region region on reporter.region_id= region.region_id
+    left join init_dict dict on reporter.crops_id = dict.dict_id
+    left join sys_perm_account account on reporter.creator = account.account_name
+    left join sys_perm_account account1 on reporter.modifier = account1.account_name
+    <where>
+        <if test="reporterName!=null &amp;&amp; reporterName!=''">
+            reporter.reporter_name like '%' || #{reporterName} || '%'
+        </if>
+        <if test="regionId!=null &amp;&amp; regionId!=''">
+            and reporter.region_id = #{regionId}
+        </if>
+        <if test="cropsId!=null &amp;&amp; cropsId!=''">
+            and reporter.crops_id = #{cropsId}
+        </if>
+        <if test="startDate != null &amp;&amp; startDate != '' &amp;&amp; endDate !=null &amp;&amp; endDate != ''">
+            and reporter.create_time between cast(#{startDate} ||' 00:00:00' as timestamp) and cast(#{endDate}||' 23:59:59' as TIMESTAMP )
+        </if>
+        <if test="audisState!=null">
+           and reporter.audis_state=#{audisState}
+        </if>
+    </where>
+      ORDER BY
+      <choose>
+          <when test="sidx != null and sidx != ''">
+              ${sidx} ${sord}
+          </when>
+          <otherwise>
+              audisState desc,createTime desc
+          </otherwise>
+      </choose>
+  </select>
+
+    <!-- 根据区域、作物名称获得对应的简报 -->
+    <select id="queryReporterByRegionAndCrops" resultType="com.jh.briefing.model.TemplateReporterParam"
+            parameterType="com.jh.briefing.model.TemplateReporterParam">
+        select
+        reporter.reporter_id reporterId,
+        reporter.reporter_name reporterName,
+        reporter_mobile_content reporterMobileContent,
+        region.china_name regionName,
+        dict.data_name cropsName,
+        reporter.creator,
+        reporter.create_time createTime,
+        reporter.modifier,
+        reporter.modify_time modifyTime,
+        reporter.audis_state audisState
+        from briefing_reporter reporter
+        left join init_region region on reporter.region_id= region.region_id
+        left join init_dict dict on reporter.crops_id = dict.dict_id
+        <where>
+            <if test="cropsName!=null &amp;&amp; cropsName!=''">
+                dict.data_name like '%' || #{cropsName} || '%'
+            </if>
+            <if test="regionName != null &amp;&amp; regionName != ''">
+                and region.china_name like '%' || #{regionName} || '%'
+            </if>
+        </where>
+        order by createTime desc
+    </select>
+
+  <!-- 根据 regionId（区域编号） 和 dateTime （创建时间）查询地温均值信息和对应的区域-->
+  <select id="queryTtnByRegionAndDateTime" resultType="com.jh.briefing.model.TtnRegionTotal"
+          parameterType="com.jh.briefing.model.TemplateReporterParam">
+      select regionName,ttnAvg from (
+        select
+            regionName,
+            round(avg(case when t>0 then t else null end),2) ttnAvg
+        from (
+            select
+                ttn.id,
+                r1.region_id regionId,
+                r1.china_name regionName,
+                ttn.t,
+                ttn.data_time dataTime
+            from ds_t ttn
+            left join init_region r1
+            on ttn.region_id = r1.region_id
+            left join init_region r2
+            on r1.parent_id = r2.region_id
+            <where>
+              <if test="level &lt; 4">
+                r2.region_id = #{regionId}
+              </if>
+              <if test="level == 4">
+                and ttn.region_id = #{regionId}
+              </if>
+              <if test="startDate != null &amp;&amp; endDate !=null  ">
+                and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+              </if>
+            </where>
+        ) statistics
+        group by regionName
+    ) final
+    where ttnAvg>0
+    order by ttnAvg asc
+  </select>
+
+  <!-- 根据 regionId（区域编号） 和 dateTime(创建时间),查询有效积温和对应的区域 注意参数：growthStartDate(播种时间)-->
+  <select id="queryTtnTotalByRegionAndDateTime" resultType="com.jh.briefing.model.TtnRegionTotal"
+          parameterType="com.jh.briefing.model.TemplateReporterParam">
+    select regionName,ttnAvg from (
+      select
+        regionName,
+        round(sum(case when t>0 then t else null end),2) ttnAvg
+      from (
+        select
+          ttn.id,
+          r1.region_id regionId,
+          r1.china_name regionName,
+          ttn.t,
+          ttn.data_time dataTime
+        from ds_t ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+          <if test="level &lt; 4">
+            r2.region_id = #{regionId}
+          </if>
+          <if test="level == 4">
+            and ttn.region_id = #{regionId}
+          </if>
+          <if test="growthStartDate != null &amp;&amp; endDate !=null  ">
+            and ttn.data_time between cast(#{growthStartDate} as timestamp) and cast(#{endDate} as timestamp)
+          </if>
+        </where>
+      ) statistics
+      group by regionName
+    ) final
+    where ttnAvg>0
+    order by ttnAvg asc
+  </select>
+
+  <!-- 根据 regionId（区域编号） 和 dateTime （创建时间）查询下雨天数 -->
+  <select id="countRainDays" resultType="java.lang.Integer" parameterType="com.jh.briefing.model.TemplateReporterParam">
+    select count(id) rainDays
+    from(
+      select
+        ttn.id,
+        r1.region_id regionId,
+        r1.china_name regionName,
+        ttn.trmm,
+        ttn.data_time dataTime
+      from ds_trmm ttn
+      left join init_region r1
+      on ttn.region_id = r1.region_id
+      <where>
+        <if test="regionId != null &amp;&amp; regionId !=null  ">
+          ttn.region_id = #{regionId}
+        </if>
+        <if test="startDate != null &amp;&amp; endDate !=null  ">
+          and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+        </if>
+        and trmm>0
+      </where>
+    ) days;
+  </select>
+
+  <!--最大降雨量区域信息 -->
+  <select id="queryMaxTrrmRegionInDay" resultType="com.jh.briefing.model.TrrmRegionMaxDay"
+          parameterType="com.jh.briefing.model.TemplateReporterParam">
+      select
+          ttn.id,
+          r1.region_id regionId,
+          r1.china_name maxDayTrrmRegion,
+          r2.china_name parentRegionName,
+          ttn.trmm maxDayTrrm,
+          ttn.data_time maxDayTrrmDate
+      from ds_trmm ttn
+      left join init_region r1
+      on ttn.region_id = r1.region_id
+      left join init_region r2
+      on r1.parent_id = r2.region_id
+      <where>
+        <if test="level &lt; 4">
+          r2.region_id = #{regionId}
+        </if>
+        <if test="level == 4">
+          and ttn.region_id = #{regionId}
+        </if>
+        <if test="startDate != null &amp;&amp; endDate !=null  ">
+          and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+        </if>
+      </where>
+      order by ttn.trmm desc
+      limit 1;
+  </select>
+
+  <!-- 查询指定时间范围周雨量信息 -->
+  <select id="queryTrrmStatisticsForWeek" resultType="com.jh.briefing.model.TrrmStatisticsMultRegion"
+          parameterType="com.jh.briefing.model.TemplateReporterParam">
+    select
+      regionId,regionName,trrmTotal,trrmTotalMonth,avgTrrmLastYear,avgTrrmHistory,avgTrrmMonthHistory,
+      round(case when avgTrrmHistory>0 then (trrmTotal-avgTrrmHistory)/avgTrrmHistory*100 else 0.0 end,2) percentHistoryYear,
+      round(case when avgTrrmMonthHistory>0 then (trrmTotalMonth-avgTrrmMonthHistory)/avgTrrmMonthHistory*100 else 0.0 end,2) percentMonthHistoryYear,
+      round(case when avgTrrmLastYear>0 then (trrmTotal-avgTrrmLastYear)/avgTrrmLastYear*100 else 0.0 end,2) percentLastYear
+    from (
+      select
+        regionId,regionName,COALESCE(sum(trmm),0) trrmTotal,
+        (
+          select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+          from(
+            select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+            from ds_trmm
+            <where>
+              region_id = regionId
+              <if test="startDate != null">
+                and data_time &lt; cast(#{startDate} as timestamp)
+              </if>
+              <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                  and data_time
+                  between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                  and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+              </if>
+            </where>
+            group by date_part('YEAR',data_time)
+          )avgB
+        ) avgTrrmHistory,
+        (
+          select round(trrmTotal,2) avgTrrm
+          from(
+            select COALESCE(SUM(trmm),0) trrmTotal
+            from ds_trmm
+            <where>
+              region_id = regionId
+              <if test="lastYear != null">
+                and date_part('YEAR',data_time) = #{lastYear}
+              </if>
+              <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                  and data_time
+                  between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                  and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+              </if>
+            </where>
+          )avgB
+        ) avgTrrmLastYear,
+        (
+            select trrmTotal
+            from(
+              select COALESCE(SUM(trmm),0) trrmTotal
+              from ds_trmm
+              <where>
+                region_id = regionId
+                <if test="startDateMonth != null &amp;&amp; endDateMonth !=null">
+                  and data_time between cast(#{startDateMonth} as timestamp) and cast(#{endDateMonth} as timestamp)
+                </if>
+              </where>
+            )avgB
+        ) trrmTotalMonth,
+        (
+          select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+          from(
+            select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+            from ds_trmm
+            <where>
+              region_id = regionId
+              <if test="startDateMonth != null">
+                and data_time &lt; cast(#{startDateMonth} as timestamp)
+              </if>
+              <if test="startDateMonthNoYear != null &amp;&amp; endDateMonthNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForMonth})||'-'||#{startDateMonthNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateMonthNoYear} as timestamp)
+              </if>
+            </where>
+            group by date_part('YEAR',data_time)
+          )avgB
+        ) avgTrrmMonthHistory
+      from (
+        select
+          r1.region_id regionId,
+          r1.china_name regionName,
+          ttn.trmm,
+          ttn.data_time dataTime
+        from ds_trmm ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+          <if test="level &lt; 4">
+            r2.region_id = #{regionId}
+          </if>
+          <if test="level == 4">
+            and ttn.region_id = #{regionId}
+          </if>
+          <if test="startDate != null &amp;&amp; endDate !=null  ">
+            and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+          </if>
+        </where>
+      ) statistics
+      group by regionName,regionId
+    ) final
+    order by trrmTotal asc
+  </select>
+
+
+
+    <!-- 查询指定时间范围内月雨量信息 -->
+    <select id="queryTrrmStatisticsForMonth" resultType="com.jh.briefing.model.TrrmStatisticsMultRegion"
+            parameterType="com.jh.briefing.model.TemplateReporterParam">
+        select
+            regionId,regionName,trrmTotal,trrmTotalMonth,avgTrrmLastYear,avgTrrmHistory,avgTrrmMonthHistory,
+            round(case when avgTrrmHistory>0 then (trrmTotal-avgTrrmHistory)/avgTrrmHistory*100 else 0.0 end,2) percentHistoryYear,
+            round(case when avgTrrmMonthHistory>0 then (trrmTotalMonth-avgTrrmMonthHistory)/avgTrrmMonthHistory*100 else 0.0 end,2) percentMonthHistoryYear,
+            round(case when avgTrrmLastYear>0 then (trrmTotal-avgTrrmLastYear)/avgTrrmLastYear*100 else 0.0 end,2) percentLastYear
+        from (
+            select
+                regionId,regionName,COALESCE(sum(trmm),0) trrmTotalMonth,
+                (
+                    select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+                    from(
+                        select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+                        from ds_trmm
+                        <where>
+                            region_id = regionId
+                            <if test="startDate != null">
+                                and data_time &lt; cast(#{startDate} as timestamp)
+                            </if>
+                            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                                and data_time
+                                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+                            </if>
+                        </where>
+                        group by date_part('YEAR',data_time)
+                    )avgB
+                ) avgTrrmHistory,
+                (
+                    select round(trrmTotal,2) avgTrrm
+                    from(
+                        select COALESCE(SUM(trmm),0) trrmTotal
+                        from ds_trmm
+                        <where>
+                            region_id = regionId
+                            <if test="lastYear != null">
+                                and date_part('YEAR',data_time) = #{lastYear}
+                            </if>
+                            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                                and data_time
+                                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+                            </if>
+                        </where>
+                    )avgB
+                ) avgTrrmLastYear,
+                (
+                    select trrmTotal
+                    from(
+                        select COALESCE(SUM(trmm),0) trrmTotal
+                        from ds_trmm
+                        <where>
+                            region_id = regionId
+                            <if test="startDate != null &amp;&amp; endDate !=null">
+                                and data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+                            </if>
+                        </where>
+                    )avgB
+                ) trrmTotal,
+                (
+                    select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+                    from(
+                        select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+                        from ds_trmm
+                        <where>
+                            region_id = regionId
+                            <if test="startDateMonth != null">
+                                and data_time &lt; cast(#{startDateMonth} as timestamp)
+                            </if>
+                            <if test="startDateMonthNoYear != null &amp;&amp; endDateMonthNoYear !=null  ">
+                                and data_time
+                                between cast((date_part('YEAR',data_time)-${spanYearForMonth})||'-'||#{startDateMonthNoYear} as timestamp)
+                                and cast(date_part('YEAR',data_time)||'-'||#{endDateMonthNoYear} as timestamp)
+                            </if>
+                        </where>
+                        group by date_part('YEAR',data_time)
+                    )avgB
+                ) avgTrrmMonthHistory
+            from (
+                select
+                    r1.region_id regionId,
+                    r1.china_name regionName,
+                    ttn.trmm,
+                    ttn.data_time dataTime
+                from ds_trmm ttn
+                left join init_region r1
+                on ttn.region_id = r1.region_id
+                left join init_region r2
+                on r1.parent_id = r2.region_id
+                <where>
+                    <if test="level &lt; 4">
+                        r2.region_id = #{regionId}
+                    </if>
+                    <if test="level == 4">
+                        and ttn.region_id = #{regionId}
+                    </if>
+                    <if test="startDateMonth != null &amp;&amp; endDateMonth !=null  ">
+                        and ttn.data_time between cast(#{startDateMonth} as timestamp) and cast(#{endDateMonth} as timestamp)
+                    </if>
+                </where>
+            ) statistics
+            group by regionName,regionId
+        ) final
+        order by percentMonthHistoryYear asc
+    </select>
+
+    <!--根据区域id，作物id，开始和结束时间查询简报-->
+    <select id="queryBriefByParams" parameterType="com.jh.briefing.model.TemplateReporterParam" resultType="com.jh.briefing.model.TemplateReporterParam">
+        SELECT
+            reporter_id
+        FROM
+            briefing_reporter
+        WHERE
+            region_id = #{regionId}
+            AND report_data_time_start = to_date( #{startDate}, 'yyyy-MM-dd' )
+            AND report_data_time_end = to_date( #{endDate}, 'yyyy-MM-dd' )
+            AND crops_id = #{cropsId}
+    </select>
+
+    <!--根据区域id，作物id，开始和结束时间删除简报-->
+    <select id="deleteBriefByParams" parameterType="com.jh.briefing.model.TemplateReporterParam" resultType="java.lang.Integer">
+        DELETE
+        FROM
+            briefing_reporter
+        WHERE
+            region_id = #{regionId}
+            AND report_data_time_start = to_date( #{startDate}, 'yyyy-MM-dd' )
+            AND report_data_time_end = to_date( #{endDate}, 'yyyy-MM-dd' )
+            AND crops_id = #{cropsId}
+    </select>
+</mapper>

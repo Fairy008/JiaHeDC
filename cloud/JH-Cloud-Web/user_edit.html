@@ -1,0 +1,170 @@
+<style type="text/css">
+
+    .roleShowName{text-overflow: ellipsis;white-space:nowrap;overflow: hidden;width:130px;display: inline-block;}
+    #userInfo #view_address{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    #roleDialog input[type=checkbox]{margin-right:8px;position: relative;top:8px;vertical-align: top;}
+</style>
+
+<div class="content">
+    <div  class="form" id="userInfo" style="">
+        <table>
+            <tr>
+                <td class="four_td1">姓<span class="spanSpace"></span>名:</td>
+                <td class="four_td2">
+                    <input name="permPerson.personName" id="personName"  class="inputType" type="text" />
+                    <span id="view_personName" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">昵<span class="spanSpace"></span>称:</td>
+                <td class="four_td2">
+                    <input name="nickName" id="nickName" class="inputType" type="text" />
+                    <span id="view_nickName" class="viewType"></span>
+                </td>
+            </tr>
+            <tr><td class="four_td1">性<span class="spanSpace"></span>别:</td>
+                <td class="four_td2">
+                    <label class="label" id="sex"></label>
+                    <!--<label class="label"><input   type="radio" name="sex" value="1" checked="checked"/><span class="radioText">男</span></label>
+                    <label class="label"><input   type="radio" name="sex" value="2"/><span class="radioText">女</span></label>-->
+                    <span id="view_sex" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">出生日期:</td>
+                <td class="four_td2">
+                    <input name="personBorn" id="personBorn" class="inputType" type="text" readonly/>
+                    <span id="view_personBorn" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">手机号码:</td>
+                <td class="four_td2">
+                    <input type="hidden" id="accountId" >
+                    <input name="mobile" id="mobile" class="inputType" type="text" />
+                    <span id="view_mobile" class="viewType"></span>
+                </td>
+                <td class="four_td1 td4">账号名:</td>
+                <td class="four_td2">
+                    <input name="accountCode" id="accountCode" class="inputType" type="text" />
+                    <span id="view_accountCode" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">邮<span class="spanSpace"></span>箱:</td>
+                <td class="four_td2">
+                    <input name="email" id="email" class="inputType" type="text" />
+                    <span id="view_email" class="viewType"></span>
+                </td>
+                <td class="four_td1 td4">QQ:</td>
+                <td class="four_td2">
+                    <input name="qq" id="qq" class="inputType" type="text" />
+                    <span id="view_qq" class="viewType"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="four_td1 td6">联系地址:</td>
+                <td class="four_td3" colspan="3">
+                    <input type="text" class="inputType2" name="address" id="address">
+                    <!--<textarea rows="4" cols="20" id="view_address" class="viewType2" readonly="readonly"></textarea>-->
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons){
+            var init = function(){
+                dateFun();
+                initSexFun(300);//用户性别
+                var personId = window.parent.$("#menuInfo").data("personId");
+                var accountId = window.parent.$("#menuInfo").data("accountId");
+                editFun(personId,accountId);
+            };
+            var dateFun = function(){
+                dateUtil.timeEvent_Self("personBorn",function(){}); //初始化出生日期控件
+            };
+
+            /**
+             * 用户修改
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var editFun = function(id,accountId){
+                dateFun();
+                var ajax = new BaseAjax();
+                ajax.opts.url = USER_CONFIG.getById_url + "?personId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    $("#mobile").attr("disabled", "disabled");
+                    var permAccount = result.data.permAccount;
+                    var permPerson = result.data.permPerson;
+                    $("input[type='radio'][name='sex'][value='"+ permPerson.sex +"']").attr("checked","checked");
+                    $("input[type='radio'][name='dataStatus'][value='"+ permPerson.dataStatus +"']").attr("checked","checked");
+                    $("#personName").val(permPerson.personName);
+                    $("#nickName").val(permAccount.nickName);
+                    $("#personBorn").val(new Date(permPerson.personBorn).Format("yyyy-MM-dd"));
+                    $("#qq").val(permPerson.qq);
+                    $("#email").val(permPerson.email);
+                    $("#mobile").val(permPerson.mobile);
+                    $("#address").val(permPerson.address);
+                    $("#accountId").val(accountId);
+                    $("#accountCode").val(permAccount.accountCode).attr("disabled", "disabled");
+                };
+                ajax.run();
+            };
+
+            /**
+             * 显示input输入框，隐藏信息查看
+             */
+            var inputTypeShow = function(){
+                $(".txtRequired").show();
+                $(".viewType,.viewType2").css("display","none");
+                $(".inputType2,.inputType,.label,.selectType").css("display","block");
+            };
+
+            /**
+             * 隐藏input输入框，显示信息查看
+             */
+            var viewTypeShow = function(){
+                $(".txtRequired").hide();
+                $(".inputType2,.inputType,.label,.selectType").css("display","none");
+                $(".viewType,.viewType2").css("display","block");
+            }
+
+            //用户性别
+            var sexCache = [];
+            /**
+             * 获取用户性别下拉框数据
+             * @param parentId = 300
+             * @version <1> 2018-03-15 wl : created.
+             */
+            var initSexFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        sexCache = result.data;
+                        $.each(result.data, function(index, element){
+                            if(index==0){
+                                str+='<label class="label"><input   type="radio" name="sex" value="'+element.dictId+'" checked="checked"/><span class="radioText">'+element.dataName+'</span></label>';
+                            }else{
+                                str+='<label class="label"><input   type="radio" name="sex" value="'+element.dictId+'"/><span class="radioText">'+element.dataName+'</span></label>';
+                            }
+
+                        });
+                        $("#sex").append(str);
+                    }
+                };
+                ajax.run();
+            };
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

@@ -1,0 +1,822 @@
+<style type="text/css">
+
+    #archiveInfo #view_resUrl{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    #treeParentDiv{z-index: 990;position:absolute;left:0px; top:23px;width:155px;height:160px;background-color:#F5F2F2;overflow-y: auto;overflow-x:hidden;display:none;padding-left:0px;}
+    .td4{vertical-align: top;position:relative;top:2px;}
+
+    #DetailInfo table .four_td1{width: 80px !important;text-align:right;padding-right:2px;}
+
+    #DetailInfo table .four_td2{text-align: left;padding-right:20px;width: calc((100% - 306px)/3) !important;}
+    #DetailInfo{margin: auto;background:#FAFAFA !important; border:1px solid #F3F3F3;}
+    #DetailInfo table{width:100%;text-align: center !important; }
+    #DetailInfo tr td{word-wrap: break-word;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;display: inline-block;height: 24px; line-height: 24px;}
+
+    .file>div:nth-child(1){width:84%;text-align: left;}
+    .file>div:nth-child(2){width:16%;text-align:right;}
+    #file_list{
+        height: 315px;
+    }
+    .success{ color: #34b40e;}
+    .fail{ color: #ff0000;}
+
+    .textareaStyle{width:94%;font-size:12px;border-radius:3px;border:1px solid #dfdfdf;resize:none;margin-top:4px;padding:4px;color:#000000}.outerDiv
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">任务名称：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_archiveName" /></span>
+                </div>
+                <div>
+                    <span class="label">数据分类：</span>
+                    <span>
+                     <select id="search_satId" class="input inputWidth_100" style="text-align:center;" >
+                    </select>
+                    </span>
+                </div>
+                <!--   <div>
+                        <span class="label">数据日期：</span>
+                        <span><input type="text" class="input inputWidth_190" id="search_dataDate" /></span>
+                    </div>-->
+                <div>
+
+                    <span class="label">归档时间：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_archiveDate" /></span>
+                </div>
+                <div>
+                    <span class="label">归档状态：</span>
+                    <span><select id="search_archiveStatus" class="input inputWidth_100" style="text-align:center;" >
+                    </select></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input name="Input" type="button" class="btn" id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="archiveGrid"></table>
+        <div id="page"></div>
+    </div>
+    <div class="form" id="archiveInfo" style="display:none;">
+        <table>
+            <tr>
+                <!--  <td class="four_td1"><span class="txtRequired">*</span>任务名称:</td>
+                  <td class="four_td2">
+                      <input name="archiveName" id="archiveName"  class="inputType" type="text" />
+                      <span id="view_archiveName" class="viewType"></span>
+                  </td>-->
+                <td class="four_td1"><span class="txtRequired">*</span>数据分类:</td>
+                <td class="four_td2">
+                    <select id="satId" name="satId" class="selectType four_selectType" >
+                    </select>
+                    <span id="view_satId" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1"><span class="txtRequired">*</span>数据日期:</td>
+                <td class="four_td2" >
+                    <input type="text" class="inputType" id="dataDate" />
+                    <span id="view_dataDate" class="viewType"></span>
+                </td>
+            </tr>
+
+
+            <!--<tr rows="5">
+                <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                <td colspan="3"><textarea class="textareaStyle"  id = "remark" cols="30" rows="5"></textarea></td>
+            </tr>-->
+        </table>
+    </div>
+
+</div>
+
+<div id="detailDialog" style="display:none;">
+    <div  id="DetailInfo" >
+        <table>
+            <tr>
+                <td class="four_td1">任务名称:</td>
+                <td class="four_td2">
+                    <span id="detail_archiveName" class="viewType"></span>
+                </td>
+                <td class="four_td1">数据分类:</td>
+                <td class="four_td2">
+                    <span id="detail_satName" class="viewType"></span>
+                </td>
+                <td class="four_td1">文件数量:</td>
+                <td class="four_td2">
+                    <span id="detail_totalNum" class="viewType"></span>
+                </td>
+
+            </tr>
+            <tr>
+                <td class="four_td1">数据日期:</td>
+                <td class="four_td2">
+                    <span id="detail_dataDate" class="viewType"></span>
+                </td>
+
+                <td class="four_td1">归档状态:</td>
+                <td class="four_td2">
+                    <span id="detail_archiveStatus" class="viewType"></span>
+                </td>
+                <td class="four_td1"></td>
+                <td class="four_td2">
+
+                </td>
+            </tr>
+            <tr style="text-align:left;">
+                <td class="four_td1">归档路径:</td>
+                <td colspan="5">
+                    <span id="detail_archivePath" ></span>
+                    <!--1px的input text区域，为js复制使用 2018-04-13-->
+                    <input type="text" id="archivePath_hidden" style="height:1px ;width:1px ;border:0 !important;color:#FAFAFA;">
+                    <span class="btn btn1 copyBtn" >复制</span><span id="copyTip" style="color:red;padding-left:2px;"></span>
+                </td>
+            </tr>
+            <tr style="text-align:left;">
+                <td class="four_td1">失败原因:</td>
+                <td  colspan="5" style="width:520px;text-align:left;">
+                    <span id="detail_reason" class="viewType"></span>
+                </td>
+            </tr>
+
+            <!--<tr style="text-align:left;">
+                <td class="four_td1">备注:</td>
+                <td  colspan="5" style="width:520px;text-align:left;">
+                    <span id="detail_remark" class="viewType"></span>
+                </td>
+            </tr>-->
+        </table>
+    </div>
+    <div class="fileListDiv" >
+        <div class='file_title file'><div style='text-align: center;'>文件名</div><div>文件大小</div></div>
+        <div class="file_list" id="file_list"></div>
+    </div>
+</div>
+<div id="showDialog" class="dialogStyle">
+</div>
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","ztree","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax, ztree,formVerfication,PopWin,commons){
+        var processDialog=$("#process");
+
+        var init = function(){
+            dataArchiveGrid();
+            $("#addBtn").bind("click",addFun);
+            $("#queryBtn").bind("click",searchFun);
+            $("#resetBtn").on("click",resetFun);
+            initSatIdFun(400);
+            initArchiveStatusFun(1500);
+
+            dateFun('search_dataDate');
+            dateFun('search_archiveDate');
+            $(window).resize(function(){
+                $("#archiveGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+        };
+
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            $("#search_satId").html('');
+            $("#search_archiveStatus").html('');
+            initSatIdFun(400);
+            initArchiveStatusFun(1500);
+        }
+
+
+        var chanageTableCss = function(){
+            var divObj = $('#archiveGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        }
+
+
+        var showTitle=function(){
+            $(".ui-dialog-titlebar").show();
+            $(".ui-dialog").css({"opacity":1,"background":"#ffffff"});
+        }
+
+        var dateFun = function(idName){
+            $("#"+idName).jeDate({
+                multiPane:false,
+                maxDate:$.nowDate({DD:"0"}),
+                isToday:false,
+                format: 'YYYY-MM-DD',
+                range:"至"
+            });
+        };
+
+        var dataArchiveGrid = function(){
+            $("#archiveGrid").jqGrid({
+                url: ARCHIVE_CONFIG.findByPage_url,
+                datatype: "json",
+                postData:{
+                    userFlag : commons.getMyDataFun()
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['archiveId','任务名称','数据分类','数据数量', '数据日期', '任务创建人','归档时间','归档状态','操作'],
+                colModel:[
+                    {name:'archiveId',index:'archive_id', hidden:true},
+                    {name:'archiveName',index:'archive_name',width:'25%', align:"left", sortable:true},
+                    {name:'satId',index:'sat_id', width:'5%', align:"center",formatter:function(cellvalue,options,rowObject){
+                        var len = satIdCache.length;
+                        for(i = 0;i < len;i++){
+                            if(satIdCache[i].dictId == cellvalue){
+                                return satIdCache[i].dataName;
+                            }
+                        }
+                        return "";
+                    }},
+                    {name:'totalNum',index:'total_num', align:"center", width:'5%', sortable:true},
+                    {name:'endDate',index:'end_date', align:"center", width:'15%', sortable:true,formatter:function(cellvalue,options,rowObject){
+                        return rowObject.beginDate+"至"+rowObject.endDate;
+                    }},
+                    {name:'creatorName',index:'creator_name', align:"center", width:'10%', sortable:true},
+                    {name:'endTime',index:'end_time', align:"center", width:'15%', sortable:true},
+
+                    {name:'archiveStatus',index:'archive_status', width:'10%', align:"center", sortable:true,formatter:function(cellvalue,options,rowObject){
+                        var len = archiveStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(archiveStatusCache[i].dictId == cellvalue){
+
+                                switch (archiveStatusCache[i].dictId){
+                                    case 1503:
+                                        return '<span class="success">'+archiveStatusCache[i].dataName+'</span>';
+                                    case 1504:
+                                        return '<span class="fail">'+archiveStatusCache[i].dataName+'</span>';
+                                    default:
+                                        return archiveStatusCache[i].dataName;
+                                }
+                            }
+                        }
+                        return "";
+                    }},
+                    {name:'cz',index:'cz', width:'15%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        switch(rowObject.archiveStatus){
+                            case 1501://待归档
+                                str+= "<img src='images/public/Ttostart.png' class='execBtn' data-id='"+ rowObject.archiveId +"' data-no='1' title='执行归档' >" +
+                                        "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.archiveId +"' title='编辑' >" ;
+
+                                break;
+                            case 1503://成功
+                                str+= "<img src='images/public/TtostartG.png'  title='执行归档' >" +
+                                        "<img src='images/public/TeditG.png'  title='编辑' >";
+                                break;
+                            case 1504://失败
+                                str+= "<img src='images/public/Trefresh.png' class='execBtn' data-id='"+ rowObject.archiveId +"' data-no='2' title='重新执行' >" +
+                                        "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.archiveId +"' title='编辑' >";
+                                break;
+                        }
+                        str+="<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.archiveId +"' title='查看明细' >" ;
+
+                        return str;
+                    }}
+                ],
+                width:'100%',
+                autowidth:true,
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#page',
+                //sortname: 'archive_id',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    tableEvent();
+                    $("#archiveGrid").setGridWidth($(".rightMain").width() - 30);
+                }
+            });
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-03-21 wl : Created.
+         */
+        var tableEvent = function(){
+            $(".execBtn,.editBtn,.seeBtn,.detailBtn").off("click");
+            $(".execBtn").on("click",function(){//执行入库
+                execFun($(this).attr("data-id"),$(this).attr("data-no"))
+            })
+            $(".editBtn").on("click",function(){//编辑
+                editFun($(this).attr("data-id"))
+            })
+            $(".seeBtn").on("click",function(){//查看明细
+                showFun($(this).attr("data-id"))
+            })
+            /* $(".detailBtn").on("click",function(){//查看详情
+             detailFun($(this).attr("data-id"))
+             })*/
+        }
+
+        var searchFun = function(){
+            var archiveStatus = $("#search_archiveStatus").val().trim();
+            var satId = $("#search_satId").val();
+            var archiveName = $("#search_archiveName").val().trim();
+            var archiveDate=($("#search_archiveDate").val().trim()).split('至');
+            var archiveParam = {};
+            archiveParam.archiveStatus = archiveStatus;
+            archiveParam.satId = satId;
+            archiveParam.archiveName=archiveName;
+            archiveParam.startTime=archiveDate[0];
+            archiveParam.endTime=archiveDate[1];
+            $("#archiveGrid").jqGrid('setGridParam',{
+                datatype:'json',
+                postData:archiveParam,
+                page:1
+            }).trigger("reloadGrid");
+        }
+
+        /**
+         * 新增
+         * @version <1> 2018-03-21 wl: created.
+         */
+        var addFun = function(){
+            dateFun('dataDate');
+            //清楚输入框信息
+            $("#archiveName").val("");
+            //$("#remark").val("");
+            $("#satId option[value='']").attr("selected","selected");
+            $(".inputType2,.inputType,.label").val("");
+            showDialog(1);
+        };
+
+        /**
+         * 修改
+         * @version <1> 2018-03-21 wl: created.
+         */
+        var editFun = function(id){
+            dateFun('dataDate');
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.getById_url + "?archiveId=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+
+                /* $("#satId").attr("disabled", "disabled")*/
+                $("#archiveName").val(result.data.archiveName);
+                $("#dataDate").val(result.data.beginDate+"至"+result.data.endDate);
+                // $("#remark").val(result.data.remark);
+                $("#satId option[value='"+ result.data.satId +"']").attr("selected","selected");
+
+                showDialog(2, id);
+            };
+            ajax.run();
+        };
+
+        /**
+         * 执行数据归档
+         *
+         * @version <1> 2018-03-27 wl： Created.
+         */
+        var execFun = function (archiveId,No) {
+            showTitle();
+            var showDialog = $("#showDialog");
+            if(No==1){
+                showDialog.html("是否确认执行数据归档？");
+            }else{
+                showDialog.html("是否确认重新执行数据归档？");
+            }
+
+            showDialog.dialog({
+                autoOpen: false,
+                title: '系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        showDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = ARCHIVE_CONFIG.exec_url + "?archiveId=" + archiveId;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            if (result.flag) {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                PopWin.showMessageWin("执行数据归档成功");
+                                $("#archiveGrid").trigger("reloadGrid");
+                            } else {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                PopWin.showMessageWin("执行数据归档失败，没有符合条件的数据");
+                                $("#archiveGrid").trigger("reloadGrid");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            PopWin.showMessageWin("执行数据归档失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            showDialog.dialog("open");
+        };
+
+        /**
+         * 弹出框
+         * @param  archiveId
+         * @version <1> 2018-03-27 wl : created.
+         */
+        var showFun = function(archiveId){
+            showTitle();//显示弹出框的title  和背景色
+
+            $(".copyBtn").bind("click",function(){
+                copyFun('archivePath_hidden','copyTip')
+            });  //绑定点击事件
+
+            var detailDialog = $("#detailDialog");
+            var dialogParent = detailDialog.parent();
+            var dialogOwn = detailDialog.clone();
+            var obj =   $('#file_list');
+            detailFun(archiveId);//查看详情
+            archiveDetail(archiveId,obj);//加载文件夹详情
+            //选择数据类型并添加说明
+            detailDialog.dialog({
+                autoOpen: false,
+                title: '归档详情',
+                height: 600,
+                width: 800,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            detailDialog.dialog("open");
+        };
+
+        /**
+         * 将字符串复制至windows剪切板
+         * @version<1> 2018-04-13 lcw :Created.
+         */
+        var copyFun = function(hiddenId, tip){
+            var obj = document.getElementById(hiddenId);
+            obj.select();
+            document.execCommand("Copy");
+            $("#" + tip).html("复制成功");
+            setTimeout(function(){
+                $("#" + tip).html("");
+            },1000);
+
+        }
+
+        var archiveDetail = function(archiveId,obj){//文件夹文件列表
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.detail_url+ "?archiveId=" + archiveId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    var data = result.data;
+                    var fileHtml = '';
+                    if(data.length>0) {
+                        $(data).each(function (i,d) {
+                            fileHtml += "<div class='file'><div title='"+d.dataName+"'>"+d.dataName+"</div><div>"+(d.dataSize || "---")+"</div></div>";
+                        });
+                    }
+                    else{
+                        fileHtml += "<h3>没有对应文件数据</h3>";
+                    }
+                    obj.html(fileHtml)
+                }
+                else{
+                    var fileHtml = "<h3>没有对应文件数据</h3>";
+                    obj.html(fileHtml)
+                }
+            }
+            ajax.run();
+        };
+
+
+        /**
+         * 查看详情
+         * @param id
+         * @version <1> 2018-03-21 wl: created.
+         */
+        var detailFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.getById_url + "?archiveId=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    var data = result.data;
+                    $('#detail_archiveName').html(data.archiveName);
+                    $('#detail_archiveName').attr('title',data.archiveName);
+                    var lenL = satIdCache.length;
+                    for(i = 0;i < lenL;i++){
+                        if(satIdCache[i].dictId == data.satId){
+                            $('#detail_satName').html(satIdCache[i].dataName);
+                        }
+                    }
+                    $('#detail_dataDate').html(data.beginDate+"至"+data.endDate);
+                    $('#detail_dataDate').attr('title',data.beginDate+"至"+data.endDate);
+                    $('#detail_archivePath').html(data.archivePath);
+
+
+                    $("#archivePath_hidden").val(data.archivePath)
+
+
+                    $('#detail_archivePath').attr('title',data.archivePath);
+                    $('#detail_totalNum').html(data.totalNum);
+                    $('#detail_reason').html(data.reason);
+                    $('#detail_reason').attr('title',data.reason);
+                    $('#detail_remark').html(data.remark);
+                    $('#detail_remark').attr('title',data.remark);
+                    var len = archiveStatusCache.length;
+                    for(i = 0;i < len;i++){
+                        if(archiveStatusCache[i].dictId == data.archiveStatus){
+                            if(data.archiveStatus==1503){
+                                $('#detail_archiveStatus').html("<span class='green'>" + archiveStatusCache[i].dataName + "</span>");
+                            }else  if(data.archiveStatus==1504){
+                                $('#detail_archiveStatus').html("<span class='red'>" + archiveStatusCache[i].dataName + "</span>");
+                            }else {
+                                $('#detail_archiveStatus').html("<span>" + archiveStatusCache[i].dataName + "</span>");
+                            }
+
+                        }
+                    }
+                }
+                else{
+                    PopWin.showMessageWin("系统错误!");
+                }
+            };
+            ajax.opts.errorFun = function(){
+                PopWin.showMessageWin("系统错误!");
+                return false;
+            };
+            ajax.run();
+        };
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    $(".ui-dialog-titlebar").hide();
+                    $(".ui-dialog").css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+
+        /**
+         * 弹出框
+         * @param type  : 1 表示新增， 2表示修改， 3表示查看
+         * @version <1> 2018-03-21 wl: created.
+         */
+        var showDialog = function(type, archiveId){
+            showTitle();//显示弹出框的title  和背景色
+            var archiveDialog =  $("#archiveInfo");
+            var dialogParent = archiveDialog.parent();
+            var dialogOwn = archiveDialog.clone();
+            if(type == 3 ){ //查看
+                archiveDialog.dialog({
+                    autoOpen: false,
+                    title:'数据归档信息',
+                    height: 330,
+                    width: 550,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:[
+                        {
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+
+                });
+            }else{ //新增和修改
+
+                archiveDialog.dialog({
+                    autoOpen: false,
+                    title:'数据归档信息',
+                    height: 220,
+                    width: 360,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:[
+                        {
+                            text: "保存",
+                            click: function () {
+                                if (type == 1) { //新增
+                                    addSaveFun(archiveDialog);
+                                }
+                                if (type == 2) {
+                                    editSaveFun(archiveDialog, archiveId);
+                                }
+
+                            }
+                        },{
+                            text: "取消",
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+
+                });
+            }
+
+            archiveDialog.dialog("open");
+        };
+
+        var formVerf = function(){
+            var archiveInfo = $('#archiveInfo');
+            /*if(formVerfication.checkInputLength(1,40,$('#archiveName'),archiveInfo,'任务名称字数为40个以内')){
+             return false;
+             }*/
+            if(formVerfication.checkInputLength(1,10,$('#satId'),archiveInfo,'请选择数据分类')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(1,30,$('#dataDate'),archiveInfo,'请选择数据日期')){
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         *新增保存
+         */
+        var addSaveFun = function(archiveDialog){
+            if(!formVerf()){
+                return ;
+            }
+            var archive = {};
+            var dataDate = ($("#dataDate").val().trim()).split('至');
+            archive.beginDate=dataDate[0];
+            archive.endDate=dataDate[1];
+            archive.satId=$("#satId").val().trim();
+            archive.satName=$("#satId").find("option:selected").text();
+            //archive.remark=$("#remark").val().trim();
+            //通过验证 显示进度条div  保存成功关闭
+            archiveDialog.dialog("close");
+            showProcess();
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.add_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(archive);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    $("#archiveGrid").trigger("reloadGrid");
+                    processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                    //保存成功 关闭进度条div
+                    PopWin.showMessageWin("新增成功");
+                }else{
+                    processDialog.dialog("close");
+                    PopWin.showMessageWin("新增失败,没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                processDialog.dialog("close");
+                PopWin.showMessageWin("新增失败");
+            };
+            ajax.run();
+        };
+
+        /**
+         * 修改保存
+         * @param archiveDialog
+         */
+        var editSaveFun = function(archiveDialog, id ){
+            if(!formVerf()){
+                return ;
+            }
+            var archive = {};
+
+            var dataDate = ($("#dataDate").val().trim()).split('至');
+            archive.beginDate=dataDate[0];
+            archive.endDate=dataDate[1];
+            archive.satId=$("#satId").val().trim();
+            archive.satName=$("#satId").find("option:selected").text();
+            //archive.remark=$("#remark").val().trim();
+            archive.archiveId = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(archive);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    $("#archiveGrid").trigger("reloadGrid");
+                    archiveDialog.dialog("close");
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+        //数据分类缓存
+        var satIdCache = [];
+
+        /**
+         * 获取数据分类下拉框数据
+         * @param parentId = 400
+         * @version <1> 2018-03-21 wl: created.
+         */
+        var initSatIdFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            $("#satId").append("");
+            $("#search_satId").append("");
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    satIdCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#satId").append(str);
+                    $("#search_satId").append(str);
+                }
+            }
+            ajax.run();
+        }
+        //数据归档状态缓存
+        var archiveStatusCache=[];
+        var initArchiveStatusFun=function (parentId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    archiveStatusCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#search_archiveStatus").append(str);
+                }
+            }
+            ajax.run();
+        }
+        init();
+    });
+
+</script>

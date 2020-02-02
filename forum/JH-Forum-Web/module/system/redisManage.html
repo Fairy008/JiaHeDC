@@ -1,0 +1,219 @@
+<style>
+    .div_bg{
+        background-color: #E5E5E5!important;
+        margin-top: 10px!important;
+        text-align:center;
+        height: 50px;
+        line-height:50px;
+        color:#1E90FF	;
+        font-size: 16px!important;
+        font-weight: bold;
+    }
+    .redis_table{
+        border-collapse:separate;
+        border-spacing:100px;
+    }
+    .redis_table td{
+        height: 70px!important;
+    }
+    .redis_table{
+        height: 80px!important;
+        width: 100%!important;
+    }
+
+    .flush_cache{
+        border-radius:5px;
+        border: 0;
+        height:70px;
+        width: 40%;
+        background-color:#E5E5E5;
+        color:#00a7ec;
+    }
+</style>
+
+<div class="content">
+
+    <div  class="form" id="redisInfo" style="height: 500px;">
+        <div class="div_bg">
+            Redis缓存刷新
+        </div>
+        <table class="redis_table">
+            <tr>
+                <td><button id="initDictCache" class="flush_cache">刷新数据字典缓存</button>&nbsp;<font color="#c71585">上次刷新时间：<span id="dict_time"></span></font></td>
+                <td><button id="initRegionCache" class="flush_cache">刷新区域缓存</button>&nbsp;<font color="#c71585">上次刷新时间：<span id="region_time"></span></font></td>
+            </tr>
+            <tr>
+                <td><button id="initUserCache" class="flush_cache">刷新用户缓存</button>&nbsp;<font color="#c71585">上次刷新时间：<span id="account_time"></span></font></td>
+                <td><button id="initAllDataCache" class="flush_cache">刷新全部缓存</button>&nbsp;<font color="#c71585">上次刷新时间：<span id="all_time"></span></font></td>
+            </tr>
+        </table>
+
+        <table id="test" style="display: none">
+            <tr>
+                <td>测试字典ID->名称</td><td>400</td><td id="show_dictName"></td>
+            </tr>
+            <tr>
+                <td>测试字典ID->编码</td><td>400</td><td id="show_dictCode"></td>
+            </tr>
+            <tr>
+                <td>测试字典ID->子集</td><td>400</td><td><select id="show_dictSelect" class="inputType"></select></td>
+            </tr>
+            <tr>
+                <td>测试区域ID->名称</td><td>3102000014</td><td id="show_regionName"></td>
+            </tr>
+            <tr>
+                <td>测试区域ID->编码</td><td>3102000014</td><td id="show_regionCode"></td>
+            </tr>
+            <tr>
+                <td>测试区域ID->子集</td><td>3102000014</td><td><select id="show_RegionSelect" class="inputType"></select></td>
+            </tr>
+            <tr>
+                <td>测试用户ID->名称</td><td>141</td><td id="show_userName" ></td>
+            </tr>
+        </table>
+    </div>
+    <div id="delDialog" class="dialogStyle"></div>
+    <!-- 遮罩层DIV部分 -->
+    <div class="dialogStyle process" style="display: none;text-align:center;">
+        <img src="images/public/process.gif" />
+    </div>
+</div>
+
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","custom_settings"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,custom_settings){
+
+            var init = function(){
+                //获取缓存最后更新时间
+                getLastTime();
+                bindClick();
+                //test();
+            };
+
+            var bindClick=function(){
+
+                $("#redisInfo .flush_cache").click(function(){
+                    initCache($(this).prop("id"));
+                });
+            }
+
+            var test=function(){
+                $("#test").show();
+                /*
+                 * queryNameById (ID->name:字典、区域、用户通用方法)
+                 * 参1：类型（字典、区域、用户）
+                 * 参2：Id值
+                 * 参3：文本ID（非必填，不填时返回Name,填写时，直接赋值text()）
+                 */
+                commons.queryNameById(custom_settings.dataType_dict,400,"show_dictName");
+                /*
+                 * queryDictName, queryRegionName,queryAccountName(ID->name:字典,区域，用户)
+                 * 参1：Id值
+                 * 参2：文本ID（非必填，不填时返回Name,填写时，直接赋值text()）
+                 */
+                commons.queryDictName(400,"show_dictName");
+                commons.queryRegionName(3102000014);
+                commons.queryAccountName(141)
+
+                /*
+                 * findDictList，findRegionList (ID->List:字典，区域)
+                 * 参1：Id值
+                 * 参2：下拉框ID
+                 * 参3：下拉框被选中值ID，用户编辑页面渲染值的情形
+                 */
+                commons.findRegionList(3102000014,"show_RegionSelect");
+                commons.findDictList(400,"show_dictSelect",401);
+            }
+
+            /**
+             * 初始化缓存
+             * @version <1> 2017-12-15 lcw : created.
+             */
+            var initCache = function(id){
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认刷新缓存？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            $(this).dialog("close");
+                            showProcess("process");
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = REDIS_CONFIG.initCache_url+id;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function(){
+                                closeProcess("process");
+                                //刷新时间
+                                getLastTime();
+                                PopWin.showMessageWin("刷新缓存成功!");
+                            };
+                            ajax.opts.errorFun = function () {
+                                closeProcess("process");
+                                PopWin.showMessageWin("刷新缓存失败!");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 打开进度条
+             */
+            var showProcess=function(id){
+                var pDialog=$("."+id);
+                pDialog.dialog({
+                    autoOpen: false,
+                    height: 450,
+                    width: 450,
+                    modal: true ,
+                    closeOnEscape: false,
+                    closable:false,
+                    open: function(event, ui) {
+                        pDialog.siblings(".ui-dialog-titlebar").hide();
+                        pDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                    },
+                });
+                pDialog.dialog("open");
+            };
+
+            /**
+             * 关闭进度条
+             */
+            var closeProcess=function(id){
+                var pDialog=$("."+id)
+                pDialog.dialog("destroy");
+            };
+
+            var getLastTime=function(){
+                var ajax = new BaseAjax();
+                ajax.opts.url = REDIS_CONFIG.getCacheTime_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function(result){
+                    var times=result.data;
+                    $("#dict_time").text(times[0]?times[0]:"");
+                    $("#region_time").text(times[1]?times[1]:"");
+                    $("#account_time").text(times[2]?times[2]:"");
+                    $("#all_time").text(times[3]?times[3]:"");
+
+                };
+                ajax.run();
+            }
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

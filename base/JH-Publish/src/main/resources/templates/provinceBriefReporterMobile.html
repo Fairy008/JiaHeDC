@@ -1,0 +1,173 @@
+${dateTimeSpan!}：
+
+本期${regionName!}${cropsName!}进入${growthPeriodName!}。
+<@compress single_line=true>
+日均地温：
+<#if ttnStatistics.minTtnAvg?? && ttnStatistics.maxTtnAvg??>
+    ${ttnStatistics.minTtnAvg.ttnAvg!}(${ttnStatistics.minTtnAvg.regionName!})~${ttnStatistics.maxTtnAvg.ttnAvg!}(${ttnStatistics.maxTtnAvg.regionName!})℃，
+<#else>
+    数据更新中。
+</#if>
+<#if ttnStatistics.instructions??  && ttnStatistics.instructions?size &gt; 0>
+    <#list ttnStatistics.instructions as info>
+        <#if info_index == 0>
+            ${info!}
+        <#else>
+            ，${info!}
+        </#if>
+    </#list>。
+</#if>
+有效积温:
+<#if ttnStatistics.minTtnTotal?? && ttnStatistics.maxTtnTotal??>
+    ${ttnStatistics.minTtnTotal.ttnAvg!}(${ttnStatistics.minTtnTotal.regionName!})~${ttnStatistics.maxTtnTotal.ttnAvg!}(${ttnStatistics.maxTtnTotal.regionName!})℃。
+<#else>
+    数据更新中。
+</#if>
+</@compress>
+
+
+<@compress single_line=true>
+本期降雨${trrmStatistics.rainDays!0}天，
+<#if trrmStatistics.trrmRegionMaxDay??>
+    ${trrmStatistics.trrmRegionMaxDay.maxDayTrrmDate!}${trrmStatistics.trrmRegionMaxDay.maxDayTrrmRegion!}降雨量最大，达${trrmStatistics.trrmRegionMaxDay.maxDayTrrm!}mm(${trrmStatistics.trrmRegionMaxDay.rainStormLevel!})。
+    <#else>
+        无降雨量，
+</#if>
+</@compress>
+
+<@compress single_line=true>
+本期降雨总量：
+<#if trrmStatistics.minTrrmRegion?? && trrmStatistics.maxTrrmRegion??>
+    ${trrmStatistics.minTrrmRegion.trrmTotal!}(${trrmStatistics.minTrrmRegion.regionName!})~${trrmStatistics.maxTrrmRegion.trrmTotal!}(${trrmStatistics.maxTrrmRegion.regionName!})mm，
+    <#if trrmStatistics.maxTrrmRegion.percentHistoryYear?? && trrmStatistics.maxTrrmRegion.percentHistoryYear &gt; 0>
+        ${trrmStatistics.maxTrrmRegion.regionName!}比历史同期多${trrmStatistics.maxTrrmRegion.percentHistoryYear?abs}%，
+    <#else>
+        ${trrmStatistics.maxTrrmRegion.regionName!}比历史同期少${trrmStatistics.maxTrrmRegion.percentHistoryYear?abs}%，
+    </#if>
+    <#if trrmStatistics.minTrrmRegion.percentHistoryYear?? && trrmStatistics.minTrrmRegion.percentHistoryYear &gt; 0>
+        ${trrmStatistics.minTrrmRegion.regionName!}比历史同期多${trrmStatistics.minTrrmRegion.percentHistoryYear?abs}%。
+    <#else>
+        ${trrmStatistics.minTrrmRegion.regionName!}比历史同期少${trrmStatistics.minTrrmRegion.percentHistoryYear?abs}%。
+    </#if>
+<#else>
+    0mm。
+</#if>
+</@compress>
+
+<@compress single_line=true>
+根据近60天降雨总量情况：<#assign i=0 />
+<#if trrmStatistics.shanOne?? && trrmStatistics.shanTwo??>
+    ${trrmStatistics.shanOne.regionName!}、${trrmStatistics.shanTwo.regionName!}等地较历年比
+    <#if trrmStatistics.shanOne.percentMonthHistoryYear?? && trrmStatistics.shanOne.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.shanOne.percentMonthHistoryYear!?abs}
+        <#else>
+            少${trrmStatistics.shanOne.percentMonthHistoryYear!?abs}
+    </#if>
+    ~
+    <#if trrmStatistics.shanTwo.percentMonthHistoryYear?? && trrmStatistics.shanTwo.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.shanTwo.percentMonthHistoryYear!?abs}%
+        <#else>
+            少${trrmStatistics.shanTwo.percentMonthHistoryYear!?abs}%
+    </#if>
+    ，${trrmStatistics.shanOne.soilMoisture!}~${trrmStatistics.shanTwo.soilMoisture!}；
+<#elseif trrmStatistics.shanOne??>
+    ${trrmStatistics.shanOne.regionName!}较历年比
+    <#if trrmStatistics.shanOne.percentMonthHistoryYear?? && trrmStatistics.shanOne.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.shanOne.percentMonthHistoryYear!?abs}%
+    <#else>
+        少${trrmStatistics.shanOne.percentMonthHistoryYear!?abs}%
+    </#if>
+    ，${trrmStatistics.shanOne.soilMoisture!}；
+<#elseif trrmStatistics.shanTwo??>
+    ${trrmStatistics.shanTwo.regionName!}较历年比
+    <#if trrmStatistics.shanTwo.percentMonthHistoryYear?? && trrmStatistics.shanTwo.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.shanTwo.percentMonthHistoryYear!?abs}%，
+        <#else>
+            少${trrmStatistics.shanTwo.percentMonthHistoryYear!?abs}%，
+    </#if>
+    ${trrmStatistics.shanTwo.soilMoisture!}；
+<#else>
+    <#assign i+=1 />
+</#if>
+<#if trrmStatistics.ganhanOne?? && trrmStatistics.ganhanTwo??>
+    ${trrmStatistics.ganhanOne.regionName!}、${trrmStatistics.ganhanTwo.regionName!}等地较历年比
+    <#if trrmStatistics.ganhanOne.percentMonthHistoryYear?? && trrmStatistics.ganhanOne.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.ganhanOne.percentMonthHistoryYear!?abs}
+        <#else>
+            少${trrmStatistics.ganhanOne.percentMonthHistoryYear!?abs}
+    </#if>
+    ~
+    <#if trrmStatistics.ganhanTwo.percentMonthHistoryYear?? && trrmStatistics.ganhanTwo.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.ganhanTwo.percentMonthHistoryYear!?abs}%
+        <#else>
+            少${trrmStatistics.ganhanTwo.percentMonthHistoryYear!?abs}%
+    </#if>
+    ，${trrmStatistics.ganhanOne.soilMoisture!}~${trrmStatistics.ganhanTwo.soilMoisture!}。
+<#elseif trrmStatistics.ganhanOne??>
+    ${trrmStatistics.ganhanOne.regionName!}较历年比
+    <#if trrmStatistics.ganhanOne.percentMonthHistoryYear?? && trrmStatistics.ganhanOne.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.ganhanOne.percentMonthHistoryYear!?abs}%，
+        <#else>
+            少${trrmStatistics.ganhanOne.percentMonthHistoryYear!?abs}%，
+    </#if>
+    ${trrmStatistics.ganhanOne.soilMoisture!}。
+<#elseif trrmStatistics.ganhanTwo??>
+    ${trrmStatistics.ganhanTwo.regionName!}较历年比
+    <#if trrmStatistics.ganhanTwo.percentMonthHistoryYear?? && trrmStatistics.ganhanTwo.percentMonthHistoryYear &gt; 0>
+        多${trrmStatistics.ganhanTwo.percentMonthHistoryYear!?abs}%，
+        <#else>
+            少${trrmStatistics.ganhanTwo.percentMonthHistoryYear!?abs}%，
+    </#if>
+    ${trrmStatistics.ganhanTwo.soilMoisture!}。
+<#else>
+    <#assign i+=1 />
+</#if>
+<#if i==2>
+    ${regionName!}各区域墒情较适宜。
+</#if>
+</@compress>
+
+
+<@compress single_line=true>
+<#if diseaseControls?size &gt; 0 && bugDiseaseControls?size &gt; 0>
+    <#assign x='' />
+    <#list diseaseControls as item>
+        <#if item_index == 0>
+            <#assign x='${item.diseaseName!}' />
+            <#else>
+                <#assign x+='，${item.diseaseName!}' />
+        </#if>
+    </#list>
+    <#assign x+='；' />
+    <#list bugDiseaseControls as item>
+        <#if item_index == 0>
+            <#assign x+='${item.diseaseName!}' />
+            <#else>
+                <#assign x+='，${item.diseaseName!}' />
+        </#if>
+    </#list>
+    当前阶段易发生${x}等病虫害。
+<#elseif diseaseControls?size &gt; 0>
+    <#assign y='' />
+    <#list diseaseControls as item>
+        <#if item_index == 0>
+            <#assign y='${item.diseaseName!}' />
+            <#else>
+                <#assign y+='，${item.diseaseName!}' />
+        </#if>
+    </#list>
+    当前阶段易发生${y}等病害。
+<#elseif bugDiseaseControls?size &gt; 0>
+    <#assign z='' />
+    <#list bugDiseaseControls as item>
+        <#if item_index == 0>
+            <#assign z+='${item.diseaseName!}' />
+            <#else>
+                <#assign z+='，${item.diseaseName!}' />
+        </#if>
+    </#list>
+    当前阶段易发生${z}等虫害。
+<#else>
+    当前阶段无病虫害信息。
+</#if>
+</@compress>

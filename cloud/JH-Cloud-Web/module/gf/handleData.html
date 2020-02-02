@@ -1,0 +1,2172 @@
+<style type="text/css">
+
+    /**状态文字颜色*/
+    .green{color:#34b40e;}
+    .red{color:#ff0000;}
+    #search_dataType,#search_status{width:120px;}
+    caption{text-align: left;}
+    .handle_step,caption{  font-weight: bolder; line-height:25px; }
+    caption:before{content: '';display: inline-block;height: 12px;width: 7px;background: #1f4350;margin-right: 10px;}
+    table tr{border:solid 1px #E5E5E5;}
+    .content2{position:relative;margin: 0px 10px 0px 10px;}
+    .stepExecuteContain,.stepShowContain{width:calc(100% - 20px);background-color:#ffffff;}
+    .divMagin{margin:15px 0;}
+    td{overflow: hidden;white-space: nowrap;text-overflow: ellipsis;padding: 1px;height:30px;}
+    .title_name{display: inline-block;padding: 7px 0px;background: #E5E5E5;width: 100%;text-align: center;}
+    .dataTable ,.dataTableForm, .tbHandleInfo{width:100%;table-layout: fixed;word-wrap:break-word;border-collapse:collapse;border-spacing:0;}
+    .dataTable .header ~  tr{text-align: center;}
+    .hand{cursor:pointer;color:#00A7EC;}
+    .spanBtn{display:-moz-inline-box;display:inline-block;text-align:center;background-color: #1f4350;color: #ffffff;cursor:pointer;}
+    .spanBtnRight{text-align: right;}
+    .disabled{background-color: #9e9e9e;}
+    .actived{background-color: #1f4350;}
+    .divForm{position: relative;margin:26px 0 0px 0;}
+    .divForm .triangle-up{width:0px;height:0px;border-color: #1f4350 transparent;border-width: 0px 8px 16px 8px;border-style:solid;right:145px;top:-16px;position: absolute;}
+    .divForm ul ,.divTable ul{width: 100%;overflow: hidden;margin: 8px;height: 30px;}
+    .divForm ul li {float: left;width: calc(98% / 3);}
+    .divForm span {display: inline-block;width: 80px;margin-right: 5px;}
+    .divForm input[type=text], .divForm select {border: solid 1px black;width: calc(100% - 105px);}
+    .divForm .twoInput {width: calc((100% - 95px) / 2) !important;}
+    .divSplit ul{float:left;}
+    .divSplit li{float: left;margin: 0 2px 0 2px;}
+    .tbHandleInfo li{text-overflow: ellipsis;white-space:nowrap;overflow:hidden;margin:0 5px 0 5px;}
+    .saveResult{text-align: left;}
+    .executeBtn{text-align:center;padding-bottom:10px;}
+    .td1{text-align: right;width:100px;}
+    .blank1{width:7px;display: inline-block;}
+    .container{padding-top:10px;width:100%;}
+    #ckSave{vertical-align: middle;}
+    #againDialog,#startDialog{font-size:14px;}
+    .addHandle{margin-right:10px;}
+    #selHandle,.tbForm{height: 26px;line-height: 26px;padding:0 3px;border-radius:5px;outline:none;border:1px solid #EEEEEE;width:100%;}
+    .tbForm{width:calc(100% - 8px);}
+    .formSelect{width:100% !important;}
+    .div_row{border: solid 1px #E5E5E5;padding:1px;margin: 1px;}
+    .div_row  div{line-height: 16px;}
+    .inline-block div{display: inline-block;}
+    .web-box{display:-webkit-box;}
+    .div_row>div:nth-child(odd){width: 100px;}
+    .handle_detail>div:nth-child(2)>div:nth-child(2),
+    .handle_detail>div:nth-child(5)>div:nth-child(2){width: calc((100% - 320px)/2);padding-left: 5px;}
+    .handle_detail>div:nth-child(2)>div:nth-child(4),
+    .handle_detail>div:nth-child(5)>div:nth-child(4){ width: calc((100% - 320px)/2);padding-left: 5px;}
+    .handle_detail>div:nth-child(3)>div:last-child,
+    .handle_detail>div:nth-child(4)>div:last-child{width: calc(100% - 110px);padding-left: 5px;}
+    .step_index{ display: inline-block;  background: #1f4350;  color: #fff;  padding: 5px;  border: solid 1px;  border-radius: 4px;}
+    .handle_step{position: relative;height: 38px;margin-top: 10px;  margin-left:15px;}
+    .handle_step:before{top: 25px;left:12px;position: absolute;content: '';width:0;height: 0;border: 10px solid #1f4350;border-bottom-color: transparent;border-left-color: transparent;border-right-color: transparent;}
+    .f1,.f3{background:#E5E5E5;}
+    /*.f2,.f4{width:40% !important;}*/
+    .handleResult li{cursor: pointer;}
+
+    .form{height:24px;line-height:24px;}
+    .form span{float:left;display:block;}
+    .notShow{display: none;}
+    .show{display: inline-block;}
+</style>
+
+<div class="content" style="overflow-y: auto; height: 100%;">
+
+
+
+
+<div class="content2 clear">
+    <div class="searchItems clear">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">任务名称：</span>
+                    <span>
+                        <input id="search_handleName" class="input" />
+                    </span>
+                </div>
+                <div>
+                    <span class="label">数据类型：</span>
+                    <span>
+                        <select id="search_storageType" class="input"></select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">卫星：</span>
+                    <span>
+                        <select id="search_dataType" class="input"></select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">区域：</span>
+                    <span>
+                        <input type="text" id="txtArea" placeholder="请选择区域" class="input"/>
+                    </span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="searchBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="createBtn" value="创建任务" />
+            </div>
+            </div>
+            <div class="searchRow">
+                <div class="searchBGleft" >
+                    <div>
+                        <span class="label">任务状态：</span>
+                        <span>
+                        <select id="search_status" class="input"></select>
+                    </span>
+                    </div>
+                    <div>
+                        <span class="label2">创建人：</span>
+                        <span>
+                            <input id="search_creatorName" class="input" />
+                        </span>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="grid">
+        <table id="handleDataGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+
+<div class="stepExecuteContain" style="display: none;">
+    <div class="content container">
+        <div>
+            <table class="dataTableForm" cellspacing="0" cellpadding="0" >
+                <caption>任务详情</caption>
+                <tr>
+                    <td class="td1"><span class="title_name">区域名称</span></td>
+                    <td><label id="lblAreaName"></label></td>
+                    <td class="td1"><span class="title_name">区域编码</span></td>
+                    <td><label id="lblAreaCode"></label></td>
+                </tr>
+                <tr>
+                    <td class="td1"><span class="title_name">数据时间</span></td>
+                    <td><label id="lblSearchTime"></label></td>
+                    <td class="td1"><span class="title_name">卫<span class="blank1"></span>星<!--<span class="blank1"></span>集--></span></td>
+                    <td><label id="lblDataSet"></label></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="divMagin">
+            <table id="tbStorageList" class="dataTable" cellspacing="0" cellpadding="0" ></table>
+            <div style="display: none;">
+                <span class="moreClass" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span>
+                <span style="clear: both;"></span>
+            </div>
+        </div>
+
+        <div class="divMagin clear">
+            <div style="width: 70%;float:left;">
+                <table id="tbHandleList" class="dataTable" cellspacing="0" cellpadding="0">
+                    <caption>处理步骤</caption>
+                    <tr class="header">
+                        <td width="30"><span class="title_name">编号</span></td>
+                        <td width="240"><span class="title_name">步骤名</span></td>
+                        <td><span class="title_name">参数</span></td>
+                        <td width="70"><span class="title_name">操作</span></td>
+                    </tr>
+                </table>
+            </div>
+            <div style="width: 30%;float:left;text-align: center;">
+                <table id="tbHandleForm" class="dataTableForm" cellspacing="0" cellpadding="0">
+                    <caption>添加步骤</caption>
+                    <tr>
+                        <td width="70"><span class="title_name">步<span class="blank1"></span>骤<span class="blank1"></span>名</span></td>
+                        <td class="stepSelect">
+                            <select id="selHandle"></select>
+                        </td>
+                    </tr>
+                    <!--<tr>-->
+                        <!--<td><span class="title_name">保存结果</span></td>-->
+                        <!--<td class="saveResult"><input id="ckSave" type="checkbox"></td>-->
+                    <!--</tr>-->
+                    <tr>
+                        <td colspan="2" align="right">
+                            <span class="spanBtn addHandle btn">添加步骤</span>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="executeBtn">
+            <span class="spanBtn executeHandle disabled btn">激活</span>
+            <span class="spanBtn executeHandleAgain disabled btn">重新执行</span>
+            <span class="spanBtn executeCancle btn">返回</span>
+        </div>
+    </div>
+</div>
+
+<div class="stepShowContain" style="display: none;">
+    <div class="content container">
+        <div>
+            <table class="dataTableForm" cellspacing="0" cellpadding="0" >
+                <caption>任务详情</caption>
+                <tr>
+                    <td class="td1"><span class="title_name">任务名称</span></td>
+                    <td colspan="5"><label id="lblTaskNameShow"></label></td>
+                </tr>
+                <tr>
+                    <td class="td1"><span class="title_name">区域名称</span></td>
+                    <td width = "30%"><label id="lblAreaNameShow"></label></td>
+                    <td class="td1"><span class="title_name">区域编码</span></td>
+                    <td width = "20%"><label id="lblAreaCodeShow"></label></td>
+                    <td class="td1"><span class="title_name">卫<span class="blank1"></span>星<!--<span class="blank1"></span>集--></span></td>
+                    <td><label id="lblDataSetShow"></label></td>
+                </tr>
+                <tr>
+                    <td class="td1"><span class="title_name">处理时间</span></td>
+                    <td><label id="lblSearchTimeShow"></label></td>
+                    <td class="td1"><span class="title_name">任务状态</span></td>
+                    <td><label id="lblHandleStatusShow"></label></td>
+                    <td class="td1"><span class="title_name">错误信息</span></td>
+                    <td class="red"><label id="lblFailReasonShow"></label></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="divMagin">
+            <table id="tbStorageListShow" class="dataTable" cellspacing="0" cellpadding="0" ></table>
+            <div style="display: none;">
+                <span class="moreClass" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span>
+                <span style="clear: both;"></span>
+            </div>
+        </div>
+
+        <div class="divMagin">
+            <div class="tbHandleInfo" id="tbHandleInfo"></div>
+        </div>
+        <div class="executeBtn">
+            <span class="spanBtn showCancle btn">返回</span>
+        </div>
+    </div>
+</div>
+<div id="startDialog" style="display:none;" ></div>
+<div id="againDialog" style="display:none;" ></div>
+
+    <div class="formDialog form" id="createTaskDialog" style="display:none;">
+        <table>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>数据类型:</td>
+                <td class="two_td2">
+                    <select id="storageType" class="inputType" onfocus="this.style.color='#000000'"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>卫星:</td>
+                <td class="two_td2">
+                    <select id="satId" class="inputType" onfocus="this.style.color='#000000'"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>区域:</td>
+                <td class="two_td2">
+                    <input type="text" id="region" class="inputType" placeholder="请选择区域" readonly/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="formDialog form" id="dataSatImportDialog" style="display:none;">
+        <div  id="reprocessDetailList">
+            <span>待导入数据集路径：</span><span id="reprocessFileName"  class="viewType" style="width: 250px;"></span>
+        </div>
+        <table>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>区域:</td>
+                <td class="two_td2">
+                    <input type="text" id="regionImp" class="inputType" placeholder="请选择区域" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>数据集:</td>
+                <td class="two_td2">
+                    <select id="dataSet" class="inputType" onfocus="this.style.color='#000000'"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>作物:</td>
+                <td class="two_td2">
+                    <select id="crop"  class="inputType crop" onfocus="this.style.color='#000000'"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><em class="txtRequired">*</em>精度:</td>
+                <td class="two_td2">
+                    <select id="resolution" class="inputType resolution" onfocus="this.style.color='#000000'"></select>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<script>
+    require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","dateUtil","RegionModule","commons"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,dateUtil,RegionModule,commons) {
+        var processDialog = $("#process");
+
+        var init = function(){
+            fileSearchDataType();
+            taskStatusSearch();
+            RegionSelectFun();
+
+            handleDataGrid();
+
+            $(window).resize(function(){
+                $("#handleDataGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+            executeCancleEvent();
+            showCancleEvent();
+            searchEvent();
+
+            selHandleEvent();
+            addHandleStepEvent();
+            executeHandleProgram();
+            $("#resetBtn").on("click",resetFun);
+            $("#createBtn").on("click",createTaskFun);
+            //downAndUpTdEvent();
+        }
+
+        /**
+         * 创建数据处理任务
+         * @version<1> 2019-02-14 zhangshen :created.
+         */
+        var createTaskFun = function(){
+            initDataDict(700, "storageType");
+            initDataDict(400, "satId");
+            regionSelectFun("region");
+
+            var dialog = $("#createTaskDialog");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '创建数据生产任务',
+                height: 260,
+                width: 430,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    dialog.dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"确定",
+                    click:function(){
+                        createTaskInfoFun(dialog);
+                    }},{
+                    text:"取消",
+                    click:function(){
+                        dialog.dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        };
+
+        /**
+         * Description: 手动创建数据处理任务确认操作
+         * @version <1> 2019-02-14 16:15 zhangshen: Created.
+         */
+        var createTaskInfoFun = function (dialog) {
+            if(!formVerf()){//验证
+                return ;
+            }
+            var storageType = $("#storageType").val();//数据类型id
+            //var satId = $("#satId").val();//卫星id
+            var satName = $("#satId option:selected").text();//卫星name
+            var regionId = $("#region").attr("regionid") || '';//区域id
+            var chinaName = $("#region").attr("chinaname") || '';//区域chinaName
+
+            var param = {};
+            param.storageType = storageType;
+            //param.satId = satId;
+            param.satName = satName;
+            param.regionId = regionId;
+            param.chinaName = chinaName;
+            param.handleStatus = 1001;
+            param.taskType = 2;
+
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.url = HANDLE_DATA.createHandleTask_url;
+            ajax.opts.successFun = function(data){
+                dialog.dialog("close");
+                if (data.flag) {
+                    PopWin.showMessageWin("创建数据处理任务成功");
+                } else {
+                    setTimeout(function () { PopWin.showMessageWin(data.msg);},1000);
+                }
+                $('#searchBtn').trigger('click');
+            };
+            ajax.opts.failureFun = function(){
+                PopWin.showMessageWin("系统错误");
+            };
+            ajax.run();
+        };
+
+        /**
+         * 创建数据处理任务，表单提交验证
+         * @version<1> 2019-02-14 zhangshen :created.
+         */
+        var formVerf = function () {
+            var dialog = $("#createTaskDialog");
+
+            if(formVerfication.checkInputIsEmpty($("#storageType"),dialog,'数据类型不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#satId"),dialog,'卫星不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#region"),dialog,'区域不能为空')){
+                return false;
+            }
+            return true;
+        };
+
+        /**
+         * 查询数据字典数据
+         * @param parentId ： 上级节点ID
+         * @paran idName : 类选择器
+         * @version <1> 2019-02-14 zhangshen : Created.
+         */
+        var initDataDict = function(parentId, idName) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='" + element.dictId + "' dataCode = '" + element.dataCode + "'>" + element.dataName + "</option>";
+                    });
+                    $("#"+idName).html("");//清空
+                    $("#"+idName).append(str);
+                }
+            };
+            ajax.run();
+        };
+
+        /**
+         * 区域选择控件
+         * @version <1> 2019-02-14 zhangshen : Created.
+         */
+        var regionSelectFun = function (regionIdName,cropIdName) {
+            var txtArea = document.getElementById(regionIdName);
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+                    }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            };
+            queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+        };
+
+        /**
+         * 通过区域获取作物
+         * @version <1> 2019-02-18 zhangshen : Created.
+         */
+        var queryCropFun = function(regionId,cropIdName){
+            if (regionId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            }else{
+                $('#'+cropIdName).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * 初始化作物下拉框
+         * @param crop 查询出的作物对象集合
+         * @version <1> 2019-02-18 zhangshen : Created.
+         */
+        var initCropFun = function(crop,cropIdName){
+            var result;
+            result = '<option value="">--请选择--</option>';
+            if(crop!=null){
+                $.each(crop,function(i,o){
+                    result += '<option value = "' + o.cropId + '" dataCode="'+o.cropCode+'">' + o.cropName + '</option>';
+                });
+            }
+            $('#'+cropIdName).html(result);
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            $("#txtArea").removeAttr("regionid");
+            fileSearchDataType();
+            taskStatusSearch();
+        }
+
+        /**
+         * 检查结果是否默认保存
+         * @version <1> 2018-03-15 cxj：Created.
+         */
+        var checkIsSave = function(){
+            var selHandle = document.getElementById('selHandle');
+            var index = selHandle.selectedIndex;
+            if(index == -1){
+                return false;
+            }
+
+            var handleId = selHandle.options[index].value;
+            var ckSave = document.getElementById("ckSave");
+            if(handleId == 37 || handleId == 38){
+                ckSave.checked = true;
+            }else{
+                ckSave.checked = false;
+            }
+
+            return true;
+        }
+
+        /**
+         * 算法选择事件
+         * @version <1> 2018-03-14 cxj：Created.
+         */
+        var selHandleEvent = function(){
+            $('#selHandle').on('change',function(){
+                buildHandleParam(this);
+            });
+        }
+
+        /**
+         * 算法选择参数
+         * @version <1> 2018-03-14 cxj：Created.
+         */
+        var buildHandleParam = function(selHandle){
+            var tbHandleForm = document.getElementById("tbHandleForm");
+
+            for(var row = tbHandleForm.rows.length - 2;row >= 1;row--){
+                tbHandleForm.deleteRow(row);
+            }
+
+//            if(!checkIsSave()){
+//                return ;
+//            }
+            var index = selHandle.selectedIndex;
+            var paramJosn;
+            if (index != -1){
+                paramJosn = selHandle.options[index].getAttribute("params");
+            }
+            var paramJsonObj = eval(paramJosn);
+            for(var i in paramJsonObj){
+                var obj = paramJsonObj[i];
+                var newTr = tbHandleForm.insertRow(tbHandleForm.rows.length - 1);
+                var newTd = newTr.insertCell();
+                newTd.innerHTML = obj.title;
+                newTd = newTr.insertCell();
+                if(obj.type=="select"){
+                    var selObj = document.createElement("select");
+                    selObj.className = "tbForm formSelect";
+                    selObj.id = obj.code;
+                    newTd.appendChild(selObj);
+
+//                    var selDictParentId = obj.value_dictId;
+                    var selDictParentId = obj.parentId;
+                    if(selDictParentId){
+                        var ajax = new BaseAjax();
+//                        ajax.opts.url="dict/querySubDictListByParentId";
+                        ajax.opts.url = USER_CONFIG.searchTypeUrl;
+                        ajax.opts.data=JSON.stringify({"dictId":selDictParentId});
+                        ajax.opts.successFun = function(msg){
+                            if(msg.flag){
+                                for(var k = 0;k < msg.data.length;k++){
+                                    var dictObj = msg.data[k];
+//                                    var value = dictObj.dataValue;
+                                    var value = dictObj.dataCode;
+                                    var text = dictObj.dataName;
+                                    selObj.options.add(new Option(text,value));
+                                }
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+
+                        };
+                        ajax.run();
+                    }
+                }else{
+                    var value="";
+                    if(obj.code == 'sxscode'){
+                        value = document.getElementById("lblAreaCode").innerHTML;
+                    }
+                    if(obj.code == 'reference_clip_file'){
+                        value = "/standard_params/shp_standard/"+document.getElementById("lblAreaCode").innerHTML + ".shp";
+                    }
+                    if(obj.code == 'handletype'){
+                        var param_dataset = document.getElementById('lblDataSet').innerText;
+                        var selected_handleValue = $('#selHandle option:selected').text();
+                        if(selected_handleValue.indexOf("降水") != -1){
+                            value = "trmm";
+                        } else if (selected_handleValue.indexOf("地温") != -1){
+                            value = "t";
+                        } else if(selected_handleValue.indexOf("干旱") != -1){
+                            value = "nddi";
+                        } else if(selected_handleValue.indexOf("长势") != -1){
+                            value = "evi";
+                        }
+                    }
+                    if(obj.code == "handleareacode"){
+                        value = document.getElementById("lblAreaCode").innerHTML;
+                    }
+                    var placeholder = obj.placeholder?obj.placeholder:"";
+                    newTd.innerHTML = "<input class='tbForm' type = 'text' id = '" + obj.code + "' value='" + value + "' placeholder='" + placeholder + "'" + (obj.readonly == 'true' ? 'readonly' : '') + ">";
+                }
+            }
+        }
+
+        /**
+         * 删除所选步骤事件
+         * @version (1) 2018-3-15 cxj:created.
+         */
+        var delRowEvent = function(){
+            $('.hand').off('click');
+            $('.hand').on('click',function(){
+                var obj = this;
+                var rowIndex = obj.parentElement.parentElement.rowIndex;
+                var tbHandleList = document.getElementById("tbHandleList");
+
+                tbHandleList.deleteRow(rowIndex);
+                for(var i = 1;i < tbHandleList.rows.length;i++){
+                    tbHandleList.rows[i].cells[0].innerHTML=i;
+                }
+                if(tbHandleList.rows.length < 7){
+                    $(".addHandle").removeClass("disabled");
+                }
+                if(tbHandleList.rows.length < 2){
+//                    $(".executeHandle").removeClass("actived");
+                    $(".executeHandle").addClass("disabled");
+                    $(".executeHandleAgain").addClass("disabled");
+                }
+            });
+        }
+
+        /**
+         * 添加步骤事件
+         * @version (1) 2018-03-15 cxj:created.
+         */
+        var showFlag = false;//定义添加步骤到第6个的时候，是否弹出提示提示已经添加6个，不让再添加。
+        var addHandleStepEvent = function(){
+            $(".addHandle").click(function(event){
+                var tbHandleList = document.getElementById("tbHandleList");
+
+//                var $_selHandle = $('#selHandle option:selected');
+//                var $_referencereSample= $('#referenceresample');
+//                if($_selHandle.length && $_referencereSample.length){
+//                    if($_selHandle.val() == 40 && $_referencereSample.val().trim() == ''){
+//                        PopWin.showMessageWin("分辨不能为空");
+//                        return ;
+//                    }
+//                }
+
+
+
+                var selHandle = document.getElementById("selHandle");
+
+                if(selHandle.value == "" || selHandle.value == null){
+                    PopWin.showMessageWin("请添加数据处理步骤");
+                    return ;
+                }
+                var index = selHandle.selectedIndex;
+                if(index == -1){
+                    return;
+                }
+                if(showFlag){
+                    PopWin.showMessageWin("处理步骤数不能大于6");
+                }
+                if(tbHandleList.rows.length >= 7){
+                    showFlag = true;
+                    $(".addHandle").addClass("disabled");
+                    event.preventDefault();
+                    return;
+                }else{
+                    showFlag=false;
+                }
+
+                var newTr = tbHandleList.insertRow(tbHandleList.rows.length);
+                var newTd = newTr.insertCell(0);
+                newTd.innerHTML = tbHandleList.rows.length-1 + "";
+
+                var handleId = selHandle.options[index].value;
+                var handleName= selHandle.options[index].text;
+                newTd = newTr.insertCell(1);
+                newTd.innerHTML = handleName;
+                newTd.title = handleName;
+
+
+                var handleInfo=[];
+                handleInfo.push('"handleMetaId":"' + handleId + '"');
+                var handleParams = '"handleParams":"';
+                var formEls = document.getElementsByClassName("tbForm");
+                if(formEls.length > 0){
+                    for(var i = 0;i < formEls.length;i++){
+                        var element = formEls[i];
+                        handleParams += element.id + ':' + element.value + ',';
+                    }
+                    handleParams = handleParams.substring(0,handleParams.lastIndexOf(','));
+                }
+                handleParams += '"';
+
+                handleInfo.push(handleParams);
+
+//                handleInfo.push('"isSaveResult":"' + ckSave.checked + '"');
+                newTd = newTr.insertCell(2);
+                newTd.innerHTML = handleInfo;
+                newTd.title = handleInfo;
+                newTd = newTr.insertCell(3);
+                newTd.innerHTML = "<span class='hand'>删除</span>";
+
+                newTr.setAttribute("handleParam",handleInfo);
+
+
+                var tbStorageList = document.getElementById("tbStorageList");
+                if(tbStorageList.rows.length >= 2 && tbHandleList.rows.length >= 2) {
+                    $(".executeHandle").removeClass("disabled");
+                    $(".executeHandleAgain").removeClass("disabled");
+                }
+                delRowEvent();
+                if(tbHandleList.rows.length >= 7){
+                    $(".addHandle").addClass("disabled");
+                    showFlag = true;
+                    event.preventDefault();
+                    return;
+                }
+
+
+            })
+        }
+
+        /**
+         * 将参数转换为json对象
+         * @version (1) 2018-03-22 cxj:created.
+         */
+        var getParamJsonFun = function(paramJson){
+            var tempJson = {};
+            for(var key in paramJson){
+                if(key != ""){
+                    tempJson[key] = paramJson[key];
+                }
+            }
+            return tempJson;
+        }
+
+        /**
+         * 执行任务
+         * @version (1) 2018-03-15 cxj:created.
+         */
+        var executeHandleProgram = function(){
+            var tbHandleList = document.getElementById("tbHandleList");
+            var tbStorageList = document.getElementById("tbStorageList");
+            $(".executeHandle,.executeHandleAgain").click(function(){
+                if(tbHandleList.rows.length < 2 || tbStorageList.rows.length < 2){
+                    return ;
+                }else{
+                    var startDialog = $('#startDialog');
+                    startDialog.html("是否确认开始执行任务？");
+                    startDialog.dialog({
+                        autoOpen: false,
+                        title: '系统提示',
+                        height: 160,
+                        width: 410,
+                        modal: true,
+                        buttons:[ {
+                            text:"是",
+                            click:function(){
+                                $(this).dialog("close");
+                                var thisBtn=$(this);
+                                var resultJson = {};
+                                var handleInfoArray = [];
+
+                                for(var i = 1;i<tbHandleList.rows.length;i++){
+                                    var param = tbHandleList.rows[i].getAttribute("handleParam");
+                                    var tempJson = getParamJsonFun(eval('({' + param + '})'));
+                                    tempJson.orderInTask = i;
+                                    handleInfoArray.push(tempJson);
+                                }
+                                resultJson.operatorList = handleInfoArray;
+
+//                                var pendingDataArray = [];
+//
+//                                for(var i = 0;i < storageIdCache.length;i++){
+//                                    var pendingDataJson = {};
+//                                    pendingDataJson.storageId = storageIdCache[i];
+//                                    pendingDataArray.push(pendingDataJson);
+//                                }
+//
+//                                resultJson.pendingDataList = pendingDataArray;
+                                resultJson.regionId = regionCache.regionId;
+                                resultJson.areaCode = regionCache.regionCode;
+                                resultJson.satId = dataCategoryCache.dataId
+                                resultJson.satName = dataCategoryCache.dataName;
+                                resultJson.handleId = parseInt(currentSelectedHandleId);
+
+                                showProcess();
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = HANDLE_DATA.addHandleData_url;
+                                ajax.opts.data = JSON.stringify(resultJson);
+                                ajax.opts.successFun = function(msg){
+                                    processDialog.dialog("close");//关闭进度条
+                                    $('#searchBtn').trigger('click');
+                                    $('.content2').show();
+                                    $('.stepExecuteContain').css('display','none');
+                                    showFlag = false;//同时提示限制添加步骤次数的弹出框也要重置
+                                    $(".executeHandle").addClass("disabled");//点击执行任务后，激活按钮变灰，
+                                    $(".executeHandleAgain").addClass("disabled");
+                                    $('.addHandle').removeClass("disabled");//添加步骤按钮重置，变亮
+
+                                };
+                                ajax.opts.errorFun = function () {
+                                    processDialog.dialog("close");//关闭进度条
+                                };
+                                ajax.run();
+
+                            }},{
+                            text:"否",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                    startDialog.dialog("open");
+                }
+            });
+        }
+
+        /**
+         * 日期事件
+         * @version <1> 2018-03-09 cxj：Created.
+         */
+        var dateEvent = function(idName){
+            $("#"+idName).jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        /**
+         * 加载数据分类
+         * @version <1> 2018-03-08 cxj：Created.
+         */
+        //var dataTypeObj = {};
+        var fileSearchDataType = function() {
+            /*var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.dataType_url;
+            ajax.opts.async = true;
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var dataTypeArr = result.data;
+                    var optList = '<option value="">所有分类</option>';
+                    for (var i in dataTypeArr) {
+                        var dict = dataTypeArr[i];
+                        //dataTypeObj[dict.dictId] = dict.dataName;
+                        optList += "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                    }
+                    $("#search_dataType").html(optList);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();*/
+            initDataDict(700, "search_storageType");
+            initDataDict(400, "search_dataType");
+        };
+
+        /**
+         * 任务状态查询
+         * @version <1> 2018-03-13 cxj：Created.
+         */
+        //var taskStatusObj = {};
+        var taskStatusArray = [];
+        var taskStatusSearch = function() {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByCode_url;
+            ajax.opts.async = true;
+            ajax.opts.data = JSON.stringify({'dataCode' : 'DataHandleType'});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var taskStatusArr = result.data;
+                    taskStatusArray = taskStatusArr;
+                    var optList = '<option value="">所有状态</option>';
+                    for (var i in taskStatusArr) {
+                        var dict = taskStatusArr[i];
+                        //taskStatusObj[dict.dictId] = dict.dataName;
+                        optList += "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                    }
+                    $("#search_status").html(optList);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        /**
+         * 区域选择控件
+         * @version<1> 2018-03-08 cxj:Created.
+         */
+        var RegionSelectFun = function(){
+            $('#txtArea').on('click',function(){
+                var opts = {colNum:3,width:400};
+                opts.url = REGION_CONFIG.findRegion_url;
+                var regionSelector = new RegionModule.RegionSelector("txtArea",opts);
+                regionSelector.show();
+            });
+            return true;
+        }
+
+        /**
+         * 改变table样式
+         * @version <1> 2018-03-08 cxj：Created.
+         */
+        var chanageTableCss = function(){
+            var divObj = $('#handleDataGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        }
+
+        /**
+         * 下载任务记录的渲染
+         * @version <1> 2018-03-08 cxj：Created.
+         */
+        var handleCache = [];
+        var handleDataGrid = function () {
+            $("#handleDataGrid").jqGrid({
+                url: HANDLE_DATA.findTaskPage_url,
+                datatype: "json",
+                postData: {
+                   userFlag:commons.getMyDataFun()
+                },
+                mtype: 'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames: ['handleId','regionCode','regionId','任务名称','storageType','数据类型','satId','卫星', '区域', '任务创建人', '创建时间', 'handleStatus', '任务状态','操作'],
+                colModel: [
+                    {name: 'handleId', index: 'handle_id',hidden:true},
+                    {name: 'regionCode', index: 'region_code',hidden:true},
+                    {name: 'regionId', index: 'region_id',hidden:true},
+                    {name: 'handleName', index: 'handle_name', align: 'left', width: '25%'},
+                    {name: 'storageType', index: 'storage_type', align: 'center', width: '10%',hidden:true},
+                    {name: 'storageTypeCN', index: 'storage_type_cn', align: 'center', width: '10%'},
+                    {name: 'satId', index: 'sat_id', align: 'center', hidden:true,
+                        formatter:function (cellvalue,options,rowObject) {
+                            handleCache.push(rowObject);
+                            return cellvalue;
+                        }
+                    },
+                    {name: 'satNameCN', index: 'sat_id', align: 'center', width: '8%'},
+                    {name: 'chinaName', index: 'china_name', align: 'center', width: '8%'},
+                    {name: 'creatorName', index: 'creator_name', align: 'center', width: '8%'},
+                    {
+                        name: 'createTime',
+                        index: 'create_time',
+                        width: '15%',
+                        align: "center",
+                        formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd hh:mm:ss");
+                        }
+                    },
+                    {name: 'handleStatus', index: 'handle_status', align: 'center', width: '10%', hidden:true/*,
+                        formatter:function (cellvalue,options,rowObject) {
+                            var dictCode = '';
+                            var className = '';
+                            for(var i = 0;i < taskStatusArray.length;i++){
+                                if(taskStatusArray[i].dictId == rowObject.handleStatus){
+                                    dictCode = taskStatusArray[i].dataValue;
+                                    break;
+                                }
+                            }
+
+                            if(dictCode == 'success'){
+                                className = 'green';
+                            }else if(dictCode == 'failure'){
+                                className = 'red';
+                            }
+                            return "<span class='"+ className +"'>"+ (taskStatusObj[cellvalue] == null ? "" : taskStatusObj[cellvalue]) +"</span>"
+                        }*/
+                    },
+                    {name: 'handleStatusCN', index: 'handle_status', align: 'center', width: '10%',
+                        formatter:function (cellvalue,options,rowObject) {
+                            var className = '';
+                            if(rowObject.handleStatus == 1004){//成功
+                                className = 'green';
+                            }else if(rowObject.handleStatus == 1005){//失败
+                                className = 'red';
+                            }
+                            return "<span class='"+ className +"'>"+ (cellvalue == null ? "" : cellvalue) +"</span>"
+                        }
+                    },
+                    {
+                        name: 'cz',
+                        index: 'cz',
+                        width: '15%',
+                        align: "center",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            var isStart = '0',isAgain = '0',isDataSatImport = '0',isDelete= '0';
+                            var isStartImg = 'TtostartG.png',isAgainImg = 'TrefreshG.png',isDataSatImportImg = 'warehousingG.png',isDeleteImg="TdeleteG.png";
+
+                            /*var dictCode = '';
+                            for(var i = 0;i < taskStatusArray.length;i++){
+                                if(taskStatusArray[i].dictId == rowObject.handleStatus){
+                                    dictCode = taskStatusArray[i].dataValue;
+                                    break;
+                                }
+                            }
+
+                            if (dictCode == 'failure' || dictCode =='success'){
+                                isAgainImg = 'Trefresh.png';
+                                isAgain = '1';
+                            }
+
+
+                            if(dictCode == 'no'){
+                                isStart = '1';
+                                isStartImg = 'Ttostart.png';
+                            }*/
+
+                            if(rowObject.handleStatus == 1004 || rowObject.handleStatus == 1005){//成功 或 失败
+                                isAgainImg = 'Trefresh.png';
+                                isAgain = '1';
+                            }else if(rowObject.handleStatus == 1001){//未激活
+                                isStart = '1';
+                                isStartImg = 'Ttostart.png';
+                            }
+
+                            if(rowObject.handleStatus == 1004){
+                                isDataSatImport = '1';
+                                isDataSatImportImg = 'warehousing.png';
+                            }
+                            var accountId=$(".rightTop div.user").attr("accountid");
+                            if(rowObject.creator==accountId){
+                                isDeleteImg="Tdelete.png";
+                                isDelete='1';
+                            }
+
+                            var str = "<img src='images/public/" + isStartImg + "' data-exec=" + isStart +" task-type='"+rowObject.taskType+ "' class='startBtn' data-id='" + rowObject.handleId + "' data-sat-id='" + rowObject.satId + "' title='激活任务' >" +
+                                    "<img src='images/public/" + isAgainImg + "' data-exec = " + isAgain +" task-type='"+rowObject.taskType+ "' class='againBtn' data-id='" + rowObject.handleId + "' data-sat-id='" + rowObject.satId + "' title='重新执行' style='margin-right: 3px;'>" +
+                                    "<img src='images/public/Twatch.png' task-type='"+rowObject.taskType+"' class='detailBtn' data-id='" + rowObject.handleId + "' data-sat-id='" + rowObject.satId + "' title='查看明细' >" +
+                                    "<img src='images/public/" + isDataSatImportImg + "' data-exec=" + isDataSatImport + " class='dataSatImportBtn' data-id='" + rowObject.handleId + "' data-sat-id='" + rowObject.satId + "' title='数据集入库' >"+
+                                    "<img src='images/public/" + isDeleteImg + "' data-exec=" + isDelete + " class='deleteBtn' data-id='" + rowObject.handleId + "' title='删除'>" ;
+                            return str;
+                        }
+                    }
+                ],
+                width: '100%',
+                autowidth: true,
+                height: '100%',
+                rowNum: 15,
+                rowList: [15,30],
+                pager: '#pager2',
+                //sortname: 'handle_id',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete: function () {
+                    commons.isNextDisable();
+                    $(".startBtn,.againBtn,.detailBtn,.dataSatImportBtn,.moreClass,.deleteBtn").off("click");
+
+                    $(".startBtn").on("click", function () {
+                        if($(this).attr('data-exec') == 1){
+                            startFun($(this));
+                        }
+                    });
+
+                    $(".againBtn").on("click", function () {
+                        if($(this).attr('data-exec') == 1){
+                            againFun1($(this));
+                        }
+                    });
+
+                    $(".detailBtn").on("click", function () {
+                        detailFun($(this));
+                    });
+
+                    $(".moreClass").on("click", function () {
+                        if($(".trToggle").hasClass("notShow") ){
+                            $(".trToggle").show().removeClass("notShow").addClass("show");// 显示
+                            $(".moreClass").html("收起");
+                        }else{
+                            $(".trToggle").hide().removeClass("show").addClass("notShow");// 执行隐藏
+                            $(".moreClass").html("更多");
+                        }
+                    });
+
+                    $(".dataSatImportBtn").on("click", function () {
+                        if($(this).attr('data-exec') == 1){
+                            dataSatImportFun($(this));
+                        }
+                    });
+                    $(".deleteBtn").on("click", function () {
+                        if($(this).attr('data-exec') == 1){
+                            deleteHandleFun($(this).attr("data-id"));
+                        }
+                    });
+                }
+            });
+        };
+
+        /**
+         * 数据集入库
+         * @param obj 数据处理任务obj
+         * @version <1> 2019-02-18 :create
+         */
+        var dataSatImportFun = function (obj) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.findTaskByHandleId_url;
+            ajax.opts.data = JSON.stringify({'handleId' : obj.attr("data-id")});
+            ajax.opts.successFun = function(data){
+                if(data.flag){
+                    var dataOjb = data.data;
+                    var filePath = dataOjb.filePath;
+                    var taskObj = dataOjb.taskObj;
+                    $('#reprocessFileName').html(filePath);
+                    $('#reprocessFileName').attr('title',filePath);
+                    regionSelectFun("regionImp", "crop");//加载区域 和 作物
+                    $("#regionImp").val(taskObj.chinaName);//设置区域中文名
+                    $("#regionImp").attr("regionid", taskObj.regionId).attr("regioncode", taskObj.regionCode).attr("chinaname", taskObj.chinaName).attr("disabled",true).css("background-color","#ebebe4");//设置区域id
+                    queryCropFun(taskObj.regionId, "crop");//根据区域id查询加载作物
+                    initDataDict(1800, "dataSet");
+                    initDataDict(4000, "resolution");
+
+                    var dialog = $("#dataSatImportDialog");
+                    var dialogParent = dialog.parent();
+                    var dialogOwn = dialog.clone();
+                    dialog.dialog({
+                        autoOpen: false,
+                        title: '数据集入库',
+                        height: 320,
+                        width: 410,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            dialog.dialog("destroy").remove();
+                        },
+                        buttons: [{
+                            text:"确定",
+                            click:function(){
+                                dataSatImportInfoFun(dialog);
+                            }},{
+                            text:"取消",
+                            click:function(){
+                                dialog.dialog("close");
+                            }
+                        }]
+                    });
+                    dialog.dialog("open");
+                }else{
+                    PopWin.showMessageWin(data.msg);
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+            };
+            ajax.run();
+        };
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    //$(".ui-dialog-titlebar").hide();
+                    //$(".ui-dialog").css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+        /**
+         * 数据集入库
+         * @param dialog
+         * @param data 数据处理任务data
+         * @version <1> 2019-02-18 zhangshen :create
+         */
+        var dataSatImportInfoFun = function (dialog) {
+            if(!formVerfDataSatImport(dialog)){//验证
+                return ;
+            }
+
+            var resultimage = {};
+            resultimage.regionId = document.getElementById("regionImp").getAttribute("regionid");//区域id
+            resultimage.regionCode = document.getElementById("regionImp").getAttribute("regioncode");//区域code
+            resultimage.dsType = $('#dataSet option:selected').val();//数据集
+            resultimage.dsCode = $("#dataSet option:selected").attr("dataCode");
+            resultimage.cropId = $("#crop option:selected").val(); //作物
+            resultimage.cropCode = $("#crop option:selected").attr("dataCode");
+            resultimage.resolution = $("#resolution option:selected").val();
+            resultimage.storagePath = $("#reprocessFileName").html(); //文件路径
+            resultimage.regionName = document.getElementById("regionImp").getAttribute("chinaname");//区域name
+            resultimage.cropName = $("#crop option:selected").text();
+            resultimage.dsName = $("#dataSet option:selected").text();
+
+            dialog.dialog("close");
+            showProcess();
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(resultimage);
+            ajax.opts.url = DS_RESULTIMAGE.handleDataLoader_url;
+            ajax.opts.successFun = function(data){
+                processDialog.dialog("close");
+                if(data.flag){
+                    PopWin.showMessageWin("入库成功");
+                }else{
+                    PopWin.showMessageWin("入库失败");
+                }
+
+                $("#handleDataGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    page:1
+                }).trigger("reloadGrid");
+            };
+            ajax.opts.failureFun = function(){
+                processDialog.dialog("close");
+            };
+            ajax.run();
+        };
+
+        //验证
+        var formVerfDataSatImport = function(dialog){
+            if(formVerfication.checkInputIsEmpty($("#regionImp"),dialog,'区域不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#dataSet'),dialog,'数据集不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#crop'),dialog,'作物不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#resolution'),dialog,'精度不能为空')){
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * 根据状态获得颜色
+         * @param statusId 状态的编号
+         * @version <1> 2018-05-25 :updated
+         */
+        function getStatusColor(statusId) {
+            var dictCode = '';
+            for(var i = 0;i < taskStatusArray.length;i++){
+                if(taskStatusArray[i].dictId == statusId){
+                    dictCode = taskStatusArray[i].dataValue;
+                    break;
+                }
+            }
+
+            var className = '';
+            if(dictCode == 'success'){
+                className = 'green';
+            }else if(dictCode == 'failure'){
+                className = 'red';
+            }
+            return className;
+        }
+
+        /**
+         * 清除页面缓存
+         * @version <1> 2018-03-15 cxj：Created.
+         */
+        var clearPageCache = function(){
+            var trArray = $('#tbHandleList').find('tr');
+            $.each(trArray,function (i,o) {
+                if(i > 0){
+                    o.remove();
+                }
+            });
+
+            $('.executeHandle').removeClass('actived');
+
+            var selHandle = document.getElementById('selHandle');
+            buildHandleParam(selHandle);
+        }
+
+        /**
+         * 执行任务
+         * @version <1> 2018-03-09 cxj：Created.
+         */
+//        var storageIdCache = [];
+        var regionCache = {};
+        var dataCategoryCache = {};
+        var currentSelectedHandleId;
+        var startFun = function (obj) {
+            var handleId = obj.attr("data-id");
+            currentSelectedHandleId = handleId;
+            var tdArr = obj.parents('tr').find('td');
+            for(var i = 0;i < handleCache.length;i++){
+                if(handleCache[i].handleId == handleId){
+                    regionCache.regionCode = handleCache[i].regionCode;
+                    regionCache.regionId = handleCache[i].regionId;
+                    regionCache.chinaName = handleCache[i].chinaName;
+
+                    dataCategoryCache.dataId = handleCache[i].satId;
+                    dataCategoryCache.dataName = $(tdArr[5]).attr('title');
+                    break;
+                }
+            }
+
+            $('#lblAreaName').html(regionCache.chinaName);
+            $('#lblAreaCode').html(regionCache.regionCode);
+            //$('#lblDataSet').html(dataCategoryCache.dataName);
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.findTaskParams_url;
+            ajax.opts.data = JSON.stringify({'handleId' : handleId,'satId': obj.attr('data-sat-id')});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var handleData = result.data.handleData;
+
+                    $('#lblDataSet').html(handleData.satNameCN ? handleData.satNameCN : '');//数据集 中文赋值
+
+                    if(handleData.startDate != null && handleData.endDate != null){
+                        $('#lblSearchTime').text(handleData.startDate + " / " + handleData.endDate);
+                    }
+
+                    /*var handleFileLinks = result.data.handleFileLinks;
+                    var result1 = '<caption>处理文件:'+ (handleData.storageUrl == null ? '' : handleData.storageUrl) +'</caption><tr class="header"><td width="30"><span class="title_name">编号</span></td><td><span class="title_name">文件名</span></td><!--<td width="100"><span class="title_name">数据时间</span></td>--></tr>';
+                    $.each(handleFileLinks,function(i,o){
+                        if ( i<5 ) {
+                            result1 += '<tr><td>' + (i + 1) + '</td><td title='+ o +'>' + o + '</td></tr>';
+                        } else {
+                            result1 += '<tr class="trToggle notShow"><td>' + (i + 1) + '</td><td title='+ o +'>' + o + '</td></tr>';
+                        }
+                    });
+                    $('#tbStorageList').html(result1);
+                    if (handleFileLinks && handleFileLinks.length > 5) {
+                        $(".moreClass").parent().show();
+                    } else {
+                        $(".moreClass").parent().hide();
+                    }*/
+
+                    var handleConfigList = result.data.handleConfigList;
+                    var result2 = '<option value = "">--请选择--</option>';
+                    $.each(handleConfigList,function(i,o){
+                        result2 += '<option value="' + o.handleMetaId + '" params = \'' + o.handleMetaParams + '\'>' + o.handleMetaName + '</option>';
+                    });
+                    $('#selHandle').html(result2);
+//                    checkIsSave();
+                    clearPageCache();
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+
+            initHandleFileInfo(handleId, obj.attr('data-sat-id'), "tbStorageList",1,obj.attr('task-type'));//加载处理文件详情
+            clearPageCache();
+            //激活
+            $(".executeHandleAgain").hide();
+            $(".executeHandle").show();
+
+            $('.content2').hide();
+            $('.stepExecuteContain').css('display','block');
+        };
+
+
+        //重新执行
+        var againFun1 = function (obj) {
+            var handleId = obj.attr("data-id");
+            currentSelectedHandleId = handleId;
+            var tdArr = obj.parents('tr').find('td');
+            for(var i = 0;i < handleCache.length;i++){
+                if(handleCache[i].handleId == handleId){
+                    regionCache.regionCode = handleCache[i].regionCode;
+                    regionCache.regionId = handleCache[i].regionId;
+                    regionCache.chinaName = handleCache[i].chinaName;
+
+                    dataCategoryCache.dataId = handleCache[i].satId;
+                    dataCategoryCache.dataName = $(tdArr[5]).attr('title');
+                    break;
+                }
+            }
+
+            $('#lblAreaName').html(regionCache.chinaName);
+            $('#lblAreaCode').html(regionCache.regionCode);
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.findTaskParams_url;
+            ajax.opts.data = JSON.stringify({'handleId' : handleId,'satId': obj.attr('data-sat-id')});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var handleData = result.data.handleData;
+                    $('#lblDataSet').html(handleData.satNameCN ? handleData.satNameCN : '');//数据集 中文赋值
+
+                    if(handleData.startDate != null && handleData.endDate != null){
+                        $('#lblSearchTime').text(handleData.startDate + " / " + handleData.endDate);
+                    }
+
+                    var handleConfigList = result.data.handleConfigList;
+                    var result2 = '<option value = "">--请选择--</option>';
+                    $.each(handleConfigList,function(i,o){
+                        result2 += '<option value="' + o.handleMetaId + '" params = \'' + o.handleMetaParams + '\'>' + o.handleMetaName + '</option>';
+                    });
+                    $('#selHandle').html(result2);
+
+                    var handleConfigList = result.data.handleConfigList;
+                    var handleStepList = result.data.handleStepList;
+                    //清空历史步骤
+                    $("#tbHandleList tr").each(function(i){
+                        if(i>0){
+                            $(this).remove();
+                        }
+                    });
+
+                        //回显步骤
+                    for(var i=0;i<handleStepList.length;i++){
+                        var handle=handleStepList[i];
+                        $.each(handleStepList,function(index,o) {
+                            for (var j = 0; j < handleConfigList.length; j++) {
+                                if (handleStepList[i].handleMetaId == handleConfigList[j].handleMetaId) {
+                                    handle.handleMetaName = handleConfigList[j].handleMetaName;
+                                    break;
+                                }
+                            }
+                        });
+                        editHandleStepEvent(handle);
+                    }
+                    //重新执行
+                    $(".executeHandleAgain").show();
+                    $(".executeHandle").hide();
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+
+            initHandleFileInfo(handleId, obj.attr('data-sat-id'), "tbStorageList",1,obj.attr('task-type'));//加载处理文件详情
+
+            $('.content2').hide();
+            $('.stepExecuteContain').css('display','block');
+        };
+
+        /**
+         *回显步骤事件
+         * @version (1) 2019-04-02 lijie:created.
+         */
+        var editHandleStepEvent = function(handle){
+            var trArray = $('#tbHandleList').find('tr');
+            var tbHandleList = document.getElementById("tbHandleList");
+            var newTr = tbHandleList.insertRow(tbHandleList.rows.length);
+            var newTd = newTr.insertCell(0);
+            newTd.innerHTML = tbHandleList.rows.length-1 + "";
+            var handleId = handle.handleMetaId
+            var handleName= handle.handleMetaName;
+            newTd = newTr.insertCell(1);
+            newTd.innerHTML = handleName;
+            newTd.title = handleName;
+            var handleInfo=[];
+            handleInfo.push('"handleMetaId":"' + handleId + '"');
+            var handleParams = '"handleParams":"';
+            var formEls = document.getElementsByClassName("tbForm");
+            if(formEls.length > 0){
+                for(var i = 0;i < formEls.length;i++){
+                    var element = formEls[i];
+                    handleParams += element.id + ':' + element.value + ',';
+                }
+                handleParams = handleParams.substring(0,handleParams.lastIndexOf(','));
+            }
+            handleParams += '"';
+            handleInfo.push(handleParams);
+            newTd = newTr.insertCell(2);
+            newTd.innerHTML = handleInfo;
+            newTd.title = handleInfo;
+            newTd = newTr.insertCell(3);
+            newTd.innerHTML = "<span class='hand'>删除</span>";
+            newTr.setAttribute("handleParam",handleInfo);
+            var tbStorageList = document.getElementById("tbStorageList");
+            if(tbStorageList.rows.length >= 2 && tbHandleList.rows.length >= 2) {
+                $(".executeHandleAgain").removeClass("disabled");
+            }
+            delRowEvent();
+            if(tbHandleList.rows.length >= 7){
+                $(".addHandle").addClass("disabled");
+                $(".executeHandleAgain").addClass("disabled");
+                event.preventDefault();
+                return;
+            }
+
+        }
+
+
+
+        /**
+         * 重新执行任务
+         * @version <1> 2018-03-13 cxj：Created.
+         */
+        var againFun = function(handleId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.updateTaskAndStepStatus;
+            ajax.opts.data = JSON.stringify({'handleId' : handleId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    $('#searchBtn').trigger('click');
+                    $_obj.dialog("close");
+                }
+            }
+            ajax.opts.errorFun = function () {
+            };
+            ajax.run();
+
+        }
+
+        /**
+         * 查看详情
+         * @version <1> 2018-03-19 cxj：Created.
+         */
+        var detailFun = function(obj){
+            var handleId = obj.attr("data-id");
+            currentSelectedHandleId = handleId;
+            var tdArr = obj.parents('tr').find('td');
+            for(var i = 0;i < handleCache.length;i++){
+                if(handleCache[i].handleId == handleId){
+                    regionCache.regionCode = handleCache[i].regionCode;
+                    regionCache.regionId = handleCache[i].regionId;
+                    regionCache.chinaName = handleCache[i].chinaName;
+
+                    dataCategoryCache.dataId = handleCache[i].satId;
+                    dataCategoryCache.dataName = $(tdArr[5]).attr('title');
+                    break;
+                }
+            }
+
+            $("#lblTaskNameShow").html(handleCache[i].handleName);
+            $('#lblAreaNameShow').html(regionCache.chinaName);
+            $('#lblAreaCodeShow').html(regionCache.regionCode);
+            //$('#lblDataSetShow').html(dataCategoryCache.dataName);
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.findTaskParams_url;
+            ajax.opts.data = JSON.stringify({'handleId' : handleId,'satId': obj.attr('data-sat-id')});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var handleData = result.data.handleData;
+                    if(handleData.startTime != null && handleData.handleStatus != 1002){
+                        $('#lblSearchTimeShow').text((handleData.startTime ? handleData.startTime : '') + " / " + (handleData.endTime ? handleData.endTime : ''));
+                    }else{
+                        $('#lblSearchTimeShow').text('');
+                    }
+
+                    /*var handleFileLinks = result.data.handleFileLinks;
+                    var result1 = '<caption>处理文件:'+ (handleData.storageUrl == null ? '' : handleData.storageUrl) +'</caption><tr class="header"><td width="36"><span class="title_name">编号</span></td><td><span class="title_name">文件名</span></td><!--<td width="100"><span class="title_name">分辨率</span></td><td width="100"><span class="title_name">文件大小</span></td><td width="100"><span class="title_name">数据时间</span></td>--></tr>'
+                    $.each(handleFileLinks,function(i,o){
+                        if (i < 5) {
+                            result1 += '<tr><td>' + (i + 1) + '</td><td title='+ o +'>' + o + '</td></tr>';
+                        } else {
+                            result1 += '<tr class="trToggle notShow"><td>' + (i + 1) + '</td><td title='+ o +'>' + o + '</td></tr>';
+                        }
+                    });
+                    $('#tbStorageListShow').html(result1);
+                    if (handleFileLinks && handleFileLinks.length > 5) {
+                        $(".moreClass").parent().show();
+                    } else {
+                        $(".moreClass").parent().hide();
+                    }*/
+
+                    var handleData = result.data.handleData;
+                    $('#lblHandleStatusShow').removeClass('red').removeClass('green');
+                    $('#lblHandleStatusShow').addClass(getStatusColor(handleData.handleStatus));
+                    $('#lblHandleStatusShow').text(handleData.handleStatusCN ? handleData.handleStatusCN : '');
+                    $('#lblFailReasonShow').text(handleData.failReason ? handleData.failReason : '');
+                    $('#lblFailReasonShow').attr('title',handleData.failReason ? handleData.failReason : '');
+                    $('#lblDataSetShow').html(handleData.satNameCN ? handleData.satNameCN : '');
+
+                    showTaskInfo(result.data);
+
+                    $('.handleResult li').off("click").on('click',function () {
+                        var fileName = this.innerText;
+                        fileName = encodeURI(fileName);
+                        commons.createIframe(HANDLE_DATA.download_url + "?dataUrl="+ fileName + "&AccessToken=" +  commons.getAccessToken())
+                    });
+
+                    $.each(result.data.handleStepList,function(index,o) {
+                        $(".moreClass_in_Step" + (index + 1)).off("click").bind("click", function () {
+                            if($(".trToggle_in" + (index + 1)).hasClass("notShow") ){
+                                $(".trToggle_in" + (index + 1)).show().removeClass("notShow").addClass("show");// 显示
+                                $(".moreClass_in_Step" + (index + 1)).html("收起");
+                                $(this).parent().parent().parent().css("height","auto");
+                            }else{
+                                $(".trToggle_in" + (index + 1)).hide().removeClass("show").addClass("notShow");// 执行隐藏
+                                $(".moreClass_in_Step" + (index + 1)).html("更多");
+                                var inHeight = parseInt($(".moreClass_in_Step" + (index + 1)).parent().parent().find("ul").get(0).offsetHeight);
+                                var outHeight = parseInt($(".moreClass_out_Step" + (index + 1)).parent().parent().find("ul").get(0).offsetHeight);
+                                if (inHeight > outHeight) {
+                                    $(this).parent().parent().parent().css("height",inHeight + 25 +"px");
+                                }else{
+                                    $(this).parent().parent().parent().css("height",outHeight + 25 +"px");
+                                }
+                            }
+                        });
+                        $(".moreClass_out_Step" + (index + 1)).off("click").bind("click", function () {
+                            if($(".trToggle_out" + (index + 1)).hasClass("notShow") ){
+                                $(".trToggle_out" + (index + 1)).show().removeClass("notShow").addClass("show");// 显示
+                                $(".moreClass_out_Step" + (index + 1)).html("收起");
+                                $(this).parent().parent().parent().css("height","auto");
+                            }else{
+                                $(".trToggle_out" + (index + 1)).hide().removeClass("show").addClass("notShow");// 执行隐藏
+                                $(".moreClass_out_Step" + (index + 1)).html("更多");
+                                var inHeight = parseInt($(".moreClass_in_Step" + (index + 1)).parent().parent().find("ul").get(0).offsetHeight);
+                                var outHeight = parseInt($(".moreClass_out_Step" + (index + 1)).parent().parent().find("ul").get(0).offsetHeight);
+                                if (inHeight > outHeight) {
+                                    $(this).parent().parent().parent().css("height",inHeight + 25 +"px");
+                                }else{
+                                    $(this).parent().parent().parent().css("height",outHeight + 25 +"px");
+                                }
+                            }
+                        });
+                    });
+
+                    clearPageCache();
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+
+            initHandleFileInfo(handleId, obj.attr('data-sat-id'), "tbStorageListShow",2,obj.attr('task-type'));//加载处理文件详情
+            clearPageCache();
+
+            $('.content2').hide();
+            $('.stepShowContain').css('display','block');
+        }
+
+        /**
+         * 加载处理文件详情
+         * @version <1> 2019-02-20 zhangshen：Created.
+         * @version <2> 2019-10-09 cxw：update:加入影像的顺序移动功能.
+         * handleId:任务ID
+         * satId: 卫星ID
+         * type：1为执行任务，2为查看详情
+         * taskType: 1为自动任务，2为手动任务
+         */
+        var handleFileNum = 5;//处理文件超过5条，显示更多
+        var initHandleFileInfo = function (handleId, satId, nameId,type,taskType) {
+            showProcess();
+            var url = '';
+            if(taskType=='2'){
+                url =  HANDLE_DATA.findHandleFileInfo_url;
+            }
+            else{
+                url = HANDLE_DATA.findHandleDataInfo_url;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.data = JSON.stringify({'handleId' : handleId,'satId': satId});
+            ajax.opts.successFun = function (result) {
+                processDialog.dialog("close");//关闭进度条
+                if (result.flag) {
+                    var handleData = result.data.handleData;
+                    var handleFileLinks = result.data.handleFileLinks;
+                    var storageUrl = (handleData.storageUrl == null ? '' : handleData.storageUrl);
+                    var copyStr = "";
+                    if (storageUrl) {
+                        copyStr = '<input type="text" id="dataPath_hidden" value="'+ storageUrl +'" style="height:1px ;width:1px ;border:0 !important;color:#FAFAFA;">' +
+                            '<span class="btn btn1 copyBtn" style="margin: 0px 3px;">复制</span><span class="btn btn1 refreshBtn" task-type="'+taskType+'"  >刷新</span><span id="copyTip" style="color:red;padding-left:2px;"></span>';
+                    }
+                    var theadHtml = '';
+                    if(type==1&&taskType=='1')
+                    {
+                        theadHtml = '<td><span class="title_name">操作</span></td>';
+                    }
+                    var result1 = '<caption>处理文件:'+ storageUrl + copyStr +'</caption>' +
+                        '<thead><tr class="header"><td width="36"><span class="title_name">编号</span></td><td><span class="title_name">文件名</span></td><!--<td width="100"><span class="title_name">分辨率</span></td><td width="100"><span class="title_name">文件大小</span></td><td width="100"><span class="title_name">数据时间</span></td>-->'+theadHtml+'</tr></thead>'
+                    $.each(handleFileLinks,function(i,o){
+                        var  fileName = o
+                        if(taskType=='1')
+                        {
+                            var  filepath =  o.filePath;
+                            var  filepathArr = filepath.split("/")
+                            fileName = filepathArr[filepathArr.length-1]
+                        }
+                        if(taskType=='1'&&type==1){
+                            var tdHtml = '';
+                            tdHtml = '<td style="text-align: center;"><button class="up">↑</button><button class="down">↓</button></td>';
+                        }
+                        if (i < handleFileNum) {
+                            result1 += '<tr data-id="'+o.handleDataId+'"><td>' + (i + 1) + '</td><td title='+ fileName +'>' + fileName + '</td>'+tdHtml+'</tr>';
+                        } else {
+
+                            result1 += '<tr data-id="'+o.handleDataId+'" class="trToggle notShow"><td>' + (i + 1) + '</td><td  title='+ fileName +'>' + fileName + '</td>'+tdHtml+'</tr>';
+                        }
+                    });
+                    $('#' + nameId).html(result1);
+                    if (handleFileLinks && handleFileLinks.length > handleFileNum) {
+                        $(".moreClass").parent().show();
+                    } else {
+                        $(".moreClass").parent().hide();
+                    }
+
+
+                    $(".copyBtn").off("click").bind("click",function(){
+                        copyFun('dataPath_hidden','copyTip')
+                    });  //绑定点击事件
+
+                    $(".refreshBtn").off("click").bind("click",function(){
+                        var taskType = $('.refreshBtn').attr('task-type')
+                        initHandleFileInfo(handleId, satId, nameId,2,taskType);
+                        clearPageCache();
+                    });
+
+                    $(".down").off("click").bind("click",function(event){
+                        downTd(event)
+                    });
+                    $(".up").off("click").bind("click",function(event){
+                        upTd(event)
+                    });
+                    //编辑按钮显示展示
+                    if(handleFileLinks.length >= 2 && $("#tbHandleList tr").length >= 2) {
+                        $(".executeHandleAgain").removeClass("disabled");
+                    }
+                }
+
+            };
+            ajax.opts.errorFun = function () {
+                processDialog.dialog("close");//关闭进度条
+            };
+            ajax.run();
+        };
+
+        /**
+         * 上移影像顺序
+         * @version <1> 2019-10-09 cxw：Created.
+         */
+        var upTd = function (obj) {
+            // 1.获取tr
+           // obj = obj.event
+            if(obj == undefined)
+            {
+                return
+            }
+            var tr = $(obj.currentTarget)[0].parentNode.parentNode;
+            // 2.获取tbody
+            var tbody = tr.parentNode;
+            // 4.获取索引
+            var rowIdx = 0;
+            // 5.遍历tbody下全部行
+            for (var i = 0; i < tbody.rows.length; i++) {
+                // 6. 判断 是否等于当前点击按钮元素的tr
+                if (tbody.rows[i] == tr) {
+                    // 7. 如果等于 ，将i的值给索引遍历，并跳出循环
+                    rowIdx = i;
+                    break;
+                }
+            }
+            // 排除第一行，不再往上
+            //8. 如果索引等于0 就是第一行了，不能再往上了
+            if (rowIdx == 0) return alert('已经是最上一行了');
+            // 如果不是第一行的索引，继续往下
+            // 9.1 获取并存储当前tr 的 前一个tr元素
+            var preTr = tbody.rows[rowIdx - 1];
+            // 9.2 获取并存储当前tr 的 下一个tr元素
+            var nextTr = tr.nextSibling;
+            // 9.3 移除当前tr的前一个tr
+            tbody.removeChild(preTr);
+            // 10.1. 判断当前tr是否存在下一个tr 如果存在则插入在下一个tr之前 格式insertBefore（要插入的元素, 定位的元素） 作用：将要插入的元素插入在定位元素之前
+            // 10.2 否则直接追加在表格的最后
+            // 在这里就一个目的 将当前tr的前一个元素删除了并把它放在我当前tr的之后，那我当前tr排位就上升了
+            // 所以 如果我当前有下一个tr就插入在他的之前，如果没有证明我是在最后一行，那就直接将元素追加在表格后面就行了
+            if (nextTr) tbody.insertBefore(preTr, nextTr);
+            else tbody.appendChild(preTr);
+            // -- -- --可选项 实现移动 保持序号不变-- -- -- -- -- --
+            // 1.获取当前tr 第一个td的内容
+             var num = tr.cells[0].innerHTML;
+            // 2. 将当前tr 第一个td的内容 赋值为 前一个tr的第一个td的内容
+             tr.cells[0].innerHTML = preTr.cells[0].innerHTML;
+            // 3. 将前一个tr的第一个td内容赋值 为 当前tr第一个td的内容
+             preTr.cells[0].innerHTML = num;
+            // 4. 实现原理 类似于变量值交换，每次移动时将当前tr和前一个tr各自的第一个td内容进行交换即可，因为这里是向上的
+            var tbodyNew = tr.parentNode;
+            var trArr = tbodyNew.childNodes;
+            var dataIdList = [];
+            for(i=0;i< trArr.length;i++){
+                var tdArr = trArr[i].childNodes;
+                var tdNode = $(tdArr)[0];
+                var handleDataId = $(trArr[i]).attr("data-id");
+                var dataIndex = $(tdNode).html();
+                var dataParam = {}
+                dataParam.handleDataId = handleDataId;
+                dataParam.dataIndex = dataIndex;
+                dataIdList.push(dataParam);
+            }
+            updateDataIndex(dataIdList)
+            console.log(dataIdList)
+
+        }
+
+        /**
+         * 下移影像顺序
+         * @version <1> 2019-10-09 cxw：Created.
+         */
+        var downTd = function (obj) {
+            // 1.获取当前tr
+           // obj = obj.event
+            if(obj == undefined)
+            {
+                return
+            }
+            var tr = $(obj.currentTarget)[0].parentNode.parentNode;
+            // 2. 通过当前tr获取tbody
+            var tbody = tr.parentNode;
+            // 3.循环tbody每一行 找出和当前tr等于的元素 并将索引给rowidx变量
+            var rowIdx = 0;
+            for (var i = 0; i < tbody.rows.length; i++) {
+                if (tbody.rows[i] == tr) {
+                    rowIdx = i;
+                    break;
+                }
+            }
+            // 4.判断 如果索引和tbody总行长度 相等 那么就是说 当前tr处于最后一行不能向下移动了，直接返回
+            // -1 是因为length的长度是从1开始算的，而索引是从0开始算的，所以-1 两个值才对等
+            if (rowIdx == tbody.rows.length - 1) return alert('已经是最后一行了');
+            // 5.获取当前tr的下一个tr
+            var nextTr = tbody.rows[rowIdx + 1];
+            // 6.获取下一个tr 的 下一个tr
+            var nextTrSibling = nextTr.nextSibling;
+            // 7.移除当前tr
+            tbody.removeChild(tr);
+            // 8. 判断是否存在下个tr的下个tr 存在则将当前tr 插入在他的之前
+            if (nextTrSibling) tbody.insertBefore(tr, nextTrSibling);
+            else tbody.appendChild(tr);
+
+            // 9.如果没有就证明 我在倒数第二行 那就直接追加就好了
+            // -- -- --可选项 实现移动 保持序号不变 -- -- -- -- -- --
+            // 实现原理：采用交换变量的原理，都是交换内容来实现保持序号不变，只不过这里是和当前tr的下一个tr的第一个td交换
+             var num = tr.cells[0].innerHTML;
+             tr.cells[0].innerHTML = nextTr.cells[0].innerHTML;
+             nextTr.cells[0].innerHTML = num;
+
+            var tbodyNew = tr.parentNode;
+            var trArr = tbodyNew.childNodes;
+            var dataIdList = [];
+            for(i=0;i< trArr.length;i++){
+                var tdArr = trArr[i].childNodes;
+                var tdNode = $(tdArr)[0];
+                var handleDataId = $(trArr[i]).attr("data-id");
+                var dataIndex = $(tdNode).html();
+                var dataParam = {}
+                dataParam.handleDataId = handleDataId;
+                dataParam.dataIndex = dataIndex;
+                dataIdList.push(dataParam);
+            }
+            updateDataIndex(dataIdList)
+
+
+        }
+        // 上面是封装的实现代码，下面是获取up元素 和 down 按钮元素 分别添加事件侦听
+        // 1.侦听 当html加载完时执行函数内代码
+   /*    var  downAndUpTdEvent = function () {
+           // 2。 分别获取up类和down类元素， 各自添加事件
+           Array.from(document.querySelectorAll('.up')).forEach((el, i) => {
+               el.onclick = function() {
+               up(this);
+           }
+            }, false);
+           // 在这里Array.from的作用是为了将元素集合数组转换成数组，这样才能使用数组的遍历方法
+           // 也可以采用传统的for循环元素添加事件
+           Array.from(document.querySelectorAll('.down')).forEach((el, i) => {
+               el.onclick = function() {
+               down(this);
+           }
+          }, false);
+       }*/
+
+        /**
+         * 上下移动影像顺序，并更新数据库
+         * @version <1> 2019-10-09 cxw：Created.
+         */
+        var updateDataIndex  = function (data) {
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = HANDLE_DATA.updateHandleDataIndex_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data =  JSON.stringify(data)
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    PopWin.showMessageWin("更改影像顺序成功");
+                } else {
+                    PopWin.showMessageWin("更改影像顺序失败："+result.msg);
+                }
+            };
+            ajax.opts.errorFun = function () {
+                PopWin.showMessageWin("系统错误：更改影像顺序失败");
+            };
+            ajax.run();
+
+        }
+
+        /**
+         * 将字符串复制至windows剪切板
+         * @version<1> 2019-02-26 zhangshen :Created.
+         */
+        var copyFun = function(hiddenId, tip){
+            var obj = document.getElementById(hiddenId);
+            obj.select();
+            document.execCommand("Copy");
+            $("#" + tip).html("复制成功");
+            setTimeout(function(){
+                $("#" + tip).html("");
+            },1000);
+        };
+
+        /**
+         * 查看详情任务
+         * @version <1> 2018-03-19 cxj：Created.
+         */
+        var showFileNum = 10;
+        var showTaskInfo = function(data){
+            var tbHandleInfo = $('#tbHandleInfo');
+
+            var handleConfigList = data.handleConfigList;
+            var handleStepList = data.handleStepList;
+            var dataStorageList = data.dataStorageList;
+
+            var result = '<table><caption style="display: inline-block;">任务步骤</caption></table>';
+            var handleDetail_modal = "<div class='handle_detail'>" +
+                    "<div class='handle_step'>%_step_handle</div>" +
+                    "<div class='div_row inline-block'><div><span class='title_name'>处理时间</span></div><div>%_handleTime</div>" +
+                    "<div><span class='title_name'>处理状态</span></div><div class='%_statusClass'>%_handleStatus</div></div>" +
+                    "<div class='div_row inline-block'><div><span class='title_name'>处理参数</span></div><div>%_stepParam</div></div>" +
+                    "<div class='div_row inline-block'><div><span class='title_name'>错误信息</span></div><div class='red' title='%_failTitle'>%_failReason</div></div>" +
+                    "<div class='div_row web-box'><div class='f1'><span class='title_name'>执行数据</span></div><div class='f2'>%_fileName_list</div><div class='f3'><span class='title_name'>处理结果</span></div><div class='f4 handleResult'>%_handle_fileName</div><div style='clear: both;'></div></div>" +
+                    "</div>";
+
+            $.each(handleStepList,function(index,o){
+                console.log(o)
+                var satName = '';
+                for(var i = 0;i < handleConfigList.length;i++){
+                    if(o.handleMetaId == handleConfigList[i].handleMetaId){
+                        satName = handleConfigList[i].handleMetaName;
+                        break;
+                    }
+                }
+                var handleStr = handleDetail_modal;
+                handleStr = handleStr.replace("%_step_handle",'<span class="step_index">Step ' + ( index + 1 ) + '</span>  ' + satName);
+                handleStr = handleStr.replace("%_handleTime",o.handleStatus != 1002 ? (o.startTime ? o.startTime : '') + ' / ' + (o.endTime ? o.endTime : '') : '');
+                handleStr = handleStr.replace("%_handleStatus",o.handleStatusCN ? o.handleStatusCN : '');
+                handleStr = handleStr.replace("%_statusClass",getStatusColor(o.handleStatus));
+                handleStr = handleStr.replace("%_stepParam",o.stepParam);
+                handleStr = handleStr.replace("%_failTitle",(o.failReason ? o.failReason : ''));
+                handleStr = handleStr.replace("%_failReason",(o.failReason ? o.failReason : ''));
+                var dataParamList = o.dataParamList;
+                var ul = '<ul>';
+                var countIn = 0;
+                $.each(dataParamList,function(i,o){
+                    if(o.ioType == 3001 && o.fileName){
+                        countIn += 1;
+                        if (countIn < showFileNum) {
+                            ul += '<li title="'+o.fileName+'">' + o.fileName + '</li>';
+                        } else {
+                            ul += '<li class="notShow trToggle_in' + ( index + 1 ) + '" + title="'+o.fileName+'">' + o.fileName + '</li>';
+                        }
+                    }
+                });
+
+                ul += '</ul>';
+                if (countIn > showFileNum) {
+                    ul += '<div ><span class="moreClass_in_Step' + ( index + 1 ) + '" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span></div>';
+                } else {
+                    ul += '<div style="display: none;"><span class="moreClass_in_Step' + ( index + 1 ) + '" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span></div>';
+                }
+                handleStr = handleStr.replace("%_fileName_list",ul);
+                /*$(".moreClass_in_Step"+ ( index + 1 )).off("click").bind("click",function(){
+                });*/
+
+                var handleUi = '<ul>';
+                var countOut = 0;
+                $.each(dataParamList,function(i,o){
+                    if(o.ioType == 3002 && o.fileName){
+                        countOut += 1;
+                        if (countOut < showFileNum) {
+                            handleUi += '<li title="' + o.fileName + '">' + o.fileName + '</li>';
+                        } else {
+                            handleUi += '<li class="notShow trToggle_out' + ( index + 1 ) + '" title="' + o.fileName + '">' + o.fileName + '</li>';
+                        }
+                    }
+                });
+                handleUi += '</ul>';
+                if (countOut > showFileNum) {
+                    handleUi += '<div ><span class="moreClass_out_Step' + ( index + 1 ) + '" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span></div>';
+                } else {
+                    handleUi += '<div style="display: none;"><span class="moreClass_out_Step' + ( index + 1 ) + '" style="color: #1f4350;height: 25px;line-height: 25px;cursor:pointer;">更多</span></div>';
+                }
+                handleStr = handleStr.replace("%_handle_fileName",handleUi);
+                result += handleStr;
+            });
+            $('#tbHandleInfo').html(result);
+        }
+
+        /*$('.handleResult li').live('click',function () {
+            var fileName = this.innerText;
+            fileName = encodeURI(fileName);
+            commons.createIframe(HANDLE_DATA.download_url + "?dataUrl="+ fileName + "&AccessToken=" +  commons.getAccessToken())
+//            window.open("/handleData/down?dataUrl="+fileName);
+        });*/
+
+        /**
+         * 取消执行任务事件
+         * @version <1> 2018-03-09 cxj：Created.
+         */
+        var executeCancleEvent = function(){
+            $('.executeCancle').on('click',function(){
+                $("#tbStorageList").html("");
+                $("#tbStorageList").parent().find("div").hide();
+                $('#searchBtn').trigger('click');
+                $('.stepExecuteContain').css('display','none');
+                $('.content2').show();
+                //相关按钮和数据重置
+                $('.addHandle').removeClass("disabled");
+                $('.executeHandle').addClass("disabled");
+                $(".executeHandleAgain").addClass("disabled");
+                showFlag=false;
+            });
+        }
+
+        /**
+         * 取消任务详情查看事件
+         * @version <1> 2018-03-19 cxj：Created.
+         */
+        var showCancleEvent = function(){
+            $('.showCancle').on('click',function(){
+                $("#tbStorageListShow").html("");
+                $("#tbStorageListShow").parent().find("div").hide();
+                $('.stepShowContain').css('display','none');
+                $('.content2').show();
+            });
+        }
+
+        /**
+         * 执行任务事件
+         * @version <1> 2018-03-09 cxj：Created.
+         */
+        var executeHandleEvent = function(){
+            $('.executeHandle,.executeHandleAgain').on('click',function(){
+                $('#searchBtn').trigger('click');
+            });
+        }
+
+        /**
+         * 根据指定的查询条件，查询对应的任务记录并重新渲染
+         * @version <1> 2018-03-09 cxj： Created.
+         */
+        var searchEvent = function () {
+            $('#searchBtn').on('click',function(){
+                var storageType = $.trim($("#search_storageType").val());
+                var satId = $.trim($("#search_dataType").val());
+                //新增任务名称和创建人查询
+                var handleName = $.trim($("#search_handleName").val());
+                var creatorName = $.trim($("#search_creatorName").val());
+                var resultJson = {};
+                resultJson.storageType = storageType;
+                resultJson.satId = satId;
+                resultJson.regionId = $.trim($('#txtArea').attr('regionid'));
+                resultJson.handleStatus = $('#search_status option:selected').val();
+                resultJson.handleName=handleName;
+                resultJson.creatorName=creatorName;
+                $("#handleDataGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData:resultJson,
+                    page: 1
+                }).trigger("reloadGrid");
+            });
+        }
+
+        /**
+         * 删除数据任务
+         * @version <1> 2019-04-01 lijie： Created
+         */
+        var deleteHandleFun = function(handleId) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            confirmDialog.html("是否删除数据处理任务？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = HANDLE_DATA.deleteHandle_url+"?handleId="+handleId;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#handleDataGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除数据任务成功");
+                            } else {
+                                PopWin.showMessageWin("删除数据任务失败："+result.msg);
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除数据任务失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        init();
+    });
+</script>

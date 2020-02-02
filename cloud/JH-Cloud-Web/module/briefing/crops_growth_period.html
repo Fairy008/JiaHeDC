@@ -1,0 +1,785 @@
+<style>
+    .timeRang{
+        float: left;
+        width: 45% !important;
+    }
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">区域：</span>
+                    <span>
+                        <input type="text" id="txtArea" class="input"  placeholder="请选择区域" readonly/>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">作物：</span>
+                    <span>
+                        <select id = "cropId" class="input" style="width:120px;text-align:center;">
+                           <option value="">--请选择作物--</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">生育期名称：</span>
+                    <span>
+                        <input id="search_growthName" type="text" class="input" />
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="cropsGrowthPriodGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="dataTypeInfo" class="form" style="display: none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>生育名称:</td>
+                <td class="two_td2">
+                    <input name="growthName" id="growthName" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>序号:</td>
+                <td class="two_td2">
+                    <input name="indexNo" id="indexNo" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>区域:</td>
+                <td class="two_td2">
+                    <input type="text" id="region" class="input selectType two_selectType"  placeholder="请选择区域" readonly/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>作物:</td>
+                <td class="two_td2">
+                    <select id="cropsId" name="cropsId" class="selectType two_selectType">
+                        <option value="">请选择作物</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>开始时间:</td>
+                <td class="two_td2">
+                    <select id="rangeStartMonth"  name="rangeStartMonth" class="selectType two_selectType timeRang" >
+                         <option value="01">01月</option>
+                         <option value="02">02月</option>
+                         <option value="03">03月</option>
+                         <option value="04">04月</option>
+                         <option value="05">05月</option>
+                         <option value="06">06月</option>
+                         <option value="07">07月</option>
+                         <option value="08">08月</option>
+                         <option value="09">09月</option>
+                         <option value="10">10月</option>
+                         <option value="11">11月</option>
+                         <option value="12">12月</option>
+                    </select>
+                    <select id="rangeStartDay" name="rangeStartDay" class="selectType two_selectType timeRang">
+                        <option value="01">01日</option>
+                        <option value="02">02日</option>
+                        <option value="03">03日</option>
+                        <option value="04">04日</option>
+                        <option value="05">05日</option>
+                        <option value="06">06日</option>
+                        <option value="07">07日</option>
+                        <option value="08">08日</option>
+                        <option value="09">09日</option>
+                        <option value="10">10日</option>
+                        <option value="11">11日</option>
+                        <option value="12">12日</option>
+                        <option value="13">13日</option>
+                        <option value="14">14日</option>
+                        <option value="15">15日</option>
+                        <option value="16">16日</option>
+                        <option value="17">17日</option>
+                        <option value="18">18日</option>
+                        <option value="19">19日</option>
+                        <option value="20">20日</option>
+                        <option value="21">21日</option>
+                        <option value="22">22日</option>
+                        <option value="23">23日</option>
+                        <option value="24">24日</option>
+                        <option value="25">25日</option>
+                        <option value="26">26日</option>
+                        <option value="27">27日</option>
+                        <option value="28">28日</option>
+                        <option value="29">29日</option>
+                        <option value="30">30日</option>
+                        <option value="31">31日</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>结束时间:</td>
+                <td class="two_td2">
+                    <select id="rangeEndMonth"  name="rangeEndMonth" class="selectType two_selectType timeRang" >
+                        <option value="01">01月</option>
+                        <option value="02">02月</option>
+                        <option value="03">03月</option>
+                        <option value="04">04月</option>
+                        <option value="05">05月</option>
+                        <option value="06">06月</option>
+                        <option value="07">07月</option>
+                        <option value="08">08月</option>
+                        <option value="09">09月</option>
+                        <option value="10">10月</option>
+                        <option value="11">11月</option>
+                        <option value="12">12月</option>
+                    </select>
+                    <select id="rangeEndDay" name="rangeEndDay" class="selectType two_selectType timeRang">
+                        <option value="01">01日</option>
+                        <option value="02">02日</option>
+                        <option value="03">03日</option>
+                        <option value="04">04日</option>
+                        <option value="05">05日</option>
+                        <option value="06">06日</option>
+                        <option value="07">07日</option>
+                        <option value="08">08日</option>
+                        <option value="09">09日</option>
+                        <option value="10">10日</option>
+                        <option value="11">11日</option>
+                        <option value="12">12日</option>
+                        <option value="13">13日</option>
+                        <option value="14">14日</option>
+                        <option value="15">15日</option>
+                        <option value="16">16日</option>
+                        <option value="17">17日</option>
+                        <option value="18">18日</option>
+                        <option value="19">19日</option>
+                        <option value="20">20日</option>
+                        <option value="21">21日</option>
+                        <option value="22">22日</option>
+                        <option value="23">23日</option>
+                        <option value="24">24日</option>
+                        <option value="25">25日</option>
+                        <option value="26">26日</option>
+                        <option value="27">27日</option>
+                        <option value="28">28日</option>
+                        <option value="29">29日</option>
+                        <option value="30">30日</option>
+                        <option value="31">31日</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>是否跨年:</td>
+                <td class="two_td2">
+                    <select id="ifspan" class="selectType two_selectType" disabled="disabled" style="background-color: #EEEEEE">
+                        <option value="0" selected="selected">否</option>
+                        <option value="1" >是</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>是否播种期:</td>
+                <td class="two_td2">
+                    <select id="ifGrowthStart" class="selectType two_selectType">
+                        <option value="0" selected="selected">否</option>
+                        <option value="1" >是</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">备注:</td>
+                <td class="two_td2">
+                    <textarea name="remark" id="remark" class="inputType" style="width: 360px;height: 123px;"></textarea>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="showStars" class="form" style="display: none;">
+        <div id="starsPanel">
+        </div>
+    </div>
+
+    <div id="delDialog" class="dialogStyle" style="display:none">
+    </div>
+
+    <div id="roleDialog" class="dialogStyle" style="display:none"></div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","commons","multiselect","RegionModule"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,commons,multiselect,RegionModule) {
+
+            /*
+             * 初始化
+             */
+            var init = function(){
+                //区域点击事件
+                RegionSelectFun("txtArea","cropId");
+                cropsGrowthPriodGrid();
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+
+                $(window).resize(function(){
+                    $("#cropsGrowthPriodGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 区域选择控件
+             * @param regionIdName 区域ID
+             * *@param cropIdName 作物ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var RegionSelectFun = function(regionIdName,cropIdName){
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400};
+                    opts = {url:REGION_CONFIG.findRegionForReport_url,closeFun:function(){
+                        var regionId = txtArea.getAttribute("regionId");
+                        if(regionId!=null)
+                        {
+                            queryCropFun(regionId,cropIdName)
+                        }
+                        else{
+                            $('#'+cropIdName).html('<option value="">请选择作物</option>');
+                        }
+                    }};
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                    regionSelector.show();
+                }
+                return true;
+            }
+
+            /**
+             * 点击区域时查询作物列表
+             * @param regionId 区域ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var queryCropFun = function(regionId,cropIdName){
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+                ajax.opts.contentType = "application/json";
+                //ajax.opts.data =  JSON.stringify({regionId:regionId});
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            };
+
+            /**
+             * 初始化作物下拉框
+             * @param crop 查询出的作物对象集合
+             * @version <1> 2018-04-18 cxw : created.
+             */
+            var initCropFun = function(crop,cropIdName){
+                var result;
+                result = '';
+                if(crop!=null)
+                {
+                    $.each(crop,function(i,o){
+                        result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                    });
+                    if(result!='')
+                    {
+                        $('#'+cropIdName).html(result);
+                    }
+                    else{
+                        $('#'+cropIdName).html('<option value="">请选择作物</option>');
+                    }
+                }
+                else{
+                    $('#'+cropIdName).html('<option value="">请选择作物</option>');
+                }
+            };
+
+            /**
+             * 开始月范围触发事件加载日范围
+             * @version <1> 2018-4-20 cxw : created.
+             */
+            var arrMon = ['01','03','05','07','08','10','12']; //包含31天的月份数组
+            var arrDayForLeast = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29'];
+            var arrDayForMiddle = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'];
+            var arrDayForMost = ['01','02','03','04','05','06','07','08','09','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31'];
+            var dateStartEvent = function(){
+                var startMonth = $('#rangeStartMonth').val();
+                initDateRange('#rangeStartDay',startMonth);
+            };
+
+            /**
+             * 结束月范围触发事件加载日范围
+             * @version <1> 2018-4-20 cxw : created.
+             */
+            var dateEndEvent = function(){
+                var endMonth = $('#rangeEndMonth').val();
+                initDateRange('#rangeEndDay',endMonth);
+            };
+
+            /**
+             * 结束月范围触发事件加载日范围
+             * @param obj 要加载的select框对象
+             * @param val 月范围值
+             * @version <1> 2018-4-20 cxw : created.
+             */
+            var initDateRange = function (obj,dateVal) {
+                var result;
+                //如果是包含31天的月份加载日范围为31天
+                if(isInArray(arrMon,dateVal)){
+                    for(var index in arrDayForMost){
+                        result += '<option value = "' + arrDayForMost[index] + '">' + arrDayForMost[index]+"日" + '</option>';
+                    }
+                }
+                //如果是包含29天的月份加载日范围为29天
+                else if(dateVal=='02'){
+                    for(var index in arrDayForLeast){
+                        result += '<option value = "' + arrDayForLeast[index] + '">' + arrDayForLeast[index]+"日" + '</option>';
+                    }
+                }
+                //如果是包含30天的月份加载日范围为30天
+                else{
+                    for(var index in arrDayForMiddle){
+                        result += '<option value = "' + arrDayForMiddle[index] + '">' + arrDayForMiddle[index]+"日" + '</option>';
+                    }
+                }
+                $(obj).html(result);
+                initJumpYear();
+            };
+
+            /**
+             * 加载是否跨年
+             * @param
+             * @version <1> 2018-4-20 cxw : created.
+             */
+            var initJumpYear = function(){
+                var  rangeStartMonth =  $('#rangeStartMonth').val();
+                var  rangeEndMonth =  $('#rangeEndMonth').val();
+                var select = document.getElementById('ifspan');
+                if(rangeStartMonth>rangeEndMonth){
+                    for (var i = 0; i < select.options.length; i++){
+                        if (select.options[i].value == '1'){
+                            select.options[i].selected = true;
+                            break;
+                        }
+                    }
+                }
+                else{
+                    for (var i = 0; i < select.options.length; i++){
+                        if (select.options[i].value == '0'){
+                            select.options[i].selected = true;
+                            break;
+                        }
+                    }
+                }
+
+            };
+
+            /**
+             * 判断数组是否包含某个值
+             * @param arr 数组
+             * @param value 是否包含的值
+             * @version <1> 2018-4-20 cxw : created.
+             */
+            var  isInArray = function(arr,value){
+                var index = $.inArray(value,arr);
+                if(index >= 0){
+                    return true;
+                }
+                return false;
+            };
+
+            /**
+             * 农作物生育周期记录的渲染
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:增加区域和作物
+             */
+            var cropsGrowthPriodGrid = function () {
+                $("#cropsGrowthPriodGrid").jqGrid({
+                    url: CROPS_GROWTH_PERIOD_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        "cropsGrowthPeriodParam":{}
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['growthId', '区域名称', '作物名称', '生育期名称','日期开始', '日期结束','操作'],
+                    colModel: [
+                        {name: 'growthId', index: 'growthId', hidden: true},
+                        {name: 'regionName', index: 'regionName', align: 'center', width: '20%'},
+                        {name: 'cropsName', index: 'cropsName', align: 'center', width: '10%'},
+                        {name: 'growthName', index: 'growthName', align: 'center', width: '20%'},
+                        {name: 'rangeStart', index: 'rangeStart', align: 'center', width: '15%'},
+                        {name: 'rangeEnd', index: 'rangeEnd', align: 'center', width: '15%'},
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '20%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.growthId + "' title='编辑' style='margin-right: 3px;'>"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.growthId + "' title='删除' >";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $(".editBtn,.delBtn,.statusBtn").off("click");
+                        $(".editBtn").on("click", function () {
+                            editFun($(this).attr("data-id"));
+                        });
+                        $(".delBtn").on("click", function () {
+                            deleteFun($(this).attr("data-id"));
+                        });
+                    }
+                });
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:增加区域和作物查询条件.
+             */
+            var searchFun = function () {
+                var growthName = $.trim($("#search_growthName").val());
+                var cropsId = $.trim($("#cropId").val());
+                var regionId = document.getElementById("txtArea").getAttribute("regionId");
+                $("#cropsGrowthPriodGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {'growthName': growthName, 'cropsId': cropsId, 'regionId': regionId},
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 获取表单新增或者修改的数据
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var getParam = function() {
+                var growthName = $.trim($("#growthName").val());
+                var cropsId = $.trim($("#cropsId").val());
+                var regionId = document.getElementById("region").getAttribute("regionId");
+                var  rangeStartMonth =  $('#rangeStartMonth').val();
+                var  rangeStartDay =  $('#rangeStartDay').val();
+                var rangeStart = rangeStartMonth+"-"+rangeStartDay;
+                var  rangeEndMonth =  $('#rangeEndMonth').val();
+                var  rangeEndDay = $('#rangeEndDay').val();
+                var rangeEnd =rangeEndMonth+"-"+rangeEndDay;
+                var ifspan = $.trim($("#ifspan").val());
+                var ifGrowthStart = $.trim($("#ifGrowthStart").val());
+                var indexNo = $('#indexNo').val();
+                var remark = $('#remark').val();
+                var paramConfig = {
+                    growthName: growthName,
+                    cropsId: cropsId,
+                    regionId: regionId,
+                    rangeStart: rangeStart,
+                    rangeEnd: rangeEnd,
+                    ifspan: ifspan,
+                    ifGrowthStart: ifGrowthStart,
+                    indexNo:indexNo,
+                    remark:remark
+                };
+                return paramConfig;
+            };
+
+            /**
+             * 新增生育期页
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.加载初始化区域控件；2.完善注释
+             */
+            var addFun = function() {
+                RegionSelectFun("region","cropsId");
+                document.getElementById("rangeStartMonth").onchange = dateStartEvent;
+                document.getElementById("rangeEndMonth").onchange = dateEndEvent;
+                clearInput();//清空数据
+                var cropsGrowthPeriodDialog =  $("#dataTypeInfo");
+                var dialogParent = cropsGrowthPeriodDialog.parent();
+                var dialogOwn = cropsGrowthPeriodDialog.clone();
+                cropsGrowthPeriodDialog.dialog({
+                    autoOpen: false,
+                    title:'农作物生育期新增',
+                    height: 550,
+                    width: 560,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            addSaveFun(cropsGrowthPeriodDialog);
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                cropsGrowthPeriodDialog.dialog("open");
+            };
+
+            /**
+             * 保存生育期信息
+             * @param cropsGrowthPeriodDialog弹框对象
+             * @version <1> 2018-04-12 lxy： Created.
+             * *@version <2> 2018-04-18 cxw： update:完善注释及更改提示信息
+             */
+            var addSaveFun = function(cropsGrowthPeriodDialog) {
+                //校验输入框信息
+                if (!formVerf()) {
+                    return;
+                }
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = CROPS_GROWTH_PERIOD_CONFIG.save_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(getParam());
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                        cropsGrowthPeriodDialog.dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("农作物生育周期配置新增失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 删除生育期信息
+             * @param id 生育期主键
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.原参数传递为生育期对象，现改为传递生育期主键.;2.完善注释及更改提示信息
+             */
+            var deleteFun = function (id) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = CROPS_GROWTH_PERIOD_CONFIG.del_url+"?growthId="+id;
+                           // ajax.opts.data = JSON.stringify({'growthId':id});
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin(result.msg);
+                                } else {
+                                    PopWin.showMessageWin(result.msg);
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("农作物生育周期删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 修改生育期页
+             * @param id 生育期主键
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.加载初始化区域控件；2.完善注释
+             */
+            var editFun = function (id) {
+                RegionSelectFun("region","cropsId");
+                document.getElementById("rangeStartMonth").onchange = dateStartEvent;
+                document.getElementById("rangeEndMonth").onchange = dateEndEvent;
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROPS_GROWTH_PERIOD_CONFIG.findById_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify({'growthId':id});
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result) {
+                    if (result.flag) {
+                        initData(result.data);
+                        var configDialog =  $("#dataTypeInfo");
+                        var dialogParent = configDialog.parent();
+                        var dialogOwn = configDialog.clone();
+                        configDialog.dialog({
+                            autoOpen: false,
+                            title:'作物生育期配置修改',
+                            height: 550,
+                            width: 560,
+                            modal: true,
+                            close:function(){
+                                dialogOwn.appendTo(dialogParent);
+                                $(this).dialog("destroy").remove();
+                            },
+                            buttons:[
+                                {
+                                    text:"保存",
+                                    click:function(){
+                                        if (!formVerf()) {
+                                            return;
+                                        }
+                                        var param = getParam();
+                                        param.growthId = id;
+                                        update(configDialog, param);
+                                    }},{
+                                    text:"取消",
+                                    click:function(){
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+                        configDialog.dialog("open");
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 保存更新内容
+             * @param configDialog 弹框对象
+             * @param param 生育期更新参数对象
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <1> 2018-04-18 cxw： update:完善注释及更改提示信息
+             */
+            var update = function(configDialog, param) {
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = CROPS_GROWTH_PERIOD_CONFIG.update_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(param);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                        configDialog.dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("农作物生育周期配置更新失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 弹出修改页面时初始化加载当前修改对象信息
+             * @param data 生育期对象信息
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var initData = function(data) {
+                $("#growthName").val(data.growthName);
+                $("#cropsId").html("<option value = '"+data.cropsId+"'>"+data.cropsName+"</option>");
+                $("#region").val(data.regionName);
+                $("#region").attr("regionId",data.regionId);
+                var rangeStart = data.rangeStart.split("-");
+                var rangeEnd = data.rangeEnd.split("-")
+                $('#rangeStartMonth').val(rangeStart[0]);
+                $('#rangeStartDay').val(rangeStart[1]);
+                $('#rangeEndMonth').val(rangeEnd[0]);
+                $('#rangeEndDay').val(rangeEnd[1]);
+                $('#indexNo').val(data.indexNo);
+                $('#remark').val(data.remark);
+                $("#ifspan").find("option[value = '"+data.ifspan+"']").attr("selected","selected");
+                $("#ifGrowthStart").find("option[value = '"+data.ifGrowthStart+"']").attr("selected","selected");
+            };
+
+
+            /**
+             * 校验input框输入信息
+             * @version <1> 2018-04-17 cxw： Created.
+             */
+            var formVerf = function () {
+                var errorDiv = $('#dataTypeInfo');
+                if(formVerfication.checkInputIsEmpty($('#growthName'),errorDiv,'生育名称不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#indexNo'),errorDiv,'序号不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsPositiveInteger($('#indexNo'),errorDiv,'序号为正整数')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#region'),errorDiv,'区域不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#cropsId'),errorDiv,'作物不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsEmpty($('#rangeStartMonth'),errorDiv,'开始时间不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#rangeStartDay'),errorDiv,'开始时间不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#rangeEndMonth'),errorDiv,'结束时间不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#rangeEndDay'),errorDiv,'结束时间不能为空')){
+                    return false;
+                }
+                return true;
+            };
+
+            /**
+             * 加载新增页时清空文本输入内容
+             * @version <1> 2018-04-17 cxw： Created.
+             */
+            var clearInput = function() {
+                $(".inputType").val("");
+                $("#cropsId").html("<option value=''>请选择作物</option>");
+                $("#region").val('');
+                $("#region").attr("regionId",'');
+                $("#ifspan").find("option").first().attr("selected", "selected");
+                $("#ifGrowthStart").find("option").first().attr("selected", "selected");
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#cropsGrowthPriodGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            init();
+        });
+    </script>
+
+</div>

@@ -1,0 +1,851 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<link rel="stylesheet" type="text/css" href="../../css/mui.picker.min.css" />
+		<style>
+			.mui-table-view:first-child {
+				margin-top: 55px;
+			}
+
+			.mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.oa-contact-cell.mui-table .mui-table-cell {
+				vertical-align: middle;
+			}
+
+			.oa-contact-avatar img {
+				border-radius: 50%;
+				height: 60px;
+				width: 60px !important;
+			}
+
+			.oa-contact-avatar {
+				width: 75px;
+			}
+
+			.oa-contact-content {
+				width: 100%;
+			}
+
+			.clt-article-content {
+				margin: 0px 10px;
+			}
+
+			.clt-setting {
+				position: absolute;
+				top: 40px;
+				right: 10px;
+			}
+
+
+
+			html,
+			body {
+				background-color: #efeff4;
+			}
+
+			.mui-views,
+			.mui-view,
+			.mui-pages,
+			.mui-page,
+			.mui-page-content {
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				background-color: #efeff4;
+			}
+
+			.mui-pages {
+				top: 46px;
+				height: auto;
+			}
+
+			.mui-scroll-wrapper,
+			.mui-scroll {
+				background-color: #efeff4;
+			}
+
+			.mui-page.mui-transitioning {
+				-webkit-transition: -webkit-transform 300ms ease;
+				transition: transform 300ms ease;
+			}
+
+			.mui-page-left {
+				-webkit-transform: translate3d(0, 0, 0);
+				transform: translate3d(0, 0, 0);
+			}
+
+			.mui-ios .mui-page-left {
+				-webkit-transform: translate3d(-20%, 0, 0);
+				transform: translate3d(-20%, 0, 0);
+			}
+
+			.mui-navbar {
+				position: fixed;
+				right: 0;
+				left: 0;
+				z-index: 10;
+				height: 44px;
+				background-color: #f7f7f8;
+			}
+
+			.mui-navbar .mui-bar {
+				position: absolute;
+				background: transparent;
+				text-align: center;
+			}
+
+			.mui-android .mui-navbar-inner.mui-navbar-left {
+				opacity: 0;
+			}
+
+			.mui-ios .mui-navbar-left .mui-left,
+			.mui-ios .mui-navbar-left .mui-center,
+			.mui-ios .mui-navbar-left .mui-right {
+				opacity: 0;
+			}
+
+			.mui-navbar .mui-btn-nav {
+				-webkit-transition: none;
+				transition: none;
+				-webkit-transition-duration: .0s;
+				transition-duration: .0s;
+			}
+
+			.mui-navbar .mui-bar .mui-title {
+				font-size: 1.5rem;
+				color: white;
+				display: inline-block;
+				width: auto;
+			}
+
+			.mui-page-shadow {
+				position: absolute;
+				right: 100%;
+				top: 0;
+				width: 16px;
+				height: 100%;
+				z-index: -1;
+				content: '';
+			}
+
+			.mui-page-shadow {
+				background: -webkit-linear-gradient(left, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+				background: linear-gradient(to right, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, .01) 50%, rgba(0, 0, 0, .2) 100%);
+			}
+
+			.mui-navbar-inner.mui-transitioning,
+			.mui-navbar-inner .mui-transitioning {
+				-webkit-transition: opacity 300ms ease, -webkit-transform 300ms ease;
+				transition: opacity 300ms ease, transform 300ms ease;
+			}
+
+			.mui-page {
+				display: none;
+			}
+
+			.mui-pages .mui-page {
+				display: block;
+			}
+
+			.mui-page .mui-table-view:first-child {
+				margin-top: 15px;
+			}
+
+			.mui-page .mui-table-view:last-child {
+				margin-bottom: 30px;
+			}
+
+			.mui-table-view {
+				margin-top: 20px;
+			}
+
+			.mui-table-view span.mui-pull-right {
+				color: #999;
+			}
+
+			.mui-table-view-divider {
+				background-color: #efeff4;
+				font-size: 14px;
+			}
+
+			.mui-table-view-divider:before,
+			.mui-table-view-divider:after {
+				height: 0;
+			}
+
+			.head {
+				height: 40px;
+			}
+
+			#head {
+				line-height: 40px;
+			}
+
+			.head-img {
+				width: 40px;
+				height: 40px;
+			}
+
+			#head-img1 {
+				position: absolute;
+				bottom: 10px;
+				right: 40px;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+			}
+
+			.mui-ios .mui-navbar .mui-bar .mui-title {
+				position: static;
+			}
+
+			.mui-input-group {
+				margin-top: 10px;
+			}
+
+			.btnUnableClass {
+				background: #B9B9B9 !important;
+				border: 1px solid #b9b9b9;
+			}
+
+			.mui-popup {
+				z-index: 9998 !important;
+			}
+
+			/*toast信息提示*/
+			.mui-toast-container {
+				bottom: 50%;
+				z-index: 9999 !important;
+			}
+
+			.mui-toast-message {
+				opacity: 2;
+				color: #FFFFFF;
+			}
+
+			.mui-navbar-inner.mui-bar.mui-bar-nav {
+				height: 4rem;
+				padding-top: 1.25rem;
+				background-image: url(../../images/img-icon/topBG.png);
+			}
+
+			.mui-page-content {
+				margin-top: 1.25rem;
+			}
+
+			.mui-left.mui-btn.mui-btn-link.mui-btn {
+				color: white;
+			}
+		</style>
+		<link rel="stylesheet" type="text/css" href="../css/feedback.css" />
+	</head>
+
+	<body class="mui-fullscreen">
+
+		<!--页面主结构开始-->
+		<div id="app" class="mui-views">
+			<div class="mui-view">
+				<div class="mui-navbar">
+				</div>
+				<div class="mui-pages">
+				</div>
+			</div>
+		</div>
+		<!--页面主结构结束-->
+		<!--单页面开始-->
+		<div id="setting" class="mui-page">
+			<!--页面标题栏开始-->
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<!-- <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a> -->
+				<h1 id="titleM" class="mui-center mui-title">我的</h1>
+			</div>
+			<!--页面标题栏结束-->
+			<!--页面主内容区开始-->
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul id="maccount" class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell">
+								<a href="#account" class="mui-navigate-right">账号安全</a>
+							</li>
+						</ul>
+						<!-- <ul class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell">
+								<a type="" class="mui-navigate-right">卫星地图</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a type="" class="mui-navigate-right">离线地图</a>
+							</li>
+						</ul> -->
+						<ul class="mui-table-view mui-table-view-chevron">
+							<li class="mui-table-view-cell">
+								<a href="#aboutJiaHe" class="mui-navigate-right">关于珈和</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#introduction" class="mui-navigate-right">功能介绍</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a id="update" class="mui-navigate-right">检查更新</a>
+							</li>
+							<li class="mui-table-view-cell">
+								<a href="#exemption" class="mui-navigate-right">责任免责</a>
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell" style="text-align: center;">
+								<a id="logout" style="color: red;">退出登录</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<!--页面主内容区结束-->
+		</div>
+		<!--单页面结束-->
+		<!--账号设置-->
+		<div id="account" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" style="color: white;" class="mui-left mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">账号安全</h1>
+			</div>
+			<div class="mui-page-content">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="head" class="mui-navigate-right">头像
+									<span class="mui-pull-right head">
+										<img class="head-img mui-action-preview" id="head-img1" src="../../images/60x60.gif" />
+									</span>
+								</a>
+							</li>
+							<li class="mui-table-view-cell" id="nickName-cell">
+								<a>昵称<span id="nickName" class="mui-pull-right"></span></a>
+							</li>
+							<li class="mui-table-view-cell" id="mobile-cell">
+								<a>手机<span id="userMobile" class="mui-pull-right"></span></a>
+							</li>
+							<li class="mui-table-view-cell" id="company-cell">
+								<a>工作单位<span id="company" class="mui-pull-right mui-ellipsis"></span></a>
+							</li>
+						</ul>
+						<ul class="mui-table-view">
+							<li class="mui-table-view-cell">
+								<a id="updatePWD" class="mui-navigate-right" href="#updatePassword">修改密码</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--关于珈和-->
+		<div id="aboutJiaHe" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">关于珈和</h1>
+			</div>
+			<div class="mui-page-content" style="padding: 10px 10px;">
+				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;武汉珈和科技有限公司成立于2013年，致力于空间智能技术为核心的大数据信息服务，创新技术依托于中国科学院、武汉大学、北京师范大学，是业内领先的卫星遥感解译服务商。公司总部坐落于武汉国家地球空间信息产业化基地，已在北京、重庆、山西、江苏、湖南等地设立了分公司和办事处，形成了健全的市场服务体系。</p>
+				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;珈和科技秉承“提升效能、优化生态”的企业使命，潜心耕耘遥感信息行业多年。服务领域涵盖遥感影像私有云、遥感影像数据挖掘、农业遥感行业应用等。公司具
+					备乙级测绘资质并通过ISO9001质量体系认证，拥有多项发明专利及软件著作权，是国家认定的高新技术企业。</p>
+				<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;公司曾获得创新成就中国梦互联网专场“优秀企业”，WGDC
+					2016地理信息开发者大会“最具价值应用奖”等殊荣，并多次受到国家领导接见。</p>
+			</div>
+		</div>
+		<!--功能介绍-->
+		<div id="introduction" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">功能介绍</h1>
+			</div>
+			<div class="mui-page-content" style="padding: 10px 10px;">
+				<p>采集数据步骤</p>
+				<p>（1）新建任务</p>
+				<p>（2）新建模板或选择固定模板</p>
+			</div>
+		</div>
+		<!--责任免责-->
+		<div id="exemption" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>设置
+				</button>
+				<h1 class="mui-center mui-title">责任免责</h1>
+			</div>
+			<div class="mui-page-content" style="padding: 10px 10px;">
+				<p>1. 本软件包括珈和遥感采集器APP。</p>
+				<p>2. 珈和遥感采集器APP用户使用本软件，即表示您接受本软件产品许可使用协议的约束并同意以下免责条款。</p>
+				<p>3. 使用本软件存在用户个人数据丢失的风险，使用本功能前，用户应对重要数据进行备份，因用户未能进行充分备份而导致的任何硬盘数据损失，不承担任何赔偿责任。</p>
+			</div>
+		</div>
+
+		<!--修改密码-->
+		<div id="updatePassword" class="mui-page">
+			<div class="mui-navbar-inner mui-bar mui-bar-nav">
+				<button type="button" class="mui-left  mui-btn  mui-btn-link mui-btn-nav mui-pull-left">
+					<span class="mui-icon mui-icon-left-nav"></span>账号安全
+				</button>
+				<h1 class="mui-center mui-title">修改密码</h1>
+			</div>
+			<div class="mui-content">
+				<form id='login-form' class="mui-input-group">
+					<div class="mui-input-row">
+						<label>旧密码</label>
+						<input id='passwordOld' type="password" class="mui-input-clear mui-input" placeholder="请输入旧密码">
+					</div>
+					<div class="mui-input-row">
+						<label>新密码</label>
+						<input id='passwordNew' type="password" class="mui-input-clear mui-input" placeholder="请输入新密码">
+					</div>
+					<div class="mui-input-row">
+						<label>确认密码</label>
+						<input id='passwordComfirm' type="password" class="mui-input-clear mui-input" placeholder="请输入确认密码">
+					</div>
+				</form>
+				<div class="mui-content-padded">
+					<button id='confirm' type="button" class="mui-btn mui-btn-block mui-btn-primary">确定</button>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.min.js "></script>
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script src="../../js/mui.view.js "></script>
+		<script src="../../js/app.js"></script>
+		<!-- <script src='../../js/feedback.js'></script> -->
+		<script type="text/javascript">
+			mui.init();
+
+			var pswOldInput = document.getElementById('passwordOld');
+			var pswNewInput = document.getElementById('passwordNew');
+			var pswComInput = document.getElementById('passwordComfirm');
+			var currUserId;
+
+			//初始化单页view
+			var viewApi = mui('#app').view({
+				defaultPage: '#setting'
+			});
+
+			//初始化单页的区域滚动
+			mui('.mui-scroll-wrapper').scroll();
+
+			var init = function() {
+				$("#confirm").addClass("btnUnableClass");
+				$("#confirm").attr('disabled', true);
+				var token = commons.getToken();
+				var userState = JSON.parse(localStorage.getItem('userState'));
+				// console.log(JSON.stringify(userState));
+				if (token.length < 0) {
+					$('#logout').html("退出登录");
+					return;
+				}
+				//初始化用户信息
+				if (userState.isLogin == true) {
+					$('#logout').html("退出登录");
+					document.getElementById('maccount').removeAttribute('hidden', 'hidden');
+					var mUserBean = JSON.parse(localStorage.getItem("userBean"));
+					var accountId = mUserBean.data.userInfo.accountId;
+					commons.findPersonInfo(accountId, function(result) {
+						// console.log(JSON.stringify(result))
+						var person = result;
+						currUserId = person.accountId;
+						var name = person.nickName; //用户姓名
+						var mobile = person.mobile;
+						var company = person.company;
+						var defaultImg = "../../images/userImg.png"; //默认头像
+						var img = null != person.photoUrl ? project_path_index + "/a/" + person.photoUrl : defaultImg;
+						$('#nickName').html(name);
+						$('#head-img1').attr('src', img);
+						$('#userMobile').html(mobile);
+						$('#company').html(company);
+					})
+				} else {
+					$('#logout').html("登录");
+					document.getElementById('maccount').setAttribute('hidden', 'hidden');
+				}
+
+				//绑定点击昵称事件
+				document.getElementById('nickName-cell').addEventListener('tap', function(e) {
+					e.preventDefault();
+					mui.prompt('', '输入新的昵称', '修改昵称', ['取消', '确认'], function(e) {
+						if (e.index == 1) { //确定
+							if (e.value.length > 10) {
+								mui.toast('昵称不能超过10个字', {
+									duration: 'short',
+									type: 'div'
+								});
+								e.preventDefault();
+								return;
+							}
+
+							var param = {
+								nickName: e.value,
+								accountId: currUserId
+							}
+							editUser(param);
+						}
+					}, 'div')
+				});
+
+				//绑定工作单位点击事件
+				document.getElementById('company-cell').addEventListener('tap', function(e) {
+					e.preventDefault();
+					mui.prompt('', '修改工作单位', '修改工作单位', ['取消', '确认'], function(e) {
+						if (e.index == 1) { //确定
+							if (e.value.length > 30) {
+								mui.toast('工作单位不能超过30个字', {
+									duration: 'short',
+									type: 'div'
+								});
+								e.preventDefault();
+								return;
+							}
+
+							var param = {
+								company: e.value,
+								accountId: currUserId
+							}
+							editUser(param);
+						}
+					}, 'div')
+				});
+
+
+				//绑定点击手机号事件
+				document.getElementById('mobile-cell').addEventListener('tap', function() {
+					mui.toast('不支持修改手机号', {
+						duration: 'short',
+						type: 'div'
+					});
+				})
+
+			};
+
+			$("#passwordOld").on("keydown", function(e) {
+				$("#confirm").removeClass("btnUnableClass");
+				$("#confirm").attr('disabled', false);
+			});
+
+			$("#passwordNew").on("keydown", function(e) {
+				$("#confirm").removeClass("btnUnableClass");
+				$("#confirm").attr('disabled', false);
+			});
+
+			$("#passwordComfirm").on("keydown", function(e) {
+				$("#confirm").removeClass("btnUnableClass");
+				$("#confirm").attr('disabled', false);
+			});
+
+			var view = viewApi.view;
+			//处理view的后退与webview后退
+			// var oldBack = mui.back;
+			mui.back = function() {
+				// viewApi.back();
+				// if (viewApi.canBack()) { //如果view可以后退，则执行view的后退
+				// 	viewApi.back();
+				// } else { //执行webview后退
+				// 	oldBack();
+				// }
+			};
+			mui('body').on('tap','.mui-left.mui-btn.mui-btn-link.mui-btn-nav.mui-pull-left',
+				function() {
+					// console.log('1234')
+					viewApi.back();
+				})
+
+			//检查更新
+			document.getElementById("update").addEventListener('tap', function() {
+				/* var server = "http://www.dcloud.io/check/update"; //获取升级描述文件服务器地址
+				mui.getJSON(server, {
+					"appid": plus.runtime.appid,
+					"version": plus.runtime.version,
+					"imei": plus.device.imei
+				}, function(data) {
+					if (data.status) {
+						plus.ui.confirm(data.note, function(i) {
+							if (0 == i) {
+								plus.runtime.openURL(data.url);
+							}
+						}, data.title, ["立即更新", "取　　消"]);
+					} else {
+						mui.toast('Hello MUI 已是最新版本~')
+					}
+				}); */
+				mui.toast('已是最新版本', {
+					duration: 'short',
+					type: 'div'
+				});
+			});
+
+			mui(".mui-table-view-cell").on("tap", "#head", function() {
+				page.imgUp();
+			})
+
+			//系统按钮
+			function cameraReady() {
+				// 弹出系统选择按钮框  
+
+				// console.log(plus.webview.currentWebview().id);
+			}
+			//确保plusready执行完毕
+			if (window.plus) {
+				cameraReady();
+			} else {
+				document.addEventListener("plusready", cameraReady, false);
+			}
+
+
+			mui.plusReady(function() {
+				var Back = mui.back;
+				mui.back = function() {
+					var self = plus.webview.currentWebview();
+					var mindPage = self.opener();
+					mindPage.reload(true);
+					Back();
+				}
+			})
+
+			var page = null;
+			page = {
+				imgUp: function() {
+					var m = this;
+					plus.nativeUI.actionSheet({
+						cancel: "取消",
+						buttons: [{
+								title: "拍照"
+							},
+							{
+								title: "从相册中选择"
+							}
+						]
+					}, function(e) { //1 是拍照  2 从相册中选择  
+						switch (e.index) {
+							case 1:
+								appendByCamera();
+								break;
+							case 2:
+								appendByGallery();
+								break;
+						}
+					});
+				}
+			}
+
+			// 拍照添加文件
+			function appendByCamera() {
+				plus.camera.getCamera().captureImage(function(e) {
+					console.log(e);
+					plus.io.resolveLocalFileSystemURL(e, function(entry) {
+						var path = entry.toLocalURL();
+						console.log(path[0]);
+						console.log(path.length);
+						askUpLoadImg(path);
+					}, function(e) {
+						mui.toast('读取拍照文件错误', {
+							duration: 'short',
+							type: 'div'
+						});
+					});
+
+				});
+			}
+
+			// 从相册添加文件
+			function appendByGallery() {
+				plus.gallery.pick(function(path) {
+					// document.getElementById("headimg").src = path;
+					askUpLoadImg(path.files[0]);
+				}, function(e) {
+					// console.log("取消选择图片");
+				}, {
+					filter: "image",
+					multiple: true,
+					maximum: 1,
+					system: false
+				});
+			}
+
+			//上传头像			
+			var askUpLoadImg = function(src) {
+				//src = "file:///storage/emulated/0/tencent/tassistant/skin_pkg/using_skin_res/106_1/other_res/tab4/tab_0_selected.png";
+				// var src = "file:/" + path;
+
+				var i = src.lastIndexOf("/");
+				// console.log(i);
+				// console.log(src.slice(i + 1));
+				var tmp_imgname = src.slice(i + 1);
+				console.log(tmp_imgname);
+				var j = tmp_imgname.lastIndexOf('.');
+				var newname = new Date().getTime() + '.' + tmp_imgname.slice(j + 1);
+				console.log(newname);
+				var newSrc = src.replace(tmp_imgname, newname);
+				console.log(newSrc);
+				compressImage(src, src, 600, 800, 100, function(event) {
+					var wt = plus.nativeUI.showWaiting();
+					var task = plus.uploader.createUpload(SYS_USER.log_editPersonPhotoApp_url + commons.getToken(), {
+							method: "POST"
+						},
+						function(t, status) {
+							wt.close();
+							if (status == 200) {
+								console.log(JSON.stringify(t) + status);
+								mui.toast('头像修改成功', {
+									duration: 'short',
+									type: 'div'
+								});
+								init();
+								var self = plus.webview.currentWebview();
+								var mindPage = self.opener();
+								mui.fire(mindPage, 'backMindPage');
+							} else {
+								console.log(JSON.stringify(t) + status);
+								mui.toast('上传文件请求失败', {
+									duration: 'short',
+									type: 'div'
+								});
+							}
+						}
+					);
+					task.addData("client", "plus");
+					task.addData("uid", Math.floor(Math.random() * 100000000 + 10000000).toString());
+					task.addFile(src, {
+						key: "photoFile"
+					});
+					task.start();
+				});
+				//压缩图片
+				// compressImage()
+				// src = "file://storage/emulated/0/Android/data/io.dcloud.HBuilder/apps/HBuilder/doc/1556008195874.jpg";
+
+			};
+
+			mui(".mui-table-view").on('tap', '#updatePWD', function() {
+				mui.openWindow({
+					id: 'settingUpdatePwd',
+					url: '../../html/mind/settingUpdatePwd.html',
+					show: {
+						aniShow: 'pop-in'
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+
+			//退出登录
+			mui(".mui-table-view").on('tap', '#logout', function() {
+				var self = plus.webview.currentWebview();
+				if ($("#logout").html() == "登录") {
+					mui.openWindow({
+						id: 'login',
+						url: '../../html/login/login.html',
+						show: {
+							aniShow: 'pop-in'
+						},
+						styles: {
+							popGesture: 'hide'
+						},
+						waiting: {
+							autoShow: false
+						},
+					});
+					// setTimeout(function(){self.close();},100);
+
+				} else {
+					mui.confirm('确认是否退出', '提示', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							mBack();
+							mui.openWindow({
+								id: 'logout',
+								url: '../../html/login/login.html',
+							});
+							// setTimeout(function(){self.close();},100);
+						}
+					}, 'div');
+				}
+
+			});
+
+			document.addEventListener('loginUser', function() {
+				init();
+			});
+			document.addEventListener('logoutUser', function() {
+				init();
+			});
+
+			function mBack() {
+				var userState = JSON.parse(localStorage.getItem('userState'));
+				userState.isLogin = false;
+				localStorage.setItem('userState', JSON.stringify(userState));
+				// console.log(JSON.stringify(userState));
+				setMuiFire(mui, plus, 'logoutUser');
+			}
+
+			//保存修改的用户信息
+			var editUser = function(param) {
+				var url = SYS_USER.appEditUser_url;
+				//获取当前登录人信息
+				var token = commons.getToken();
+				console.log(token)
+				if (false == token) {
+					toLogionPage();
+					return;
+				}
+				url += token;
+				mui.ajax(url, {
+					data: param,
+					dataType: 'json', //服务器返回json格式数据
+					type: 'post', //HTTP请求类型
+					timeout: 10000, //超时时间设置为10秒；
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(data) {
+						if (null != param.nickName) $('#nickName').text(param.nickName);
+						if (null != param.company) $('#company').text(param.company);
+					},
+					error: function(xhr, type, errorThrown) {
+						mui.toast('修改失败', {
+							duration: 'short',
+							type: 'div'
+						});
+					}
+				});
+
+			}
+
+			//初始化页面
+			init();
+		</script>
+	</body>
+
+</html>

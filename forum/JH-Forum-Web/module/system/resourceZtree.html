@@ -1,0 +1,842 @@
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+
+
+<div class="outerDiv">
+	<div class="innerDiv">
+		<div class="modulTitle">
+			<span class="blueBlock"></span>
+			<span class="modulTitleInfo">资源管理</span>
+		</div>
+		<div class="infoDiv">
+			<div class="zTreeDemoBackground">
+				<ul id="resourceTree" class="ztree"></ul>
+			</div>
+			<div class="dataInfo rightResource">
+				<div id="img" style="display: none;"><span id="resourceTitle" style="display: none;color: #00a7ec; font-weight: bold;font-size:14px;"></span></div>
+				<table id="saveResource" class="saveTable" style="display: none" cellpadding="0" cellspacing="0">
+					<input type="hidden" id="resourceId"/>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>资源编码<span class='p'></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "resCode" /></td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>资源名称<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "resName"/></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>上级资源<span class='p'></span></div></td>
+						<td class="secondTdStyle">
+							<input type="hidden" id = "parentId"/>
+							<input type="text" id = "parentName" readonly="readonly"/>
+                            <div id="treeDiv" style="z-index: 990;position:absolute;left:0px; top:34px;width:155px;height:160px;background-color:#F5F2F2;overflow-y: auto;display:none;">
+                                <ul id="treeForSel" class="ztree" style="margin-top:0; "></ul>
+                            </div>
+						</td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>资源类型<span class='p'></span></div></td>
+						<td class="fourthTdStyle">
+							<select id="resType" class=""></select>
+						</td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>资源属性<span class='p'></span></div></td>
+						<td class="secondTdStyle">
+							<select id="leaf">
+								<option value="false">目录</option>
+								<option value="true">页面</option>
+							</select>
+						</td>
+						<td class="thirdTdStyle"><div class="justify">序号<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "resNo" /></td>
+					</tr>
+					<tr>
+						<td class="thirdTdStyle"><div class="justify">数据状态<span class='p'></span></div></td>
+						<td class="fourthTdStyle">
+							<select id="dataStatus">
+								<option value="1">正常</option>
+								<option value="0">禁用</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">图标<span class='p'></span></div></td>
+						<td class="secondTdStyle" colspan="3" style="width: 78%;">
+							<input type="text" id = "icoStyle" style="width: 100%;"/>
+						</td>
+					</tr>
+					<tr>
+						<td class="thirdTdStyle"><div class="justify">资源地址<span class='p'></span></div></td>
+						<td class="fourthTdStyle"  colspan="3" style="width: 78%;"><input type="text" id = "resUrl" style="width: 100%;" /></td>
+					</tr>
+				</table>
+				<div align="center" id="btnSave" style="display: none">
+					<input class="btn" type="button" id = "saveD" value="保存"/>
+					<input class="btn" type="button" id = "cancelBtn" value="取消"/>
+				</div>
+				<table id="showResource" class="showTable" style="display: none;" cellpadding="0" cellspacing="0">
+					<tr>
+						<td class="firstTdStyle"><div class="justify">资源编码<span class='p'></span></div></td>
+						<td id = "view_resCode" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">资源名称<span class='p'></span></div></td>
+						<td id = "view_resName" class="fourthTdStyle"></td>
+
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">上级资源<span class='p'></span></div></td>
+						<td class="secondTdStyle" id = "view_parentId"></td>
+						<td class="thirdTdStyle"><div class="justify">资源类型<span class='p'></span></div></td>
+						<td id = "view_resType" class="fourthTdStyle"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">资源属性<span class='p'></span></div></td>
+						<td id = "view_leaf" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">序号<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "view_resNo"></td>
+					</tr>
+					<tr>
+						<td class="thirdTdStyle"><div class="justify">数据状态<span class='p'></span></div></td>
+						<td id = "view_dataStatus" class="fourthTdStyle"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">图标<span class='p'></span></div></td>
+						<td id = "view_icoStyle" class="secondTdStyle" colspan="3" style="width: 72%;over-flow:hidden;"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">资源地址<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "view_resUrl" colspan="3" style="width: 60%;"></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="showDialog" class="dialogStyle">
+	<span id="msg"></span>
+</div>
+<script type="text/javascript">
+
+	require(["jquery", "ztree", "BaseAjax", "formVerfication","PopWin","commons"], function ($, ztree, BaseAjax, formVerfication,PopWin, commons) {
+		var log, param={},className = "dark", startTime = 0, endTime = 0, perCount = 100, perTime = 100;
+		var ZTreeObj;
+		var zTreeSetting = {
+			data:{
+				key:{
+					name:"resName"
+				},
+				simpleData:{
+					enable:true,
+					idKey:"resId",
+					pIdKey:"parentId",
+					rootPid:null
+				}
+			},
+            async: {
+                enable: true,
+				headers:{"AccessToken":commons.getAccessToken()},
+				contentType: "application/json",
+                url:RESOURCE_CONFIG.findByPid_url,//根据当前节点查询下面的子节点
+                dataFilter:ajaxDataFilter, //拦截ajax,预处理返回结果
+                autoParam:["resId", "parentId","level"],
+                otherParam:param
+            },
+			edit:{
+				enable:true,
+				removeTitle:"删除",
+				renameTitle:"修改",
+				showRemoveBtn:true,
+				showRenameBtn:true
+			},
+			view:{
+				nameIsHTML:true,
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom
+			},
+			callback:{
+				beforeEditName:beforeEditNameFun,
+				beforeRemove:beforeRemoveFun,
+				onClick:onClickFun,
+                onAsyncSuccess: onAsyncSuccess,
+                beforeExpand: beforeExpand
+
+			}
+		};
+
+        /**
+         * 用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
+         * @version <1> 2018-05-29 lxy： Created.
+         */
+        function beforeExpand(treeId, treeNode) {
+            param.id = treeNode.id;
+            if (!treeNode.isAjaxing) {
+                startTime = new Date();
+                treeNode.times = 1;
+                ajaxGetNodes(treeNode, "refresh");
+                return true;
+            } else {
+                popWin.showMessageWin("zTree 正在加载数据中，请稍后展开节点。。。");
+                return false;
+            }
+        }
+
+        /**
+         * 用于捕获异步加载正常结束的事件回调函数
+         * @version <1> 2018-05-29 lxy： Created.
+         */
+        function onAsyncSuccess(event, treeId, treeNode, msg) {
+            if (!msg || msg.length == 0) {
+                return;
+            }
+            //树节点为空判断
+            if(treeNode == null){
+                return;
+            }
+            var zTree = $.fn.zTree.getZTreeObj("resourceTree"),
+                    totalCount = treeNode.count;
+            if (treeNode.children.length < totalCount) {
+                setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
+            } else {
+                treeNode.icon = "";
+                zTree.updateNode(treeNode);
+                zTree.selectNode(treeNode.children[0]);
+
+            }
+        }
+
+        //刷新树
+        function ajaxGetNodes(treeNode, reloadType) {
+            var zTree = $.fn.zTree.getZTreeObj("resourceTree");
+            if (reloadType == "refresh") {
+//                treeNode.icon = "../../../css/zTreeStyle/img/loading.gif";
+                treeNode.isParent=true;
+                zTree.updateNode(treeNode);
+            }
+            zTree.reAsyncChildNodes(treeNode, reloadType, true);
+        }
+
+        /**
+         *拦截处理ResultMessage返回内容，使之满足zTree要求格式
+         * dataFilter回调函数
+         * enable:true enable属性配置为true
+         * @version <1> 2018-05-29 lxy： Created.
+         */
+        function ajaxDataFilter(treeId,parentNode, responseData){
+
+            if(responseData.flag){
+                return responseData.data;
+            }
+        }
+
+		function removeHoverDom(treeId, treeNode) {
+			$("#addBtn_"+treeNode.tId).unbind().remove();
+		};
+
+		var parentNode;
+		function addHoverDom(treeId, treeNode) {
+			var sObj = $("#" + treeNode.tId + "_span");
+			if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId + "' title='添加' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+			var btn = $("#addBtn_"+treeNode.tId);
+			if (btn) btn.bind("click", function(){
+				setTimeout(function(){
+                    parentNode = treeNode;
+                    //进入添加资源页面
+                    $("#saveResource,#btnSave").show();
+                    $("#showResource").hide();
+                    $("#resourceTitle").html(treeNode.resName+'子节点添加');
+                    $('#saveResource input').val('');
+                    //资源编码设置成可编辑
+                    $("#resCode").attr("readOnly",false);
+                    $("#resCode").css("background-color","#ffffff");
+                    var SelectArr = $("#saveResource select");
+                    for (var i = 0; i < SelectArr.length; i++) {
+                        SelectArr[i].options[0].selected = true;
+                    }
+                    $("#parentId").val(treeNode.resId);
+                    $("#parentName").val(treeNode.resName);
+                },3);
+			});
+		};
+
+
+		function onClickFun(event, treeId, treeNode) {
+			getDictById(treeNode.resId,'show');
+		}
+
+		//删除节点之前
+		function beforeRemoveFun(treeId, treeNode) {
+			parentNode = treeNode;
+			//删除节点前 首先判断是否有子节点  如果有则不可删除 checkResLeaf_url
+			var checkAjax = new BaseAjax();
+			checkAjax.opts.url = RESOURCE_CONFIG.checkResLeaf_url;
+			checkAjax.opts.async = false; //同步
+			checkAjax.opts.data = JSON.stringify({parentId:treeNode.resId});
+			checkAjax.opts.successFun = function(result) {
+				if (result.flag) {
+					//提示
+					showDialogWran("该节点下有子节点，不可删除！");
+					return false;
+				}
+//			ZTreeObj.selectNode(treeNode);
+			showDialog("确定删除节点'"+treeNode.resName+"'吗?",function () {
+				//删除资源
+				var delAjax = new BaseAjax();
+				delAjax.opts.url = RESOURCE_CONFIG.del_url + "?resId=" + treeNode.resId;
+				delAjax.opts.contentType = "application/json";
+				delAjax.opts.successFun=function(result){
+					if(result.flag){
+                        var zTree = $.fn.zTree.getZTreeObj("resourceTree");
+                        var pNode=treeNode.getParentNode();//获取被选中节点的父节点(由于这里不支持多选，所以直接获取第一个就好)
+                        var nextNode = treeNode.getNextNode();//获得下一个节点
+						//删除节点
+						ZTreeObj.removeNode(treeNode,false);
+                        //展示邻近的节点
+                        if(nextNode){
+                            getDictById(nextNode.resId,'show');
+                            zTree.selectNode(nextNode);
+                        }else{
+                            getDictById(pNode.resId,'show');
+                            zTree.selectNode(pNode);
+                        }
+                        $("#img").show();
+                        $("#showResource").show();
+						$('#view_dataStatus').html("删除");
+						PopWin.showMessageWin("资源删除成功");
+					}else{
+						PopWin.showMessageWin("资源删除失败");
+					}
+				};
+				delAjax.opts.errorFun = function(){
+					PopWin.showMessageWin("资源删除异常，请联系管理员");
+				};
+				delAjax.run();
+			});
+		}
+		checkAjax.run();
+			return false;
+	};
+
+
+		var trid,trnode;
+		//编辑节点之前
+		function beforeEditNameFun(treeId, treeNode) {
+			parentNode = treeNode;
+            setTimeout(function(){
+                getDictById(treeNode.resId,'edit');
+                trid=treeId;
+                trnode = treeNode;
+            },3);
+			return false;
+		};
+
+		//根据id查询对应资源
+		var getDictById = function(resId,type){
+			var ajax = new BaseAjax();
+			ajax.opts.url = RESOURCE_CONFIG.getById_url + "?resId=" + resId;
+			ajax.opts.contentType = "application/json";
+			ajax.opts.type = "POST";
+			ajax.opts.async = false; //同步请求
+			ajax.opts.successFun = function(result){
+				if(result.flag){
+					var dataOne =  result.data;
+					/*dataOne.dictId = $.trim(dataOne.id);
+					 dataOne.dataName = $.trim(dataOne.name);
+					 dataOne.parentId = $.trim(dataOne.pId);*/
+					if(type=='edit') {
+						showsaveData(dataOne);
+					}
+					if(type=='show') {
+						showData(dataOne);
+					}
+				}
+			};
+			ajax.opts.errorFun = function(){
+				return false;
+			};
+			ajax.run();
+		};
+
+		//加载资源编辑
+		var showsaveData = function(data){
+			clearErrorInfo( $('.rightResource'));
+
+			$("#resourceTitle,#img,#saveResource,#btnSave").show();
+			$("#showResource").hide();
+			$("#resourceTitle").html(data.resName+'编辑');
+			$("#resCode").val(data.resCode);
+			$("#resName").val(data.resName);
+			$("#parentId").val(data.parentId);
+			$("#parentName").val(data.parentName);
+			$("#parentSel").val(data.parentName);
+			$("#leaf").val(data.leaf);
+			$("#resUrl").val(data.resUrl);
+			$("#resNo").val(data.resNo);
+			$("#icoStyle").val(data.icoStyle);
+			$("#resourceId").val(data.resId);
+			$("#dataStatus").val(data.dataStatus);
+			$("#leaf option[value='"+ data.leaf +"']").attr("selected","selected");
+			$("#resType option[value='"+ data.resType +"']").attr("selected","selected");
+
+            //资源编码设置成不可编辑
+            $("#resCode").attr("readOnly",true);
+            $("#resCode").css("background-color","rgb(245, 245, 245)");
+		};
+
+		//加载资源详情
+		var showData = function(data){
+			clearErrorInfo( $('.rightResource'));
+			$('.input').removeClass('formInputHighlight');//清楚所有的文本框高亮样式
+			$("#img,#resourceTitle,#showResource").show();
+			$("#saveResource,#btnSave").hide();
+			$("#resourceTitle").html(data.resName+'详情');
+
+			$("#view_resCode").html(data.resCode);
+			$("#view_resName").html(data.resName);
+			$("#view_parentId").html(data.parentName);
+			$("#view_resType").html(data.resTypeName);
+			$("#view_leaf").html(data.leaf? "页面" : "目录");
+			$("#view_resUrl").html(data.resUrl);
+			$("#view_resUrl").attr('title',data.resUrl);
+			$("#view_resNo").html(data.resNo);
+			$("#view_icoStyle").html(data.icoStyle);
+			$("#view_dataStatus").html($('#dataStatus>option[value='+data.dataStatus+']').html());
+			$($('#showResource tr>td:odd')).each(function(i,d){d.setAttribute('title',d.innerText)});
+		};
+
+		//保存编辑  和 新增
+		$('#saveD').click(function () {
+			var resourceId = $('#resourceId').val();
+			if(!formVerf()){
+				return ;
+			}
+			showDialog("确认保存节点'" + $('#resName').val() + "'吗？",function (){
+				if (!!resourceId){
+					editSaveFun(resourceId);
+				} else {
+					addSaveFun();
+				}
+			});
+		});
+
+
+		//保存资源编辑
+		var editSaveFun = function( id ){
+			var res = {};
+			res.resCode = $("#resCode").val().trim();
+			res.resName = $("#resName").val().trim();
+			res.parentId = $("#parentId").val().trim();
+			res.leaf = $("#leaf").val();
+			res.resUrl = $("#resUrl").val().trim();
+			res.resNo = $("#resNo").val().trim();
+			res.resType=$("#resType").val(); //菜单
+			res.icoStyle=$("#icoStyle").val().trim();
+			res.dataStatus=$("#dataStatus").val().trim();
+			res.resId = id;
+			var ajax = new BaseAjax();
+			ajax.opts.url = RESOURCE_CONFIG.edit_url;
+			ajax.opts.contentType = "application/json";
+			ajax.opts.data = JSON.stringify(res);
+			ajax.opts.successFun = function(result){
+				if(result.flag){
+					PopWin.showMessageWin("资源修改成功");
+                    var zTree = $.fn.zTree.getZTreeObj("resourceTree"),
+                            type = "refresh",
+                            silent = false;
+                    var updateNode = result.data;//从后台修改成功后返回的数据
+                    var originNode = zTree.getNodeByParam("resId",id);//当前修改的节点
+                    var originParentNode = zTree.getNodeByTId(originNode.parentTId);//原节点父节点
+                    var originParentId = null;
+                    if(originParentNode != null){
+                        originParentId = originParentNode.resId;//原节点父节点的编号
+                    }
+                    var nowParentId = updateNode.parentId;//现在挂载的父节点
+                    if(originParentId != nowParentId){//说明换了父节点
+                        originNode.resName =  updateNode.resName;//更新资源名称
+                        originNode.parentId = nowParentId;//更新父节点
+                        var modifyParentNode = zTree.getNodeByParam("resId",updateNode.parentId);//要挂载的哪个父节点
+                        zTree.moveNode(modifyParentNode, originNode, "inner");
+                        zTree.updateNode(originNode);//修改节点
+                        zTree.selectNode(originNode);//选中新的节点
+                    }else{
+                        /*选中指定节点*/
+                        originNode.resName = updateNode.resName;
+                        zTree.updateNode(originNode);
+                        zTree.selectNode(originNode);
+                    }
+                    zTree.selectNode(originNode);
+					getDictById(id,'show');
+				}else{
+					PopWin.showMessageWin("资源修改失败");
+				}
+			};
+			ajax.opts.errorFun = function (result) {
+				PopWin.showMessageWin("资源修改失败");
+			};
+			ajax.run();
+		};
+
+		//刷新当前节点
+		var refreshNode = function(res){
+			if(res.resId){
+				var ztree =  $.fn.zTree.getZTreeObj('resourceTree');
+				var treeNode = ztree.getNodesByParam('resId',res.resId);
+				treeNode[0].resName = res.resName;
+				ztree.refresh();
+			}
+			else {
+				setTimeout(function () {
+					beforeExpand(trid,trnode)//刷新当前节点（新）
+				},500);
+			}
+		}
+
+		/**
+		 *新增保存
+		 */
+		var addSaveFun = function(){
+			var res = {};
+			res.resCode = $("#resCode").val().trim();
+			res.resName = $("#resName").val().trim();
+			res.parentId = $("#parentId").val().trim();
+			res.leaf = $("#leaf").val().trim();
+			res.resUrl = $("#resUrl").val().trim();
+			res.resNo = $("#resNo").val().trim();
+			res.resType=$("#resType").val().trim(); //菜单
+			res.icoStyle=$("#icoStyle").val().trim();
+			res.dataStatus=$("#dataStatus").val().trim();
+
+			//对资源编码进行重复性验证
+			var checkAjax = new BaseAjax();
+			checkAjax.opts.url = RESOURCE_CONFIG.checkResCode_url;
+			checkAjax.opts.async = false; //同步
+			checkAjax.opts.data = JSON.stringify(res);
+			checkAjax.opts.successFun = function(result) {
+				if (result.flag) {
+					if(result.code=="00020002"){//编码重复
+						formVerfication.showPromptInfo($('#resCode'),$('.rightResource'),'资源编码已存在,不可重复添加');
+					}else{//名称重复
+						formVerfication.showPromptInfo($('#resName'),$('.rightResource'),'资源名称已存在,不可重复添加')
+					}
+				}
+				if (!result.flag) {
+					var ajax = new BaseAjax();
+					ajax.opts.url = RESOURCE_CONFIG.add_url;
+					ajax.opts.contentType = "application/json";
+					ajax.opts.data = JSON.stringify(res);
+					ajax.opts.successFun = function(result){
+						if(result.flag){
+							var newNodes = result.data;
+//							newNodes.resTypeName = resourceType[newNodes.resType];
+//							showData(newNodes);
+							ZTreeObj.addNodes(parentNode,-1,newNodes);
+							ZTreeObj.selectNode(newNodes);
+//							$("#view_parentId").html(parentNode.resName);
+							getDictById(newNodes.resId,'show');
+							PopWin.showMessageWin("资源新增成功");
+						}else{
+							PopWin.showMessageWin("资源新增失败");
+						}
+					};
+					ajax.opts.errorFun = function (result) {
+						PopWin.showMessageWin("资源新增失败");
+					};
+					ajax.run();
+				}
+			}
+			checkAjax.run();
+
+		};
+
+		/**
+		 * 加载所有的资源
+		 * @version<1> 未知
+		 * @version<2> 2018-04-12 lcw :初始化默认展开第一级菜单
+		 */
+		var loadResource = function () {
+			var ajax = new BaseAjax();
+			ajax.opts.url = RESOURCE_CONFIG.findAllResource_url;
+			ajax.opts.type = "POST";
+			ajax.opts.contentType = "application/json";
+			ajax.opts.async = true; //同步请求
+			ajax.opts.successFun = function (result) {
+				if(result.flag){
+					var resourceList = result.data;
+					for(var i = 0 ; i < resourceList.length ; i++){
+						if(resourceList[i].resType == 203){
+							resourceList[i].resName = "<span style='color:red'>" + resourceList[i].resName + "</span>";
+						}
+
+					}
+
+					ZTreeObj = $.fn.zTree.init($("#resourceTree"), zTreeSetting, resourceList);
+
+					//默认初始化展开第一级菜单
+					var zTree = $.fn.zTree.getZTreeObj("resourceTree");
+					var nodes = zTree.getNodes();
+
+					for (var i = 0; i < nodes.length; i++) { //设置节点展开
+                        if(i == 0){//当进入资源管理，默认显示第一个菜单
+                            getDictById(nodes[0].resId,'show');
+                            ZTreeObj.selectNode(nodes[0]);
+                        }
+                        zTree.expandNode(nodes[i], true, false, true);
+					}
+
+				}
+			};
+			ajax.opts.errorFun = function () {
+
+			};
+			ajax.run();
+		};
+
+		//弹出框通用方法
+		var showDialog=function(msg,yesFun,noFun){
+			var reloadDialog = $("#showDialog");
+			$("#msg").html(msg);
+			reloadDialog.dialog({
+				autoOpen: false,
+				title:'系统提示',
+				height: 160,
+				width: 410,
+				modal: true,
+				buttons:[
+					{
+						text:"是",
+						click:function(){
+							yesFun();
+							$(this).dialog("close");
+						}
+					},
+					{
+						text:"否",
+						click:function(){
+							clearErrorInfo( $('.rightResource'));
+							if(!noFun && noFun instanceof Function){
+								noFun();
+							}
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+			reloadDialog.dialog("open");
+		};
+		//提示框通用方法
+		var showDialogWran=function(msg){
+			var reloadDialog = $("#showDialog");
+			$("#msg").html(msg);
+			reloadDialog.dialog({
+				autoOpen: false,
+				title:'系统提示',
+				height: 160,
+				width: 410,
+				modal: true,
+				buttons:[
+					{
+						text:"确认",
+						click:function(){
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+			reloadDialog.dialog("open");
+		};
+
+		/**
+		 * 获取资源类型下拉框数据
+		 * @param parentId = 200
+		 * @version <1> 2017-12-25 lcw : created.
+		 */
+		var resourceType = {};
+		var initResTypeFun = function(selectId,dictId,dictObj){
+			var ajax = new BaseAjax();
+			ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+			ajax.opts.contentType = "application/json";
+			ajax.opts.async = false;
+			ajax.opts.data = JSON.stringify({'parentId' : dictId});
+
+			ajax.opts.successFun = function(result){
+				var str = "";
+				if(result.flag){
+					$.each(result.data, function(index, element){
+						dictObj[element.dictId] = element.dataName;
+						str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+					});
+					$("#"+selectId).append(str);
+				}
+			}
+			ajax.run();
+		};
+
+		function formVerf(){
+			var resourceInfo = $('.rightResource');
+
+			/*if(!resourceCodeVerf(resourceInfo,'编码大小为1-20位，包含字母、数字和下划线')){
+			 return false;
+			 }*/
+
+			if(formVerfication.checkInputIsEmpty($('#resCode'),resourceInfo,'资源编码不能为空')){
+				return false;
+			}
+			if(formVerfication.checkInputLength(1,20,$('#resCode'),resourceInfo,'资源编码不能超过20位')){
+				return false;
+			}
+			if(formVerfication.checkInputIsCharDigitalUnderlineMiddleLine($('#resCode'),resourceInfo,'编码为1-20位字母、数字、下划线或中划线组合')){
+				return false;
+			}
+			if(formVerfication.checkInputIsEmpty($('#resName'),resourceInfo,'资源名称不能为空')){
+				return false;
+			}
+
+			if(formVerfication.checkInputLength(1,30,$('#resName'),resourceInfo,'资源名称不能超过30位')){
+				return false;
+			}
+
+			var resNoObj = $('#resNo');
+			if(formVerfication.checkInputIsPositiveInteger(resNoObj,resourceInfo,'序号为1-32767正整数')){
+				return false;
+			}
+			var resNoVal = parseInt(resNoObj.val().trim());
+			if(resNoVal < 1 || resNoVal > 32767){
+				formVerfication.showPromptInfo(resNoObj,resourceInfo,'序号为1-32767正整数');
+				return false;
+			}
+			if(formVerfication.checkInputLength(0,80,$('#icoStyle'),resourceInfo,'图标不能超过80位')){
+				return false;
+			}
+			if(formVerfication.checkChinese($('#icoStyle'),resourceInfo,'图标中不能包含中文字符')){
+				return false;
+			}
+			if(formVerfication.checkInputLength(0,50,$('#resUrl'),resourceInfo,'资源地址不能超过50位')){
+				return false;
+			}
+			return true;
+		};
+
+
+		//清除错误信息
+		var clearErrorInfo = function (errorObj) {
+			errorObj.find('.formErrorInfo').remove();
+			//清楚所有的文本框高亮样式
+			$('#resCode').removeClass('formInputHighlight');
+			$('#resName').removeClass('formInputHighlight');
+			$('#parentName').removeClass('formInputHighlight');
+			$('#resNo').removeClass('formInputHighlight');
+			$('#icoStyle').removeClass('formInputHighlight');
+			$('#resType').removeClass('formInputHighlight');
+			$('#leaf').removeClass('formInputHighlight');
+			$('#dataStatus').removeClass('formInputHighlight');
+			$('#resUrl').removeClass('formInputHighlight');
+		};
+
+		$(document).ready(function () {
+			loadResource();
+			initResTypeFun("resType",200,resourceType);
+		});
+
+		//清空右边栏数据
+		var clearRightData = function () {
+			$("#resourceTitle").hide();
+			$("#img").hide();
+			$("#showResource").hide();
+			$("#saveResource").hide();
+			$("#btnSave").hide();
+		}
+
+		// 添加和修改界面取消按钮的点击事件
+		$("#cancelBtn").click(function() {
+			var currentTreeNode = parentNode;
+			$('.formInputHighlight').removeClass('formInputHighlight')//清除错误样式
+			getDictById(currentTreeNode.resId, 'show');
+		});
+
+
+        /**
+         * 上级资源 设置成可选择资源树
+         */
+        $("#parentName").live("click",function(){
+            initTreeForSel();
+            var height = $(this).height();
+            var width = $(this).width()+50;
+            var clientTop = $(this).position().top+height;
+            var clientLeft = $(this).position().left;
+            $("#treeDiv").css({"display":"block","left":clientLeft,"top":clientTop,"width":width+"px","height":"300px"});
+            $("body").bind("mousedown", onBodyDown);
+        });
+
+        /**
+         * 隐藏资源树
+         */
+        function onBodyDown(event) {
+            var $_obj = $(event.target);
+            if(event.target.id == "" || event.target.id == "resourceInfo" ){
+                $("#treeDiv").css("display","none");
+            }
+            if (event.target.id == "" || event.target.id == 'treeParentDiv'){
+                $('#treeParentDiv').hide();
+                if(event.target.id == 'treeParentDiv'){
+                    $('#search_parentName').val('');
+                }
+            }
+        }
+        /**
+         * 资源树的基本配置
+         */
+        var settingsForSel = {
+            data:{
+                key:{
+                    name:"resName"
+                },
+                simpleData:{
+                    enable:true,
+                    idKey:"resId",
+                    pIdKey:"parentId",
+                    rootPid:null
+                }
+            },
+            callback:{
+                onClick:onClickFunForSel
+            }
+        };
+
+        /**
+         * 资源树的点击事件
+         */
+        function onClickFunForSel(event, treeId, treeNode) {
+            var resId = treeNode.resId;
+            var parentName = treeNode.resName;
+            $("#parentId").val(resId);
+            $("#parentName").val(parentName);
+            $("#treeDiv").css("display","none");
+        }
+
+        /**
+         * 初始化树
+         */
+        var initTreeForSel = function(){
+            var ajax = new BaseAjax();
+            ajax.opts.url = RESOURCE_CONFIG.findAllResource_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = true; //同步请求
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var resourceList = result.data;
+                    $.fn.zTree.init($("#treeForSel"), settingsForSel, resourceList);
+
+                    //默认初始化展开第一级菜单
+                    var zTree = $.fn.zTree.getZTreeObj("treeForSel");
+                    var nodes = zTree.getNodes();
+                    for (var i = 0; i < nodes.length; i++) { //设置节点展开
+                        zTree.expandNode(nodes[i], true, false, true);
+                    }
+                }
+            };
+            ajax.opts.errorFun = function () {
+            };
+            ajax.run();
+        }
+	});
+
+</script>
+

@@ -1,0 +1,256 @@
+<style type="text/css">
+
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input type="text" id="search_regionId" class="styleInput input " placeholder="请选择区域" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">关键字：</span>
+                    <span><input type="text" class="input " id="search_words" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input type="text" class="input " id="search_creatorName" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+
+                    <!--<input type="text" class="workinput wicon i1 styleInput" id="dateScope" onfocus="this.style.color='#000000'" readonly/>-->
+                    <span><input type="text" class="input" id="search_createTime" readonly/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dataStaticGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule){
+        var init = function(){
+            loaderGrid();//加载表格
+            RegionSelectFun("search_regionId");//区域点击事件
+            dateFun();//初始化创建时间控件
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);
+
+            $(window).resize(function(){
+                $("#dataStaticGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+            /**
+             * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+             * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+             * @version<1> 2018-05-29 lcw: Created.
+             */
+            $("#search_createTime").on("click",function(){
+                if($("#divArea").css("display")== "block"){
+                    $("#divArea").css("display","none")
+                }
+            })
+        };
+
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            $("#search_regionId").removeAttr("regionid");
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#dataStaticGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var loaderGrid = function(){
+            $("#dataStaticGrid").jqGrid({
+                url: LOADER_CONFIG.findDateStaticByPage_url,
+                datatype: "json",
+                postData:{
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['staticId','regionId','区域','关键字','文件路径', '文件大小','创建人','创建时间','操作'],
+                colModel:[
+                    {name: 'staticId', index:'staticId', hidden:true},
+                    {name: 'regionId', index: 'regionId', hidden:true},
+                    {name: 'regionName', index: 'region_name', align: 'center', width: '10%', sortable: true},
+                    {name: 'words', index: 'words', align: 'center', width: '10%', sortable: true},
+                    {name: 'filePath', index: 'path', align: 'left', width: '32%', sortable: false},
+                    {name: 'fileSize', index: 'fileSize', align: 'right', width: '4%', sortable: false},
+                    {name: 'creatorName', index:'creator_name', width:'6%',align:'center', sortable:true},
+                    {name: 'createTime', index:'create_time', width:'8%', align:"center", sortable:true},
+                    {name: 'cz', index:'cz', width:'6%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str="";
+                            var suffix = DATA_STORAGE.download_suffix;
+                            str+= "<a href='"+suffix+ rowObject.filePath +"' target='_blank' title='文件下载' data-id='"+suffix+ rowObject.staticId +"'><img src='images/public/download.png'></a>";
+                            // str+= "<img src='images/public/download.png' class='downloadBtn' data-id='"+ rowObject.staticId +"' path='"+ rowObject.filePath +"' title='文件下载' >";
+                            return str;
+                        }}
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#pager2_left").html("<input type='button' class='btn btn_grey' value='批量下载' id='batchDownloadBtn' />");
+                    tableEvent();//绑定table表格操作事件
+                    $("#dataStaticGrid").setGridWidth($(".rightMain").width() - 30);
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    var ids = $("#dataStaticGrid").jqGrid("getGridParam", "selarrrow");
+                    var rowNum = $("#dataStaticGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+                    if(ids.length == rowNum){//全选
+                        $("input[type='checkbox']").prop("checked",true);
+                    }
+                    if(ids.length == 0 &&  !$("#batchDownloadBtn").hasClass("btn_grey")){
+                        $("#batchDownloadBtn").addClass("btn_grey");
+                    }else{
+                        $("#batchDownloadBtn").removeClass("btn_grey");
+                    }
+
+                },
+                onSelectRow:function(rowid, e){
+                    var ids = $("#dataStaticGrid").jqGrid("getGridParam", "selarrrow");
+                    var rowNum = $("#dataStaticGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+                    if(ids.length == rowNum){//全选
+                        $("input[type='checkbox']").prop("checked",true);
+                    }
+                    if(ids.length == 0 &&  !$("#batchDownloadBtn").hasClass("btn_grey")){
+                        $("#batchDownloadBtn").addClass("btn_grey");
+                    }else{
+                        $("#batchDownloadBtn").removeClass("btn_grey");
+                    }
+                }
+            });
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-28 zhangshen : Created.
+         */
+        var tableEvent = function(){
+            $(".downloadBtn").on("click",function(){
+                //var path = $(this).attr("path");
+                //path = encodeURI(path);
+                //window.open("/dataStatic/down?dataUrl="+path);
+                var staticId = $(this).attr("data-id");
+                var url = LOADER_CONFIG.dataStaticDown_url + "?staticId="+staticId + "&AccessToken=" + commons.getAccessToken();
+                commons.createIframe(url, triggerDelay, removeDelay);
+            });
+
+            $("#batchDownloadBtn").bind("click",function(){//批量下载
+                if(!$(this).hasClass("btn_grey")){
+                    batchDownloadFun();
+                }
+            });
+        };
+
+        /**
+         * Description: 批量下载
+         * @version <1> 2018/5/24 zhangshen: Created.
+         */
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+        var batchDownloadFun = function(){
+            debugger;
+            var ids = $("#dataStaticGrid").jqGrid("getGridParam", "selarrrow");
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#dataStaticGrid").jqGrid('getRowData', id);
+                var suffix = DATA_STORAGE.download_suffix;
+                window.open(suffix+row.filePath);
+                // var staticId = row.staticId;//获取staticId
+                // var url = LOADER_CONFIG.dataStaticDown_url + "?staticId="+staticId + "&AccessToken=" + commons.getAccessToken();
+                // commons.createIframe(url, index * triggerDelay, removeDelay);
+            });
+        };
+
+
+        /**
+         * 区域选择控件
+         * @version <1> 2018-04-28 zhangshen : Created.
+         */
+        var RegionSelectFun = function(idName){
+            var txtArea = document.getElementById(idName);
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400};
+                opts.url = REGION_CONFIG.findRegion_url;
+                var regionSelector = new RegionModule.RegionSelector(idName,opts);
+                regionSelector.show();
+            }
+            return true;
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-28 zhangshen： Created.
+         */
+        var searchFun = function() {
+            var regionId = document.getElementById("search_regionId").getAttribute("regionId");//区域id
+            var words = $("#search_words").val().trim();//关键字
+            var createTime = ($("#search_createTime").val().trim()).split('至');
+            var creatorName = $("#search_creatorName").val().trim();
+            $("#dataStaticGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:{
+                    'dataStatic.regionId': regionId,
+                    'dataStatic.words': words,
+                    'dataStatic.creatorName': creatorName,
+                    'beginTime':createTime[0] || '',
+                    'endTime':createTime[1] || ''
+                },
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-28 zhangshen : Created.
+         */
+        var dateFun = function(){
+            $("#search_createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        init();
+    });
+</script>

@@ -1,0 +1,304 @@
+<style>
+    .content{ width: 993px;margin:0 auto}
+    /*左侧轮播*/
+    .content .conMain{ width: 755px; float: right;margin-top: 23px; }
+    /*左侧列表**/
+    .tasklist{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 554px;*/}
+    .tasklist h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+    .tasklist h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+    .tasklist h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+    .tasklist h1 a:hover{ cursor: pointer;}
+    .tasklist h2{ font-size: 18px; line-height: 22px; color: #000;}
+    .tasklist h2 a{color: #000;font-weight:bold;}
+    .tasklist h2 a:hover{cursor:pointer;color:#00a4da !important;}
+    .tasklist dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+    .tasklist span.lab:first-of-type{margin-left:8px;}
+    .tasklist i.hot{ vertical-align: text-top; margin-right: 3px;}
+    .tasklist dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+    .tasklist dl dt.report{ float: right; margin-top:10px;}
+    .tasklist dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+    .tasklist dl dd p.brief{ height: 54px; margin-top:16.5px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+    .tasklist dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+    .tasklist dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+    .tasklist dl dd p.info i.time{ margin-right: 24px;}
+    .tasklist dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+    .tasklist dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+    .tasklist dl dd p.info span.collect{ background-position: 0px -49px;}
+    .loadMore{ height: 38px; width:672px;line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+    .loadMore:hover{ cursor: pointer;color:#00a4da;}
+
+    #listTitle{font-size: 30px;margin-bottom: 20px;}
+    #articleType{float: right; height: 40px; width: 110px; background-color: #13c33a; border-radius: 20px; color: white; text-align: center; line-height: 40px; position: relative; top: -15px; cursor: pointer;}
+    #articleType .write{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Add.png') center no-repeat;}
+    #articleType .ask{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Ask.png') center no-repeat;}
+    #articleType .share{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Share.png') center no-repeat;}
+
+    #edit, #delete{height: 25px; width: 25px; text-align: center; line-height: 40px; cursor: pointer; margin-left: 10px;float: right;position: relative;top:-55px}
+    #edit .editIcon, #edit .seeIcon,#delete .deleteIcon{width: 20px; height: 20px; display: inline-block; vertical-align: text-top;  }
+    #edit .seeIcon{width: 25px; height: 20px; display: inline-block; vertical-align: text-top;  }
+    #articleList #edit .editIcon{background: url('images/public/forum/icon-Editer.png') center no-repeat;}
+    #articleList #edit .seeIcon{background: url('images/public/forum/icon-Editer.png') center no-repeat;}
+    #articleList #delete .deleteIcon{background: url('images/public/forum/icon-Delete.png') center no-repeat;}
+    .describle{margin-top: 16.5px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box; -webkit-box-orient: vertical;-webkit-line-clamp: 2;}
+    #noData{height: 100px;width: 100%;text-align: center;display: flex;justify-content: center;align-items: center;}
+    #noData img{width: 33px;height: 33px;border-radius: 50%;}
+    #noData p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+
+
+</style>
+
+    <div class="tasklist">
+        <div>
+            <p id="listTitle">我的模板</p>
+            <div id="articleType" class="addTaskId"><i class="write"></i>添加模板</div>
+            <h1>
+                <a class="on">全部</a>
+            </h1>
+            <div id="articleList">
+
+            </div>
+            <div id="noData" >
+                <img src="images/public/forum/POKERFACE.png"><p>暂无数据</p>
+            </div>
+            <p class="loadMore" style="display: none;">没有更多了</p>
+        </div>
+    </div>
+
+    <div id="dialog" class="dialogStyle" style="display:none"></div>
+    <!--列表显示页div-->
+    <div id="subList" style="display: none">
+        <dl>
+            <dt>
+            <h2>
+            <i class="type taskState">系统模板</i>
+            <a href="javascript:void(0)" taskInfoId="" class="takstTitle"></a>
+            </h2>
+            </dt>
+            <dd>
+                <p class="describle"></p>
+            </dd>
+            <dd id="delete"><i class="deleteIcon"></i></dd>
+            <dd id="edit" ><i class="editIcon"></i></dd>
+        </dl>
+    </div>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","UserModule","commons","custom_settings","jqueryUi","jqGrid"],function($,Marquee,BaseAjax,UserModule,commons,custom_settings,jqueryUi,jqGrid){
+
+        //初始化方法
+        var init = function(){
+            //查看更多标签
+            lookMore();
+            loadMore();
+            //加载模板列表
+            initTaskPage(1, initFirstRows, true);
+            addCollection();//添加采集任务
+            isLogion();//获取用户信息
+        }
+
+        //查看更多
+        var lookMore = function(){
+            $('.lookMore a').on('click',function(){
+                $('.tags').css('height','auto');
+                $('.lookMore').hide();
+            });
+
+        };
+        /**
+         * 根据查询结果，动态生成我的关注专家列表
+         * @param result 专家列表分页查询结果
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateContent_new = function(result,flag){
+            var obj = null;
+            for (var i=0;i<result.list.length;i++){
+                obj = result.list[i];
+                var describle = "模板说明："+obj.purpose;
+                $("#subList").find(".takstTitle").text(obj.templateName);//给任务标题赋值
+                $("#subList").find(".takstTitle").attr("taskInfoId",obj.templateId);
+                $("#subList").find(".describle").text(describle);//给描述赋值
+                $("#subList").find(".taskState").text(obj.typeName?obj.typeName:"");//给状态赋值
+                var type = obj.type;
+                if(type == 23001){
+                    $("#subList").find("#delete").hide();
+                    $("#subList").find("#edit").hide();
+                }else{
+                    $("#subList").find("#delete").show();
+                    $("#subList").find("#edit").hide();//模板暂时不能编辑
+                }
+                $('#articleList').append($("#subList").html());
+            }
+            //点击查看任务详情
+            $('.tasklist .takstTitle').on('click',function () {
+                var templateId = $(this).attr('taskInfoId');
+                $(".tasklist").load("module/personal/addTemplate.html",function () {
+                    $("#templateId").val(templateId);
+                    $("#showType").val("1");
+                    $(":input").attr("disabled","disabled")
+                });
+            })
+            //点击查看按钮事件
+            $('.tasklist .seeIcon').on('click',function () {
+                var templateId = $(this).parent().parent().first().find("a").attr('taskInfoId');
+                $(".tasklist").load("module/personal/addTemplate.html",function () {
+                    $("#templateId").val(templateId);
+                    $("#showType").val("1");
+                });
+            });
+            //点击编辑按钮事件
+            $('.tasklist .editIcon').on('click',function () {
+                var templateId = $(this).parent().parent().first().find("a").attr('taskInfoId');
+                $(".tasklist").load("module/personal/addTemplate.html",function () {
+                    $("#templateId").val(templateId);
+                });
+            });
+            //点击删除按钮事件
+            $('.tasklist .deleteIcon').on('click',function () {
+                var templateId = $(this).parent().parent().first().find("a").attr('taskInfoId');
+                var dialog = $("#dialog");
+                dialog.html("确认删除该模板？");
+                dialog.dialog({
+                    autoOpen: false,
+                    title: '提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = COLLECTION_TASK_NEW.my_delTemplateById_url;
+                            ajax.opts.data = JSON.stringify({templateId: templateId});
+                            ajax.opts.successFun = function (data) {
+                                dialog.dialog("close");
+                                $(".loadContent").load('personal.html',function(){
+                                    $('.menuDiv dl dt p').removeClass('on');
+                                    $(".menuDiv dl dt p:eq(1)").addClass('on');
+                                })
+                            }
+                            ajax.run();
+                        }
+                    }, {
+                        text: "否",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                dialog.dialog("open");
+            });
+
+            if (result.hasNextPage) {
+                if (flag) {
+                    $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                } else {
+                    $(".loadMore").attr("nextPage", result.nextPage).html("加载更多>>");
+                }
+            } else {
+                $(".loadMore").attr("nextPage", result.nextPage).html("没有更多了");
+            }
+        }
+
+        /**
+         * 点击任务更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    initTaskPage(nextPage, initRows, false);
+                }
+            });
+        };
+
+        /**
+         * 加载更多任务
+         * @param
+         * @return
+         * @version <1> 2019/3/9 mason:Created.
+         */
+        var initFirstRows = 10;//第一次夹加载条数
+        var initRows = 5;//之后每次加载条数
+        var initTaskPage = function (page, rows, flag, industry) {
+            $('#noData').hide();
+            var loginResult = isLogion();
+            if (!loginResult.flag) return;
+            var userInfo = JSON.parse(loginResult.data);
+            var taskParam = {
+                accountId:userInfo.accountName,
+                page:page,
+                rows:rows,
+                dataStatus:'1',
+                delFlag:'1'
+            }
+            var ajax = new BaseAjax();
+            var url = COLLECTION_TASK_NEW.my_findByPage_url;
+            ajax.opts.url = url;
+            ajax.opts.data = JSON.stringify(taskParam);
+            ajax.opts.contentType = "application/json";
+            ajax.opts.successFun = function (result) {
+                var str = '';
+                if(result && result.total>0){
+                    generateContent_new(result, flag);
+                    $(".loadMore").show();
+                }else{
+                    $('.loadMore').hide();
+                    $('#noData').show();
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+        //加载数据字典信息
+        var loadDictData = function (dictId) {
+            var dataJson = {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        dataJson[status.dictId] = status.dataName;
+                    }
+                }
+            };
+            ajax.run();
+            return dataJson;
+        };
+        //添加采集任务
+        function addCollection(){
+            $(".addTaskId").click(function(){
+                $(".tasklist").load("module/personal/addTemplate.html")
+            });
+        }
+        //获取用户信息
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+        init();
+
+    })
+</script>
+

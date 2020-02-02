@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .left_div {
+            width: 345px;
+            height: calc(100% - 0px);
+            display: inline-block;
+            /*background: #fff;*/
+            margin-top: 12px;
+            margin-left: 12px;
+            /*border: 1px solid #dbdbdb;*/
+        }
+
+        .right_div {
+            float: right;
+            /*margin-top: 12px;*/
+            width: calc(100% - 370px);
+            height: 100%;
+            display: inline-block;
+            /*background: #fff;*/
+            /*border: 1px solid red;*/
+        }
+
+        .left_div div {
+            display: inline-block;
+            /*border: 1px solid red;*/
+            /*background: yellow;*/
+            width: 100%;
+            background: #fff;
+            /*border: 1px solid #dbdbdb;*/
+        }
+
+        .left_div_top {
+            height: 100px;
+        }
+
+        .left_div_top span {
+            font-size: 18px !important;
+            font-weight: bold;
+        }
+
+        .left_div_top div {
+            width: 90%;
+            margin-left: 5%;
+            border: none;
+        }
+
+        .left_div_top_first {
+            padding-top: 12px;
+            border: none;
+        }
+
+        .left_div_top_second {
+            padding-top: 12px;
+        }
+
+        .left_div_top_second select {
+            height: 40px;
+            width: 100%;
+            border: 1px solid #eaeaea;
+        }
+
+        .left_div_middle {
+            height: 39px;
+            margin-top: 7px;
+            border: none !important;
+        }
+
+        .left_div_middle input {
+            width: 100%;
+        }
+
+        .left_div_buttom {
+            height: calc(100% - 185px);
+            margin-top: 7px;
+        }
+
+        .backButton {
+            background: #1f4451;
+            color: #ffffff;
+            height: 29px;
+            padding: 0 7px;
+            border-radius: 5px;
+            border: 0px;
+            font-size: 14px;
+        }
+
+        input {
+            height: 38px;
+            border: 1px solid #dbdbdb;
+        }
+
+        .map_control_div {
+            height: 174px;
+            width: 35px;
+            left: 610px;
+            top: 83px;
+            z-index: 5;
+            overflow: hidden;
+            position: fixed;
+            text-align: center;
+            /*border: 1px solid red;*/
+        }
+
+        .map_control_div a {
+            font-size: 11px !important;
+            display: block;
+        }
+
+
+        .fields_div {
+            /*border: 1px solid blue;*/
+            height: 400px;
+            width: 130px;
+            right: 10px;
+            bottom: 10px;
+            z-index: 6;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        .field {
+            background-color: #d19400;
+            width: 128px;
+            height: 42px;
+            line-height: 42px;
+            margin-top: 10px;
+            border-radius: 5px;
+            text-align: center;
+            color: #ffffff;
+            align-items: center;
+        }
+
+        .selected {
+            background-color: #99283b;
+            border: 4px solid #e2d400;
+        }
+
+        .map_button {
+            width: 35px;
+            height: 35px;
+            background-color: #ffffff;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .map_control_div img {
+            margin-top: 3px;
+        }
+
+        .map_field_div {
+            height: 150px;
+            width: 470px;
+            right: 10px;
+            top: 60px;
+            z-index: 9999;
+            overflow: hidden;
+            position: fixed;
+            border-radius: 20px;
+            background-color: #ffffff;
+            background-image: url("images/collector/PolicyBG.png");
+            background-repeat: no-repeat;
+            background-position: right;
+            margin-right: 10px;
+        }
+
+        .map_field_div div {
+            margin-left: 23px;
+            min-height: 15px;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .map_field_1 {
+            margin-top: 20px;
+        }
+
+        .map_field_1 #insurance_no {
+            font-size: 23px !important;
+            color: #00d100;
+
+        }
+
+        .map_field_1 #date_range {
+            width: 165px;
+            display: inline-block;
+            background: #00d100;
+            color: #ffffff;
+            height: 20px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .map_field {
+            margin-top: 11px;
+        }
+
+        .map_field_2 span {
+            margin-right: 25px;
+        }
+
+        .map_field_3 span {
+            margin-right: 36px;
+        }
+
+        .map_field_div #close_insurance_info {
+            background-image: url("images/collector/close.png");
+            background-size: 100%;
+            background-repeat: no-repeat;
+            width: 20px;
+            height: 20px;
+            float: right;
+            margin-right: 14px;
+            margin-top: 14px;
+            border: 0;
+            background-color: transparent;
+        }
+
+        .mapbtn_selected {
+            background-color: #f6dd2a;
+        }
+
+        .field_dialog {
+            background-color: #ffffff;
+            width: 357px;
+            height: 190px;
+            bottom: 300px;
+            right: 700px;
+            z-index: 9999;
+            overflow: hidden;
+            position: fixed;
+            border-radius: 20px;
+        }
+
+        /*.field_dialog:after {*/
+        /*position: relative;*/
+        /*content: "";*/
+        /*bottom: -20px;*/
+        /*left: 25px;*/
+        /*border-right:10px solid transparent;*/
+        /*border-left:10px solid transparent;*/
+        /*border-top:10px solid red;*/
+        /*}*/
+
+        .field_dialog img {
+            width: 95px;
+            height: 90px;
+        }
+
+        .field_dialog div {
+            margin-left: 20px;
+        }
+
+
+        .field_dialog_1 {
+            margin-top: 30px;
+        }
+
+        .field_dialog_2 {
+            margin-top: 10px;
+        }
+
+        .picktaged {
+            color: #70c45f;
+        }
+
+        .no_picktage {
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<!--左侧区域-->
+<div class="left_div">
+    <div class="left_div_top">
+        <div class="left_div_top_first">
+            <button id="backToList" class="backButton">返回列表</button>
+            <span id="taskName"></span>
+        </div>
+        <div class="left_div_top_second">
+            <select id="area_select"></select>
+        </div>
+        <div class="left_div_middle">
+            <input id="searchIdNum" type="search" placeholder="&nbsp;&nbsp;请输入该村保单号/身份证号">
+            <img id="searchPolicyBen" style="position: relative;top: -30px;left: 290px;z-index:99;"
+                 src="images/collector/search.png">
+        </div>
+    </div>
+    <div class="left_div_buttom">
+        <div class="grid">
+            <table id="picktageGrid"></table>
+            <div id="pager1"></div>
+        </div>
+    </div>
+</div>
+<!--右侧区域-->
+
+
+<!--地图左上角控件-->
+<div class="map_control_div">
+    <div id="addTK" class="map_button"><img src="images/collector/addTK.png"><a>新增</a></div>
+    <div id="splitTK" class="map_button"><img src="images/collector/splitTK.png"><a>拆分</a></div>
+    <div id="viewAllTK" class="map_button"><img src="images/collector/viewAllTK.png"><a>全景</a></div>
+    <div id="details" class="map_button mapbtn_selected"><img id="detailsImg" src="images/collector/details.png"><a>详情</a></div>
+</div>
+
+<!--地图右上角div-->
+<div id="InsuranceInfo" class="map_field_div">
+    <button id="close_insurance_info" type="button"/>
+    <div class="map_field_1">
+        <span id="insurance_no">BN12654657845</span>
+        <div id="date_range">2018.03.05-2019.03.05</div>
+    </div>
+    <div class="map_field map_field_2">
+        <span>投保人:<a id="insurant">李毅</a></span>
+        <span>投保面积:<a id="insurance_area">20亩</a></span>
+        <span>定标面积:<a id="actual_area">20亩</a></span>
+        <span>作物:<a id="crop_name">玉米</a></span>
+    </div>
+    <div class="map_field map_field_3">
+        <span>身份证号:<a id="id_num">43215986325481024</a></span>
+        <span>联系电话:<a id="tel">15987451254</a></span>
+    </div>
+    <div class="map_field map_field_4">
+        <span>保单地址:<a id="location">湖北省黄冈市黄梅县黄梅镇下新村</a></span>
+    </div>
+</div>
+
+<!--地图-->
+<div class="right_div" id="divMap"></div>
+
+<!--地图右下角地图列表-->
+<div class="fields_div">
+    <div class="field selected">DK87496454151</div>
+    <div class="field">DK26842570247</div>
+    <div class="field">DK8465453232</div>
+    <div class="field">DK21561564112</div>
+    <div class="field">DK56465456151</div>
+    <div class="field">DK54564651561</div>
+    <div class="field">DK02145646564</div>
+</div>
+
+<!--地块信息弹框-->
+<!--<div class="field_dialog">-->
+<!--<div class="field_dialog_1">-->
+<!--<span>面积:<a>10亩</a></span>-->
+<!--<span>作物:<a>玉米</a></span>-->
+<!--</div>-->
+<!--<div class="field_dialog_2">-->
+<!--<span>定标人:<a>李琦</a></span>-->
+<!--<span>定标时间:<a>2018.03.05</a></span>-->
+<!--</div>-->
+<!--<div class="field_dialog_2">-->
+<!--<img src="images/collector/shuidao.jpg">-->
+<!--<img src="images/collector/shuidao1.jpg">-->
+<!--<img src="images/collector/shuidao2.jpg">-->
+<!--</div>-->
+<!--</div>-->
+
+
+</body>
+<script>
+    require(["jquery", "jqGrid", "jqueryUi", "BaseAjax", "PopWin", "commons", "ol", "MapModule"], function ($, jqGrid, jqueryUi, BaseAjax, PopWin, commons, ol, MapModule) {
+        //图层工具类
+        var mapTool;
+        //图层配置
+        var opts = {};
+
+        /**
+         * 初始化执行的方法
+         * @version <1> 2019/7/19 mason:Created.
+         */
+        var init = function () {
+            //加载地图
+            // loadMapFun();
+            initSearchParam();
+            initJqGridFun();
+            initMap();
+            //绑定返回列表按钮
+            $('#backToList').bind('click', function () {
+                $('.rightMain').load('module/picktage/picktageDuty.html');
+            })
+
+            $('#searchPolicyBen').click(function () {
+                policy.findPolicyList();
+            });
+            $('#details').bind('click',detialsTap)
+
+        }
+
+        var initMap = function () {
+            // mapClazz = new BaseMap.mapClazz();
+            var mapTool = new MapModule.MapTool("divMap", {
+                "zoom": 16,
+                "maxZoom": 20,
+                "minZoom": 3,
+                "logoSrc": "",
+                "logoHref": ""
+            });
+            mapTool.createMap();
+
+            console.log("mapTool" + mapTool)
+
+
+            mapTool.map.getView().setCenter([120.68911, 31.57140])
+
+            var layer = new ol.layer.Tile({
+                // extent: ol.proj.transformExtent(options.mapExtent, options.fromProject, options.toProject),
+                source: new ol.source.XYZ({
+                    // attributions: [opts.attribution],
+                    url: "http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}",
+                    tilePixelRatio: 1, // THIS IS IMPORTANT
+                    minZoom: 10,
+                    maxZoom: 20
+                })
+            });
+            mapTool.addLayer(layer);
+        }
+
+
+        var initJqGridFun = function () {
+            $("#picktageGrid").jqGrid({
+                url: COLLECTOR_CONFIG.queryVillageDetail,
+                datatype: "json", //数据来源，本地数据（local，json,jsonp,xml等）
+                postData: {
+                    'keyWord': $('#searchIdNum').val() || '',
+                    'villageId': $('#area_select').val() || ''
+                },
+                mtype: 'GET',
+                jsonReader: {
+                    root: "data",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                height: 'auto',//高度，表格高度。可为数值、百分比或'auto'
+                colNames: ['保单号', '投保面积(亩)', '定标面积(亩)', '定标状态'],
+                colModel: [
+                    {name: 'insuranceCode', index: 'insuranceCode', width: '25%'},
+                    {name: 'tbarea', index: 'tbarea', width: '25%', align: "center"},
+                    {name: 'dbarea', index: 'dbarea', align: 'center', width: '25%',},
+                    {
+                        name: 'dbStatus',
+                        index: 'dbStatus',
+                        align: 'center',
+                        width: '25%',
+                        formatter: function (cellvalue, options, rowObject) {
+                            var value = "";
+                            if (cellvalue == '1') {
+                                value = "<span class='picktaged'>已定标</span>";
+                            } else {
+                                value = "<span class='no_picktage'>未定标</span>";
+                            }
+                            return value;
+                        }
+                    }
+                ],
+                // viewrecords: true,//是否在浏览导航栏显示记录总数
+                rowNum: 15,//每页显示记录数
+                // rowList: [10, 20, 30],//用于改变显示行数的下拉列表框的元素数组。
+                pager: "#pager1",//分页、按钮所在的浏览导航栏
+                // altRows: true,//设置为交替行表格,默认为false
+                //toppager: true,//是否在上面显示浏览导航栏
+                // multiselect: true,//是否多选
+                //multikey: "ctrlKey",//是否只能用Ctrl按键多选
+                // multiboxonly: true,//是否只能点击复选框多选
+                // subGrid : true,
+                //sortname:'id',//默认的排序列名
+                //sortorder:'asc',//默认的排序方式（asc升序，desc降序）
+                autowidth: true,
+                onSelectRow: function (rowid, status) {
+                    //点击某行获取改行的保单数据
+                    var data = $('#picktageGrid').jqGrid('getRowData', rowid);
+                    var policyNo = data.insuranceCode;//保单号
+                    //查询保单详情
+                    // policy.findPolicyInfo(policyNo);
+                    //查询保单下的地块详情
+                    policy.findBeyondFieldList(policyNo);
+                }
+            });
+        }
+
+        /**
+         *
+         * 初始化查询条件数据
+         * 主任务名，村列表
+         */
+        var initSearchParam = function () {
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTOR_CONFIG.queryTaskById;
+            ajax.opts.data = {
+                'taskId': 2
+            };
+            ajax.opts.type = "get";
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var data = result.data;
+                    var taskName = data['taskName'];
+                    var regionList = data['regionList'];
+                    var optionStr = "";
+                    $(regionList).each(function (i, d) {
+                        optionStr += "<option value='" + d['id'] + "'>" + d['name'] + "</option>"
+                    });
+                    $("#taskName").text(taskName);
+                    $("#area_select").html(optionStr);
+                    //查询保单列表
+                    policy.findPolicyList();
+                } else {
+                    console.error("初始数据失败");
+                }
+            };
+            ajax.opts.errorFun = function () {
+                console.error("初始查询数据异常")
+            };
+            ajax.run();
+        }
+
+        var grid_data = [
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "1"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "1"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "1"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "1"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "1"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"},
+            {insuranceCode: "HBEN123456798aed", tbarea: "23", dbarea: "18", dbStatus: "0"}
+        ];
+
+
+        //初始化地图，加载世界底图
+        var loadMapFun = function () {
+            var url = DS_LAYER.Layer_Init_URL;
+            mapTool = new MapModule.MapTool("divMap", {
+                "url": url,
+                "zoom": 18,
+                "maxZoom": 20,
+                "minZoom": 10,
+                "logoSrc": "",
+                "logoHref": ""
+            });
+            mapTool.createMap();
+
+            //加载WMS世界底图
+            var layerName = "JiaHeDC:ly_changshu";
+            opts.zIndex = 55;
+            opts.zoom = 1;
+            mapTool.addTileWMSLayer(layerName, opts);
+            mapTool.map.getView().setCenter([120.68911, 31.57140])
+
+        };
+
+
+        /**
+         * 根据区域信息查询该区域的所有下级行政区
+         * @param regionId
+         * @return List<InitRegion>
+         * @version <1> 2019/7/25 mason:Created.
+         */
+        var queryAreaList = function () {
+
+        }
+
+
+        /**
+         * 保单类
+         * @version <1> 2019/7/25 mason:Created.
+         */
+        var policy = {
+            /**
+             * 查询保单列表
+             * @param 保单号/身份证号/null
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            findPolicyList: function () {
+                $("#picktageDutyGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {
+                        'keyWord': $('#searchIdNum').val() || '',
+                        'villageId': $('#area_select').val() || ''
+                    },
+                    page: 1
+                }).trigger("reloadGrid");
+            },
+            /**
+             * 查询保单详情
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            findPolicyInfo: function () {
+                var ajax = new BaseAjax();
+                ajax.opts.url = "";
+                ajax.opts.data = "";
+                ajax.opts.successFun = function (result) {
+                    if (result.flag && null != result.data) {
+                        var data = result.data;
+                        $('#insurance_no').val(data.insuranceNo);
+                        $('#date_range').val(data.dateRange);
+                        $('#insurant').val(data.insurant);
+                        $('#insurance_area').val(data.insuranceArea);
+                        $('#actual_area').val(data.actualArea);
+                        $('#crop_name').val(data.cropName);
+                        $('#id_num').val(data.idNum);
+                        $('#tel').val(data.tel);
+                        $('#location').val(data.location);
+                    } else {
+                        console.log("查询保单详情返回值异常")
+                    }
+                };
+                ajax.opts.errorFun = function () {
+                    console.log("查询保单详情失败")
+                };
+                ajax.run();
+            },
+            /**
+             * 查询保单下的地块列表
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            findBeyondFieldList: function (policyNo) {
+                var ajax = new BaseAjax();
+                //TODO 此处获取policyNo接口未部署到地图上 设置policyNo=1
+                policyNo = 1
+                console.log(policyNo)
+                ajax.opts.url = COLLECTOR_CONFIG.findCalibareDataDetails + "?policyNo=" + policyNo;
+                ajax.opts.type = "GET";
+                ajax.opts.data = {};
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var data = result.data;
+                        console.log(JSON.stringify(data))
+                        var calibration = data.calibration
+                        if (null != calibration && calibration.length > 0) {
+                            $('.fields_div').empty();
+                            for (var i = 0; i < calibration.length; i++) {
+                                var div = '<div class="field">' + calibration[i].bsm + '</div>';
+                                $('.fields_div').append(div);
+                            }
+                            // $('.fields_div').children()[0].addClass('selected');
+                        }
+
+                        $('.field').bind('click', function () {
+                            $(this).addClass('selected');
+                            //查询该地块的详情
+                            policy.findFieldPolicyInfo();
+                            //地图相关操作，再地图上给选中的地块添加高亮效果
+                        })
+                    } else {
+                        console.log("查询保单下地块返回异常")
+                    }
+                };
+                ajax.opts.errorFun = function () {
+                    console.log("查询保单下地块列表异常")
+                };
+                ajax.run();
+            },
+            /**
+             * 查询地块详情（含照片）
+             * @param
+             * @return
+             * @version <1> 2019/7/25 mason:Created.
+             */
+            findFieldPolicyInfo: function () {
+                var ajax = new BaseAjax();
+                ajax.opts.url = "";
+                ajax.opts.data = "";
+                ajax.successFun = function (result) {
+                    if (result.flag && result.data) {
+                        var data = result.data;
+                        var calibratorArea = data.calibratorArea;//地块面积
+                        var calibrateCrop = data.calibrateCrop;//作物
+                        var calibrator = data.calibrator;//定标人
+                        var createTime = data.createTime;//定标时间
+                        var photos = policy.findFieldImgs();
+
+                    } else {
+                        console.log("查询地块详情返回值异常")
+                    }
+
+                };
+                ajax.opts.errorFun = function () {
+                    console.log("查询地块详情异常")
+                };
+                ajax.run();
+            },
+            /**
+             * 查询地块相关的照片
+             * @param
+             * @return
+             * @version <1> 2019/7/26 mason:Created.
+             */
+            findFieldImgs: function () {
+                var ajax = new BaseAjax();
+                ajax.opts.url = "";
+                ajax.opts.data = "";
+                ajax.opts.successFun = function (result) {
+                    if (result.flag && result.data) {
+                        if (result.data.length > 0) {
+                            return result.data;
+                        }
+                    } else {
+                        console.log("查询地块照片返回值异常");
+                    }
+                };
+                ajax.opts.errorFun = function () {
+                    console.log("查询地块照片异常");
+                };
+                ajax();
+
+            }
+
+        }
+
+        /**
+         * 控制按钮 地块详细
+         * @param
+         * @return
+         * @version <1> 2019/8/3 checheng:Created.
+         */
+        var detialsTap = function () {
+            if ($("#details").hasClass("mapbtn_selected")) {
+                $("#details").removeClass("mapbtn_selected")
+                $("#InsuranceInfo").hide()
+            } else {
+                $("#details").addClass("mapbtn_selected")
+                $("#InsuranceInfo").show()
+            }
+        }
+        //     <div id="addTK" class="map_button"><img src="images/collector/addTK.png"><a>新增</a></div>
+        // <div id="splitTK" class="map_button"><img src="images/collector/splitTK.png"><a>拆分</a></div>
+        // <div id="viewAllTK"  class="map_button"><img src="images/collector/viewAllTK.png"><a>全景</a></div>
+        // <div id="details"  class="map_button mapbtn_selected"><img src="images/collector/details.png"><a>详情</a></div>
+
+        init();
+    })
+</script>
+
+</html>

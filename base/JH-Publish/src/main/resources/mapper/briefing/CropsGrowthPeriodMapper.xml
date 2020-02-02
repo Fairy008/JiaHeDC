@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.ICropsGrowthPeriodMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.CropsGrowthPeriod">
+    <id column="growth_id" jdbcType="INTEGER" property="growthId" />
+    <result column="growth_name" jdbcType="VARCHAR" property="growthName" />
+    <result column="crops_id" jdbcType="INTEGER" property="cropsId" />
+    <result column="crops_name" jdbcType="VARCHAR" property="cropsName" />
+    <result column="region_id" jdbcType="BIGINT" property="regionId" />
+    <result column="range_start" jdbcType="VARCHAR" property="rangeStart" />
+    <result column="range_end" jdbcType="VARCHAR" property="rangeEnd" />
+    <result column="ifspan" jdbcType="SMALLINT" property="ifspan" />
+    <result column="if_growth_start" jdbcType="SMALLINT" property="ifGrowthStart" />
+    <result column="index_no" javaType="INTEGER" property="indexNo"></result>
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    growth_id, growth_name, crops_id, crops_name, region_id, range_start, range_end, 
+    ifspan, if_growth_start,index_no,remark
+  </sql>
+
+  <!--
+   * 根据ID获取农作物生育周期配置对象
+   * @param cropsGrowthPeriod 农作物生育周期配置对象
+   * @return
+   * @version <1> 2018-04-12 lxy： Created.
+   * @version <2> 2018-04-17 cxw： update:重写方法
+  -->
+  <select id="getGrowthPeriodByGrowthId" parameterType="java.lang.Integer" resultType="com.jh.briefing.model.CropsGrowthPeriodParam">
+    select
+    period.growth_id growthId,
+    period.index_no indexNo,
+    period.growth_name growthName,
+    period.crops_id cropsId,
+    dict.data_name cropsName,
+    period.region_id regionId,
+    region.china_name regionName,
+    period.range_start rangeStart,
+    period.range_end rangeEnd,
+    period.ifspan,
+    period.remark,
+    period.if_growth_start ifGrowthStart
+    from (select  <include refid="Base_Column_List" />  from briefing_crops_growth_period where growth_id = #{growthId,jdbcType=INTEGER})  period
+    left join init_region region on period.region_id = region.region_id
+    left join init_dict dict on period.crops_id = dict.dict_id
+  </select>
+
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.briefing.model.CropsGrowthPeriodParam">
+    select
+    <include refid="Base_Column_List" />
+    from briefing_crops_growth_period
+  </select>
+
+  <!--
+     * 作物生育周期分页查询
+     * @param cropsGrowthPeriodParam 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-12 lxy： Created.
+     * @version <2> 2018-04-17 cxw： update:重写方法
+  -->
+  <select id="findCropsGrowthPeriodByPage" resultType="com.jh.briefing.model.CropsGrowthPeriodParam" parameterType="com.jh.briefing.model.CropsGrowthPeriodParam">
+    select
+      period.growth_id growthId,
+      period.growth_name growthName,
+      period.crops_id cropsId,
+      dict.data_name cropsName,
+      period.region_id regionId,
+      region.china_name regionName,
+      period.range_start rangeStart,
+      period.range_end rangeEnd,
+      period.ifspan,
+      period.remark,
+      period.if_growth_start ifGrowthStart,
+      period.create_time createTime
+    from briefing_crops_growth_period period
+    left join init_region region on period.region_id = region.region_id
+    left join init_dict dict on period.crops_id = dict.dict_id
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+        period.crops_id=#{cropsId}
+      </if>
+      <if test="regionId != null and regionId != ''" >
+        and period.region_id=#{regionId}
+      </if>
+      <if test="growthName != null and growthName != ''" >
+        and period.growth_name like '%' || #{growthName} || '%'
+      </if>
+    </where>
+    order by createTime desc
+  </select>
+
+  <!--
+  新增/修改时查询生育期是否已存在
+   @param CropsGrowthPeriod 农作物生育周期配置配置对象
+   @return int
+   @version <1> 2018-04-18 cxw:Created
+-->
+  <select id="findGrowthPeriodCount" resultType="java.lang.Integer" parameterType="com.jh.briefing.entity.CropsGrowthPeriod">
+    select  count(*) num
+    from briefing_crops_growth_period period
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+         period.crops_id=#{cropsId}
+      </if>
+      <if test="regionId != null and regionId != ''" >
+        and period.region_id=#{regionId}
+      </if>
+      <if test="growthName != null and growthName != ''" >
+        and period.growth_name  = #{growthName}
+      </if>
+      <if test="growthId != null and growthId != ''" >
+        and period.growth_id != #{growthId}
+      </if>
+    </where>
+  </select>
+
+<!-- 根据作物编号、区域查询对应的物候期 -->
+  <select id="findGrowthPeriodListByCropsIdAndRegionId" resultType="com.jh.briefing.model.CropsGrowthPeriodParam" parameterType="com.jh.briefing.model.CropsGrowthPeriodParam">
+    select
+      period.growth_id growthId,
+      period.growth_name growthName,
+      period.crops_id cropsId,
+      dict.data_name cropsName,
+      period.region_id regionId,
+      region.china_name regionName,
+      period.range_start rangeStart,
+      period.range_end rangeEnd,
+      period.ifspan,
+      period.if_growth_start ifGrowthStart,
+      period.remark
+    from briefing_crops_growth_period period
+    left join init_region region on period.region_id = region.region_id
+    left join init_dict dict on period.crops_id = dict.dict_id
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+        period.crops_id=#{cropsId}
+      </if>
+      <if test="regionId != null and regionId != ''" >
+        and period.region_id=#{regionId}
+      </if>
+      <if test="ifGrowthStart != null and ifGrowthStart != ''" >
+        and period.if_growth_start=#{ifGrowthStart}
+      </if>
+    </where>
+    order by period.growth_id
+  </select>
+
+  <!--
+    根据作物编号、区域查询对应的生育期
+     @param cropsGrowthPeriodParam 农作物生育周期配置配置对象
+     @return cropsGrowthPeriodParam 农作物生育周期配置配置对象
+     @version <1> 2018-04-18 cxw:Created
+  -->
+  <select id="findGrowthPeriodList" resultType="com.jh.briefing.entity.CropsGrowthPeriod" parameterType="com.jh.briefing.model.CropsGrowthPeriodParam">
+    select DISTINCT
+    period.growth_id growthId,
+    period.growth_name growthName from  briefing_crops_growth_period period
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+        period.crops_id=#{cropsId}
+      </if>
+      <if test="regionId != null and regionId != ''" >
+        and period.region_id=#{regionId}
+      </if>
+    </where>
+    order by period.growth_id desc
+  </select>
+
+  <!--
+     * 生育期配置添加
+     * @param cropsGrowthPeriod 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-17 cxw: Created.
+  -->
+  <insert id="addGrowthPeriod" parameterType="com.jh.briefing.entity.CropsGrowthPeriod" useGeneratedKeys="true" keyProperty="growthId">
+    insert into briefing_crops_growth_period
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="growthId != null">
+        growth_id,
+      </if>
+      <if test="growthName != null">
+        growth_name,
+      </if>
+      <if test="cropsId != null">
+        crops_id,
+      </if>
+      <if test="cropsName != null">
+        crops_name,
+      </if>
+      <if test="regionId != null">
+        region_id,
+      </if>
+      <if test="rangeStart != null">
+        range_start,
+      </if>
+      <if test="rangeEnd != null">
+        range_end,
+      </if>
+      <if test="ifspan != null">
+        ifspan,
+      </if>
+      <if test="ifGrowthStart != null">
+        if_growth_start,
+      </if>
+      <if test="indexNo != null">
+        index_no,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="growthId != null">
+        #{growthId,jdbcType=INTEGER},
+      </if>
+      <if test="growthName != null">
+        #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropsId != null">
+        #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="cropsName != null">
+        #{cropsName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null">
+        #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="rangeStart != null">
+        #{rangeStart,jdbcType=VARCHAR},
+      </if>
+      <if test="rangeEnd != null">
+        #{rangeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="ifspan != null">
+        #{ifspan,jdbcType=SMALLINT},
+      </if>
+      <if test="ifGrowthStart != null">
+        #{ifGrowthStart,jdbcType=SMALLINT},
+      </if>
+      <if test="indexNo != null">
+        #{indexNo,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=INTEGER},
+      </if>
+      now()
+    </trim>
+  </insert>
+
+  <!--
+     * 生育期配置修改
+     * @param cropsGrowthPeriod 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-17 cxw: Created.
+  -->
+  <update id="updateGrowthPeriod" parameterType="com.jh.briefing.entity.CropsGrowthPeriod">
+    update briefing_crops_growth_period
+    <set>
+      <if test="growthName != null">
+        growth_name = #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropsId != null">
+        crops_id = #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="cropsName != null">
+        crops_name = #{cropsName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null">
+        region_id = #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="rangeStart != null">
+        range_start = #{rangeStart,jdbcType=VARCHAR},
+      </if>
+      <if test="rangeEnd != null">
+        range_end = #{rangeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="ifspan != null">
+        ifspan = #{ifspan,jdbcType=SMALLINT},
+      </if>
+      <if test="ifspan != null">
+        if_growth_start = #{ifGrowthStart,jdbcType=SMALLINT},
+      </if>
+      <if test="indexNo != null">
+        index_no = #{indexNo,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=INTEGER},
+      </if>
+      modify_time = now()
+    </set>
+    where growth_id = #{growthId,jdbcType=INTEGER}
+  </update>
+
+  <!--
+     * 农作物生育周期配置记录删除
+     * @param growthId 农作物生育周期ID
+     * @return
+     * @version <1> 2018-04-18 cxw： Created.
+  -->
+  <delete id="deleteCropsGrowthPeriod" parameterType="java.lang.Integer">
+    delete from briefing_crops_growth_period
+    where growth_id = #{growthId,jdbcType=INTEGER}
+  </delete>
+
+  <!--&lt;!&ndash;-->
+       <!--根据id查询数据字典数据-->
+       <!--@param id 字典主键-->
+       <!--@return DictParam-->
+       <!--@version <1> 2018-04-14 lxy:Created-->
+     <!--&ndash;&gt;-->
+  <!--<select id="findDictById"  resultType="com.jh.system.model.DictParam" parameterType="java.lang.Integer" >-->
+    <!--select-->
+    <!--a.dict_id as dictId,a.remark as remark,a.data_status as dataStatus,-->
+    <!--a.create_time as createTime,a.creator_name as creatorName,a.creator as creator,-->
+    <!--a.modify_time as modifyTime,  a.modifier_name as modifierName,-->
+    <!--a.modifier as modifier,a.data_name as dataName,a.data_code as dataCode,a.data_value as dataValue,-->
+    <!--a.order_no as orderNo,a.is_leaf as leaf,a.parent_id as parentId,b.data_name as parentName-->
+    <!--from init_dict a-->
+    <!--left join init_dict b on a.parent_id = b.dict_id-->
+    <!--where a.dict_id=#{dictId}-->
+  <!--</select>-->
+
+  <!--&lt;!&ndash;-->
+      <!--根据parent_id获取字典列表-->
+      <!--@version <1> 2018-04-14 lxy:Created.-->
+  <!--&ndash;&gt;-->
+  <!--<select id="queryDictByParentId" resultType="com.jh.system.model.DictParam" parameterType="java.lang.Long">-->
+    <!--select-->
+    <!--dict_id as dictId,data_name as dataName,parent_id as parentId-->
+    <!--from  init_dict-->
+    <!--where parent_id=#{parentId} and del_flag='1'-->
+    <!--order by order_no asc-->
+  <!--</select>-->
+
+  <!-- 查询湿度 -->
+  <select id="queryAllHumidity" resultType="com.jh.briefing.entity.Humidity">
+    select
+    hum_id humId, hum_name humName, range_start rangeStart, range_end rangeEnd
+    from  briefing_humidity
+    order by hum_id asc
+  </select>
+
+  <!-- 查询墒情 -->
+  <select id="queryAllSoilMoisture" resultType="com.jh.briefing.entity.SoilMoisture">
+    select
+    soid_id soidId,soid_name soidName,avg_percentage_start avgPercentageStart,avg_percentage_end avgPercentageEnd
+    from  briefing_soil_moisture
+    order by soid_id asc
+  </select>
+
+  <!-- 查询根据区域id、作物id、时间点查询物候期 -->
+  <select id="getCropsGrowthPeriodList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from briefing_crops_growth_period where region_id = #{regionId,jdbcType=BIGINT} and crops_id = #{cropsId,jdbcType=INTEGER} and ifspan = 0
+    and cast(#{dateStr,jdbcType=VARCHAR} as timestamp)
+        between cast((substring(#{dateStr,jdbcType=VARCHAR} from 1 for 5) || range_start || ' 00:00:00') as timestamp)
+        and cast((substring(#{dateStr,jdbcType=VARCHAR} from 1 for 5) || range_end || ' 23:59:59') as timestamp)
+    union all
+    select <include refid="Base_Column_List" />
+    from briefing_crops_growth_period where region_id = #{regionId,jdbcType=BIGINT} and crops_id = #{cropsId,jdbcType=INTEGER} and ifspan = 1
+    and cast(#{dateStr,jdbcType=VARCHAR} as timestamp)
+        between cast((substring(#{dateStr,jdbcType=VARCHAR} from 1 for 5) || range_start  || ' 00:00:00') as timestamp)
+        and cast((substring(to_char(cast(#{dateStr,jdbcType=VARCHAR} as timestamp)::timestamp + '1 year', 'yyyy-MM-dd') from 1 for 5) || range_end || ' 23:59:59') as timestamp)
+  </select>
+
+</mapper>

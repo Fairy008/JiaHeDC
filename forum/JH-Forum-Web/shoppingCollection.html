@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .titalBox{
+            width: 100%;
+            font-size: 21px;
+            height: 40px;
+            padding-top: 20px;
+            padding-left: 20px;
+            font-weight: bold;
+        }
+        .shoppingTital{
+            height: 30px;
+            border-bottom: 1px solid #cccccc;
+            width: calc(100% - 40px);
+            margin-left: 20px;
+            box-sizing: border-box;
+        }
+        .shoppingTital span{
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border-bottom: 2px solid black;
+            color: black;
+            font-weight: bold;
+        }
+        .tital_head{
+            height: 30px;
+            width: calc(100% - 30px);
+            margin-left: 15px;
+            line-height: 30px;
+            margin-top: 10px;
+        }
+        .tital_head ul{
+            width: 100%;
+            height: 100%;
+        }
+        .tital_head ul li.left{
+            float: left;
+            margin-left: 9px;
+            font-weight: bold;
+        }
+        .tital_head ul li.rigth{
+            float: right;
+            width: 8%;
+            font-weight: bold;
+        }
+
+        .listContent,.listContent_1{
+            width: calc(100% - 30px);
+            height: auto;
+            margin-left: 15px;
+            box-sizing: border-box;
+        }
+        .listContent ul,.listContent_1 ul{
+            width: 100%;
+            height: auto;
+        }
+        .listContent ul li , .listContent_1 ul li{
+            position: relative;
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            background-color: #FAFAFA;
+            border-radius: 4px;
+        }
+        .productCheck{
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .productMessage{
+            position: absolute;
+            /* width: 36%; */
+            height: 100%;
+            width: calc(70% - 10px);
+            left: 20px;
+            cursor: pointer;
+        }
+
+        .introduceMessage{
+            width: 100%;
+            height: 100%;
+        }
+        .introduceMessage ul{
+            width: 100%;
+            height: 100%;
+        }
+        .introduceMessage ul li{
+            width: 48%;
+            height: 18px;
+            float: left;
+            font-size: 14px;
+            margin-left: 1%;
+        }
+        .introduceMessage ul li span{
+            padding-left:4px;
+        }
+        .introduceMessage_icon{
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            left: 12px;
+            top:15px;
+        }
+        .introduceMessage_icon img{
+            width: 100%;
+            height: 100%;
+        }
+        .introduceMessage_content{
+            position: absolute;
+            width: calc( 100% - 120px );
+            height: 120px;
+            left: 140px
+        }
+        .introduceMessage_tital{
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .productPrice{
+            position: absolute;
+            /*height: 100%;*/
+            height: 60px;
+            width: 6%;
+            right: 20%;
+            line-height: 60px
+        }
+        .productNum{
+            position: absolute;
+            right: 10%;
+            width: 6%;
+            height: 60px;
+            line-height: 60px
+        }
+        .productPriceTital{
+            position: absolute;
+            right: 0;
+            width: 10%;
+            height: 60px;
+            line-height: 60px;
+            color: #f5a836;
+        }
+        .shoppingCarFooter{
+            width: calc(100% - 30px);
+            height: 80px;
+            margin-left: 15px;
+            box-sizing: border-box;
+            margin-top: 30px;
+        }
+        .shoppingCarFooter ul {
+            width: 100%;
+            height: 100%;
+        }
+        .shoppingCarFooter ul li{
+            float:left;
+        }
+        .jiesuan_button{
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            background-color: #36d300;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            margin-top: -8px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .confirmFooter{
+            width: 100%;
+            height: 100px;
+            margin-top: 30px;
+        }
+        .confirmFooter span{
+            display: inline-block;
+            float: right;
+        }
+        .confirmButton{
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            background-color: #36d300;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            margin-top: -8px;
+            margin-left: 10px;
+            margin-right: 30px;
+            cursor: pointer;
+        }
+        input.oneCheck,input.allCheck,input.detAllCheck{
+            cursor: pointer;
+        }
+        .detCollect{
+            position: absolute;
+            width: 80px;
+            height: 30px;
+            right: 20px;
+            bottom: 5px;
+            border: 1px solid #f5a836;
+            color: #f5a836;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .noDataBox{
+            display:none;
+            width: 100%;
+            height: 150px;
+            background: url("./img/nodata.png") no-repeat center;
+            background-size: auto;
+            line-height: 270px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="shoppingListBox">
+    <div class="titalBox">商品收藏</div>
+    <div class="shoppingTital">
+        <span>全部数据</span>
+    </div>
+    <div class="list" id="listBox">
+        <div class="tital_head">
+            <ul>
+                <li class="left"></li>
+                <li class="rigth">金额</li>
+                <li class="rigth">数量</li>
+                <li class="rigth">单价</li>
+
+            </ul>
+        </div>
+        <div class="listContent">
+            <ul>
+                <!--<li>-->
+                <!--<div class="productCheck" ><input class="oneCheck" type="checkbox" dataParice="139" buy="false" checked="true" dataId="1"></div>-->
+                <!--<div class="productMessage">-->
+                <!--<div>-->
+                <!--<div class="introduceMessage_icon"></div>-->
+                <!--<div class="introduceMessage_content">-->
+                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                <!--<div class="introduceMessage">-->
+                <!--<ul>-->
+                <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                <!--</ul>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="productPrice">￥139</div>-->
+                <!--<div class="productNum">1</div>-->
+                <!--<div class="productPriceTital">￥139</div>-->
+                <!--</li>-->
+                <!---->
+            </ul>
+        </div>
+    </div>
+    <div class="noDataBox">暂无数据</div>
+    <div class="shoppingCarFooter" style="display: none">
+        <ul>
+            <li><input  class="detAllCheck"  type="checkbox" />全选</li>
+            <li style="margin-left: 40px;color:#f5a836;cursor: pointer"><span class="detCheckList">删除选中数据</span></li>
+            <li style="margin-left: 230px"><span>已选数据</span><span class="checkNumTital" style="color:#f5a836;padding-left: 3px;padding-right: 3px">0</span><span>条</span></li>
+            <li><span style="padding-left: 20px;">合计</span><span style="color:  #f5a836">￥</span><span class="allMoney" style="color:#f5a836">0</span></li>
+            <li style="float: right;margin-right: 10px"><span class="jiesuan_button">去结算</span></li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    require(["jquery","Marquee","moment","jqueryUi","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings","RegionModule","formVerfication","daterangepicker"],function($,Marquee,moment,jqueryUi,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings,RegionModule,formVerfication,daterangepicker){
+        var chooseListItem = 0;
+        var buyListObj = [];
+        var priceMoneyTital = 0;
+        var userId;
+        var init = function(){
+//            initShoppingCarData();
+            initShoppingCollect(initUserId());
+            bindEvent()
+        }
+        var bindEvent = function(){
+            $(document).on("click",".detCollect",function () {
+                // console.log("取消收藏")
+                var dataId = $(this).attr("dataId");
+                var userId = initUserId();
+                removeDataCollection(userId,dataId)
+            });
+            //点击商品跳转到商品详情
+            $(document).off("click",".productMessage").on("click",".productMessage",function(){
+                var dataId = $(this).attr("dataId");
+                localStorage.setItem('home_downloadData',dataId);
+                $(".loadContent").load('downloadData.html',function () {
+                    $("#downloadData").addClass("on").parent().siblings().find("a").removeClass("on")
+                });
+            })
+        }
+
+
+
+        //取消收藏
+        var removeDataCollection = function(userId,dataId){
+            var ajax = new BaseAjax();
+            var formData = {
+                "userId":userId,
+                "dataId":dataId
+            }
+            ajax.opts.url = CMS_MANAGE.removeDataCollection_url
+            ajax.opts.data = JSON.stringify(formData);
+            ajax.opts.successFun = function(data){
+                // console.log("取消商品成功",data)
+                if(data.flag){
+                    initShoppingCollect(initUserId());
+                }
+            }
+            ajax.run()
+        }
+
+
+        var initUserId = function(){
+            if($(".isLogin")[0].attributes.personid.nodeValue){
+                return  parseInt($(".isLogin")[0].attributes.personid.nodeValue);
+            }else{
+                return null;
+            }
+        }
+
+
+
+      // 查询商品收藏
+        var initShoppingCollect = function(userId){
+            var ajax = new BaseAjax();
+
+            ajax.opts.url = CMS_MANAGE.queryMyCollect_url+"?userId="+userId;
+
+            ajax.opts.successFun = function (data) {
+                var dataList = data.data;
+                var html = "";
+                // console.log("999999");
+                if(dataList.length>0){
+                    for(var i=0;i<dataList.length;i++){
+                        var data = dataList[i];
+                        var titalName = data.dataTitle;   //产品名称
+                        var imgUrl = data.dataPath;         //产品图片
+                        var classifyName = data.classifyName;  //数据分类
+                        var cropName = data.cropName;      //作物名称
+                        var dataTime = data.dataTime;   //数据日期
+                        var regionName = data.regionName; //数据区域
+                        var accuracyName = data.accuracyName  //精确度
+                        var price = data.price;   //数据价格
+                        var dataId = data.dataId
+                        var taghtml = "";
+                        if(classifyName!=null){
+                            taghtml += "<li><label>数据分类</label><span>"+classifyName+"</span></li>"
+                        }
+                        if(regionName!=null){
+                            taghtml += "<li><label>区域</label><span>"+regionName+"</span></li>"
+                        }
+                        if(dataTime!=null){
+                            taghtml += "<li><label>数据时间</label><span>"+dataTime+"</span></li>"
+                        }
+                        if(cropName != null){
+                            taghtml += "<li><label>作物</label><span>"+cropName+"</span></li>"
+                        }
+                        if(accuracyName!=null){
+                            taghtml += "<li><label>精确度</label><span> "+accuracyName+"</span></li>"
+                        }
+                        html += "<li>" +
+                            "<div class='productCheck'>" +
+                            // "<input class='oneCheck' type='checkbox' dataParice = '"+price+"' dataId='"+dataId+"' />" +
+                            "</div>"+
+                            "<div class='productMessage' dataId='"+dataId+"' >" +
+                            "<div>" +
+                            "<div class='introduceMessage_icon'><img src='"+imgUrl+"' /></div>" +
+                            "<div class='introduceMessage_content'>" +
+                            "<div class='introduceMessage_tital'>"+titalName+"</div>"+
+                            "<div class='introduceMessage'><ul>"+taghtml+"</ul></div>"+
+                            "</div>"+
+                            "</div>"+
+                            "</div>"+
+                            "<div class='detCollect' dataId = '"+dataId+"'>取消收藏</div>"+
+                            "<div class='productPrice'>￥"+price+"</div>"+
+                            "<div class='productNum'>1</div>"+
+                            "<div class='productPriceTital'>￥"+price+"</div>"+
+                            "</li>"
+
+                    }
+                    $(".list").css({"display":"block"})
+                    $(".listContent ul").html(html)
+                    $(".noDataBox").css({"display":"none"})
+                }else{
+                    $(".list").css({"display":"none"})
+                    $(".noDataBox").css({"display":"block"})
+
+                }
+
+
+            }
+            ajax.run();
+        }
+        init()
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,1718 @@
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:10px;}
+    #batchDownloadBtn,#batchPublishBtn{margin-right: 1em;}
+    .errorInfo{color:#f00;}
+    .isSuccess{color: #34b40e;}
+    .isFail{color: #ff0000;}
+    .num{color: #45AEDF;}
+    .lyName{display: block; margin: 0 5px;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">任务名称：</span>
+                    <span><input class="input inputWidth_100" id="search_imageTitle" /></span>
+                </div>
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input type="text" id="search_regionId" class="styleInput input " placeholder="请选择区域" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">数据集：</span>
+                    <span><select id="search_dataSet" class="input inputWidth_100"></select></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id="search_crop" class="input inputWidth_100"></select></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft" >
+
+                <div>
+                    <span class="label2">数据日期：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_productTime" readonly /></span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span><select id="search_resolution" class="input inputWidth_100"></select></span>
+                </div>
+                <div>
+                    <span class="label2">生产状态：</span>
+                    <span><select class="input inputWidth_100" id="search_rgStatus"></select></span>
+                </div>
+                <div>
+                    <span class="label2">发布状态：</span>
+                    <span><select class="input inputWidth_100" id="search_publishStatus"></select></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dsResultimageGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+<div id="publishDialog" class="form" style="display: none;">
+    <form id="publishInfo">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>样式:</td>
+                <td class="two_td2">
+                    <select id="geo_style" name="geoStyle" class="selectType one_selectType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="td1"></td>
+                <td class="td2"><span class="errorInfo"></span></td>
+            </tr>
+        </table>
+    </form>
+</div>
+<!-- 新增、编辑任务部分 -->
+<div id="dataTypeInfo" class="form" style="display: none;">
+    <div>
+        <table>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>任务名称:</td>
+                <td class="two_td2">
+                    <input name="regionId" id="edit_imageTitle" class="inputType" type="text" placeholder="请输入任务名称"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>区域:</td>
+                <td class="two_td2">
+                    <input name="regionId" id="edit_regionId" class="inputType" type="text" readonly placeholder="请选择区域"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>数据集:</td>
+                <td class="two_td2">
+                    <select id="edit_dsType" class="inputType">
+                        <option value="">--请选择--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>作物:</td>
+                <td class="two_td2">
+                    <select id="edit_cropsId" class="inputType">
+                        <option value="">--请选择--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>精度:</td>
+                <td class="two_td2">
+                    <select id="edit_resolution" class="inputType">
+                        <option value="">--请选择--</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired">*</span>数据日期：</td>
+                <td class="two_td2">
+                    <input type="text" class="inputType" id="edit_dataTime" readonly />
+                </td>
+            </tr>
+            <!--备注-->
+            <tr>
+                <td class="two_td1" style="text-align:right;"><span class="txtRequired"></span>备注：</td>
+                <td class="two_td2">
+                    <textarea id="edit_remark" class="inputType" style="height: 60px;"> </textarea>
+                </td>
+            </tr>
+            <!-- 失败原因 任务状态失败显示-->
+            <tr id="errMsg_tr" style="display: none">
+                <td class="two_td1"><span class="txtRequired"></span>失败原因：</td>
+                <td class="two_td2" style="color:red;word-wrap:break-word; white-space:normal; word-break:break-all;" id="errMsg"></td>
+            </tr>
+        </table>
+    </div>
+    <!-- 错误提示信息展示 -->
+    <div id="showError" style="color:red;text-align:left;margin-left:10%;"></div>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+<div id="publishDetailsDialog" class="form" style="display: none;">
+    <form id="publishDetailsInfo">
+        <table>
+            <!--<tr>
+                <td class="two_td1"></td>
+                <td class="two_td2"></td>
+            </tr>-->
+        </table>
+    </form>
+</div>
+
+    <!-- 生产数据列表 -->
+    <div id="dataProductInfo" class="grid" style="display: none;">
+        <table id="dataProductGrid"></table>
+        <div id="pager3"></div>
+    </div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings){
+        var processDialog = $("#process");
+
+        //是否能编辑
+        var isEditCell= true;
+
+        var init = function(){
+            loaderGrid();//加载表格
+            RegionSelectFun("search_regionId","search_crop");//区域点击事件
+//            getDataDictOption("satNameSelect",400, null);//初始化卫星下拉框的值400 401
+            initTimeEvent();//初始化数据日期控件
+            dateFun();//初始化创建时间控件
+            commons.findDictList(1800, "search_dataSet");//initDataSetFun(1800, "search_dataSet");//初始化数据集下拉框
+            commons.findDictList(500, "search_crop");//initDataSetFun(500, "search_crop");  //初始化作物
+            commons.findDictList(1000, "search_rgStatus");//initDataSetFun(1000, "search_rgStatus");//初始化发布状态
+            //initDataSetFun(4000, "search_resolution");
+            initResolution("search_dataSet", "search_resolution");
+            commons.findDictList(2700,"search_publishStatus");
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);
+
+            $(window).resize(function(){
+                $("#dsResultimageGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+
+
+            /**
+             * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+             * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+             * @version<1> 2018-07-20 lcw: Created.
+             */
+            $("#search_productTime").on("click",function(){
+                if($("#divArea").css("display")== "block"){
+                    $("#divArea").css("display","none")
+                }
+            })
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            initDataSetFun(1800, "search_dataSet");//初始化数据集下拉框
+            initDataSetFun(1000, "search_rgStatus");//初始化发布状态
+            queryResolutionFun("search_dataSet", "search_resolution");
+            commons.findDictList(2700,"search_publishStatus")
+            $("#search_regionId").val(custom_settings.main_search_region_name).attr("regionid", custom_settings.main_search_region_id).attr("regioncode", custom_settings.main_search_region_code);
+            queryCropFun(document.getElementById("search_regionId").getAttribute("regionid"), "search_crop");
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#dsResultimageGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+        var colmodel = [
+            {name: 'rgId', index:'rgId', hidden:true},
+            {name: 'regionId', index:'regionId', hidden:true},
+            {name: 'cropId', index:'cropId', hidden:true},
+            {name: 'dsType', index: 'dsType', hidden:true},
+            {name: 'rgStatus', index: 'rgStatus', hidden:true},
+            {name: 'publishStatus', index: 'publish_status', hidden:true},
+            {name: 'resolution', index: 'resolution', hidden:true},
+            {name: 'imageTitle', index:'image_title',align:'left',width:'10%' },
+            {name: 'regionName', index: 'region_name', align: 'center', width: '10%' },
+            {name: 'dsName', index: 'ds_name', align: 'center', width: '5%' },
+            {name: 'cropName', index: 'crop_name', align: 'center', width: '5%' },
+            {name: 'dataTime', index: 'data_time', align: 'center', width: '5%' },
+            {name: 'resolutionName', index: 'resolution_name', align: 'center', width: '10%' },
+            {name: 'storagePath', index: 'storagePath', align: 'center', width: '15%', sortable:false},
+            {name: 'createTime', index: 'create_time', align: 'center', width: '10%'},
+            {name: 'statusName', index: 'status_name', align: 'center', width: '6%', formatter:function(cellvalue, options, rowObject){
+
+                if(rowObject.rgStatus == 1004){
+                    return "<span class='green'>" + cellvalue + "</span>"
+                }else if(rowObject.rgStatus == 1005){
+                    return "<span class='red'>" + cellvalue + "</span>";
+                }else{
+
+                    return cellvalue == null ? "" : cellvalue;
+                }
+            }},
+            {name:'publishStatusName', index:"publish_name", align:'center', width:'6',formatter:function(cellvalue ,options, rowObject){
+
+                if(rowObject.publishStatus == 2703){
+                    return "<span class='green'>" + cellvalue + "</span>"
+                }else if(rowObject.publishStatus == 2704){
+                    return "<span class='red'>" + cellvalue + "</span>";
+                }else{
+
+                    return cellvalue == null ? "" : cellvalue;
+                }
+            }},
+            {name: 'cz', index:'cz', width:'18%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                var str="";
+                //编辑
+                /*if(rowObject.rgStatus == 1001){
+                    str += "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.rgId +"' title='编辑'>";
+                }else{
+                    str += "<img src='images/public/TeditG.png' data-id='"+ rowObject.rgId +"' title='编辑'>";
+                }*/
+                if(rowObject.rgStatus == 1001 ){
+                    str += "<img src='images/public/Ttostart.png' class='createBtn' data-id='"+ rowObject.rgId +"' title='数据生产'>";
+                }else if((rowObject.rgStatus == 1004 || rowObject.rgStatus == 1005)&&  rowObject.publishStatus != 2703){
+                    str += "<img src='images/public/Trefresh.png' class='againBtn' data-id='"+ rowObject.rgId +"' title='重新生产'>";
+                }else{
+                    str += "<img src='images/public/TtostartG.png' data-id='"+ rowObject.rgId +"' title='数据生产'>";
+                }
+                //查看成产数据
+                if(rowObject.rgStatus == 1004){
+                    str += "<img src='images/public/Twatch.png' class='detailBtn' data-status='"+ rowObject.publishStatus +"' data-dsTypeName='"+ rowObject.dsTypeName +"' data-dsType='"+ rowObject.dsType +"'  data-id='"+ rowObject.rgId +"' title='查看生产数据'>";
+                }else{
+                    str += "<img src='images/public/TwatchG.png' data-id='"+ rowObject.rgId +"' title='查看生产数据'>";
+                }
+                var p = rowObject.storagePath;
+                if(p){
+                    if(rowObject.rgStatus ==1004 && rowObject.publishStatus != 2703){
+                        if (p.substr(p.lastIndexOf("."), p.length) == ".tiff" || p.substr(p.lastIndexOf("."), p.length) == ".tif") {
+                            str += "<img src='images/public/share.png' class='publishBtn' data-id='" + rowObject.rgId + "' title='发布图层'>";
+                        }else{
+                            str += "<img src='images/public/shareG.png' data-id='" + rowObject.rgId + "' title='格式不支持发布'>";
+                        }
+                    }else{
+                        str += "<img src='images/public/shareG.png' data-id='" + rowObject.rgId + "'title='发布图层'>";
+                    }
+
+                }
+                //撤回
+                if(rowObject.publishStatus == 2703){
+                    str += "<img src='images/public/back.png' class='backBtn' data-id='"+ rowObject.rgId +"' data-dsType='"+ rowObject.dsType +"' title='撤回'>";
+                }else{
+                    str += "<img src='images/public/backG.png' data-id='"+ rowObject.rgId +"' title='撤回'>";
+                }
+                //查看图层
+                if(rowObject.publishStatus ==2703){
+                    str += "<img src='images/public/preview.png' class='previewLayer' data-id='"+ rowObject.rgId +"' title='查看图层'>";
+                }else{
+                    str += "<img src='images/public/previewG.png'  data-id='"+ rowObject.rgId +"' title='查看图层'>";
+                }
+
+                var suffix = DATA_STORAGE.download_suffix;
+                //str+= "<a href='"+suffix+ rowObject.storagePath +"' target='_blank' title='文件下载' data-id='"+suffix+ rowObject.rgId +"'><img src='images/public/download.png'></a>";
+                str += "<img src='images/public/download.png' class='downloadBtn' data-url='"+suffix+ rowObject.storagePath +"' title='文件下载'>";
+
+                return str;
+            }}
+        ];
+
+
+        var permissionFlag = true;
+        var loaderGrid = function(){
+            $("#dsResultimageGrid").jqGrid({
+                url: DS_RESULTIMAGE.findByPage_url,
+                datatype: "json",
+                postData:{
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['rgId','regionId','cropId','dsType','rgStatus','publishStatus','resolution','任务名称','区域','数据集','作物','数据日期','精度','文件路径','入库时间','生产状态','发布状态','操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#dsResultimageGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量生产' id='batchActivateBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量发布' id='batchPublishBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量撤回' id='batchBackBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='图层预览' id='batchPreviewBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量下载' id='batchDownloadBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#dsResultimageGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#dsResultimageGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据撤回和发布下载按钮处理
+            if(ids.length == 0){
+                $("#batchDownloadBtn").addClass("btn_grey");
+                $("#batchActivateBtn").addClass("btn_grey");
+                $("#batchPublishBtn").addClass("btn_grey");
+                $("#batchBackBtn").addClass("btn_grey");
+                $("#batchDeleteBtn").addClass("btn_grey");
+                $("#batchPreviewBtn").addClass("btn_grey");
+            }else{
+                //所有的均可批量下载tif影像
+                var isAllDown=true;
+                //只要有一条数据满足，则可批量激活
+                var isAllAcivate=false;
+                //只要有一条数据满足，则可批量发布
+                var isAllP=false;
+                //只要有一条数据满足，则可批量撤回
+                var isAllB=false;
+                //只要有一条数据满足，则可批量删除
+                var isAllDelete=false;
+                //只要有一条数据满足，则可批量删除
+                var isAllPreview=false;
+                $(ids).each(function (index, id){
+                    var row = $("#dsResultimageGrid").jqGrid('getRowData', id);
+                    var taskstatus=row.rgStatus;
+                    var publishStatus=row.publishStatus;
+                    //未发布且待激活、任务成功、任务失败的，则可以激活任务
+                    if((taskstatus == 1001|| taskstatus == 1004||taskstatus == 1005) &&  publishStatus != 2703){
+                        isAllAcivate=true;
+                    }
+                    //任务成功，且非发布，则可以发布
+                    if(taskstatus==1004&&publishStatus!=2703){
+                        isAllP=true;
+                    }
+                    //发布成功，则可以撤回
+                    if(publishStatus==2703){
+                        isAllB=true;
+                    }
+                    //发布成功，则可以预览
+                    if(publishStatus==2703){
+                        isAllPreview=true;
+                    }
+                    //只未发布且待激活、任务成功、任务失败的,才可以删除
+                    if((taskstatus == 1001|| taskstatus == 1004||taskstatus == 1005) &&  publishStatus != 2703){
+                        isAllDelete=true;
+                    }
+                });
+                if(isAllDown){
+                    $("#batchDownloadBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchDownloadBtn").addClass("btn_grey");
+                }
+                if(isAllAcivate){
+                    $("#batchActivateBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchActivateBtn").addClass("btn_grey");
+                }
+                if(isAllP){
+                    $("#batchPublishBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchPublishBtn").addClass("btn_grey");
+                }
+                if(isAllB){
+                    $("#batchBackBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchBackBtn").addClass("btn_grey");
+                }
+                if(isAllDelete){
+                    $("#batchDeleteBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchDeleteBtn").addClass("btn_grey");
+                }
+                if(isAllPreview){
+                    $("#batchPreviewBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchPreviewBtn").addClass("btn_grey");
+                }
+            }
+
+            var records = $("#dsResultimageGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchDownloadBtn").hide("btn_grey");
+                $("#batchActivateBtn").hide("btn_grey");
+                $("#batchPublishBtn").hide("btn_grey");
+                $("#batchBackBtn").hide("btn_grey");
+                $("#batchDeleteBtn").hide("btn_grey");
+                $("#batchPreviewBtn").hide("btn_grey");
+            }else{
+                $("#batchDownloadBtn").show("btn_grey");
+                $("#batchActivateBtn").show("btn_grey");
+                $("#batchPublishBtn").show("btn_grey");
+                $("#batchBackBtn").show("btn_grey");
+                $("#batchDeleteBtn").show("btn_grey");
+                $("#batchPreviewBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var tableEvent = function(){
+            $(".createBtn, .downloadBtn,.publishBtn,.backBtn, #batchDownloadBtn, #batchActivateBtn, #batchPublishBtn,.detailBtn,.previewLayer,#batchPreviewBtn,#batchBackBtn,#batchDeleteBtn").off("click");
+            //激活任务
+            $(".createBtn").bind("click",function () {
+                var rgId = $(this).attr("data-id");
+                editTaskFun(rgId);
+            });
+
+            //重新执行任务
+            $(".againBtn").bind("click",function () {
+                var rgId = $(this).attr("data-id");
+                againTaskFun(rgId);
+            });
+
+            //下载
+            $(".downloadBtn").bind("click",function(){
+                var url = $(this).attr("data-url");
+                downBatch(url);
+            });
+
+            //撤回
+            $(".backBtn").bind("click",function () {
+                var rgId = $(this).attr("data-id");
+                backTifFun([rgId]);
+            });
+
+            //数据详情
+            $(".detailBtn").bind("click",function () {
+                var productId = $(this).attr("data-id");
+                var dsType = $(this).attr("data-dsType");
+                var publishStatus = $(this).attr("data-status");
+                var dsTypeName = commons.queryDictName(dsType)
+                detailFun(productId,dsType,publishStatus,dsTypeName);
+            });
+            //图层预览
+            $('.previewLayer').bind('click',function(){
+                var productId = $(this).attr("data-id");
+                var rgIds=[];
+                rgIds.push(productId)
+                previewLayerFun(rgIds);
+            });
+
+            //批量图层预览
+            $('#batchPreviewBtn').bind('click',function(){
+                if(!$(this).hasClass("btn_grey")) {
+                    previewLayerFun(getValidData("2"));
+                }
+            });
+
+            //发布图层
+            $(".publishBtn").bind("click", function(){
+                var _rgId = $(this).attr("data-id");
+                publishTiffLayer([_rgId])
+            })
+            //批量下载
+            $("#batchDownloadBtn").bind("click",function(){
+                if(!$(this).hasClass("btn_grey")){
+                    batchDownloadFun();
+                }
+            });
+            //批量激活
+            $("#batchActivateBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    batchActivateFun();
+                }
+            });
+            //批量发布
+            $("#batchPublishBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    publishTiffLayer(getValidData("0"));
+                }
+            });
+            //批量撤回
+            $("#batchBackBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    backTifFun(getValidData("1"));
+                }
+            });
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    deleteTifFun(getValidData("3"));
+                }
+            });
+
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量发布
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(batchType){
+            var ids=[];
+            var rowIds = $("#dsResultimageGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#dsResultimageGrid").jqGrid('getRowData', id);
+                var rgId=row.rgId;
+                var publishStatus=row.publishStatus;
+                var rgStatus=row.rgStatus;
+                if(batchType=="0"){//批量发布
+                    if(rgStatus==1004&&publishStatus!=2703){
+                        ids.push(rgId)
+                    }
+                }else if(batchType=="1"){//批量撤回
+                    if(publishStatus==2703){
+                        ids.push(rgId)
+                    }
+                }else if(batchType=="2"){//批量预览图层
+                    if(publishStatus==2703){
+                        ids.push(rgId)
+                    }
+                }else if(batchType=="3"){//批量删除
+                    if((rgStatus == 1001|| rgStatus == 1004||rgStatus == 1005) &&  publishStatus != 2703){
+                        ids.push(rgId)
+                    }
+                }else if(batchType=="4"){//批量生产
+                    if((rgStatus == 1001|| rgStatus == 1004||rgStatus == 1005) &&  publishStatus != 2703){
+                        ids.push(rgId)
+                    }
+                }
+            });
+            return ids;
+        }
+
+        /**
+         * 图层预览
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var previewLayerFun = function (rgIds) {
+            window.open(project_path2 + 'previewLayer.html?productIds='+rgIds);
+        };
+
+        /**
+         * 撤回图层和数据
+         * @version <1> 2018-06-07 lxy： Created
+         */
+        var backTifFun = function(ids,flag) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            confirmDialog.html("是否确认撤回图层和数据？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_RESULTIMAGE.back_url;
+                        ajax.opts.data = JSON.stringify({'rgIds':ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                if(flag){
+                                    $("#dataProductInfo").dialog("close");
+                                }
+                                $("#dsResultimageGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("撤回成功");
+                            } else {
+                                PopWin.showMessageWin("撤回失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：撤回失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 删除图层和数据
+         * @version <1> 2018-06-07 lxy： Created
+         */
+        var deleteTifFun = function(ids) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            confirmDialog.html("是否删除撤回图层和数据？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_RESULTIMAGE.delete_url;
+                        ajax.opts.data = JSON.stringify({'rgIds':ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#dsResultimageGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * Description: 发布tiff图层
+         * @param null
+         * @return
+         * @version <1> 2018/6/15 10:13 zhangshen: Created.
+         */
+        var publishTiffLayer = function(rgIds,flag){
+            getGeoStyleList("geo_style");//初始化样式列表
+            var dialog =  $("#publishDialog");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '发布',
+                height: 180,
+                width: 460,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"保存",
+                    click:function(){
+                        var style = $("#geo_style").val();
+                        $('.errorInfo').text('');
+                        if(style == "" || style == null){
+                            $('.errorInfo').text('样式不能为空');
+                            return false;
+                        }
+                        if(rgIds != null && rgIds.length > 0){
+                            //显示进度条 关闭提示框
+                            dialog.dialog("close");
+                            showProcess();
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_RESULTIMAGE.publish_url;//批量发布再加工数据
+                            ajax.opts.data = JSON.stringify({rgIds: rgIds, tifStyle: style});
+                            ajax.opts.successFun = function (data) {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                if(data.flag){
+                                    var list = data.data;
+                                    if(rgIds.length == 1){
+                                        PopWin.showMessageWin(list[0].msg);
+                                    }else{
+                                        publishDetailsShow(list);//批量发布详情
+                                    }
+                                    if(flag){
+                                        $("#dataProductInfo").dialog("close");
+                                    }
+                                    $("#dsResultimageGrid").trigger("reloadGrid");
+                                }else{
+                                    PopWin.showMessageWin(data.msg);
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                PopWin.showMessageWin("图层和数据发布失败");
+                            };
+                            ajax.run();
+                        }else{
+                            PopWin.showMessageWin("图层和数据发布失败");
+                        }
+                    }},{
+                    text:"取消",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        };
+
+
+        /**
+         * Description: 批量发布详情
+         * @version <1> 2018/6/27 16:11 zhangshen: Created.
+         */
+        var publishDetailsShow = function(list){
+            var str = "";
+            for(var i=0; i<list.length; i++){
+                var name = list[i].msg;
+                var isSuccess = list[i].flag;
+
+
+                if(isSuccess){
+                    str += "<tr><td class='num'>" + (i+1) + "</td><td class='viewType5 lyName green'>" + name + "</td></tr>";
+
+                }else{
+                    str += "<tr><td class='num'>" + (i+1) + "</td><td class='viewType5 lyName red'>" + name + "</td></tr>";
+                }
+            }
+
+            $("#publishDetailsInfo table").html("").html(str);
+
+            var dialog =  $("#publishDetailsDialog");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '发布详情',
+                height: 300,
+                width: 600,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                        $("#dsResultimageGrid").trigger("reloadGrid");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        };
+
+
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    //$(".ui-dialog-titlebar").hide();
+                    //$(".ui-dialog").css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+        /**
+         * Description: 获取geoserver上的样式列表
+         * @param null
+         * @return 样式列表
+         * @version <1> 2018/6/15 10:17 zhangshen: Created.
+         */
+        var getGeoStyleList = function(name){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_GEO_STYLE.getGeoStyleList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.successFun = function (result) {
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        var styleNameCn=element.styleName;
+                        if(element.styleNameCn!=null&&element.styleNameCn!=''){
+                            styleNameCn=styleNameCn+"("+element.styleNameCn+")";
+                        }
+                        str += "<option value='"+element.styleName+"'>"+ styleNameCn+"</option>";
+                    })
+                    $("#"+name).html("").append(str);;//清空 赋值
+                }
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 编辑生产任务
+         *
+         * @version<1> 2019-02-15 lijie :Created.
+         */
+        var editTaskFun = function(rgId){
+            setDataInfo(rgId);
+            var dialog =  $("#dataTypeInfo");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '编辑生产任务',
+                height: 450,
+                width: 560,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"保存",
+                    click:function(){
+                        saveProductInfo(rgId);
+                    }},
+                    {
+                        text:"保存并激活",
+                        click:function(){
+                            saveProductInfo(rgId,true);
+                        }},
+                    {
+                    text:"取消",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        }
+
+        /**
+         * 重新执行生产任务
+         *
+         * @version<1> 2019-02-15 lijie :Created.
+         */
+        var againTaskFun = function(rgId){
+            setDataInfo(rgId);
+            var dialog =  $("#dataTypeInfo");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '重新执行生产任务',
+                height: 500,
+                width: 560,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [
+                    {
+                        text:"重新执行",
+                        click:function(){
+                            saveProductInfo(rgId,true);
+                        }},
+                    {
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+            });
+            dialog.dialog("open");
+        }
+
+        /**
+         * 保存生产任务
+         * rgId 任务Id
+         * flag 是否执行
+         * @version <1> 2019-02-17 lijie： Created.
+         */
+        var saveProductInfo =function (rgId,flag){
+            //校验输入框信息
+            if (!formVerf()) {
+                return;
+            }
+            showProcess();
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_RESULTIMAGE.updateResultimage_url;//更新任务信息
+            ajax.opts.data = JSON.stringify(getTaskData(rgId));
+            ajax.opts.successFun = function (data) {
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                if(data.flag){
+                    if(flag){
+                        //执行
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_RESULTIMAGE.activate_url;//批量激活任务
+                        ajax.opts.data = JSON.stringify({rgIds: [rgId] });
+                        ajax.opts.successFun = function (data) {
+                            PopWin.showMessageWin(data.msg);
+                            $("#dsResultimageGrid").trigger("reloadGrid");
+
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("数据生产任务激活失败");
+                        };
+                        ajax.run();
+                    }
+                    $("#dataTypeInfo").dialog("destroy");
+                    $("#dsResultimageGrid").trigger("reloadGrid");
+                    PopWin.showMessageWin(data.msg)
+                }else{
+                    formVerfication.showErroInfo($('#edit_remark'),$('#showError'),'编辑任务失败！')
+                }
+            };
+            ajax.opts.errorFun = function () {
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                PopWin.showMessageWin("任务编辑失败");
+            };
+            ajax.run();
+        }
+
+        /**
+         * 校验input框输入信息
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var formVerf = function () {
+            var errorDiv = $('#showError');
+            //初始化去掉错误样式
+            $(".formErrorInfo").remove();
+            $("input").removeClass("formInputHighlight");
+            $("select").removeClass("formInputHighlight");
+            if(formVerfication.checkInputIsEmpty($('#edit_imageTitle'),errorDiv,'任务名称不能为空！')){
+                return false;
+            }
+            if(formVerfication.checkDsInputLength(0,20,$('#edit_imageTitle'),errorDiv,'任务名称不能超过20个字符！')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#edit_regionId'),errorDiv,'区域不能为空！')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#edit_dsType'),errorDiv,'数据集不能为空！')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#edit_cropsId'),errorDiv,'作物不能为空！')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#edit_resolution'),errorDiv,'精度不能为空！')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#edit_dataTime'),errorDiv,'数据日期不能为空！')){
+                return false;
+            }
+            var remark=$("#edit_remark").val();
+            if($("#edit_remark").val()!=''&&remark.length>200){
+                formVerfication.showErroInfo($('#edit_remark'),errorDiv,'备注不能超过200个字符！')
+                return false;
+            }
+            return true;
+        };
+
+        /**
+         * 渲染值
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setDataInfo=function(rgId){
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_RESULTIMAGE.findById_url+"?rgId="+rgId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result) {
+                var dataProduct=result.data;
+                //成产主表
+                var rgId = dataProduct.rgId;
+                var regionId = dataProduct.regionId;
+                var dsType = dataProduct.dsType;
+                var cropId = dataProduct.cropId;
+                var resolution = dataProduct.resolution;
+                var imageTitle = dataProduct.imageTitle;
+                var dataTime = dataProduct.dataTime;
+                var remark = dataProduct.remark;
+                $("#edit_imageTitle").val(imageTitle);
+                RegionSelectFun("edit_regionId","edit_cropsId");//区域点击事件
+                var regionName=commons.queryRegionName(regionId);
+                $("#edit_regionId").val(regionName).attr("regionId", regionId);//设置区域中文和id
+                commons.findDictList(1800,"edit_dsType",dsType);
+                queryCropFun(regionId,"edit_cropsId");
+                $("#edit_cropsId option[value='"+cropId+"']").prop("selected",true);
+                initResolution("edit_dsType", "edit_resolution");
+                $("#edit_resolution option[value='"+resolution+"']").prop("selected",true);
+                initeditTimeEvent();
+                $("#edit_dataTime").val(dataTime);
+                $("#remark").val(remark);
+                //如果失败，则展示失败原因
+                var taskStatus=dataProduct.rgStatus;
+                if(taskStatus==1005){
+                    $("#errMsg_tr").show();
+                    $("#errMsg").text(dataProduct.failMsg);
+                }else{
+                    $("#errMsg_tr").hide();
+                }
+            }
+            ajax.run();
+        }
+
+        var initeditTimeEvent = function() {
+            $("#edit_dataTime").jeDate({
+                range: "",
+                multiPane: true,
+                format: 'YYYY-MM-DD',
+                maxDate: $.nowDate()
+            });
+        }
+
+        /**
+         * 获取表单新增或者修改的数据
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var getTaskData = function(rgId) {
+            //封装生产任务数据
+            var dataProductData = {
+                rgId:rgId,
+                regionId: $("#edit_regionId").attr("regionId"),
+                dsType: $("#edit_dsType").val(),
+                cropsId: $("#edit_cropsId").val(),
+                dataTimeStr:$("#edit_dataTime").val(),
+                resolution:$("#edit_resolution").val(),
+                imageTitle:$("#edit_imageTitle").val(),
+                remark:$("#edit_remark").val(),
+            };
+            return dataProductData;
+        };
+
+        /**
+         * 批量激活数据生产任务
+         *
+         * @version<1> 2018-07-03 lcw :Created.
+         */
+        var activateTaskFun = function(ids, msg){
+            var reloadDialog = $("#reloadDialog");
+            var dialogParent = reloadDialog.parent();
+            var dialogOwn = reloadDialog.clone();
+            $("#msg").html(msg);
+            reloadDialog.dialog({
+                autoOpen: false,
+                title:'系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                 },
+                buttons:[{
+                    text:"确认",
+                    click:function(){
+                        $(this).dialog("close");
+
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_RESULTIMAGE.activate_url;//批量激活任务
+                        ajax.opts.data = JSON.stringify({rgIds: ids });
+                        ajax.opts.successFun = function (data) {
+                            PopWin.showMessageWin(data.msg);
+                            $("#dsResultimageGrid").trigger("reloadGrid");
+
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("数据生产任务激活失败");
+                        };
+                        ajax.run();
+
+                    }
+                },{
+                    text:"取消",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            reloadDialog.dialog("open");
+        }
+
+
+        /**
+         * 批量激活任务
+         * @version<1> 2018-07-04 lcw :Created.
+         */
+        var batchActivateFun = function(){
+            var rgIds = getValidData(4);
+            var msg = "是否确认批量激活数据生产任务？";
+            activateTaskFun(rgIds,msg);
+        }
+
+        var downBatch =function(href){
+            var index = href .lastIndexOf("\/");
+            var name  = href .substring(index + 1, href .length);
+            var a = document.createElement("a"), e = document.createEvent("MouseEvents"); //创建鼠标事件对象
+            e.initEvent("click", false, false); //初始化事件对象
+            a.href = href; //设置下载地址
+            a.download = name; //设置下载文件名
+            a.dispatchEvent(e); //给指定的元素，执行事件click事件
+        }
+
+        /**
+         * Description: 批量下载
+         * @version <1> 2018/5/24 zhangshen: Created.
+         */
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+        var batchDownloadFun = function(){
+            $("#batchDownloadBtn").addClass("btn_grey")
+            var ids = $("#dsResultimageGrid").jqGrid("getGridParam", "selarrrow");
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#dsResultimageGrid").jqGrid('getRowData', id);
+                var suffix = DATA_STORAGE.download_suffix;
+                //download(suffix + row.storagePath);
+                downBatch(suffix + row.storagePath);
+                //window.open(suffix + row.storagePath);
+
+            });
+            //防止重复点击，灰3秒
+            setTimeout( function(){
+                $("#batchDownloadBtn").removeClass("btn_grey")
+            }, 5 * 1000 );//延迟5000毫米
+
+        };
+
+
+
+        /**
+         * 初始化数据日期控件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var initTimeEvent = function(){
+            $("#search_productTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 获取数据集下拉框数据
+         * @param parentId = 1800
+         * @version <1> 2018-06-12 zhangshen : created.
+         */
+        var initDataSetFun = function(parentId, dataSetIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    //str += "<option value='"+ 1850 +"'>"+ '混合数据集' +"</option>";
+                    $("#"+dataSetIdName).html("");//清空
+                    $("#"+dataSetIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id选择器名称
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var initResolution = function(dataSet, resolution) {
+            $("#"+dataSet).change(function() {
+                queryResolutionFun(dataSet, resolution);
+            });
+            queryResolutionFun(dataSet, resolution);
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id选择器名称
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var queryResolutionFun = function(dataSet, resolution){
+            var dataSetId = $("#"+dataSet).val();
+            if (dataSetId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryResolutionListByDataSetId_url + "?dataSetId="+dataSetId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async=false;
+                ajax.opts.successFun = function (data) {
+                    if (data.flag) {
+                        var result = data.data;
+                        initResolutionFun(result,resolution);
+                    } else {
+                        $('#'+resolution).html('<option value="">--请选择--</option>');
+                    }
+                };
+                ajax.run();
+            } else {
+                $('#'+resolution).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * Description:
+         * @param result 根据数据集id查询出来的精度列表
+         * @param resolution 精度id选择器名称
+         * @return
+         * @version <1> 2018/8/30 16:51 zhangshen: Created.
+         */
+        var initResolutionFun = function(result,resolution){
+            var resultHtml = '<option value="">--请选择--</option>';
+            if(result) {
+                $.each(result,function(i,o){
+                    resultHtml += '<option value = "' + o.resolutionId + '">' + o.resolutionName + '</option>';
+                });
+            }
+            $('#'+resolution).html(resultHtml);
+        };
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var dateFun = function(){
+            $("#search_createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 zhangshen： Created.
+         */
+        var searchFun = function() {
+            var regionId = document.getElementById("search_regionId").getAttribute("regionId");//区域id
+
+            var dsResultimage = {};
+            dsResultimage.regionCode  =  document.getElementById("search_regionId").getAttribute("regionCode");
+            dsResultimage.dsType = $("#search_dataSet").val(); //数据集
+            dsResultimage.cropId = $("#search_crop").val(); //作物
+            dsResultimage.resolution = $("#search_resolution").val();
+            dsResultimage.publishStatus = $("#search_publishStatus").val();
+            dsResultimage.imageTitle=$("#search_imageTitle").val();
+
+            var productTime =　$("#search_productTime").val();//数据日期
+
+            if(productTime != null && productTime != ''){
+                var arr = productTime.trim().split('至');
+
+                dsResultimage.startDate = arr[0];
+                dsResultimage.endDate = arr[1];
+            }else{
+                dsResultimage.startDate = null;
+                dsResultimage.endDate = null;
+            }
+            dsResultimage.rgStatus = $("#search_rgStatus").val();
+
+
+            $("#dsResultimageGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:dsResultimage,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 区域选择控件
+         * @version <1> 2018-05-30 zhangshen : Created.
+         */
+
+        var RegionSelectFun = function(regionIdName,cropIdName){
+            var search_regionId = document.getElementById(regionIdName);
+            search_regionId.value = custom_settings.main_search_region_name;
+            search_regionId.setAttribute("regionid", custom_settings.main_search_region_id);
+            search_regionId.setAttribute("regioncode", custom_settings.main_search_region_code);
+            search_regionId.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        var regionId = search_regionId.getAttribute("regionId");
+                        if(regionId!=null) {
+                            queryCropFun(regionId,cropIdName);
+                        }else{
+                            $('#'+cropIdName).html('<option value="">--请选择--</option>');
+                        }
+                    }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            };
+            queryCropFun(search_regionId.getAttribute("regionid"), cropIdName);
+        };
+
+        /**
+         * 通过区域获取作物
+         * @version<1> 2018-05-03 lcw :Created.
+         */
+        var queryCropFun = function(regionId,cropIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async=false;
+            ajax.opts.successFun = function (data) {
+                var crop = data.data;
+                initCropFun(crop,cropIdName);
+            };
+            ajax.run();
+        };
+
+        /**
+         * 初始化作物下拉框
+         * @param crop 查询出的作物对象集合
+         * @version<1> 2018-05-03 lcw :Created.
+         */
+        var initCropFun = function(crop,cropIdName){
+            var result;
+            result = '<option value="">--请选择--</option>';
+            if(crop!=null) {
+                $.each(crop,function(i,o){
+                    result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                });
+            }
+            $('#'+cropIdName).html(result);
+        };
+
+        /**
+         * 查看生产数据详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailFun = function(productId,dsType,publishStatus,dsTypeName) {
+            //未发布，则可以编辑，发布则不可编辑
+            if(publishStatus==2703){
+                isEditCell=false;
+            }else{
+                isEditCell=true;
+            }
+            //生产发布数据标题
+            var title="生产数据集明细["+dsTypeName+"数据]";
+            var detailButtons=[
+                {
+                    text:"发布",
+                    click:function(){
+                        publishTiffLayer([productId],true)
+                    }
+                },
+                {
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }];
+            if(publishStatus=='2703'){
+                detailButtons=[
+                    {
+                        text:"撤回",
+                        click:function(){
+                            backTifFun([productId],true)
+                        }
+                    },
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ];
+            }
+            var width = $(document.body).width()*0.70;//宽度
+            var height = $(document.body).height()-200;//高度
+            var dataProductInfoDialog =  $("#dataProductInfo");
+            var dialogParent = dataProductInfoDialog.parent();
+            var dialogOwn = dataProductInfoDialog.clone();
+            dataProductInfoDialog.dialog({
+                autoOpen: false,
+                title:title,
+                height: height,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:detailButtons
+            });
+            dataProductInfoDialog.dialog("open");
+            dataProductGrid(productId,dsType);//加载数据生产表格
+        };
+
+        /**
+         * 查看指数生产数据详情
+         */
+        var dataProductGrid = function(productId,dsType){
+            var dataProductParam={};
+            dataProductParam.productId=productId;
+            dataProductParam.dsType=dsType;
+            var detail_url=DS_RESULTIMAGE.findDataSatListByTaskId_url;
+            var detail_colNames=getIndexName(dsType,productId);
+            var detail_colmodel=getIndexModel(dsType);
+            $("#dataProductGrid").jqGrid({
+                url: detail_url,
+                datatype: "json",
+                postData:dataProductParam,
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:detail_colNames,
+                colModel:detail_colmodel,
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#pager3',
+                autowidth:true,
+                height:'100%',
+                viewrecords: true,
+                sortorder: "desc",
+                gridComplete: function(){
+                    $("#dataProductInfo").css({ "overflow-x" : "hidden" });
+                    $("#dataProductInfo").css({ "overflow-y" : "hidden" });
+                    $( this ).closest(".ui-jqgrid-bdiv").css({ 'overflow-y' : 'auto' });
+                    $( this ).closest(".ui-jqgrid-bdiv").css({ 'overflow-x' : 'hidden' });
+                    $( this ).closest(".ui-jqgrid-bdiv").css({"maxHeight":$("#dataProductInfo").height()-$(".ui-jqgrid-hdiv").height()-$("#pager3").height()-50+"px"});
+                },
+                cellEdit:true,
+                cellsubmit:"clientArray",
+                afterSaveCell:function(rowid,name,val,iRow,iCol){
+                    //数据验证
+                    if(val==''){
+                        //恢复原值
+                        $("#dataProductGrid").jqGrid("restoreCell",iRow,iCol);
+                        PopWin.showMessageWin("数据不能为空！");
+                        return false;
+                    }
+                    if(!formVerfication.isPlusMinusDouble(val)){
+                        //恢复原值
+                        $("#dataProductGrid").jqGrid("restoreCell",iRow,iCol);
+                        PopWin.showMessageWin("输入的必须为数字！");
+                        return false;
+                    }
+                    if(parseFloat(val)>custom_settings.larger_area){
+                        //恢复原值
+                        $("#dataProductGrid").jqGrid("restoreCell",iRow,iCol);
+                        PopWin.showMessageWin("最大值不能超过100000000！");
+                        return false;
+                    }
+                    //四舍五入
+                    val=Math.round(parseFloat(val)*100)/100
+                    $("#dataProductGrid").jqGrid('setCell', rowid ,name ,val);
+                    //获取第一行数据
+                    var row = $("#dataProductGrid").jqGrid('getRowData', rowid);
+                    var rowStr=JSON.stringify(row);
+                    editIndexData(dsType,rowStr);
+                },
+            });
+        };
+
+        /**
+         * 生产数据保存方法
+         * @version<1> 2018-11-04 lijie :Created.
+         */
+        var editIndexData =function(dsType,rowStr){
+            var indexData={};
+            indexData.dsType=dsType;
+            indexData.dataStr=rowStr;
+            var url=DS_RESULTIMAGE.updateDataSat_url;
+            var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data=JSON.stringify(indexData);
+            ajax.opts.async=false;
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    PopWin.showMessageWin("保存成功");
+                } else {
+                    PopWin.showMessageWin("保存失败");
+                }
+            };
+            ajax.opts.errorFun = function () {
+                PopWin.showMessageWin("保存失败");
+            };
+            ajax.run();
+        }
+
+        /**
+         * 分布数据集列名
+         */
+        var colNames_area=['productId','id','区域','作物','精度','数据时间','面积（亩）']
+        /**
+         * 分布数据集数据
+         */
+        var colmodel_area = [
+            {name: 'productId', index:'product_id', hidden:true},
+            {name: 'id', index:'id', hidden:true},
+            {name: 'regionName', index:'region_id',align:'center',width:'16%'},
+            {name: 'cropName', index: 'crop_id', align: 'center', width: '16%'  },
+            {name: 'resolutionValue', index: 'resolution', align: 'center', width: '16%' },
+            {name: 'dataTime', index: 'data_time', align: 'center', width: '16%' },
+            {name: 'area', index: 'area', align: 'center', width: '16%',editable: isEditCell  },
+        ];
+
+        /**
+         * 长势数据集列名
+         */
+        var colNames_growth=['productId','id','区域','作物','精度','数据时间','很差', '差', '较差', '正常','较好','好','很好']
+        /**
+         * 长势数据集数据
+         */
+        var colmodel_growth = [
+            {name: 'productId', index:'product_id', hidden:true},
+            {name: 'id', index:'id', hidden:true},
+            {name: 'regionName', index:'region_id',align:'center',width:'8%'},
+            {name: 'cropName', index: 'crop_id', align: 'center', width: '10%'  },
+            {name: 'resolutionValue', index: 'resolution', align: 'center', width: '10%' },
+            {name: 'dataTime', index: 'data_time', align: 'center', width: '12%' },
+            {name: 'lowest', index: 'lowest', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'lower', index: 'lower', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'low', index: 'low', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'normal', index: 'normal', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'high', index: 'high', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'higher', index: 'higher', align: 'center', width: '16%',editable: isEditCell  },
+            {name: 'highest', index: 'highest', align: 'center', width: '16%',editable: isEditCell  },
+        ];
+
+        /**
+         * 估产数据集列名
+         */
+        var colNames_yield=['productId','id','区域','作物','精度','数据时间','面积（亩）']
+        /**
+         * 估产数据集数据
+         */
+        var colmodel_yield = [
+            {name: 'productId', index:'product_id', hidden:true},
+            {name: 'id', index:'id', hidden:true},
+            {name: 'regionName', index:'region_id',align:'center',width:'16%'},
+            {name: 'cropName', index: 'crop_id', align: 'center', width: '16%'  },
+            {name: 'resolutionValue', index: 'resolution', align: 'center', width: '16%' },
+            {name: 'dataTime', index: 'data_time', align: 'center', width: '16%' },
+            {name: 'yield', index: 'area', align: 'center', width: '16%',editable: isEditCell  },
+        ];
+
+        /**
+         * 获得指数列名
+         */
+        var getIndexName=function(dsType){
+            var indexName=[];
+            if(dsType==1801){
+                indexName=colNames_area;
+            }else if(dsType==1803){
+                indexName=colNames_growth;
+            }else if(dsType==1802){
+                indexName=colNames_yield;
+            }
+            return indexName;
+        }
+
+        /**
+         * 获得指数值
+         */
+        var getIndexModel=function(dsType) {
+            var indexModel = [];
+            if (dsType == 1801) {
+                indexModel = setIsEdit(colmodel_area, isEditCell,colNames_area);
+            } else if (dsType == 1803) {
+                indexModel = setIsEdit(colmodel_growth, isEditCell,colNames_growth);
+            } else if (dsType == 1802) {
+                indexModel = setIsEdit(colmodel_yield, isEditCell,colNames_yield);
+            }
+            return indexModel;
+        }
+
+        //设置指数列名编辑状态
+        var setIsEdit=function (modelName,isEdit,colName){
+            var img_edit="<img src='images/public/modify.png' />";
+            if(modelName){
+                for(var i=0;i<modelName.length;i++){
+                    if(modelName[i].editable!=undefined){
+                        modelName[i].editable=isEdit;
+                    }
+                    //如果为true,则添加编辑图片
+                    if( modelName[i].editable){
+                        if(colName[i].indexOf(img_edit)==-1) {
+                            colName[i] = img_edit + colName[i]
+                        }
+                    }else{
+                        colName[i] = colName[i].replace(img_edit, "");
+                    }
+                }
+            }
+            return modelName;
+        }
+
+        init();
+    });
+</script>

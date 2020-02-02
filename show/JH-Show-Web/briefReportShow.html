@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style type="text/css">
+        html,
+        body{
+            height: 100%;
+            border: 0px;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        #icoList>a {
+            padding: 0px 5px;
+        }
+
+        html,
+        body {
+            min-height: 600px;
+            margin: 0px;
+            min-width: 800px;
+        }
+
+        html,
+        body{
+            height: 100%;
+        }
+
+        #top #followRegion,
+        #top #userinfo {
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        #left ul {
+            list-style: none;
+            color: #FFFFFF;
+            padding: 0px 20px;
+        }
+
+        #left ul li {
+            padding-left: 10px;
+            margin: 15px 0px;
+            line-height: 40px;
+            cursor: pointer;
+        }
+
+        #left ul li img {
+            margin-right: 10px;
+        }
+
+        .top-header-left ul li img,
+        .top-header-left ul li span {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        a:link,
+        a:visited,
+        a:hover,
+        a:active {
+            text-decoration: none;
+            color: #000;
+        }
+
+        #data_list>div:first-child {
+            text-align: center;
+            background: #00bff9;
+            color: #FFFFFF;
+        }
+
+        #customRegionList>div {
+            padding: 3px 0px 3px 50px;
+        }
+
+        #icoList>a {
+            padding: 0px 5px;
+        }
+
+        #statistical_chart>img {
+            width: 130px;
+            height: 130px;
+            padding: 0px 5px;
+        }
+
+        .myRightMain {
+            width: 95%;
+            margin: 0 auto;
+            margin-bottom: 50px;
+        }
+
+        .section1 {
+            width: 100%;
+        }
+
+        .section1 h2 {
+            text-align: center;
+            font-family: MicrosoftYaHei;
+            font-size: 30px !important;
+            font-weight: normal;
+            font-stretch: normal;
+            line-height: 50px;
+            letter-spacing: 0px;
+            color: #000000;
+        }
+
+        .secTitle {
+            height: 36px;
+            line-height: 36px;
+            padding-bottom: 10px;
+        }
+
+        .bgTitle {
+            height: 28px;
+            line-height: 28px;
+            width: 16px;
+            background: #21494F;
+            font-size: 25px !important;
+            display: inline-block;
+        }
+
+        .secTitle span:nth-child(2) {
+            font-size: 25px !important;
+            font-weight: normal;
+            font-stretch: normal;
+            line-height: 0px;
+            letter-spacing: 0px;
+            color: #000000;
+        }
+
+        .table{
+            padding-bottom:15px;
+        }
+
+        .table>div {
+            height: 22px;
+            line-height: 22px;
+            margin-bottom: 10px;
+        }
+
+        .table>div>span {
+            display: block;
+            float: left;
+        }
+
+        .table .bgTdForth {
+            width: 39% !important;
+            padding-left: 5px;
+            background: #f7f7f7;
+
+        }
+
+        .oneline {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .table .bgGrey {
+            width: 10%;
+            background: #DCDCDC;
+            text-align: center;
+            font-size: 14px !important;
+            color: #000000;
+            font-family: MicrosoftYaHei;
+        }
+
+        .table .bgTdSecond {
+            width: 39%;
+            padding-left: 5px;
+            background: #f7f7f7;
+        }
+
+        .table .bgTdSecond span {
+            font-size: 14px !important;
+            font-weight: normal;
+            font-stretch: normal;
+            line-height: 0px;
+            letter-spacing: 0px;
+            color: #000000;
+        }
+
+        .diseaseStyle {
+            width: 50%;
+            float: left;
+            height: 130px;
+        }
+
+        .diseaseStyle .baseImg {
+            width: 120px;
+            height: 115px;
+            float: left;
+        }
+
+        .diseaseStyle .baseFont {
+            width: calc(100% - 130px);
+            float: left;
+            position: relative;
+            padding-left: 10px;
+
+        }
+
+        .diseaseStyle .borderStyleSolid {
+            position: absolute;
+            bottom: -90px;
+            left: 10px;
+            padding-right: 10px;
+            font-family: MicrosoftYaHei;
+            font-size: 14px !important;
+            font-weight: normal;
+            font-stretch: normal;
+            letter-spacing: 0px;
+            color: #4c4c4c;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+        }
+
+        .diseaseStyle .diseaseName {
+            font-family: MicrosoftYaHei;
+            font-size: 18px !important;
+            font-weight: normal;
+            font-stretch: normal;
+            line-height: 0px;
+            letter-spacing: 0px;
+            color: #000000;
+        }
+
+        .myTextarea {
+            border: dashed grey 1px;
+            background: #FFFACD;
+            width: 100%;
+            text-align: center;
+            margin: 0 auto;
+            margin-bottom: 3%;
+            margin-top: 3%;
+            height: 110px;
+        }
+
+        .echartsDiv {
+            width: 100%;
+            height: 400px;
+        }
+
+        .top-header-right span {
+            color: #FFFFFF;
+        }
+
+        .top-header-right span {
+            color: #ffffff;
+        }
+
+        .top-header-right i {
+            color: #FFFFFF;
+        }
+
+        #menu_list li {
+            margin-left: 40px;
+            line-height: 30px;
+        }
+
+        .send img {
+            width: 130px;
+            padding-left: 5px;
+        }
+
+        .send div {
+            display: inline-block;
+        }
+
+        .send p {
+            text-align: center;
+        }
+
+        .blend div {
+            display: inline-block;
+        }
+
+        .bgTdForth span{
+            font-size: 14px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="AgriculturalBriefing">
+
+        <div class="myRightMain">
+            <div class="section1">
+                <h2>
+                    <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                        <span id="pcEchartChinaName"></span>
+                    </span>
+                    <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                        <span id="pcEchartCropsName"></span>
+                    </span>
+                    <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                        <span id="pcEchartBeginDate"></span>
+                    </span>~
+                    <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                        <span id="pcEchartEndDate"></span>
+                    </span>农情简报
+                </h2>
+
+                <div class="secTitle">
+                    <div class="bgTitle">&nbsp;</div>
+                    <span>指标信息</span>
+                </div>
+
+                <div class="table">
+                    <div>
+
+                        <span class="bgGrey">
+                            物侯阶段
+                        </span>
+                        <span class="bgTdSecond">&nbsp;
+                            <span id="pcEchartGrowthPeriodName">&nbsp;</span>
+                        </span>
+
+
+                        <span class="bgGrey">
+                            降雨同比
+                        </span>
+                        <span id="EchartTrmmInfo" class="bgTdForth oneline">&nbsp;
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTrmmInfo">&nbsp;</span>
+                            </span>
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <span class="bgGrey">
+                            日均地温
+                        </span>
+                        <span class="bgTdSecond">&nbsp;
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnAvgMin"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnAvgMinRegionName"></span>
+                            </span>
+
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnAvgMax"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnAvgMaxRegionName"></span>
+                            </span>
+                        </span>
+
+
+                        <span class="bgGrey">
+                            墒情概况
+                        </span>
+                        <span id="EchartSoilMoisture" class="bgTdForth oneline">&nbsp;
+                            <span id="pcEchartSoilMoisture">&nbsp;</span>
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        <span class="bgGrey">
+                            有效积温
+                        </span>
+                        <span class="bgTdSecond">&nbsp;
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnTotalMin"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnTotalMinRegionName"></span>
+                            </span>
+
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnTotalMax"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTtnTotalMaxRegionName"></span>
+                            </span>
+                        </span>
+
+                        <span class="bgGrey">
+                            易发病害
+                        </span>
+                        <span id="EchartDisease" class="bgTdForth oneline">&nbsp;
+                            <span id="pcEchartDisease"></span>
+                        </span>
+                    </div>
+
+
+                    <div>
+
+                        <span class="bgGrey">
+                            降雨总量
+                        </span>
+                        <span class="bgTdSecond">&nbsp;
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTrmmTotalMin"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTrmmTotalMinRegionName"></span>
+                            </span>
+
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTrmmTotalMax"></span>
+                            </span>
+                            <span class="textSpan" style="border-style: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" contenteditable="false">
+                                <span id="pcEchartTrmmTotalMaxRegionName"></span>
+                            </span>
+
+                        </span>
+
+                        <span class="bgGrey">
+                            易发虫害
+                        </span>
+                        <span id="EchartInsectPests" class="bgTdForth oneline">&nbsp;
+                            <span id="pcEchartInsectPests"></span>
+                        </span>
+
+                    </div>
+                </div>
+
+            </div>
+            <div class="section6">
+                <div class="secTitle">
+                    <div class="bgTitle">&nbsp;</div>
+                    <span>地温变化</span>
+                </div>
+                <div id="pcEchartTtnEcharts" class="echartsDiv"></div>
+            </div>
+
+            <div class="section3">
+                <div class="secTitle">
+                    <div class="bgTitle">&nbsp;</div>
+                    <span>降雨变化</span>
+                </div>
+                <div id="pcEchartTrmmEcharts" class="echartsDiv"></div>
+            </div>
+
+            <div class="section4">
+                <div class="secTitle">
+                    <div class="bgTitle">&nbsp;</div>
+                    <span>病虫害防治措施</span>
+                </div>
+                <span id="pcEchartDiseaseAllList">
+
+
+                </span>
+
+            </div>
+            <div style="clear:both;"></div>
+
+            <div class="section5 myTextarea" style="outline: none; resize: none; overflow: hidden;" contenteditable="false">
+
+                <h2>管理措施</h2>
+                <div>
+                    <span id="pcEchartRemark"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/require.config.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+<script type="text/javascript">
+    require(["jquery","BaseAjax"], function ($,BaseAjax) {
+        var getQueryString = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
+
+        //根据id 查询简报
+        var loadIconDom = function (id) {
+            findBriefReportByIDNew(id);
+            findBriefReportByIDTrrm(id);
+        };
+
+        //根据id 查询简报
+        var findBriefReportByIDNew = function (id) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_Brief.Preview_brief_url + "/" + id;
+            ajax.opts.type = "GET";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var reportData = result.data;
+                    $("#pcEchartChinaName").html(reportData.chinaName); //填入报表内容
+                    $("#pcEchartCropsName").html(reportData.cropsName);
+                    $("#pcEchartBeginDate").html(reportData.beginDate);
+                    $("#pcEchartEndDate").html(reportData.endDate);
+                    $("#pcEchartGrowthPeriodName").html(reportData.growthPeriodName);
+
+                    if (reportData.ttnAvgMin != null && reportData.ttnAvgMin != undefined) {
+                        $("#pcEchartTtnAvgMin").html(reportData.ttnAvgMin + "℃");
+                        $("#pcEchartTtnAvgMinRegionName").html("(" + reportData.ttnAvgMinRegionName +
+                            ")");
+                    } else {
+                        $("#pcEchartTtnAvgMin").html("数据更新中");
+                    }
+
+                    if (reportData.ttnAvgMax != null && reportData.ttnAvgMax != undefined) {
+                        $("#pcEchartTtnAvgMax").html("~" + reportData.ttnAvgMax + "℃");
+                        $("#pcEchartTtnAvgMaxRegionName").html("(" + reportData.ttnAvgMaxRegionName +
+                            ")");
+                    }
+
+                    if (reportData.ttnTotalMin != null && reportData.ttnTotalMin != undefined) {
+                        $("#pcEchartTtnTotalMin").html(reportData.ttnTotalMin + "℃");
+                        $("#pcEchartTtnTotalMinRegionName").html("(" + reportData.ttnTotalMinRegionName +
+                            ")");
+
+                    } else {
+                        $("#pcEchartTtnTotalMin").html("数据更新中");
+                    }
+
+                    if (reportData.ttnTotalMax != null && reportData.ttnTotalMax != undefined) {
+                        $("#pcEchartTtnTotalMax").html("~" + reportData.ttnTotalMax + "℃");
+                        $("#pcEchartTtnTotalMaxRegionName").html("(" + reportData.ttnTotalMaxRegionName +
+                            ")");
+                    }
+
+                    $("#pcEchartDisease").attr({
+                        title: reportData.disease
+                    });
+                    $("#pcEchartDisease").html(reportData.disease);
+
+                    $("#pcEchartInsectPests").attr({
+                        title: reportData.insectPests
+                    });
+                    $("#pcEchartInsectPests").html(reportData.insectPests);
+                    initPc(reportData.ttnDateList, reportData.ttnNowList, reportData.ttnHistoryList,
+                        reportData.maxTtn, reportData.minTtn, reportData.trmmDateList, reportData.trmmNowList,
+                        reportData.trmmHistoryList, reportData.maxTrmm);
+                    //病虫害防治列表
+                    if (reportData.diseaseAllList != null && reportData.diseaseAllList != undefined) {
+                        var diseaseAllList = "";
+                        for (var i = 0; i < reportData.diseaseAllList.length; i++) {
+                            var diseaseImg = reportData.diseaseAllList[i].diseaseImg?reportData.diseaseAllList[i].diseaseImg:"";
+                            diseaseAllList +=
+                                '<div class="diseaseStyle"><div class="baseImg"><img class="baseImg" src=' +
+                                diseaseImg + '></div>';
+                            diseaseAllList += '<div class="baseFont"><span class="diseaseName">' +
+                                reportData.diseaseAllList[i].diseaseName + '</span>';
+                            diseaseAllList += '<span class="borderStyleSolid" title="' + reportData.diseaseAllList[
+                                i].diseaseMeasure + '">' + reportData.diseaseAllList[
+                                i].diseaseMeasure + '</span></div></div>';
+                            if ((i + 1) % 2 == 0) {
+                                diseaseAllList += '<div class="diseaseSection"></div>';
+                            }
+                        }
+
+
+                        $("#pcEchartDiseaseAllList").html(diseaseAllList);
+                    }
+
+
+
+
+                    if (reportData.echartRemark != null && reportData.echartRemark != undefined) {
+                        $("#pcEchartRemark").html(reportData.echartRemark);
+                    } else {
+                        $("#pcEchartRemark").html("当前阶段，应加强田间肥水管理");
+                    }
+
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        //根据id 查询简报降雨墒情情况
+        var findBriefReportByIDTrrm = function (id) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_Brief.Trmm_brief_url + "/" + id;
+            ajax.opts.type = "GET";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var reportData = result.data;
+                    $("#pcEchartTrmmInfo").attr({
+                        title: reportData.comparedLastYear
+                    });
+                    $("#pcEchartTrmmInfo").html(reportData.comparedLastYear);
+
+                    $("#pcEchartSoilMoisture").attr({
+                        title: reportData.soilMoisture
+                    });
+                    $("#pcEchartSoilMoisture").html(reportData.soilMoisture);
+
+                    if (reportData.trmmTotalMin != null && reportData.trmmTotalMin != undefined) {
+                        $("#pcEchartTrmmTotalMin").html(reportData.trmmTotalMin + "mm");
+                        $("#pcEchartTrmmTotalMinRegionName").html('(' + reportData.trmmTotalMinRegionName +
+                                ')');
+                    } else {
+                        $("#pcEchartTrmmTotalMin").html("数据更新中");
+                    }
+
+                    if (reportData.trmmTotalMax != null && reportData.trmmTotalMax != undefined) {
+                        $("#pcEchartTrmmTotalMax").html("~" + reportData.trmmTotalMax + "mm");
+                        $("#pcEchartTrmmTotalMaxRegionName").html('(' + reportData.trmmTotalMaxRegionName +
+                                ')');
+                    }
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+
+        };
+
+        var initPc = function (ttnDate, ttnNow, ttnHistory, maxTtn, minTtn, trmmDate, trmmNow, trmmHistory,
+            maxTrmm) {
+            var ttn = document.getElementById("pcEchartTtnEcharts");
+            var trmm = document.getElementById("pcEchartTrmmEcharts")
+
+            // 路径配置
+            require.config({
+                paths: {
+                    echarts: 'http://echarts.baidu.com/build/dist'
+                }
+            });
+
+            // 使用
+            require(
+                [
+                    'echarts',
+                    'echarts/chart/line', //折线图
+                    'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+                ],
+                function (ec) {
+                    // 基于准备好的dom，初始化echarts图表
+                    var myChart = ec.init(ttn);
+
+                    option = {
+                        // title: {
+                        //     text: '折线图堆叠'
+                        // },
+                        tooltip: {
+                            trigger: 'axis',
+                            axisPointer:{
+                                type:'line',
+                                lineStyle:{
+                                    color:'rgba(11,46,235,0.4)',
+                                    width:0.5,
+                                    type:'dashed'
+                                }
+                            },
+                            formatter:function (params) {
+                                return "历史地温均值："+params[0]['2']+(params[0]['2']=='-'?'':'℃')+"<br>地温："+params[1]['2']+(params[1]['2']=='-'?'':'℃');
+                            }
+                        },
+                        legend: {
+                            data: ['地温°C', '历史地温均值°C'],
+                            x:'center',
+                            y:'0'
+                        },
+                        grid: {
+                            x:0,
+                            y:30,
+                            x2:0,
+                            y2:50,
+                            borderWidth:'2'
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+                            // boundaryGap: false,
+                            data: ttnDate,
+                            axisTick:{show:false},
+                            axisLine:{show:false},
+                            splitArea: {
+                                show: true,
+                                areaStyle: {
+                                    // color:[
+                                    //     'rgba(123,19,19,0.3)',
+                                    //     'rgba(100,100,100,0.3)'
+                                    // ],
+                                    shadowBlur: {
+                                        shadowColor: 'rgba(100, 100, 100, 0.5)'
+
+                                    },
+                                }
+                            }
+                        }],
+                        yAxis: {
+                            type: 'value',
+                            show: false,
+                            min: minTtn,
+                            max: maxTtn
+                        },
+                        series: [{
+                                name: '地温°C',
+                                // type:'line',
+                                // stack: '总量',
+                                type: 'line',
+                                smooth: true,
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            position: 'bottom',
+                                            textStyle: {
+                                                color: '#000000'
+                                            }
+                                        },
+                                        color: '#ebe800',
+                                        lineStyle: {
+                                            color: '#ebe800'
+                                        }
+                                    }
+                                },
+                                label: {
+                                    show: true,
+                                },
+                                data: ttnNow
+                            },
+                            {
+                                name: '历史地温均值°C',
+                                type: 'line',
+                                stack: '总量',
+                                itemStyle: {
+                                    normal: {
+                                        label: {
+                                            show: true,
+                                            position: 'top',
+                                            textStyle: {
+                                                color: '#000000'
+                                            }
+                                        },
+                                        color: '#00e4ff',
+                                        lineStyle: {
+                                            color: '#00e4ff'
+                                        }
+                                    }
+                                },
+                                label: {
+                                    show: true,
+                                },
+                                data: ttnHistory
+                            }
+                        ]
+                    };
+                    // 为echarts对象加载数据
+                    myChart.setOption(option);
+
+
+                    var myChartTrmm = ec.init(trmm);
+
+                    var option = {
+                        grid: {
+                            show: 'true',
+                            borderWidth: '0'
+                        },
+                        legend: {
+                            data: ['降雨量mm', '历史雨量均值mm'],
+                            x:'center',
+                            y:'0'
+
+                        },
+                        grid: {
+                            x:0,
+                            y:30,
+                            x2:0,
+                            y2:50,
+                            borderWidth:'2'
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            splitLine: {
+                                show: false
+                            }, //去除网格线
+                            data: trmmDate,
+                            axisTick:{show:false},
+                            axisLine:{show:false},
+                            axisPointer: {
+                                type: 'shadow'
+                            },
+                            splitArea: {
+                                show: true,
+                                areaStyle: {
+                                    color: [
+                                        // 'rgba(123,19,19,0.3)',
+                                        // 'rgba(100,100,100,0.3)'
+                                    ]
+                                }
+                            }
+                        }],
+                        yAxis: [{
+                            type: 'value',
+                            name: '水量',
+                            show: false,
+                            min: 0,
+                            max: maxTrmm,
+                            interval: 50,
+                            axisLabel: {
+                                formatter: '{value} ml'
+                            }
+                        }],
+                        series: [{
+                                name: '降雨量mm',
+                                type: 'bar',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#46b9f7',
+                                        label: {
+                                            show: true,
+                                            position: 'top',
+                                            textStyle: {
+                                                color: '#000000'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: trmmNow
+                            },
+                            {
+                                name: '历史雨量均值mm',
+                                type: 'bar',
+                                itemStyle: {
+                                    normal: {
+                                        color: '#00e787',
+                                        label: {
+                                            show: true,
+                                            position: 'top',
+                                            textStyle: {
+                                                color: '#000000'
+                                            }
+                                        }
+                                    }
+                                },
+                                data: trmmHistory
+                            }
+                        ]
+                    };
+
+
+
+                    // 为echarts对象加载数据
+                    myChartTrmm.setOption(option);
+                    //  图表重绘
+                    window.onresize = function () {
+                        myChart.resize();
+                        myChartTrmm.resize();
+                    }
+                }
+            );
+        }
+
+        loadIconDom(getQueryString("reportId"));
+    });
+</script>
+
+</html>

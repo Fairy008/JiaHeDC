@@ -1,0 +1,650 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <base href="${basePath}"/>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title></title>
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+
+    <style>
+        body,html{margin:0;padding:0;height:100%;font-size:14px;font-family:"\9ED1\4F53";color:#000;}
+        div,h2,img,p,ul{margin:0;padding:0}
+        li,ul{list-style:none;margin:0;padding:0}
+        a{text-decoration:none;color:#f20101;}
+        a:hover{color:#ebb600;text-decoration:underline;cursor:pointer;}
+        body{height:100%;width:100%;background:#f7f7f6 url(images/public/innerBG.jpg) top center repeat-x;}
+        #mainFrame{width:100%;height:100%;background:url(images/public/innerBG.jpg) top center repeat-x;position:relative;min-width:1200px;}
+        .first{height:40px;line-height:40px;}
+        .welInfo{width:100%;height:36px;text-align:center;font-size:28px;padding-bottom:20px;}
+        .register{width:480px;height:573px;background-color:#fff;padding-top:50px;margin:0 auto;border-radius:10px; box-shadow:1px 1px 20px 1px #557893;}
+        tr{height:47px}
+        .label{width:18%;text-align:right;padding-right:10px;}
+        .inputStyle{height:30px;line-height:30px;width:90%;border:1px solid #ccc;border-radius:3px;text-indent:3px;font-size:14px;padding:0;margin:0}
+        .inputStyle2{width:50%}
+        img{border:1px solid #ccc;border-radius:3px}
+        .cantClick{font-size:14px;display:inline-block;border:1px solid #dfdfdf;background-color:#95C1EE;height:30px;line-height:30px;border-radius:3px;color:#fff;width:37%;text-align:center;cursor:pointer}
+        /*遮罩层样式*/
+        .divMask{display:none; width:100%; height:100%; position:absolute;top:0; background:rgba(0,0, 0, 0.5);}
+        .registerBtn {cursor: pointer;background-color:#17aefb;height:33px;color:#fff;text-align:center;line-height:33px;font-size:14px;border-radius:3px;width:90%;}
+        .checkboxClass{width:12px;height:12px;margin-top:5px;}
+        .red{color:#f20101}
+        #errorInfo{padding-left:28%; color:#f20101;height:24px;line-height:24px;}
+        .white_content {
+            display: none;
+            position: absolute;
+            top: 35%;
+            left: 40%;
+            width: 20%;
+            height: 20%;
+            border: 0px ;
+            background-color: white;
+            z-index:1002;
+            overflow: auto;
+        }
+        .alreadySend{background:#B9B9B9;}
+        .phoneTd{position:relative;}
+        .Tsuccess, .TsuccessCode{position:absolute;top:14px;right:12%;display:none;background:#fff;border:0;}
+        #success{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+        .success{cursor: pointer;background-color:#17aefb;height:33px;color:#fff;text-align:center;line-height:33px;font-size:14px;border-radius:3px;width:90%;}
+    </style>
+
+</head>
+
+
+<body>
+<div id="mainFrame">
+    <div class="first"></div>
+    <div class="register" id="registerDiv">
+        <div class="welInfo">欢迎注册</div>
+        <div id="errorInfo"></div>
+        <table cellpadding="0" cellspacing="0" border="0" width="450px" hegiht="498" valign="middle"  >
+            <tr>
+                <td class="label">账号名</td>
+                <td width="44%" class="phoneTd"><input type="text" id="accountCode" name="accountCode" class="inputStyle" value="" placeholder="请输入账号名" tabindex="1"/><image src="images/public/ok.png" class="TsuccessCode"></image></td>
+            </tr>
+            <tr>
+                <td class="label">手机号码</td>
+                <td width="44%" class="phoneTd"><input type="text" id="pnumber" name="pnumber" class="inputStyle" value="" placeholder="请输入手机号码" tabindex="1"/><image src="images/public/ok.png" class="Tsuccess"></image></td>
+
+            </tr>
+            <tr>
+                <td class="label">设置密码</td>
+                <td><input type="password" id="pwd" name="pwd" class="inputStyle" value="" placeholder="6-20位字母/数字/符号组合" tabindex="2"/></td>
+            </tr>
+            <tr>
+                <td class="label">确认密码</td>
+                <td><input type="password" id="qpwd" name="qpwd" class="inputStyle" value="" placeholder="6-20位字母/数字/符号组合" tabindex="3"/></td>
+            </tr>
+            <tr>
+                <td class="label">真实姓名</td>
+                <td width="44%"><input type="text" id="personName" name="personName" class="inputStyle" value="" placeholder="请输入真实姓名" tabindex="4"/><image src="images/public/ok.png" class="personName"></image></td>
+
+            </tr>
+            <tr>
+                <td class="label">工作单位</td>
+                <td width="44%"><input type="text" id="company" name="company" class="inputStyle" value="" placeholder="请输入工作单位" tabindex="5"/><image src="images/public/ok.png" class="company"></image></td>
+
+            </tr>
+            <tr>
+                <td class="label">图形验证码</td>
+                <td>
+                    <input type="text" id="pvalicode2" name="pvalicode2" class="inputStyle inputStyle2" value="" placeholder="不区分大小写" tabindex="6"/>
+                    <div style="display: inline-block;height: 30px;position: relative; width:37%;vertical-align:middle;">
+                        <img src="" id="verifyCode" width="100%" height="30px" />
+                    </div>
+                </td>
+
+            </tr>
+            <tr>
+                <td class="label">手机验证码</td>
+                <td>
+                    <input type="text" id="pvalicode" name="pvalicode" class="inputStyle inputStyle2" value="" placeholder="请输入验证码" tabindex="7"/>
+                    <div id="pvClickBtn" class="cantClick">获取验证码</div>
+                </td>
+
+            </tr>
+            <tr style="height: 28px;">
+                <td class="label"></td>
+                <td><div style="display: inline-block;font-size: 13px;margin: 0;height: 28px;line-height:28px;"><label tabindex="8"><input type="checkbox" class="checkboxClass" name="agree" id="agree"/>我已经阅读并同意<a href="javascript:void(0)" id="pupopen" >《注册协议》</a></label></div></td>
+            </tr>
+            <tr>
+                <td class="label"></td>
+                <td><div class="registerBtn" tabindex="9">注册</div></td>
+            </tr>
+            <tr style="height: 30px;">
+                <td class="label"></td>
+                <td style="text-align:right;"><div style="font-size: 13px;width:90%;">已有账号，<a href="login.html">直接登录</a></div></td>
+            </tr>
+        </table>
+    </div>
+    <div id="redirectToLogin" class="white_content" style="display: none">
+        </br>
+        <div style="height:60px;line-height: 30px; color:green; font-size: 36px;text-align: center;">恭喜您，注册成功</div>
+        <div class="success" style="height: 30px;line-height: 30px;width:50%;font-size:16px;background-color: #17aefb;color:white;border-radius: 5px;margin:15px auto;text-align: center;">返回登录页面</div>
+    </div>
+</div>
+
+<!--注册协议-->
+<div class="divMask" id="popbox">
+    <div style="width:460px;  margin:0 auto; margin-top:100px; padding:25px 30px 10px 30px; background:#FFFFFF; border-radius:5px;">
+        <div style=" text-align:center;font-size:24px; margin:10px 0;">注册条款</div>
+        <div style="height:440px; line-height:25px; font-size:14px; color:#666666; text-indent:30px; overflow-y:scroll; ">
+            <p>服务条款的确认和接纳：
+                本平台提供的服务将按照有关章程、服务条款和操作规则严格执行。用户通过注册会员，即表示用户与本平台达成协议并接受所有的服务条款。。</p>
+            <p>数据中心服务简介：
+                数据中心是通过国际互联网为用户提供卫星遥感类资讯浏览、信息交流等无偿或有偿服务的网站。
+            </p>
+            <p> 用户同意：</p>
+            <p>1、提供及时、详尽及准确的个人资料。</p>
+            <p>2、用户同意遵守《中华人民共和国保守国家秘密法》、《中华人民共和国计算机信息系统安全保护条例》、《计算机软件保护条例》等有关计算机及互联网规定的法律和法规、实施办法。在任何情况下，本数据中心合理地认为用户的行为可能违反上述法律、法规，本数据中心可以在任何时候，不经事先通知终止向该用户提供服务。用户应了解国际互联网的无国界性，应特别注意遵守当地所有有关的法律和法规。
+            </p>
+            <p> 服务条款的修改：
+                本数据中心会不定时地修改服务条款，服务条款一旦发生变动，将会在相关页面上提示修改内容。如果您同意改动，则再一次点击“我同意”按钮。如果您不接受，则及时取消您的用户使用服务资格。</p>
+            <p>服务修订：
+                本数据中心保留随时修改或中断服务而不需知照用户的权利。本数据中心行使修改或中断服务的权利，不需对用户或第三方负责。目前免费信息栏目保留收费的可能。
+            </p>
+            <p>用户的帐号，密码和安全性：
+                一旦注册成功成为本数据中心用户，您将得到相应的账户和密码。如果您不保管好自己的帐号和密码安全，将对因此产生的后果负全部责任。另外，每个用户都要对其帐户中的所有活动和事件负全责。您可随时根据指示改变您的密码，也可以结束旧的帐户重开一个新帐户。用户同意若发现任何非法使用用户帐号或安全漏洞的情况，立即通知本数据中心。
+            </p>
+            <p>附加信息服务：
+                用户在享用本数据中心提供的免费服务的同时，同意接受本数据中心提供的各类附加信息服务。
+            </p>
+            <p> 解释权：
+                本注册协议的解释权归本数据中心所有。如果其中有任何条款与国家的有关法律相抵触，则以国家法律的明文规定为准。
+        </div>
+        <div style=" padding:20px 0 20px 0; text-align:center;"><input style="width:260px; height:37px; background:#17AEFB; font-size:14px; color:#FFFFFF; border:none; cursor:pointer; border-radius:3px;" type="button" id="pupclose" value="我同意" /></div>
+    </div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/url_config.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery", "BaseAjax", "formVerfication", "Base64","commons"], function ($, BaseAjax, formVerfication, Base64,commons) {
+
+        $(".personName").hide();
+        $(".company").hide();
+        commons.setTitleFun();
+
+        var pupopen = document.getElementById("pupopen");
+        var pupclose = document.getElementById("pupclose");
+
+
+        var guid = function() {
+            var str = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+            return str.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
+        };
+
+        var validToken = guid();
+
+        var init =function(){
+            var date = new Date();
+          $("#verifyCode").attr("src", REGISTER_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime());
+        }
+
+        init();
+        /**
+         * 显示《注册条款》信息，显示弹出框
+         */
+        pupopen.onclick = function(){
+            document.getElementById("popbox").style.display="block" ;
+        }
+
+        /**
+         * 《注册条款》确认，关闭弹出框
+         */
+        pupclose.onclick = function(){
+            document.getElementById("popbox").style.display="none" ;
+        }
+
+        /**
+         * 校验账号名
+         * @version <1>  2018/7/31 zhangshen: Create
+         */
+        var checkAccountCode = function() {
+            $(".TsuccessCode").hide();
+            var accountCode = $("#accountCode").val();
+            /*if (accountCode == "" || accountCode == null) {
+                $("#errorInfo").text("请输入账号名");
+                $("#errorInfo").addClass('red');
+                return true;
+            }*/
+
+            if (accountCode != "" && accountCode != null) {
+                if (!(accountCode.length >=6 && accountCode.length <= 16)) {
+                    $("#errorInfo").text("账号名6到16位");
+                    $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var codeCheck = /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/;
+                if (!accountCode.match(codeCheck)) {
+                    $("#errorInfo").text("账号名以字母开头,由字母数字下划线组成");
+                    $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var flag = false;
+                var ajax = new BaseAjax();
+                ajax.opts.url = REGISTER_CONFIG.checkAccountExists;
+                ajax.opts.type = "GET";
+                ajax.opts.async = false;
+                ajax.opts.data =  {'accountName':accountCode};
+                ajax.opts.successFun = function (data) {
+                    if (data.data) {
+                        $("#errorInfo").text("账户名已存在");
+                        $("#errorInfo").addClass('red');
+                        flag = true;
+                    }
+                };
+                ajax.run();
+
+                if (flag) {
+                    return true;
+                }
+
+                $(".TsuccessCode").show();
+            }
+
+            return false;
+
+        };
+
+        /**
+         * 校验手机号
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var checkPhoneNumber = function() {
+            $(".Tsuccess").hide();
+            var phonenum = $("#pnumber").val();
+            if (phonenum == "") {
+                $("#errorInfo").text("请输入手机号码");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+
+            var myreg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+            if (!myreg.test(phonenum)) {
+                $("#errorInfo").text("手机号码格式不正确");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+
+            var flag = false;
+            var ajax = new BaseAjax();
+            ajax.opts.url = REGISTER_CONFIG.checkAccountExists;
+            ajax.opts.type = "GET";
+            ajax.opts.async = false;
+            ajax.opts.data =  {'accountName':phonenum};
+            ajax.opts.successFun = function (data) {
+                if (data.data) {
+                    $("#errorInfo").text("手机号码已存在");
+                    $("#errorInfo").addClass('red');
+                    flag = true;
+                }
+            };
+            ajax.run();
+
+            if (flag) {
+                return true;
+            }
+
+            $(".Tsuccess").show();
+            return false;
+        };
+        if(countDown<=0){
+            $("#pnumber").live('input on', function()
+            {
+                $("#pvClickBtn").removeClass("alreadySend");
+                $("#pvClickBtn").attr("disabled","false");
+            })
+        }
+
+        $("#pnumber").blur(checkPhoneNumber);
+        $("#accountCode").blur(checkAccountCode);
+        $("#pnumber, #accountCode").on("focus", function () {
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+        });
+
+        /**
+         * 校验设置的密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var checkPwd = function() {
+            var obj = $("#pwd");
+            if (formVerfication.isEmpty(obj.val())) {
+                $("#nickname").val("");
+                $("#errorInfo").text("请输入密码");
+                $("#errorInfo").addClass('red');
+                return true;
+            } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                $("#errorInfo").text("6-20位字母/数字/符号组合");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+            return false;
+        };
+        $("#pwd").blur(checkPwd);
+
+        /**
+         * 确认密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var confirmPwd = function () {
+            var qpwd = $.trim($("#qpwd").val());
+            if (qpwd == "") {
+                $("#errorInfo").text("请输入确认密码");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+
+            var pwd = $.trim($("#pwd").val());
+            if (pwd != qpwd) {
+                $("#errorInfo").text("密码不一致");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+
+            if (!formVerfication.isScopeLength($("#qpwd").val(), 6, 20)) {
+                $("#errorInfo").text("6-20位字母/数字/符号组合");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+            $("#errorInfo").removeClass('red');
+            return false;
+        };
+        $("#qpwd").blur(confirmPwd);
+
+
+        /**
+         * 校验真实姓名 长度不得超过20 并且必须是纯中文字符
+         *
+         * @version <1>  2018/04/26 wl: Create
+         */
+        var checkNickName = function() {
+            var obj = $("#personName");
+            $(".personName").hide();
+            if (formVerfication.isEmpty(obj.val())) {
+                return false;
+            }else if(!formVerfication.isAllChinese(obj.val().trim())){
+                $("#errorInfo").text("真实姓名只能输入中文字符");
+                $("#errorInfo").addClass('red');
+                return true;
+            } else if (!formVerfication.isScopeLength(obj.val().trim(), 0, 20)) {
+                $("#errorInfo").text("真实姓名长度不能超过20位");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+            return false;
+        };
+
+        var checkLength = function() {
+            var obj = $("#company");
+            $(".company").hide();
+            if (formVerfication.isEmpty(obj.val())) {
+                return false;
+            } else if (!formVerfication.isScopeLength(obj.val().trim(), 0, 150)) {
+                $("#errorInfo").text("工作单位长度不能超过150位");
+                $("#errorInfo").addClass('red');
+                return true;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+            return false;
+        };
+
+
+        /**
+         * 图形验证码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var picValidateCode = function () {
+            var a = $.trim($("#pvalicode2").val());
+            if (a == "") {
+                $("#errorInfo").addClass("red");
+                $("#errorInfo").text("请输入图形验证码");
+                return true;
+            }
+            $("#errorInfo").removeClass("red");
+            $("#errorInfo").text("");
+            return false;
+        }
+        $("#pvalicode2").blur(picValidateCode);
+
+        /**
+         * 手机验证码的校验
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var phoneValidateCode = function () {
+            var a = $.trim($("#pvalicode").val());
+            if (a == "") {
+                $("#errorInfo").addClass("red");
+                $("#errorInfo").text("请输入手机验证码");
+                return true;
+            }
+            $("#errorInfo").removeClass("red");
+            $("#errorInfo").text("");
+            return false;
+        }
+        $("#pvalicode").blur(phoneValidateCode);
+
+
+        var agreeFun = function(){
+            if ($("#agree").attr("checked") != "checked") {
+                $("#errorInfo").text("请先阅读并同意《注册协议》");
+                $("#errorInfo").addClass("red");
+                return true;
+            }
+            $("#errorInfo").removeClass("red");
+            $("#errorInfo").text("");
+            return false;
+        }
+
+
+        /**
+         * 更新图片验证码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var changeApicCode = function () {
+            var date = new Date();
+            var t = $("#verifyCode").get(0);
+            t.src =  REGISTER_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime();
+        }
+        $("#verifyCode").click(changeApicCode);
+
+
+        var h = $("#mainFrame").height();
+        h = parseInt(h * 0.1);
+        $(".first").height(h);
+
+        /**
+         * 点击获取手机验证码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var clicktag = 0;  //标志
+        $("#pvClickBtn").click(function () {
+            if ($("#pvClickBtn").hasClass("alreadySend")) {
+                return;
+            }
+            $(this).attr("disabled","true"); //设置变灰按钮
+            if (checkPhoneNumber() || picValidateCode()) {
+                return;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass("red");
+
+
+
+            if (clicktag == 0) {  //判断标志
+                clicktag = 1;   //进行标志，防止多次点击
+                var phonenum = $("#pnumber").val();
+                var picValicode = $.trim($("#pvalicode2").val());
+                var ajax = new BaseAjax();
+                ajax.opts.url = REGISTER_CONFIG.sendSmsCode_URL;
+                ajax.opts.data = {
+                    'mobile':phonenum,
+                    'imageVerifyCode':picValicode,
+                    'validToken':validToken
+                };
+                ajax.opts.contentType = "application/json";
+                ajax.opts.type = "GET";
+
+//                ajax.opts.data = JSON.stringify({tel: phonenum, verifyCode: picValicode});
+                ajax.opts.successFun = function (result) {
+                    if(result.flag){
+                        var sendCode = setInterval(function () {
+                            num = sendCode;
+                            readSeconds();
+                        }, 1000);
+                    }else{
+                        clearInterval();
+                        $("#pvClickBtn").text('获取验证码');
+                        $("#pvClickBtn").removeClass("alreadySend");
+                        $("#errorInfo").text(result.msg);
+                        $("#errorInfo").addClass("red");
+                    }
+
+//                    if (data.code == 2) {//短信发送失败
+//                        clicktag == 0;
+//                        clearInterval();
+//                        $("#pvClickBtn").text('获取验证码');
+//                        $("#pvClickBtn").removeClass("alreadySend");
+//                        $("#errorInfo").text(data.msg);
+//                        $("#errorInfo").addClass("red");
+//                    } else if (data.code == 1) {//短信发送成功
+//                       var sendCode = setInterval(function () {
+//                            num = sendCode;
+//                            readSeconds();
+//                        }, 1000);
+//                    } else if (data.code == 0) {//图形验证码错误  或  手机号已经注册
+//                        clicktag == 0;
+//                        clearInterval();
+//                        $("#pvClickBtn").text('获取验证码');
+//                        $("#pvClickBtn").removeClass("alreadySend");
+//                        $("#errorInfo").text(data.msg);
+//                        $("#errorInfo").addClass("red");
+//                    } else if (data.code == 3) {//同一号码超出当天发送验证码上限
+//                        $("#pvClickBtn").addClass("alreadySend");
+//                        $(this).attr("disabled","true");
+//                        clicktag == 0;
+//                        clearInterval();
+//                        $("#errorInfo").text(data.msg);
+//                        $("#errorInfo").addClass("red");
+//                    }
+                };
+                ajax.opts.errorFun = function () {
+                    $("#pvClickBtn").removeClass("alreadySend");
+                };
+                ajax.run();
+            }
+            setTimeout(function () { clicktag = 0 }, 5000);
+        });
+
+
+        /**
+         * 读秒
+         * @version <1> 2018-02-11 lcw : created.
+         */
+        var countDown = 60;
+        var num;
+        var readSeconds = function(){
+            var obj = $("#pvClickBtn");
+            if (countDown > 0) {
+                $("#pvClickBtn").addClass("alreadySend");
+                obj.text(countDown + "秒后重发");
+                countDown--;
+            } else {
+                obj.text('获取验证码');
+                clearInterval(num);
+                countDown = 60;
+                $("#pvClickBtn").removeClass("alreadySend");
+            }
+        }
+
+        /**
+         * 注册按钮的点击事件
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        $(".registerBtn").click(function (){
+            if(checkNickName()){
+                return;
+            }
+            if(checkLength()){
+                return;
+            }
+            if (checkAccountCode()) {//校验用户名
+                return;
+            }
+
+            if (checkPhoneNumber() || checkPwd()|| confirmPwd() || picValidateCode() ||  phoneValidateCode() || agreeFun() || checkNickName() || checkLength()) {
+                return;
+            }
+
+            var phoneValicode = $.trim($("#pvalicode").val());
+            var phonenum =  $.trim($("#pnumber").val());
+            var pwd = $.trim($("#pwd").val());
+            var nickName=$.trim($("#personName").val());
+            var company=$.trim($("#company").val());
+            var accountCode =  $.trim($("#accountCode").val());
+
+
+            var registerEntity = {};
+            registerEntity.phone = phonenum;
+			registerEntity.companyName = company;
+            registerEntity.pwd = Base64.encode($("#pwd").val());
+            registerEntity.confirmPwd = Base64.encode($("#qpwd").val());
+            registerEntity.smsVerifCode = phoneValicode;
+            registerEntity.imgVerifyCode = $.trim($("#pvalicode2").val());
+            registerEntity.personName = nickName;
+            registerEntity.accountCode = accountCode;//账号名
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = REGISTER_CONFIG.register_URL;
+            ajax.opts.data = JSON.stringify(registerEntity);
+            ajax.opts.successFun = function (msg) {
+
+                if(msg.flag){
+                    //弹出窗提示注册成功 并可以让用户选择是否跳转登录页面
+                    $("#registerDiv").hide();
+                    $("#redirectToLogin").show();
+                }else{
+                    $("#errorInfo").addClass("red");
+                    $("#errorInfo").text(msg.msg);
+                }
+
+            };
+            ajax.opts.errorFun = function(){
+                alert("系统异常，暂时无法发送验证码");
+            };
+            ajax.run();
+        });
+        $(".success").click(function () {
+            window.location.href = "login.html";
+        });
+
+
+    });
+</script>
+
+

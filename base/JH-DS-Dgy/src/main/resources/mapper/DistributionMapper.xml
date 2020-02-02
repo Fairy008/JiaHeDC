@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.dgy.mapping.IDistributionMapper" >
+
+    <!--
+    * 根据区域、时间，作物，分辨率查询作物分布生成时间
+    * @param :param
+    *   regionId: 区域ID
+    *     cropId: 作物ID
+    *  startDate: 开始日期
+    *    endDate: 结束日期
+    *   resolution: 分辨率
+    * @return List<LocalDate>
+    * @version <1> 2018-05-23 cxw: Created.
+    *-->
+    <select id="findDistributionTimes" resultType="java.lang.String" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+       select to_char(data_time,'yyyy-MM-dd') as dataTime from ds_area where  del_flag='1' and data_status='1' and publish_status = 2201
+        <if test="regionId != null" >
+           and  region_id = #{regionId}
+        </if>
+        <if test="cropId != null" >
+            and  crop_id = #{cropId}
+        </if>
+        <if test="resolution != null" >
+            and  resolution = #{resolution}
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            and  data_time BETWEEN  #{startDate} and #{endDate} 
+        </if>
+          order by data_time asc
+    </select>
+
+    <!--
+   * 根据区域、时间，作物，分辨率查询作物分布生成时间
+   * @param :param
+   *   regionId: 区域ID
+   *     cropId: 作物ID
+   *  startDate: 开始日期
+   *    endDate: 结束日期
+   *   resolution: 分辨率
+   * @return List<LocalDate>
+   * @version <1> 2018-05-23 cxw: Created.
+   *-->
+    <select id="findDistributionTimesString" resultType="java.lang.String" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        select to_char(data_time,'yyyy-MM-dd') as dataTime from ds_area where  del_flag='1' and data_status='1' and publish_status = 2201
+        <if test="regionId != null" >
+            and  region_id = #{regionId}
+        </if>
+        <if test="cropId != null" >
+            and  crop_id = #{cropId}
+        </if>
+        <if test="resolution != null" >
+            and  resolution = #{resolution}
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            and  data_time BETWEEN  #{startDate} and #{endDate}
+        </if>
+        order by data_time asc
+    </select>
+
+    <!--
+   * 根据区域、时间查询分布数据
+   * @param :
+   *   regionId: 区域ID
+   *  startDate: 开始日期
+   *    endDate: 结束日期
+   * @return ResultMessage
+   * @version <1> 2019-03-20 cxw: Created.
+    *-->
+    <select id="findAllDistribution" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        select DISTINCT region_id as regionId,crop_id as cropId,resolution from ds_area where  del_flag='1' and data_status='1' and publish_status = 2201 and resolution is not null
+        <if test="regionId != null" >
+            and  region_id = #{regionId}
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            and  data_time  BETWEEN  #{startDate} and #{endDate}
+        </if>
+        order by  crop_id
+    </select>
+
+    <!--
+    * 根据区域、指定年份查询区域及下一级区域的作物种植面积
+    * @param DatasetParam :
+    *   regionId:
+    *   cropId:
+    *  dataTime: 时间点
+    *    resolution: 分辨率
+    * @return List<DistributionAndYieldVo> ：查询年份指定的作物种植面积(指定区域及下一级区域)
+    * @version <1> 2018-05-03 cxw:Created.
+    *-->
+    <select id="findDistributionList" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        select regionId,regionName,regionCode,(select data_name from init_dict where dict_id=crop_id) as cropName , data_time as dataTime,area as value from (select region_id as regionId,region_code as regionCode,
+        (case when china_name is null then region_name else china_name end) as regionName from (select region_id,region_name,region_code,china_name,level from init_region where
+         region_id=#{regionId} or parent_id=#{regionId} and data_status='1' and del_flag='1') as temp) as region left join ( select region_id,crop_id,data_time,resolution , area from
+         ds_area where resolution=#{resolution} and data_time BETWEEN #{startDate} AND  #{endDate} and crop_id=#{cropId} and data_status='1' and del_flag='1' and publish_status = 2201) as area on area.region_id=region.regionId order by regionId
+    </select>
+
+    <!--
+     * 根据区域、指定年份查询区域作物种植面积
+    * @param DatasetParam :
+    *   regionId:
+    *   cropId:
+    *    dataTime: 时间点
+    *    resolution: 分辨率
+    * @return List<DistributionAndYieldVo> ：查询年份指定的作物种植面积
+    * @version <1> 2018-05-29 cxw:Created.
+*-->
+    <select id="findDistribution" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        select regionId,regionName,regionCode,regionParent,(select data_name from init_dict where dict_id=crop_id) as cropName , data_time as dataTime,area as value from (select region_id as regionId,region_code as regionCode,parent_id as regionParent,
+        (case when china_name is null then region_name else china_name end) as regionName from (select region_id,region_name,region_code,china_name,parent_id from init_region where
+        region_id=#{regionId} and data_status='1' and del_flag='1') as temp) as region left join ( select region_id,crop_id,data_time,resolution , area from
+        ds_area where resolution=#{resolution} and data_time=#{dataTime} and crop_id=#{cropId} and data_status='1' and del_flag='1' and publish_status = 2201) as area on area.region_id=region.regionId order by regionId
+    </select>
+
+
+
+
+
+
+
+    <!--
+    * 求指定区域指定起止年份的作物分布均值
+    * @param param:
+    *   regionId:
+    *   cropId:
+    *  startDate: 开始日期
+    *    endDate: 结束日期
+    *    resolution: 分辨率
+    * @return List<DistributionAndYieldVo>:
+    * @version <1> 2018-05-03 cxw:Created.
+     -->
+    <select id="findDistributionForAvg" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity">
+        select regionId,regionName,regionCode,(select data_name from init_dict where dict_id=crop_id) as cropName , (cast(substring(cast(#{endDate} as character varying) ,0,5) as integer ) -cast(substring(cast(#{startDate} as character varying) ,0,5) as integer )) as year ,area  as value from
+        ( select region_id as regionId,region_code as regionCode,(case when china_name is null then region_name else china_name end) as regionName from (select region_id,region_name,region_code,
+        china_name from init_region where region_id=#{regionId} or parent_id=#{regionId} and data_status='1' and del_flag='1') as temp ) as region left join ( select region_id,
+        crop_id, round(avg(area),2) as area from ds_area where data_time>=#{dataTime} and crop_id=#{cropId} and resolution=#{resolution}  and
+        data_status='1' and del_flag='1' and a.publish_status = 2201 group by region_id,crop_id ) as distribution on distribution.region_id=region.regionId order by regionId
+    </select>
+
+    <!--查询重庆市下级自定义区域的分布情况-->
+    <select id="findBeyondDistributionList" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        SELECT
+            localName AS regionName,
+            SUM ( area ) AS
+        VALUE
+
+        FROM
+            (
+            SELECT
+                region_id AS regionId,
+                region_code AS regionCode,
+                ( CASE WHEN china_name IS NULL THEN region_name ELSE china_name END ) AS regionName,
+                local_name AS localName
+            FROM
+                (
+                SELECT
+                    region_id,
+                    region_name,
+                    region_code,
+                    china_name,
+                    local_name,
+                LEVEL
+                FROM
+                    init_region
+                WHERE
+                    parent_id = #{regionId}
+                    AND data_status = '1'
+                    AND del_flag = '1'
+                ) AS TEMP
+            ) AS region
+            LEFT JOIN (
+            SELECT
+                region_id,
+                crop_id,
+                data_time,
+                resolution,
+                area
+            FROM
+                ds_area
+            WHERE
+                resolution = #{resolution}
+                AND data_time BETWEEN #{startDate}
+                AND #{endDate}
+                AND crop_id = #{cropId}
+                AND data_status = '1'
+                AND del_flag = '1'
+                AND publish_status = 2201
+            ) AS area ON area.region_id = region.regionId
+        GROUP BY
+            localName
+    </select>
+
+
+</mapper>

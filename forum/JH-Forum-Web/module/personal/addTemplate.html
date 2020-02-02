@@ -1,0 +1,629 @@
+    <style>
+        .content2 .conMain2{min-height: 730px;}
+        .taskMain #listTitle{font-size: 18px;margin-bottom: 20px;border-bottom: 1px solid #ccc;padding-bottom: 20px;width: 90%;}
+
+        .addButton{
+            position: absolute;right: 0;top: 0;cursor:pointer;width: 88px;height:30px;color:#fff;border-radius:10px;background:#65d763;line-height: 30px;text-align:center
+        }
+        .addTaskForm{
+            width: 80%;
+            min-height: 400px;}
+        #addTaskForm ul li {
+            height: 50px;
+            width: 77%;
+            line-height: 50px;
+            margin:0 auto;
+            padding-bottom: 10px;
+            color: #717171;
+            font-size: 14px;
+        }
+        #addTaskForm ul li:last-child{
+            height:35px;
+        }
+        #addTaskForm ul li span label{
+            color:red;
+            padding:2px 8px;
+            vertical-align: middle;
+
+        }
+        #addTaskForm ul li span input{
+            height: 36px;
+            width: 211px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            margin-left: 28px;
+        }
+        .multipleInputForm input{
+            height: 20px!important;
+            width: 20px!important;
+        }
+        .multipleInputForm input{
+            margin-left: 0px!important;
+            font-size: 12px!important;
+        }
+        .multipleInputForm li{
+            margin: 0 0!important;
+        }
+        .ms-choice{
+            height: 36px!important;
+            line-height: 36px!important;
+        }
+        .multipleInputForm label{
+            color:#000!important;
+            padding:0px 0px!important;
+            vertical-align: middle;
+
+        }
+        .multipleInputForm li{
+            height: 30px!important;
+            width: 77%!important;
+            line-height: 30px!important;
+            padding-bottom: 0px!important;
+        }
+        .userIdSelect{
+            height: 36px;
+            width: 211px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            margin-left: 28px;
+        }
+        #addTaskForm ul li span select{
+            height: 36px;
+            width: 211px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            margin-left: 28px;
+         }
+        #addTaskForm ul li span textarea{
+            height: 56px;
+            width: 392px;
+            margin-top: 17px;
+            border: 1px solid #eaeaea;
+            border-radius: 5px;
+            resize: none;
+            margin-left: 28px;
+        }
+        .cancelBtn{
+            width: 171px;
+            height: 38px;
+            border: 1px solid #007bc4;
+            color: #007bc4;
+            display: inline-block;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .saveBtn{
+            width: 173px;
+            height: 40px;
+            background-color: #007bc4;
+            color: #f3f6f6;
+            display: inline-block;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .publishBtn{
+            width: 173px;
+            height: 40px;
+            background-color: #FABA17;
+            color: #fff;
+            display: inline-block;
+            border-radius: 5px;
+            text-align: center;
+            line-height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .errorBorder{
+            border:1px solid red!important;
+        }
+        #templateNameId,#purposeId{width: 392px !important;}
+
+
+        .templateListDiv{
+            width:80%;
+            margin: 0 auto;
+            min-height:50px;
+            max-height:350px;
+            overflow-y:auto;
+        }
+        .templateListDiv::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
+            scrollbar-arrow-color:red;
+
+        }
+        .templateListDiv::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.2);
+            scrollbar-arrow-color:red;
+        }
+        .templateListDiv::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: rgba(0,0,0,0.1);
+        }
+        #addTaskForm ul li span span.OutSpan{
+            width: 358px;
+            display: inline-block;
+            height:36px;
+            line-height: 36px;
+            background-color: #45AEDF;
+            color: white;
+            border-radius: 5px;
+            text-align: center;
+            margin-left: 28px
+        }
+        /*.OutSpanReu{
+            width: 30px;
+            display: inline-block;
+            height:30px;
+            line-height: 30px;
+            background-color: #fff;
+            color: black;
+            border-radius: 5px;
+            text-align: center;
+            border: 1px solid #aaa;
+            font-size: 22px;
+            cursor: pointer;
+            position: relative;
+            top:3px;
+        }*/
+        .leftInput,.rightInput{
+            width: 173px;
+            height:36px;
+            border-radius: 5px;
+            border: 1px solid #eaeaea;
+            padding-left: 2px;
+        }
+        .OutSpanAdd img,.OutSpanReu img{
+            vertical-align: middle;
+            cursor: pointer;
+
+        }
+        .OutSpanAdd img{
+            margin-top: -2px;
+        }
+        .innerDiv{
+            margin-left: 120px;
+            margin-top: 1px;
+        }
+        .rightInput,.OutSpanReu{
+            margin-left:4px;
+        }
+        .addTaskFormDiv{
+            position: relative;
+        }
+        #errorMsg{
+            color:red;width: 80%;margin-left:185px;margin-top: 30px;
+        }
+        .buttonDiv{
+            height:40px;text-align: center; display: flex;justify-content:center;align-items:Center;margin-top: 60px;margin-bottom: 80px
+        }
+
+    </style>
+    <link href="js/lib/multiple-select/multiple-select.css" rel="stylesheet"/>
+    <div class="taskMain" style="background-color: #ffffff;">
+        <div style="padding-left: 38px;">
+            <p id="listTitle">新建模板</p>
+        </div>
+        <div class="addTaskFormDiv">
+            <form id="addTaskForm" action="">
+                <ul>
+                    <li>
+                        <span class="txtLabel"><label>*</label>模板名称</span>
+                        <span>
+                            <input id="showType" type="hidden" />
+                            <input id="templateId" type="hidden"/>
+                            <input id="typeId" type="hidden" value="23002" />
+                            <input id="templateNameId" type="text" />
+                        </span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>模板用途</span>
+                        <span><input id="purposeId" type="text"/></span>
+                    </li>
+                    <li>
+                        <span class="txtLabel"><label>*</label>字段名称</span>
+                        <span>
+                            <span class="OutSpan" ><span >字段中文名</span> <span style="margin-left:20px">|</span> <span style="margin-left:20px">字段英文名</span></span>
+                            <span class="OutSpanAdd"><img src="images/public/forum/add.png" /></span>
+                        </span>
+                    </li>
+                </ul>
+                <div class="templateListDiv">
+                </div>
+                <div id="errorMsg"></div>
+                <div class="buttonDiv">
+                    <a class="cancelBtn" id="cancelBtnId">取消</a> <a class="saveBtn" id="saveBtnId">保存</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <!-- 遮罩层DIV -->
+    <div id="process" class="dialogStyle" style="display: none;text-align:center;">
+        <img src="images/public/process.gif" />
+    </div>
+    <!--<a class="returnTop"></a>-->
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","dateUtil","formVerfication","PopWin","custom_settings","RegionModule"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,dateUtil,formVerfication,PopWin,custom_settings,RegionModule){
+
+        var processDialog = $("#process");
+
+        //初始化方法
+        var init = function(){
+            cancelAddCollection();//取消添加模板
+            saveCollectionTask();
+            isLogion();
+            formFocus();
+
+            var templateId = $("#templateId").val();
+            if(templateId){
+                setTaskInfo(templateId);
+                $("#listTitle").text("编辑模板")
+            }
+            var showType =$("#showType").val();
+            if(showType == 1){
+                $(".saveBtn").hide();
+                $("#listTitle").text("查看模板");
+                $(":input").attr("disabled","disabled");
+                $(":input").css("background-color","#FCFCFC");
+                $(".OutSpanAdd,.OutSpanReu").hide();
+                $(".OutSpan").width("392px");
+                $(".leftInput,.rightInput").width("190px");
+            }
+            //绑定新增事件
+            $(".OutSpanAdd").click(function () {
+                addFieldModelTr();
+            });
+
+        }
+
+
+        //进度条
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+        //去掉提示信息边框
+        var formFocus = function(){
+            $("#addTaskForm input,#addTaskForm select").focus(function(){
+                $(this).removeClass("errorBorder")
+            });
+
+        }
+
+        //添加字段模型行
+        var addFieldModelTr = function () {
+            var divs = $(".templateListDiv");
+            var divstr = $('<div class="innerDiv"><input type="text" class="leftInput" name="fieldNameCh" placeholder="字段中文名" />'+
+                    '<input type="text" class="rightInput" name="fieldNameEn"  placeholder="字段英文名" /><span class="OutSpanReu"><img src="images/public/forum/minus.png" /></span></div>')
+            divstr.appendTo(divs);
+            removeTr();
+            $(".templateListDiv input").focus(function() {
+                $(this).removeClass("errorBorder");
+            });
+        };
+
+        //移除行
+        var removeTr = function () {
+            $(".OutSpanReu").click(function () {//点击动态移除一行
+                $(this).parent().remove();
+            });
+        }
+
+        //编辑回显值
+        var setTaskInfo =function(templateId){
+            var templateInfo = templateDetail(templateId);
+            $("#templateId").val(templateInfo.templateId);
+            $("#templateNameId").val(templateInfo.templateName);
+            $("#purposeId").val(templateInfo.purpose);
+            //显示列表
+            var list=templateInfo.templateVO.fieldModelVOList;
+            var tables = $('.templateListDiv');
+            var row ="";
+            if(list!=null){
+                for(var i=0;i<list.length;i++){
+                    row += '<div class="innerDiv"><input type="text" name="fieldNameCh" class="leftInput" placeholder="字段中文名" value="'+list[i].fieldNameCh+' "/>'+
+                            '<input type="text" class="rightInput" name="fieldNameEn"  placeholder="字段英文名" value="'+list[i].fieldNameEn+'" /><span class="OutSpanReu"><img src="images/public/reduce.png" /></span></div>';
+                }
+            }
+            tables.append(row);
+            removeTr();
+        }
+
+        /**
+         * 根据模板ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var templateDetail = function(templateId){
+            var template={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.getTemplateById_url+"?templateId="+templateId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    template=result.data;
+                }
+            }
+            ajax.run();
+            return template;
+        };
+
+        /**
+         * 验证模板名称是否重复
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var validTempleName = function(templateId,templateName){
+            var num =0;
+            var template={templateId:templateId,templateName:templateName};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.validTemplateName_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(template)
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    num=result.data;
+                }
+            }
+            ajax.run();
+            return num;
+        };
+
+        /**
+         * 获取模板值
+         */
+        var getTemplateParam = function () {
+            var templateId = $("#templateId").val();
+            var templateName = $("#templateNameId").val();
+            var purpose = $("#purposeId").val();
+            var type = $("#typeId").val()
+            var collectionFieldModelVoList = [];
+            $(".templateListDiv").find(".innerDiv").each(function () {
+                var fieldNameCn = $(this).find("input[name='fieldNameCh']").val();
+                var fieldNameEn = $(this).find("input[name='fieldNameEn']").val();
+
+                var fielModel = {
+                    'fieldNameCh': fieldNameCn,
+                    'fieldNameEn': fieldNameEn,
+                };
+                collectionFieldModelVoList.push(fielModel);
+            })
+            var templateVO = {
+                fieldModelVOList : collectionFieldModelVoList
+            };
+            var templateParam = {
+                templateId : templateId,
+                templateName: templateName,
+                type: type,
+                purpose: purpose,
+                templateVO: templateVO
+            };
+            return templateParam;
+        }
+
+        //取消
+        function cancelAddCollection(){
+            $("#cancelBtnId").click(function(){
+                $(".loadContent").load('personal.html',function(){
+                    $('.menuDiv dl dt p').removeClass('on');
+                    $(".menuDiv dl dt p:eq(1)").addClass('on');
+                })
+            });
+        }
+
+        //保存模板
+        function saveCollectionTask(){
+            $("#saveBtnId").click(function(){
+                saveTask();
+            });
+        }
+
+        //保存模板
+        var saveTask = function () {
+            var addParam = getTemplateParam();
+            if (!formVerf()) {
+                return false
+            }
+            showProcess();
+            var baseAjax = new BaseAjax();
+            //新增
+            baseAjax.opts.url = COLLECTION_TASK_NEW.addTemplateList_url;
+            if(addParam.templateId){
+                baseAjax.opts.url = COLLECTION_TASK_NEW.updateTemplateList_url;
+            }
+            baseAjax.opts.async = false; //同步
+            baseAjax.opts.contentType = "application/json";
+            baseAjax.opts.data = JSON.stringify(addParam);
+            baseAjax.opts.successFun = function (result) {
+                processDialog.dialog("close");
+                if (result.flag) {
+                    $('form')[0].reset();
+                    commons.tipMessageShow("保存成功", 2000, true);
+                    $(".loadContent").load('personal.html',function(){
+                        $('.menuDiv dl dt p').removeClass('on');
+                        $(".menuDiv dl dt p:eq(1)").addClass('on');
+                    });
+                } else {
+                    $("#errorMsg").text("*"+result.msg);
+                }
+            };
+            baseAjax.opts.errorFun = function (result) {
+                processDialog.dialog("close");
+                $("#errorMsg").text("*保存模板失败");
+            };
+            baseAjax.run();
+        };
+        //校验创建模板参数
+        var formVerf = function () {
+            $("#errorMsg").empty();
+            $('#templateNameId,#purposeId').removeClass("errorBorder");
+            $(".templateListDiv input").removeClass("errorBorder");
+            var addTaskForm = $("#addTaskForm");
+            var errorMsg = $("#errorMsg");
+            if (formVerfication.checkInputIsEmpty($('#templateNameId'), errorMsg, '模板名称不能为空')) {
+                $("#errorMsg").text('*模板名称不能为空');
+                $('#templateNameId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputLength(1,15,$('#templateNameId'),errorMsg,'模板名称不能超过15位')) {
+                $("#errorMsg").text('*模板名称不能超过15位');
+                $('#templateNameId').addClass("errorBorder");
+                return false;
+            }
+            if(validTempleName($('#templateId').val(),$('#templateNameId').val())>0){
+                formVerfication.showErroInfo($('#templateNameId'),errorMsg,'*模板名称已存在，请重新填写');
+                $("#errorMsg").text('*模板名称已存在，请重新填写');
+                $('#templateNameId').addClass("errorBorder");
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#purposeId'), errorMsg, '*模板用途不能为空')) {
+                $("#errorMsg").text('*模板用途不能为空');
+                $('#purposeId').addClass("errorBorder");
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,15,$('#purposeId'),errorMsg, '*模板用途不能超过15位')){
+                $("#errorMsg").text('*模板用途不能超过15位');
+                $('#purposeId').addClass("errorBorder");
+                return false;
+            }
+            var feildInputs = $(".templateListDiv").find("input");
+            var bool = true;
+            if (feildInputs.size() == 0) {
+                formVerfication.showErroInfo($(this),errorMsg,'*请添加采集字段信息');
+                $("#errorMsg").text('*请添加采集字段信息');
+                return false;
+            }
+            if (feildInputs.size() > 0) {
+                $.each(feildInputs, function (i, e) {
+                    if (!$(this).val()) {
+                        bool = false;
+                        $(this).addClass("errorBorder")
+                        return;
+                    }
+                });
+            }
+            if (!bool) {
+                formVerfication.showErroInfo($(".templateListDiv"),errorMsg,'*属性明细存在未填项');
+                $("#errorMsg").text("*属性明细存在未填项");
+                return false;
+            }
+            var fieldNameEnArr = [];
+            var fieldNameEnInputs = $(".templateListDiv").find("input[name='fieldNameEn']");
+            var fieldNameChInputs = $(".templateListDiv").find("input[name='fieldNameCh']");
+            var enRepeat = true;
+            var isAllEn = true;
+            var isAllCh = true;
+            $.each(fieldNameChInputs,function(){
+                if(formVerfication.checkInputLength(0,10,$(this),errorMsg, '字段中文名不能超过10位')){
+                    $("#errorMsg").text("*字段中文名不能超过10位");
+                    $(this).addClass("errorBorder")
+                    isAllCh = false;
+                    return false;
+                }else{
+                    $(this).removeClass("errorBorder")
+                }
+            });
+            if(!isAllCh){
+                return false;
+            }
+            $.each(fieldNameEnInputs,function(){
+                var result = fieldNameEnArr.indexOf($(this).val());
+                if(result !=-1){
+                    enRepeat = false;
+                    return enRepeat;
+                }else{
+                    fieldNameEnArr.push($(this).val());
+                }
+                if (formVerfication.checkInputIsCharDigitalUnderlineMiddleLine($(this), errorMsg, '字段英文名只能包含字母、数字和下划线')){
+                    $("#errorMsg").text("*字段英文名只能包含字母、数字和下划线");
+                    $(this).addClass("errorBorder")
+                    isAllEn = false;
+                    return false;
+                }else{
+                    $(this).removeClass("errorBorder")
+                }
+                if(formVerfication.checkInputLength(0,10,$(this),errorMsg, '*字段英文名不能超过10位')){
+                    $("#errorMsg").text("*字段英文名不能超过10位");
+                    $(this).addClass("errorBorder")
+                    isAllEn = false;
+                    return false;
+                }else{
+                    $(this).removeClass("errorBorder")
+                }
+            });
+            if (!enRepeat) {
+                $("#errorMsg").text("*字段英文名不能重复");
+                return false;
+            }
+            if(!isAllEn){
+                return false;
+            }
+            return true;
+        }
+        //获取用户信息
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+        /**
+         * 验证模板名称是否重复
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var validTempleName = function(templateId,templateName){
+            var num =0;
+            var template={templateId:templateId,templateName:templateName};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.validTemplateName_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(template)
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    num=result.data;
+                }
+            }
+            ajax.run();
+            return num;
+        };
+        init();
+    })
+</script>
+<script type="text/javascript" src="js/lib/multiple-select/multiple-select.js"></script>

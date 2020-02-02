@@ -1,0 +1,930 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/app.css" rel="stylesheet" />
+		<link href="../../css/list.css" rel="stylesheet" />
+
+		<style>
+			/* .clt-span-account-name, */ 
+			.clt-span-time{ margin-left: 5px;}
+			.clt-span-type{ padding: 0px 3px; height: 20px; line-height: 20px;}
+			.mui-table-view .mui-media-object{
+				height: 70px; width: 70px; max-width: 70px;
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			.mui-pull-top-tips {
+				position: absolute;
+				top: 0px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.mui-slider-item .taskName{
+				display: block;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				margin-top: 70px;
+				color: #fff;
+				font-size: 15px;
+				text-align: center;
+			}
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.mui-slider-item .taskName{
+				display: block;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				margin-top: 70px;
+				color: #fff;
+				font-size: 15px;
+				text-align: center;
+			}
+			
+			
+			.mui-slider-indicator.mui-segmented-control.mui-segmented-control-inverted{
+				background-color: white;
+			}
+			
+			
+			
+			.jh-text-oneline{
+				white-space: nowrap;
+				text-overflow: ellipsis;
+				overflow: hidden;
+			}
+			/* 光标颜色和大小 */
+			.mui-segmented-control.mui-segmented-control-inverted~.mui-slider-progress-bar {
+				background-color: #00575C
+			}
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<header class="mui-bar mui-bar-nav">
+			<span class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></span>
+			<h1 class="mui-title jh-font-size1">任务名称</h1>
+		</header>
+		<div id="clt-home-menu" class="mui-slider mui-fullscreen" style="top: 4rem;">
+			<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item jh-font-size2 mui-active" href="#unload" isPublish="unload">待下载</a>
+				<a class="mui-control-item jh-font-size2" href="#unfinsh" isPublish="unfinsh">待定标</a>
+				<a class="mui-control-item jh-font-size2" href="#finsh" isPublish="finsh">已定标</a>
+			</div>
+			<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+			<div id="clt-home-content" class="mui-slider-group">
+				<div id="unload" class="mui-slider-item mui-control-content mui-active">
+					<div class="mui-scroll-wrapper">
+						<div id="scrolunload" class="mui-scroll ">
+							<ul class="mui-table-view">
+								<!-- <li class="jh-li-2">
+									<p>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<button id="donwload" type="button" class="jh-show-item-button mui-btn mui-btn-blue mui-btn-outlined"><img
+										 style="vertical-align: text-bottom;width: 1rem;height: 1rem;" src="../../images/button-icon/download.png"><span
+										 style="height: 0.5rem;">下载</span></button>
+									<p class="">
+										<span class="clt-span-account-name jh-subtitle">保单：200份</span>
+										<span class="clt-span-time jh-subtitle">投保面积：2000亩</span>
+									</p>
+								</li>
+								<li class="jh-li-2">
+									<p>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<p class="">
+										<span class="jh-font-size3 jh-subtitle">总保单：200份</span>
+										<span class="jh-font-size3 jh-subtitle">已定标保单：100份</span>
+										<span class="jh-font-size3 jh-subtitle">未定标保单：100份</span>
+									</p>
+									<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">
+										<p class="mui-progressbar mui-progressbar-success" data-progress="20"><span></span></p>
+									</div>
+								</li>
+								<li class="jh-li-2">
+									<p>
+										<span class="jh-item-state" style="margin-top: 0.5rem;">
+											已提交
+										</span>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<p class="">
+										<span class="jh-font-size3 jh-subtitle">总保单：200份</span>
+										<span class="jh-font-size3 jh-subtitle">已定标保单：100份</span>
+										<span class="jh-font-size3 jh-subtitle">未定标保单：100份</span>
+									</p>
+									<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">
+										<p class="mui-progressbar mui-progressbar-success" data-progress="20"><span></span></p>
+									</div>
+								</li>
+								<li class="jh-li-2">
+									<p>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<p class="">
+										<span class="jh-font-size3 jh-subtitle">总保单：200份</span>
+										<span class="jh-font-size3 jh-subtitle">已定标保单：100份</span>
+										<span class="jh-font-size3 jh-subtitle">未定标保单：100份</span>
+									</p>
+									<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">
+										<p class="mui-progressbar mui-progressbar-warning" data-progress="30"><span></span></p>
+									</div>
+								</li>
+								<li class="jh-li-2">
+									<p>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<p class="">
+										<span class="jh-font-size3 jh-subtitle">总保单：200份</span>
+										<span class="jh-font-size3 jh-subtitle">已定标保单：100份</span>
+										<span class="jh-font-size3 jh-subtitle">未定标保单：100份</span>
+									</p>
+									<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">
+										<p class="mui-progressbar mui-progressbar-danger" data-progress="50"><span></span></p>
+									</div>
+								</li>
+
+								<li class="jh-li-2">
+									<p>
+										<span class="jh-item-state" style="margin-top: 0.5rem;">
+											已提交
+										</span>
+										<span class="jh-item-title mui-ellipsis">石老屋村</span>
+									</p>
+									<p class="">
+										<span class="jh-font-size3 jh-subtitle">总保单：200份</span>
+										<span class="jh-font-size3 jh-subtitle">已定标保单：100份</span>
+										<span class="jh-font-size3 jh-subtitle">未定标保单：100份</span>
+									</p>
+									<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">
+										<p class="mui-progressbar mui-progressbar-royal" data-progress="80"><span></span></p>
+									</div>
+								</li> -->
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="unfinsh" class="mui-slider-item mui-control-content">
+					<div class="mui-scroll-wrapper">
+						<div id="scrollunfinsh" class="mui-scroll jh-padding-div">
+							<ul class="mui-table-view" style="background-color: rgba(255,255,255,0);">
+
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="finsh" class="mui-slider-item mui-control-content">
+					<div class="mui-scroll-wrapper">
+						<div id="scrollfinsh" class="mui-scroll jh-padding-div">
+							<ul class="mui-table-view" style="background-color: rgba(255,255,255,0);">
+
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/enums_config.js"></script>
+		<script src="../../js/myloop.js"></script>
+		<script src="../../js/areaData.js"></script>
+		<script src="../../js/upload.js"></script>
+		<script src="../../js/download.js"></script>
+		<script type="text/javascript" src="../../js/h5common.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			//设置进度条
+			mui("#jhProgressbar .mui-progressbar").each(function() {
+				mui(this).progressbar({
+					progress: 30
+				}).show();
+			});
+			//队列,避免多次点击TAB页导致显示混乱
+			var tabEventLoop = TabEventLoop.initEventLoop();
+			var init = function() {
+				tabEventLoop.myLoop();
+				var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+				setTimeout(function() {
+					initArticlePage(isPublish, "up");
+				}, 10);
+			};
+
+			(function($) {
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				$('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				$.ready(function() {
+					//循环初始化所有下拉刷新，上拉加载。
+					$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+						$(pullRefreshEl).pullToRefresh({
+							down: {
+								height: 50, //可选,默认50.触发下拉刷新拖动距离,
+								auto: false, //可选,默认false.首次加载自动下拉刷新一次
+								contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+								contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+								contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										page = 1;
+										var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+										initArticlePage(isPublish, "down");
+									}, 100);
+								}
+							},
+							up: {
+								auto: false, //自动执行一次上拉加载，可选；
+								show: true, //显示底部上拉加载提示信息，可选；
+								contentrefresh: '正在加载...', //上拉进行中提示信息
+								contentnomore: '没有更多数据了', //上拉无更多信息时提示信息
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+										initArticlePage(isPublish, "up");
+									}, 100);
+								}
+							}
+						});
+					});
+
+
+					init();
+				});
+			})(mui);
+
+			var startDate;
+			var endDate;
+			//选项卡切换事件
+			document.getElementById('clt-home-menu').addEventListener('slide', function(e) {
+				if (startDate == null) {
+					startDate = new Date().getTime()
+					// console.log(startDate)
+				} else {
+					endDate = new Date().getTime()
+					// console.log(endDate)
+					if ((endDate - startDate) < 1000) {
+						mToastSet('请勿切换的太过频繁')
+					} else {
+						endDate = null;
+						startDate = null;
+					}
+				}
+				tabEventLoop.setEvent(function() {
+					page = 1;
+					var isPublish = $("#sliderSegmentedControl a").eq(e.detail.slideNumber).attr("isPublish");
+					$("#item" + isPublish).find("ul.mui-table-view").html("");
+					initArticlePage(isPublish, "up");
+				});
+			});
+
+			var page = 1; //开始数据条数
+			var rows = 10; //每页显示条数
+			var initArticlePage = function(isPublish, pullRefreshType) {
+				// var taskJson = {
+				// 	page: page,
+				// 	rows: rows
+				// };
+				var ul = $('#' + isPublish + ' .mui-scroll').find("ul.mui-table-view")[0];
+				ul.innerHTML = ''
+				var fragment = document.createDocumentFragment()
+
+				var taskId = localStorage.getItem("currentTaskId")
+				var currentData = download.getSubTaskByTaskid(taskId);
+				currentData = JSON.parse(currentData)
+				// console.log(JSON.stringify(currentData))
+				// console.log('isPublish:' + isPublish);
+				// console.log(currentData.Data.length)
+
+
+				for (var n in currentData) {
+					var mData = currentData[n]
+					var state = null;
+					var item1 = mData.policNumFinish != null
+					var item2 = mData.policNum == mData.policNumFinish;
+					// console.log(mData.policNumFinish)
+					if (mData.policNumFinish == null) {
+						state = "unload"
+					} else if (item1 && item2) {
+						state = "finsh"
+					} else if (mData.policNumFinish == 0 || (mData.policNumFinish < mData.policNum)) {
+						state = "unfinsh"
+					}
+					// console.log(state)
+					if (isPublish == state) {
+						fragment.appendChild(addItem(mData, n, isPublish));
+					}
+				}
+
+				// ul.appendChild(fragment);
+				// mui('#' + isPublish + ' .mui-scroll').pullToRefresh().endPullUpToRefresh(true)
+
+				if (pullRefreshType == "up") {
+					ul.appendChild(fragment);
+					mui('#' + isPublish + ' .mui-scroll').pullToRefresh().endPullUpToRefresh(true);
+				} else if (pullRefreshType == "down") {
+					//TODO 
+					//下拉在有网络的情况下更新列表
+					$("#" + isPublish).find("ul.mui-table-view").html("");
+					ul.appendChild(fragment);
+					mui('#' + isPublish + ' .mui-scroll').pullToRefresh().endPullUpToRefresh(true);
+					mui('#' + isPublish + ' .mui-scroll').pullToRefresh().endPullDownToRefresh(true);
+				}
+
+
+
+				mui("#jhProgressbar .mui-progressbar").each(function() {
+					// var progressData = 0
+					// if (isPublish == "unfinsh") {
+					// 	progressData = Math.ceil(Math.random() * 100);
+					// } else {
+					// 	progressData = 100
+					// }
+					// console.log(this.getAttribute("data-progress"))
+					mui(this).progressbar({
+						progress: this.getAttribute("data-progress"),
+					}).show();
+				});
+
+				mui(".jh-li-2").on('tap', 'button', startLoad)
+				mui(".jh-li-2").on('tap', 'p span', uploadItem)
+				// console.log(JSON.stringify(taskJson));
+
+
+
+			};
+
+			function listDataChange(result, flag, dom) {
+				emptyStr = '<div class="mui-pull-bottom-wrapper"><span class="mui-pull-loading">没有更多数据了</span></div>';
+				setTimeout(function() {
+					var ul = dom.firstElementChild;
+					var bottomTips = dom.lastElementChild.lastElementChild;
+					if (ul.innerHTML == "" && (result.pages == 0)) {
+						dom.lastElementChild.lastElementChild.innerHTML = "暂无数据";
+					} else if (result.pages == 1 && (result.hasNextPage == false)) {
+						dom.lastElementChild.lastElementChild.innerHTML = "";
+					}
+					// console.log(ul.innerHTML.length);
+					// console.log(dom.lastElementChild.lastElementChild.innerHTML);
+				}, 0)
+			}
+
+			var totalH = document.getElementById('clt-home-content').offsetHeight;
+			//li单个任务的view
+			var addItem = function(jsonData, index, isPublish) {
+				//TODO临时加的,无数据下载,后期删除
+				var taskId = localStorage.getItem("currentTaskId")
+				// adjustFishNum(jsonData)
+				var subtaskId = jsonData.subtaskId
+				var disabledStr = 'disabled="true"';
+				if (taskId == 2) {
+					if (subtaskId == 1 || subtaskId == 2) {
+						disabledStr = "";
+					}
+				}
+
+				var li = document.createElement('li');
+				// console.log(JSON.stringify(jsonData))
+				var loopColor
+				switch (index % 4) {
+					case 0:
+						loopColor = "blue"
+						break;
+					case 1:
+						loopColor = "red"
+						break;
+					case 2:
+						loopColor = "purple"
+						break;
+					default:
+						loopColor = "yellow"
+						break;
+				}
+				var VillageName = jsonData.calibrator
+				var finshNum = jsonData.policNumFinish ? jsonData.policNumFinish : 0;
+				var totalNum = jsonData.policNum ? jsonData.policNum : 0;
+				var unfinshNum = totalNum - finshNum;
+				//TODO 面积根据田块计算
+				var area = 0
+				var progressNum = 0;
+				if (totalNum != 0) {
+					progressNum = 100 * finshNum / totalNum
+				}
+				//TODO 是否提交
+				var isSubmit = jsonData.isSubmit
+
+				var unloadStr = '<p><span style="margin-top:0.5rem" class="jh-item-title mui-ellipsis">' + VillageName +
+					'</span></p>' +
+					'<button id="donwload" ' + disabledStr +
+					' type="button" class="jh-show-item-button mui-btn mui-btn-blue mui-btn-outlined">' +
+					'<img style="vertical-align: text-bottom;width: 1.1rem;height: 1.1rem;" src="../../images/button-icon/download.png">' +
+					'<span style="font-size: 0.9rem;">下载</span></button><p>&nbsp</p>' +
+					'<p><span class="jh-font-size3 jh-subtitle">保单:' + totalNum + '份</span>' +
+					'<span class="jh-font-size3  jh-subtitle">投保面积:' + area + '亩</span></p>';
+				var unfinshStr = '<p><span class="jh-item-title mui-ellipsis">' + VillageName + '</span></p>' +
+					'<p><span class="jh-font-size3 jh-subtitle">总保单:' + totalNum + '份</span>' +
+					'<span class="jh-font-size3 jh-subtitle">已定标保单:' + finshNum + '份</span>' +
+					'<span class="jh-font-size3 jh-subtitle">未定标保单:' + unfinshNum + '份</span></p>' +
+					'<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">' +
+					'<p class="mui-progressbar mui-progressbar-' + loopColor + '" data-progress="' + progressNum +
+					'"><span></span></p></div>';
+				var SubmitStr = isSubmit ? '已提交' : '未提交';
+				var finshStr = '<p><span class="jh-item-state" style="margin-top: 0.5rem;">' + SubmitStr + '</span>' +
+					'<span class="jh-item-title mui-ellipsis">' + VillageName + '</span></p>' +
+					'<p><span class="jh-font-size3 jh-subtitle">总保单:' + totalNum + '份</span>' +
+					'<span class="jh-font-size3 jh-subtitle">已定标保单:' + finshNum + '份</span>' +
+					'<span class="jh-font-size3 jh-subtitle">未定标保单:' + unfinshNum + '份</span></p>' +
+					'<div id="jhProgressbar" class="mui-demo-container" style="padding-bottom: 1.875rem;padding-right: 1rem;">' +
+					'<p class="mui-progressbar mui-progressbar-green" data-progress="100"><span></span></p></div>';
+
+				switch (isPublish) {
+					case "unload":
+						li.className = "jh-li-2 mui-table-view-cell";
+						li.innerHTML = unloadStr
+						break;
+					case "unfinsh":
+						li.className = "jh-li-2";
+						li.innerHTML = unfinshStr
+						// li.addEventListener('tap', itemInfo)
+						mui(".mui-table-view").off('tap', '.jh-li-2', itemInfo);
+						mui(".mui-table-view").on('tap', '.jh-li-2', itemInfo);
+						break;
+					case "finsh":
+						li.className = "jh-li-2";
+						li.innerHTML = finshStr
+						// li.addEventListener('tap', itemInfo)
+						mui(".mui-table-view").off('tap', '.jh-li-2', itemInfo);
+						mui(".mui-table-view").on('tap', '.jh-li-2', itemInfo);
+						break;
+					default:
+						break;
+				}
+
+				li.setAttribute("subtaskId", jsonData.subtaskId)
+				li.setAttribute("isPublish", isPublish)
+				// console.log(li.getAttribute("isPublish"))
+				// console.log(li.getAttribute("subtaskId"))
+				return li;
+			}
+
+			function setItemHeight() {
+				var titleH = mui(".mui-bar.mui-bar-nav")[0].scrollHeight
+				var tabH = document.getElementById('sliderSegmentedControl').scrollHeight;
+				var tabShadowH = document.getElementById('sliderProgressBar').scrollHeight;
+				var allH = document.body.scrollHeight;
+				var allW = document.body.scrollWidth;
+				var listH = allH - titleH - tabH - tabShadowH;
+				var mheight = 0;
+				if (listH > 700) {
+					mheight = 140;
+				} else if (listH < 400) {
+					mheight = 80;
+				} else {
+					mheight = (listH / 5);
+				}
+				mheight = mheight - 15;
+				mheight = mheight + 'px'
+				// console.log('mheight：' + mheight)
+				return mheight
+			}
+
+			var dtask = null;
+			// var testurl = "http://192.168.1.225:8080/a/data/forum/photo/pengqiaocun/pengqiaocun.zip";
+			// var testurl = "http://snip.qq.com/resources/Snip_V2.0_5771.dmg";
+			var testurl = "http://192.168.1.246:8080/a/data/forum/download/10/10.zip";
+			// http://192.168.1.223:8080/a/data/forum/download/333/project2013.rar
+			// /Volumes/data/mnt/policy_collect/zip/taskid_1/subtaskid_1/1.zip
+			var options = {
+				method: "GET"
+			};
+			//下载
+			var originalWidth = null
+			var originalinnerHtml = null;
+
+			function creatLoad(loadbutton, url, callback) {
+				if (dtask) {
+					mToastSet("下载任务已创建！");
+					return;
+				}
+				console.log(url)
+				dtask = plus.downloader.createDownload(url, options);
+				dtask.addEventListener("statechanged", function(task, status) {
+					if (!dtask) {
+						return;
+					}
+					switch (task.state) {
+						case 1: // 开始
+							mToastSet("开始下载...");
+							// console.log(originalWidth)
+							// console.log(originalinnerHtml)
+							break;
+						case 2: // 已连接到服务器
+							mToastSet("链接到服务器...");
+							originalWidth = loadbutton.style.width
+							originalinnerHtml = loadbutton.innerHTML;
+							// console.log(loadbutton.innerHTML)
+							// console.log(originalinnerHtml)
+							loadbutton.disabled = true;
+							break;
+						case 3: // 已接收到数据
+							// mToastSet("下载数据更新:");
+							var loadProgress = Math.round(task.downloadedSize / task.totalSize * 100)
+							console.log(loadProgress)
+							loadbutton.innerHTML = loadProgress + "%"
+							break;
+						case 4: // 下载完成
+							mToastSet("下载完成！" + task.totalSize);
+							loadbutton.style.width = originalWidth
+							loadbutton.innerHTML = originalinnerHtml;
+							// console.log(originalinnerHtml)
+							// console.log(loadbutton.innerHTML)
+							callback()
+							break;
+					}
+				});
+			}
+
+			var zip = "_downloads/pengqiaocun.zip";
+
+			//var unzip = "file:///storage/emulated/0/Download";
+			var unzip = "file:///storage/emulated/0/Android/testDownload/";
+
+			// function doDecompress(button, mZip, mUnZip) {
+			// 	plus.zip.decompress(mZip, mUnZip, function() {
+			// 		mToastSet("操作成功！保存路径为：" + mUnZip);
+			// 		//此处对li进行操作
+			// 	}, function(e) {
+			// 		mToastSet("操作失败：" + e.message);
+			// 		console.log("操作失败：" + e.message)
+			// 		button.disabled = false;
+			// 		button.firstElementChild.src = "../../images/button-icon/download.png";
+			// 	});
+			// }
+			function doDecompress(button, mZip, mUnZip) {
+				plus.zip.decompress(mZip, mUnZip, function() {
+					mToastSet("操作成功！保存路径为：" + mUnZip);
+					//此处对li进行操作
+				}, function(e) {
+					mToastSet("操作失败：" + e.message);
+					console.log("操作失败：" + e.message)
+					button.disabled = false;
+					button.firstElementChild.src = "../../images/button-icon/download.png";
+				});
+			}
+
+			function decompress(button, mZip, mUnZip) {
+				mToastSet("解压文件：");
+				plus.io.resolveLocalFileSystemURL(mUnZip, function(entry) {
+					mToastSet("目录已存在，中止操作！");
+					plus.nativeUI.confirm("解压目录已存在，是否立即删除", function(i) {
+						//TODO这里
+						if (i.index == 0) {
+							entry.removeRecursively();
+							button.disabled = false;
+							button.firstElementChild.src = "../../images/button-icon/download.png";
+						}
+					});
+				}, function(e) {
+					plus.io.resolveLocalFileSystemURL(mZip, function(entry) {
+						doDecompress(button, mZip, mUnZip);
+					}, function(e) {
+						plus.nativeUI.alert("压缩文件不存在，请先压缩文件！");
+						mToastSet("压缩文件不存在，中止操作！");
+						button.disabled = false;
+						button.firstElementChild.src = "../../images/button-icon/download.png";
+					});
+				});
+			}
+
+			//设定子任务状态
+			function setSubtaskState(taskId, subtaskId, stateStr) {
+				// var task = download.getSelectTask(2)
+				// console.log(task)
+				var subtask = download.getSelectSubTask(taskId, subtaskId)
+				subtask = JSON.parse(subtask)
+				if (stateStr == "unload") {
+					subtask.policNumFinish = null
+				} else if (stateStr == "unfinsh") {
+					subtask.policNumFinish = 0
+				} else {
+					subtask.policNumFinish = subtask.policNum
+				}
+				console.log(JSON.stringify(subtask))
+				download.setSubTask2Data(taskId, subtaskId, subtask)
+			}
+
+			// setSubtaskState(2,1,"unload")
+			// download.getLoadUrl(2,2)
+			// var mUnZip = download.getUnZipPath(2)
+			// setTimeout(function() {
+			// 	mUnZip = "file://" + plus.io.convertLocalFileSystemURL(mUnZip)
+			// 	console.log(mUnZip)
+			// }, 200);
+
+			var isloading = false
+
+			function startLoad() {
+				//移除li的监听
+				var button = this;
+
+				mui(".mui-table-view").off('tap', '.jh-li-2', itemInfo);
+				var taskId = localStorage.getItem("currentTaskId")
+				var subtaskId = this.parentElement.getAttribute("subtaskId")
+				// console.log(subtaskId)
+
+				console.log("isloading" + isloading)
+
+				if (isloading == false) {
+					isloading = true
+					download.setCalibrator(subtaskId,
+						function(result) {
+							//锁定定标人成功
+							download.getPolicyBySubTaskId(subtaskId, function(result) {
+								//下载保单列表
+								result = JSON.parse(result)
+								console.log(JSON.stringify(result))
+								//持久化子任务保单数据
+								areaInfo.initPolicyList(subtaskId, result.data)
+								var url = download.getLoadUrl(taskId, subtaskId)
+
+								creatLoad(button, url, function() {
+									//下载成功
+									setTimeout(function() {
+										button.firstElementChild.src = "../../images/button-icon/lock.png";
+										console.log(dtask.filename)
+										var mZip = "file://" + plus.io.convertLocalFileSystemURL(dtask.filename)
+										console.log(subtaskId)
+										var mUnZip = download.getUnZipPath(subtaskId)
+										mUnZip = "file://" + plus.io.convertLocalFileSystemURL(mUnZip)
+										// 设置状态为待定标
+										setSubtaskState(taskId, subtaskId, "unfinsh")
+										dtask = null;
+										isloading = false
+										decompress(button, mZip, mUnZip);
+									}, 0);
+								});
+								dtask.start();
+
+
+
+							}, function() {
+								isloading = false
+							})
+						},
+						function() {
+							isloading = false
+						})
+				} else {
+					mToastSet("已经有任务在下载！");
+				}
+
+
+				//恢复li的监听
+				setTimeout(function() {
+					mui(".mui-table-view").on('tap', '.jh-li-2', itemInfo);
+				}, 100);
+			}
+			// 暂停下载任务
+			function pauseDownloadTask() {
+				dtask.pause();
+				mToastSet("暂停下载！");
+			}
+			// 恢复下载任务
+			function resumeDownloadTask() {
+				dtask.resume();
+				mToastSet("恢复下载！");
+			}
+
+			function cancelDownloadTask() {
+				dtask.abort();
+				dtask = null;
+				isloading = false
+				mToastSet("取消下载任务！");
+			}
+
+			/**
+			 * upload
+			 * */
+
+			// mui(".mui-table-view").on('tap', '.jh-li-2', itemInfo);
+
+			function itemInfo() {
+				var ip = this.getAttribute("isPublish");
+				var subtaskId = this.getAttribute("subtaskId")
+				// console.log(ip)
+				// console.log(subtaskId)
+				localStorage.setItem("currentSubTaskId", subtaskId)
+				switch (ip) {
+					case "finsh":
+						mui.openWindow({
+							id: 'areaList.html',
+							url: 'areaList.html',
+						});
+						break;
+					case "unfinsh":
+						mui.openWindow({
+							id: 'areaList.html',
+							url: 'areaList.html',
+						});
+						break;
+					case "unload":
+						break;
+					default:
+						break;
+				}
+			}
+
+			function uploadItem() {
+				var li = this.parentElement.parentElement;
+				var el = this
+				//移除li的监听
+				mui(".mui-table-view").off('tap', '.jh-li-2', itemInfo);
+				var subtaskId = li.getAttribute("subtaskId")
+
+				var num = 0
+				var areaList = []
+				if (el.innerHTML == "未提交") {
+					// console.log(subtaskId);
+					var total = upload.getImagesNum(subtaskId)
+					plus.nativeUI.showWaiting();
+					var thedata = areaInfo.getPolicyList(subtaskId)
+					// console.log(JSON.stringify(thedata))
+					setTimeout(function() {
+						upload.uploadVillageImages(plus, subtaskId, thedata, inback, back, function() {})
+					}, 10);
+
+
+					function inback(result, policyNo, FeatureId, areaData) {
+						// console.log(result)
+						// console.log(JSON.stringify(areaData))
+						result = JSON.parse(result)
+						areaList.push([policyNo, FeatureId, areaData])
+						var percent = upload.getPercent(num++, total)
+						el.innerHTML = percent;
+						if (num == total) {
+							console.log(JSON.stringify(areaList))
+							for (var nn in areaList) {
+								var item = areaList[nn][2]
+								for (var i in thedata) {
+									var policy = areaList[nn][0]
+									var FeatureId = areaList[nn][1]
+									if (thedata[i].policyNo == policy) {
+										for (var n in thedata[i].insuredArea) {
+											if (thedata[i].insuredArea[n].FeatureId == FeatureId) {
+												// console.log(JSON.stringify(thedata[i].insuredArea[n]))
+												console.log(JSON.stringify(item))
+												for (var ii in thedata[i].insuredArea[n].imageList) {
+													if (thedata[i].insuredArea[n].imageList[ii].localUrl == item.localUrl) {
+														thedata[i].insuredArea[n].imageList[ii].url = item.url
+													}
+												}
+
+											}
+										}
+									}
+								}
+							}
+							console.log(JSON.stringify(thedata))
+							var keyStr = "subtaskId" + subtaskId
+							plus.storage.setItem(keyStr, JSON.stringify(thedata))
+							setTimeout(function() {
+								var jsonData = upload.transf2UploadForm(subtaskId)
+								upload.upLoadSubTask(mui, plus, jsonData, function() {
+									// console.log(el.innerHTML)
+
+									el.innerHTML = "已提交"
+									var taskId = localStorage.getItem("currentTaskId")
+									var subtaskInfo = download.getSelectSubTask(taskId, subtaskId);
+									console.log(subtaskInfo)
+									subtaskInfo = JSON.parse(subtaskInfo)
+									subtaskInfo.isSubmit=true;
+									download.setSubTask2Data(taskId,subtaskId,subtaskInfo)
+
+									setTimeout(function() {
+										plus.nativeUI.closeWaiting();
+									})
+								})
+							}, 10);
+						}
+					};
+
+					function back() {
+
+					}
+
+
+					//恢复li的监听
+					setTimeout(function() {
+						mui(".mui-table-view").on('tap', '.jh-li-2', itemInfo);
+					}, 100);
+				}
+			}
+
+
+
+			function adjustFishNum() {
+
+				var taskId = localStorage.getItem("currentTaskId")
+				var currentData = download.getSubTaskByTaskid(taskId);
+				currentData = JSON.parse(currentData)
+
+				for (var n in currentData) {
+					var mData = currentData[n]
+					// console.log(JSON.stringify(mData))
+					var thedata = areaInfo.getPolicyList(mData.subtaskId)
+					if (thedata != null) {
+						// console.log(JSON.stringify(thedata))
+						mData.policNum = thedata.length
+						var finshNum = 0;
+						for (var m in thedata) {
+							if (thedata[m].insuredArea.length) {
+								finshNum++
+							}
+						}
+						mData.policNumFinish = finshNum;
+						currentData[n] = mData
+						// console.log(JSON.stringify(mData))
+						// console.log(taskId)
+						// console.log(mData.subtaskId)
+						download.setSubTask2Data(taskId, mData.subtaskId, mData)
+					}
+				}
+
+			}
+
+			setTimeout(function() {
+
+				// var path  = "file:///storage/emulated/0/Android/123/raster_tile/14/13469/6769.jpg";
+				// upload.starUpLoad(plus,1,path,function(){},function(){})
+				// upload.getImagesNum(2)
+				// upload.transf2UploadForm(2)
+				adjustFishNum()
+				var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+				setTimeout(function() {
+					initArticlePage(isPublish, "up");
+				}, 10);
+			}, 500);
+
+
+
+			//init();
+		</script>
+	</body>
+
+</html>

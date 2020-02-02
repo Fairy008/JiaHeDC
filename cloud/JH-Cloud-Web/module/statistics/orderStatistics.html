@@ -1,0 +1,462 @@
+
+<div class="content" style="min-height: 600px">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" id="formDiv">
+                <div class="btLabel divStatis">
+                    <span  class="t1"  id="day">当日</span>
+                    <span  class="t1" id="threeDay">近三天</span>
+                    <span  class="t1 on" id="week">一周</span>
+                    <span  class="t1" id="month">一个月</span>
+                </div>
+
+                <div  class="divStatis">
+                    <span class="label">下载时间：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_handleDate" /></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+            </div>
+        </div>
+    </div>
+
+    <div style="height:225px;">
+        <div style="float: left;width: 50%;margin-top: 10px;">
+            <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;margin-bottom: 5px;">分类型统计订单数据<em>(单位：条)</em></div>
+            <div id="orderCount" style="min-width:400px;min-height: 225px;"></div>
+        </div>
+        <div style="float: right;width: 50%;margin-top: 10px;">
+            <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;margin-bottom: 5px;">分状态统计订单数据<em>(单位：条)</em></div>
+            <div id="orderDetailCount" style="min-width:400px;min-height: 225px"></div>
+        </div>
+
+    </div>
+    <div style="clear:both"></div>
+    <div style="width: 95%;">
+        <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;">各类卫星下载数据统计<em>(单位：次)</em></div>
+        <div id="dataOrderBySate" style="float:left;width: 100%;min-height: 225px"></div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    require(["jquery", "BaseAjax","echarts","PopWin","jqueryUi","dateUtil"], function ($, BaseAjax,echarts,PopWin,jqueryUi,dateUtil) {
+        var optionOrderNum,optionOrderDetailNum,timeSlot="week",orderType;
+        var myChartLeft;
+        var myChartRight;
+        var myChart;
+        var init=function () {
+            window.onresize=resizeContainer();//清空其他页面添加的监听事件 避免报错
+            //resizeContainer();//增加页面自适应的监听事件
+            loadOrderNum();//加载需求订单和数据订单的数量
+            loadOrderDetailNum();//默认查询数据订单的
+            loadDataOrderSateNum();//数据订单 已分发状态的  各卫星数据
+            $("#queryBtn").bind("click",searchFun);//绑定查询方法
+            $('.t1').click(function(){//清空日期框内容 并进行快捷搜索
+                $("#search_handleDate").val("");
+                timeSlotClick(this.id);
+            });
+            dateFun('search_handleDate');
+            changeCss();//改变快捷搜索的选中样式
+        }
+
+        var changeCss=function(){
+            $(".btLabel span").on("click", function() {
+                $(this).addClass("on");
+                $(this).siblings().removeClass("on");
+            });
+        }
+        var timeSlotClick=function(time){
+            timeSlot=time;
+            loadOrderNum();
+            loadOrderDetailNum(orderType);
+            loadDataOrderSateNum();//数据订单 已分发状态的  各卫星数据
+        }
+
+
+        /**
+         * 加载需求订单和数据订单的总数量
+         * @version<1> 2018-04-17 wl
+         */
+        var loadOrderNum = function () {
+            var orderParam = {};
+            var handleDate=($("#search_handleDate").val().trim()).split('至');
+            orderParam.beginTime = handleDate[0]; //开始时间
+            orderParam.endTime = handleDate[1];//  结束时间
+            if(timeSlot!=undefined && timeSlot!=""){
+                orderParam.timeSlot=timeSlot;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = ORDER_CONFIG.queryOrderCount_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    drawPieLeft("orderCount","分类型统计订单数据","点击查看详情",result.data);
+                    var clickPie=echarts.getInstanceByDom(document.getElementById("orderCount"));
+                    if(clickPie!=undefined){
+                        clickPie.on('click',function (params) {
+                            var index = params.dataIndex;
+                            orderType = optionOrderNum.series[0].data[index].id;
+                            loadOrderDetailNum(orderType);
+                        });
+                    }
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        /**
+         * 统计需求订单或者数据订单 不同状态的订单数量
+         * @version<1> 未知
+         * @version<2> 2018-04-17 wl
+         */
+        var loadOrderDetailNum = function (orderType) {
+            var handleDate=($("#search_handleDate").val().trim()).split('至');
+            var orderParam = {};
+            orderParam.beginTime = handleDate[0]; //开始时间
+            orderParam.endTime = handleDate[1];//  结束时间
+            if(timeSlot!=undefined){
+                orderParam.timeSlot=timeSlot;
+            }
+            if(orderType!=undefined){
+                orderParam.orderType=orderType;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = ORDER_CONFIG.queryOrderDetailCount_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    drawPieRight("orderDetailCount","分状态统计订单数据","",result.data);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        /**
+         * 统计数据订单 不同卫星的数据数量
+         * @version<1> 未知
+         * @version<2> 2018-04-17 wl
+         */
+        var loadDataOrderSateNum = function () {
+            var handleDate=($("#search_handleDate").val().trim()).split('至');
+            var orderParam = {};
+            orderParam.beginTime = handleDate[0]; //开始时间
+            orderParam.endTime = handleDate[1];//  结束时间
+            if(timeSlot!=undefined){
+                orderParam.timeSlot=timeSlot;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = ORDER_CONFIG.queryDataOrderBySatellite_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var dataNames=new Array();
+                    var dataValues=new Array();
+                    $(result.data).each(function (i,d) {//组装name
+                        if(d.name!=undefined){
+                            dataNames[i]=d.name;
+                        }else {
+                            dataNames[i]="";
+                        }
+                        dataValues[i]=d.value;
+                    });
+                    var show;
+                    if(dataNames.length>8){
+                        show=true;
+                    }
+                    drawGraph("dataOrderBySate",dataNames,dataValues,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        //给饼状图赋值
+        var drawPieLeft=function(id,title,text,data){
+            var option;
+            myChartLeft = echarts.init(document.getElementById("orderCount"));
+            var dataNames=new Array();
+            $(data).each(function (i,d) {//组装name
+                dataNames[i]=d.name;
+            });
+           // var myChart = echarts.init(document.getElementById(id));
+            if(id=="orderCount"){//根据订单类型统计
+                option=optionOrderNum =optionData(title,text,dataNames,data);
+            }else if(id="orderDetailCount"){//根据订单状态统计
+                option=optionOrderDetailNum =optionData(title,text,dataNames,data);
+            }
+            myChartLeft.setOption(option);
+           /* resizeContainer();
+            window.addEventListener("resize",changeLeft);*/
+            window.onresize = function(){
+                resizeContainer();
+            }
+            clearBg(id);
+            if(data.length==0){
+                //销毁echarts
+                myChartLeft.clear();
+                myChartLeft.dispose();
+                //alert("noleft")
+               // window.removeEventListener("resize",changeLeft);
+                //设置div的背景图
+                setBg(id);
+            }
+        }
+
+
+        var drawPieRight=function(id,title,text,data){
+            var option;
+            myChartRight = echarts.init(document.getElementById("orderDetailCount"));
+            var dataNames=new Array();
+            $(data).each(function (i,d) {//组装name
+                dataNames[i]=d.name;
+            });
+            //var myChart = echarts.init(document.getElementById(id));
+            if(id=="orderCount"){//根据订单类型统计
+                option=optionOrderNum =optionData(title,text,dataNames,data);
+            }else if(id="orderDetailCount"){//根据订单状态统计
+                option=optionOrderDetailNum =optionData(title,text,dataNames,data);
+            }
+            myChartRight.setOption(option);
+
+            //window.addEventListener("resize",changeRight);
+            window.onresize = function(){
+                resizeContainer();
+            }
+            clearBg(id);
+            if(data.length==0){
+                //销毁echarts
+                myChartRight.clear();
+                myChartRight.dispose();
+                //window.removeEventListener("resize",changeRight);
+                //设置div的背景图
+                setBg(id);
+            }
+        }
+
+        //饼图内容填充
+        var optionData=function(title,text,dataNames,data){
+            return {//这里不用自带的title 是因为没有数据的情况下 将会被提示图片替换 避免整个页面直接显示空白
+                /*title : {
+                    text: title,
+                    subtext: text,
+                    x:'center'
+                },*/
+                tooltip : {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                toolbox: {
+                    show : true,
+                    feature : {
+                        dataView : {show: true, readOnly: false},
+                        /*magicType : {show: true, type: ['line', 'bar']},*/
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                   /* orient: 'vertical',
+                    left: 'left',*/
+                    type: 'scroll',
+                     orient: 'vertical',
+                     center: 'center',
+                     top: 0,
+                  //  bottom: 20,
+                    data: dataNames
+                },
+                series : [
+                    {
+                        name: title,
+                        type: 'pie',
+                        radius : '55%',
+                        center: ['50%', '60%'],
+                        data:data,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+
+        //柱状图内容填充
+        var drawGraph=function(id,dataNames,dataValues,show){
+            myChart = echarts.init(document.getElementById(id));
+            var option= {
+//                title: {
+//                    text: '各类卫星下载数据统计'
+//                },
+                tooltip: {},
+                toolbox: {
+                    show : true,
+                    feature : {
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    //right:'right',
+                    data:['下载数量']
+                },
+                xAxis: {
+                    data: dataNames,
+                    axisLabel:{
+                        interval:0,
+                        formatter:function(value,index){
+                            if(show){
+                                if (index % 2 != 0) {
+                                    return '\n\n' + value;
+                                }
+                                else {
+                                    return value;
+                                }
+                            }else {
+                                return value;
+                            }
+                        }
+                    }
+                },
+                yAxis: {},
+                series: [{
+                    name: '下载数量',
+                    type: 'bar',
+                    barMaxWidth: '100',
+                    data: dataValues,
+                    //顶部数字展示pzr
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,//是否展示
+                                position:'top',
+                                textStyle: {
+                                    fontWeight:'bolder',
+                                    fontSize : '12',
+                                    fontFamily : '宋体',
+                                    color:'black'
+                                }
+                            }
+                        }
+                    }
+                }]
+            }
+
+            clearBg(id);//清除背景图片
+            myChart.setOption(option);
+            window.onresize = function () {
+                resizeContainer();
+               // myChart.resize();
+
+            }
+           /* resizeContainer();
+            window.addEventListener("resize",change);*/
+            if(dataNames.length==0 && dataValues.length==0){
+                //销毁echarts
+                myChart.clear();
+                myChart.dispose();
+                window.onresize="";
+                //设置div的背景图
+                setBg(id);
+            }
+        }
+
+        var searchFun=function(){
+            timeSlot="";//点击日期查询的时候 清空快捷查询
+            $(".t1").removeClass("on");
+            loadOrderNum();
+            loadOrderDetailNum();
+            loadDataOrderSateNum();//数据订单 已分发状态的  各卫星数据
+        }
+
+        var dateFun = function(idName){
+            $("#"+idName).jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        var resizeContainer = function () {
+            var orderCount = document.getElementById('orderCount');
+            var orderDetailCount= document.getElementById('orderDetailCount');
+            var dataOrderBySate= document.getElementById('dataOrderBySate');
+            var height=($(".rightMain").height()-$(".searchItems").height()-50)/2;
+             if(height<225){
+                 height=225+"px";
+             }else{
+                 height+="px";
+             }
+
+             if(document.body.scrollHeight > window.innerHeight){
+                 height=225+"px";
+             }
+
+            orderCount.style.height =height;
+            orderDetailCount.style.height =height;
+            dataOrderBySate.style.height =height;
+            if(myChart!=undefined){
+                myChart.resize();
+            }
+            if(myChartLeft!=undefined){
+                myChartLeft.resize();
+            }
+
+            if(myChartRight!=undefined){
+                myChartRight.resize();
+            }
+
+          //  window.addEventListener("resize",change);
+
+        };
+
+        /*var changeLeft=function () {
+            myChartLeft.resize();
+        }
+
+        var changeRight=function () {
+            myChartRight.resize();
+        }*/
+
+        var setBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = 'url(images/public/nodata.jpg)';
+            div.style.backgroundRepeat='no-repeat';
+            div.style.backgroundPosition='center';
+        }
+
+        var clearBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = '';
+        }
+        init();
+    });
+
+</script>
+<style>
+
+    .statisticsTitle em{font-weight:normal !important;font-size:10px !important;}
+    #formDiv .btLabel span{background:#CDC9C9;color:#fff;float:left;display:block;width:20%;text-align:center;border-right:1px solid #fff;cursor:pointer;}
+    .on{background:#1f4350 !important;}
+    .divStatis{width:300px !important;}
+</style>

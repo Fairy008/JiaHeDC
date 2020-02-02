@@ -1,0 +1,24 @@
+﻿.event_box{ position: fixed; padding: 13px 20px 50px 20px; width: 90%; left:120px; right:10%; bottom: 32px; overflow: hidden; box-sizing: border-box; }
+.event_box ul{ width:9999px; white-space:nowrap; position: absolute; left:0 }
+.event_box ul li{ position: relative; display: inline-block; text-align: center; font-size: 12px; color: #fff; float: left; min-width:109px;height: 50px;line-height: 50px;}
+.event_box ul li:after{ content: '';width:109px; position: absolute; left:0; top:5px; border-bottom: 1px solid #fff;}
+.event_box ul li span{ z-index: 999; position: relative; display: block; margin:0 auto; width:12px; height: 12px; background: #fff; border-radius: 50%; }
+.event_box ul li span:hover,.event_box ul li span.on{ cursor: pointer; background: #d38600; }
+.event_box .sPrev{ position: absolute; left:0; top:0;}
+.event_box .sNext{ position: absolute; right:360px; top:0;}
+.event_box .sPrev:hover,.event_box .sNext:hover{ cursor: pointer; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

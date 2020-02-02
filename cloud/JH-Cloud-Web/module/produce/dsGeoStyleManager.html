@@ -1,0 +1,563 @@
+<style type="text/css">
+    .errorInfo{color:#f00;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">样式名称：</span>
+                    <span><input id = "search_styleName" class="input" type="text" /></span>
+                </div>
+                <div>
+                    <span class="label2">样式中文名：</span>
+                    <span><input id = "search_styleNameCn" class="input" type="text" /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+                <input type="button" class="btn" value="重置" id="resetBtn" />
+                <input type="button" class="btn" value="新增" id="insertBtn" />
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <table id="dsGeoStyleGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="styleInfo" class="form" style="display: none;">
+        <form id="styleFileInfo">
+            <table>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>工作区:</td>
+                    <td class="two_td2">
+                        <select id="workspace" name="workspace" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>样式名称:</td>
+                    <td class="two_td2">
+                        <input id="styleName" name="styleName" class="selectType two_selectType" type="text" placeholder="存入geoserver样式title" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1">样式中文名:</td>
+                    <td class="two_td2">
+                        <input id="styleNameCn" name="styleNameCn" class="selectType two_selectType" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>样式文件:</td>
+                    <td class="two_td2">
+                        <input type="file" id="styleFile" name="styleFile" class="selectType one_selectType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td1"></td>
+                    <td class="td2"><span class="errorInfo"></span></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="seeStyleInfo" class="form" style="display: none;">
+        <form id="seeStyleFileInfo">
+            <table>
+                <tr>
+                    <td class="two_td1">工作区:</td>
+                    <td class="two_td2">
+                        <span id="see_workspace" class="viewType" style="display: block; width: 300px;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1">样式名称:</td>
+                    <td class="two_td2">
+                        <span id="see_styleName" class="viewType" style="display: block; width: 300px;"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1">样式中文名:</td>
+                    <td class="two_td2">
+                        <span id="see_styleNameCn" class="viewType" style="display: block; width: 300px;"></span>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="delDialog" class="dialogStyle" style="display:none"></div>
+
+    <!-- 遮罩层DIV -->
+    <div id="process" class="dialogStyle" style="display: none;text-align:center;">
+        <img src="images/public/process.gif" />
+    </div>
+
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","jedate","RegionModule","commons","jqExtends"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,jedate,RegionModule,commons,jqExtends) {
+            var processDialog = $("#process");
+
+            /**
+             * Description: 初始化
+             * @version <1> 2018/6/19 14:53 zhangshen: Created.
+             */
+            var init = function(){
+                loaderGrid();//初始化样式列表
+
+                $("#queryBtn").bind("click",searchFun);//点击查询
+                $("#resetBtn").bind("click",resetFun);//点击重置
+
+                $(window).resize(function(){
+                    $("#dsGeoStyleGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#dsGeoStyleGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            /**
+             * Description: 根据指定的查询条件
+             * @version <1> 2018/6/20 16:19 zhangshen: Created.
+             */
+            var searchFun = function(){
+                var styleName = $("#search_styleName").val().trim();
+                var styleNameCn = $("#search_styleNameCn").val().trim();
+                var param = {};
+                param.styleName = styleName;
+                param.styleNameCn = styleNameCn;
+                $("#dsGeoStyleGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: param,
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * Description: 重置查询条件
+             * @version <1> 2018/6/27 13:52 zhangshen: Created.
+             */
+            var resetFun = function(){
+                $("#search_styleName").val("");//样式名称
+                $("#search_styleNameCn").val("");//样式描述
+            };
+
+            /**
+             * 样式列表
+             * @version<1> 2018-06-19 zhangshen: Created.
+             */
+            var loaderGrid = function () {
+                $("#dsGeoStyleGrid").jqGrid({
+                    url: DS_GEO_STYLE.findDsGeoStylePageInfo_url,
+                    datatype: "json",
+                    postData: {
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: 0,
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['styleId', '样式名称', '样式中文名', '工作区', '操作'],
+                    colModel: [
+                        {name:'styleId',index:'styleId', align:'center', width:'0',hidden:true},
+                        {name:'styleName',index:'style_name', align:'center', width:'10%', sortable: true},
+                        {name:'styleNameCn',index:'style_name_cn', align:'center', width:'10%', sortable: true},
+                        {name:'workspace',index:'workspace', align:'center', width:'5%', sortable: true},
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '10%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str= "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.styleId +"' data-no='0' title='编辑' >"+
+                                    "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.styleId +"' title='查看明细' >"+
+                                    "<img src='images/public/Tdelete.png' class='delBtn' data-id='"+rowObject.styleId+"' title='删除'>";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    //sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    multiselect: false,//复选框
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $("#dsGeoStyleGrid").setGridWidth($(".rightMain").width() - 30);
+                        //$("#pager2_left").html("<input type='button' value='新增' class='btn' id='insertBtn' />" + "&nbsp;&nbsp;");
+                        tableEvent();//绑定table表格操作事件
+                    }
+                });
+            };
+
+            /**
+             * Description: 绑定table表格操作事件
+             * @version <1> 2018/6/19 17:34 zhangshen: Created.
+             */
+            var tableEvent = function(){
+                $("#insertBtn, .editBtn, .delBtn, .seeBtn").off("click");
+
+                $("#insertBtn").on("click",function(){//新增样式
+                    insertOrEditBtnFun();
+                });
+
+                $(".editBtn").on("click",function(){//编辑样式
+                    insertOrEditBtnFun($(this));
+                });
+
+                $(".delBtn").on("click",function(){//删除样式
+                    delBtnFun($(this));
+                });
+
+                $(".seeBtn").on("click",function(){//查看样式
+                    seeBtnFun($(this));
+                });
+            };
+
+            /**
+             * Description: 初始化工作区, 默认选择config.properties中配置的geoserver工作区
+             * @version <1> 2018/6/20 9:13 zhangshen: Created.
+             */
+            var initWorkspace = function(name){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DS_GEO_STYLE.findGeoWorkspaceList_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function(result){
+                    var str = "";//"<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element+"'>"+ element +"</option>";
+                        });
+                        $("#"+name).html("").append(str).attr("disabled", "disabled").css("background-color", "rgb(235, 235, 228)");//清空 赋值 不可选 添加样式
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * Description: 新增样式 和 编辑样式
+             * @param obj 为null是新增, 不为null是编辑
+             * @version <1> 2018/6/19 17:38 zhangshen: Created.
+             */
+            var insertOrEditBtnFun = function(obj){
+                initWorkspace("workspace");
+
+                if(obj != null){//编辑样式
+                    var styleId = obj.attr("data-id");//样式id
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = DS_GEO_STYLE.findDsGeoStyleById_url + "?styleId=" + styleId;//根据id查询样式信息
+                    ajax.opts.successFun = function (result) {
+                        if(result.flag){
+                            var data = result.data;//样式对象list
+                            if(data != null && data.length > 0){
+                                var d = data[0];//样式对象
+                                $("#workspace").val(d.workspace).attr("disabled",true).css("background-color","#ebebe4");//设置工作区
+                                $("#styleName").val(d.styleName).attr("disabled",true).css("background-color","#ebebe4");//设置样式名称
+                                $("#styleNameCn").val(d.styleNameCn);//设置样式中文名
+                            }
+                        }
+                    };
+                    ajax.run();
+                }
+
+                var dialog =  $("#styleInfo");
+                var dialogParent = dialog.parent();
+                var dialogOwn = dialog.clone();
+                dialog.dialog({
+                    autoOpen: false,
+                    title: (obj != null ? '编辑样式' : '新增样式'),
+                    height: 300,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            saveStyle(obj, dialog);//保存样式
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                dialog.dialog("open");
+            };
+
+            /**
+             * Description: 样式保存
+             * @param null 
+             * @return 
+             * @version <1> 2018/6/20 10:13 zhangshen: Created.
+             */
+            var saveStyle = function(obj, dialogObj){
+                if(!verficationFormFun(obj)){//表单验证
+                    return ;
+                }
+
+                var form  = $('#styleFileInfo')[0];
+                var formdata = new FormData(form)
+                if(obj != null){//不等于null,说明是编辑
+                    var id = obj.attr("data-id");
+                    if(id != null && id.length > 0){
+                        formdata.append('styleId',id);
+                    }
+                }
+
+                var workspace = $("#workspace").val();
+                var styleName = $("#styleName").val().trim();
+                var styleNameCn = $("#styleNameCn").val().trim();
+
+                formdata.append('workspace',workspace);
+                formdata.append('styleName',styleName);
+                formdata.append('styleNameCn',styleNameCn);
+
+                //显示进度条 关闭提示框
+                dialogObj.dialog("close");
+                showProcess();
+
+                $.ajax({
+                    type : 'POST',
+                    url : DS_GEO_STYLE.saveStyleInfo_url,
+                    data : formdata,
+                    //async : false,
+                    processData : false,
+                    contentType : false,
+                    cache : false,
+                    timeout : 600000,
+                    headers : {"AccessToken":commons.getAccessToken()},
+                    success : function(data){
+                        //dialogObj.dialog("close");
+                        //关闭进度条
+                        processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                        if(data.flag){
+                            if(obj != null){
+                                PopWin.showMessageWin("编辑样式成功");
+                            }else{
+                                PopWin.showMessageWin("新增样式成功");
+                            }
+                        }else{
+                            if(obj != null){
+                                PopWin.showMessageWin('编辑样式失败,'+data.msg);
+                            }else{
+                                PopWin.showMessageWin("新增样式失败,"+data.msg);
+                            }
+                        }
+                        searchFun();
+                    }
+                });
+
+            };
+
+            /**
+             * Description: 表单验证
+             * @param null
+             * @return
+             * @version <1> 2018/6/20 10:17 zhangshen: Created.
+             */
+            var verficationFormFun = function(obj){
+                $('.errorInfo').text('');
+
+                var workspace = $("#workspace").val();//工作区
+                if(workspace == "" || workspace == null){
+                    $('.errorInfo').text('工作区不能为空');
+                    return false;
+                }
+
+                var styleName = $("#styleName").val().trim();
+                if(styleName == "" || styleName == null){
+                    $('.errorInfo').text('样式名称不能为空');
+                    return false;
+                }else{
+                    var myReg = /^[a-zA-Z0-9_]{0,}$/;
+                    if (!myReg.test(styleName)) {
+                        $('.errorInfo').text('样式名称为字母、数字、下划线组成');
+                        return false;
+                    }else if(styleName.length > 50){
+                        $('.errorInfo').text('样式名称不能超过50字');
+                        return false;
+                    }
+                }
+
+                var flag = true;
+                //新增时判断styleName样式名称唯一性
+                if (obj == null) {//新增
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = DS_GEO_STYLE.findDsGeoStyleByName_url + "?styleName=" + styleName;//根据name查询样式信息
+                    ajax.opts.async = false;//同步
+                    ajax.opts.successFun = function (result) {
+                        if(result.flag){
+                            var data = result.data;//样式对象list
+                            if(data != null && data.length > 0){
+                                flag = false;
+                            }
+                        }
+                    };
+                    ajax.run();
+                }
+
+                if (!flag) {
+                    $('.errorInfo').text('样式名称已存在');
+                    return false;
+                }
+
+                var styleNameCn = $("#styleNameCn").val().trim();
+                if (styleNameCn.length > 50) {
+                    $('.errorInfo').text('样式描述不能超过50字');
+                    return false;
+                }
+                /*if(styleNameCn == "" || styleNameCn == null){
+                    $('.errorInfo').text('样式中文名不能为空');
+                    return false;
+                }else{
+                    if (styleNameCn.length > 100) {
+                        $('.errorInfo').text('样式名称不能超过100字');
+                        return false;
+                    }
+                }*/
+
+                var styleFile = $('#styleFile').val().trim();//样式文件
+                if(styleFile == "" || styleFile == null){
+                    $('.errorInfo').text('样式文件不能为空');
+                    return false;
+                }else{
+                    var suffix = styleFile.substring(styleFile.lastIndexOf("."), styleFile.length);
+                    if(".xml" != suffix){
+                        $('.errorInfo').text('样式文件只能上传xml文件');
+                        return false;
+                    }
+                }
+
+                return true;
+            };
+
+            /**
+             * Description: 根据id删除样式信息
+             * @param null 
+             * @return 
+             * @version <1> 2018/6/20 16:25 zhangshen: Created.
+             */
+            var delBtnFun = function(obj){
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除样式？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var styleId = obj.attr("data-id");//样式id
+                            var styleIds = [];//styleId集合
+                            styleIds.push(styleId);
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_GEO_STYLE.batchDeleteStyle_url;//批量删除样式
+                            ajax.opts.data = JSON.stringify({styleIds: styleIds});
+                            ajax.opts.successFun = function (data) {
+                                delDialog.dialog("close");
+                                if(data.flag){
+                                    PopWin.showMessageWin("样式删除成功");
+                                }else{
+                                    PopWin.showMessageWin("样式删除失败");
+                                }
+                                searchFun();
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * Description: 查看样式
+             * @version <1> 2018/6/20 17:17 zhangshen: Created.
+             */
+            var seeBtnFun = function(obj){
+                initWorkspace("workspace");
+
+                if(obj != null){//编辑样式
+                    var styleId = obj.attr("data-id");//样式id
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = DS_GEO_STYLE.findDsGeoStyleById_url + "?styleId=" + styleId;//根据id查询样式信息
+                    ajax.opts.successFun = function (result) {
+                        if(result.flag){
+                            var data = result.data;//样式对象list
+                            if(data != null && data.length > 0){
+                                var d = data[0];//样式对象
+                                $("#see_workspace").text(d.workspace).attr("title", d.workspace);//设置工作区
+                                $("#see_styleName").text(d.styleName).attr("title", d.styleName);//设置样式名称
+                                $("#see_styleNameCn").text(d.styleNameCn).attr("title", d.styleNameCn);//设置样式中文名
+                            }
+                        }
+                    };
+                    ajax.run();
+                }
+
+                var dialog =  $("#seeStyleInfo");
+                var dialogParent = dialog.parent();
+                var dialogOwn = dialog.clone();
+                dialog.dialog({
+                    autoOpen: false,
+                    title: '查看样式',
+                    height: 240,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                dialog.dialog("open");
+            };
+
+            var showProcess=function(){
+                processDialog.dialog({
+                    autoOpen: false,
+                    height: 460,
+                    width: 460,
+                    modal: true ,
+                    closeOnEscape: false,
+                    open: function(event, ui) {
+                        processDialog.siblings().hide();
+                        processDialog.parent().css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                    }
+                });
+                processDialog.dialog("open");
+            };
+
+            init();
+        });
+    </script>
+</div>

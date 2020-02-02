@@ -1,0 +1,362 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <title>图层预览</title>
+    <style type="text/css">
+
+        html,body,#divMap{height:100%;margin: 0px;}
+        #layerList{
+            /*float: left;
+            width: 400px;
+            height:100%;*/
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            width: 400px;
+            min-height: 420px;
+            height: calc(100% - 20px);
+            background-color: rgba(250,250,250,0.9);
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px #ccc;
+        }
+        #divMap{
+            background-color:#A3CCFF;
+            float: right;
+            /*width: calc(100% - 400px);*/
+            width: 100%;
+        }
+        .selectTd{
+            background: #fffadf;
+        }
+
+        .layer_head>div:first-child,.layer_body>div div:first-child{
+            width: 330px;
+            float: left;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .layer_head>div:not(:first-child),.layer_body>div div:not(:first-child){
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .layer_body>div div:nth-child(n+2){
+            width: calc((100% - 330px)/3);;
+            float: left;
+        }
+
+        .layer_body>div:after{
+            content:" ";
+            clear: both;
+            display: block;
+        }
+
+        .layer_body>div{
+            margin: 12px 0px;
+        }
+        .layer_head{
+            border-bottom:3px solid #1f4350;
+            padding-bottom:5px;
+            font-size: 14px !important;
+            font-weight: bold;
+            color: #1f4350;
+            text-align: center;
+        }
+        .layer_body{
+            overflow-y: auto;
+            height: calc(100% - 100px);
+        }
+        .search_icon {
+            width: 5px;
+            background-color: #1f4350;
+            height: 20px;
+            line-height: 20px;
+            margin: 0 5px;
+            border-left: 5px #1f4350 solid;
+        }
+        .spanNum{
+            width: 25px;
+            display: inline-block;
+            text-align: center;
+            color: #1f4350;
+        }
+        #hideLabel {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            cursor: pointer;
+            width: 24px;
+            height: 20px;
+            display: block;
+        }
+        .layerListShow{
+            position: absolute;
+            left: 0px;
+            top: 30px;
+            width: 70px;
+            height: 36px;
+            line-height: 36px;
+            background: #1f4350;
+            border-radius: 0 18px 18px 0;
+            padding-left: 5px;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 2px 2px 10px #ccc;
+            display: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="divMap"></div>
+        <div id="layerListShow" class="layerListShow" title="图层列表"><span>图层列表</span></div>
+        <div id="layerList">
+            <h4><span class="search_icon"></span><span>图层预览</span></h4>
+            <img src="images/public/hidden.png" title="隐藏" id="hideLabel">
+            <div class="layer_head">
+                <div>图层名</div>
+                <div>操作</div>
+            </div>
+            <div class="layer_body"></div>
+
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/lib/module/config.js"></script>
+<script>
+    require(["jquery","ol","MapModule","commons","custom_settings"], function($,ol,MapModule,commons,custom_settings){
+        var mapTool;
+        var up_img = "<img src='images/public/up.png' class='up_btn' title='上移'>";
+        var down_img = "<img src='images/public/down.png' class='down_btn' title='下移'>";
+        var preview_yes = "<img src='images/public/Twatch.png' class='preview_img show' title='隐藏'>";
+        var preview_no = "<img src='images/public/coloseEye.png' class='preview_img' title='显示'>";
+
+        //图层配置
+        var opts;
+        opts={};
+        opts.transparent= "true";
+
+        //保存图层名 与 图层对象之间的关系
+        var layerMap = {};
+
+        //页面初始化
+        var initFun = function () {
+            loadMapFun();//加载底图
+            initLayerTable();
+            upLayerFun();
+            downLayerFun();
+            previewLayerFun();
+            moveToLayer();
+            clickEvent(); //注册点击事件
+        };
+
+        /**
+         * 注册点击事件
+         */
+        var clickEvent = function() {
+            $("#hideLabel, #layerListShow").on("click", function () {
+                hideFun();//隐藏图层预览列表
+            });
+        };
+
+        /**
+         * 隐藏图层预览列表
+         */
+        var hideFun = function(){
+            $("#layerList").toggle({
+                duration:100
+            });
+            $("#layerListShow").toggle({
+                duration:100
+            })
+        };
+
+        //初始化地图，加载世界底图
+        var loadMapFun = function () {
+
+            mapTool = new MapModule.MapTool("divMap",{
+                'logoSrc':custom_settings.main_right_bottom_logo_pic, //配置右下角的图片地址
+                'logoHref':custom_settings.main_right_bottom_logo_location, //配置右下角点击图片后跳转的地址
+                'minZoom':3,
+                "maxZoom":12
+            });
+            mapTool.createMap();
+
+            //加载WMS世界底图
+            var layerName = "JiaHeDC:ly_WORLD";
+            opts.zIndex = 1;
+            opts.zoom = 1;
+            mapTool.addTileWMSLayer(layerName,opts);
+            mapTool.map.getView().setCenter([107,33])
+
+            opts.zIndex = 2;
+            mapTool.addTileWMSLayer("JiaHeDC:ly_highway",opts);
+
+//            opts.zIndex = 3;
+//            mapTool.addTileWMSLayer("JiaHeDC:ly_railway",opts);
+
+        };
+
+        //图层向下
+        var upLayerFun = function () {
+            $('.up_btn').live('click',function (evt) {
+                changeLayerIndexFun(this,'up');
+            });
+        };
+
+        //图层向上
+        var downLayerFun = function () {
+            $('.down_btn').live('click',function (evt) {
+               changeLayerIndexFun(this,'down');
+            });
+        };
+
+        //图层显示 或 隐藏
+        var previewLayerFun = function () {
+            $('.preview_img').live('click',function (evt) {
+                var thisLayer = $(this).parent().parent();
+                hightSelect(thisLayer);
+                var layerName = thisLayer.find('div:first label').text();
+                var layerObj = layerMap[layerName];
+                if ($(this).hasClass('show')){
+                    //隐藏图层
+                    layerObj.setVisible(false);
+                    $(this).removeClass('show');
+                    $(this).parent().html(preview_no);
+                } else {
+                    //显示图层
+                    layerObj.setVisible(true);
+                    $(this).addClass('show');
+                    $(this).parent().html(preview_yes);
+                }
+            });
+        };
+
+        var moveToLayer = function () {
+            $('tbody tr>td:first-child').live('click',function () {
+                var layerName = $(this).text();
+                var layerObj = layerMap[layerName];
+//                console.log(layerObj.getSource().getExtent());
+            });
+        };
+
+        //高亮标识图层列表中选中的图层
+        var hightSelect = function (selectTr) {
+            $('.layer_body>div').removeClass('selectTd');
+            $(selectTr).addClass('selectTd');
+        }
+
+
+        //图层列表操作图标判断显示，第一个没有向上，最后一个没有向下操作
+        var changeLayerIndexFun = function (thisObj, upOrDown) {
+            var thisLayer = $(thisObj).parent().parent();
+            hightSelect(thisLayer);
+            var thisLayerName = thisLayer.find('div:first label').text();
+            if (upOrDown == 'up'){
+                var prevLayer = thisLayer.prev();
+                prevLayer.before(thisLayer);
+
+                changeLayerIndex(thisLayerName,1);
+                changeLayerIndex(prevLayer.find('div:first label').text(),-1);
+            } else if(upOrDown == 'down'){
+                var nextLayer = thisLayer.next();
+                nextLayer.after(thisLayer);
+
+                changeLayerIndex(thisLayerName,-1);
+                changeLayerIndex(nextLayer.find('div:first label').text(),1);
+            }
+            $('.layer_body>div>div:nth-child(2)').html('--');
+            $('.layer_body>div>div:nth-child(3)').html('--');
+            $('.layer_body>div:not(:first)>div:nth-child(2)').html(up_img);
+            $('.layer_body>div:not(:last)>div:nth-child(3)').html(down_img);
+        };
+
+        //改变地图上的图层显示层级
+        var changeLayerIndex = function (layerName, index) {
+            var layerObj = layerMap[layerName];
+            layerObj.setZIndex(layerObj.getZIndex()  + parseInt(index));
+        };
+
+        //加载图层列表
+        var initLayerTable = function () {
+            var afterUrl =  window.location.search.substring(1);
+            var afterEqual = afterUrl.substring(afterUrl.indexOf('=')+1);
+            var layerList = getProductInfo(afterEqual)//;
+            var html = "";
+            var moduleHtml = "<div><div title='{layerName}'><span class='spanNum'>{num}</span><label>{layerName}</label></div><div>{upImage}</div><div>{downImage}</div><div>{previewImage}</div></div>";
+            for(var i = 0,j = layerList.length;i < j; i++){
+                var layerObj = {'layerName': layerList[i],'previewImage':preview_yes,'num':(i+1)};
+                if(i > 0){
+                    layerObj['upImage'] = up_img;
+                } else {
+                    layerObj['upImage'] = '--';
+                }
+                if(i < (j - 1)){
+                    layerObj['downImage'] = down_img;
+                } else {
+                    layerObj['downImage'] = '--';
+                }
+                html += moduleHtml.format(layerObj);
+                initLoadLayer(layerObj['layerName'],(999-i));
+            }
+            $('.layer_body').html(html);
+        };
+
+        //在读图上加载图层
+        var initLoadLayer = function (layerName,layerIndex) {
+            opts.zIndex = layerIndex;
+            console.log("0-0-----------------")
+            console.log(layerName)
+            var layerObj = mapTool.addTileWMSLayer(layerName,opts);
+            layerMap[layerName] = layerObj;
+        };
+
+        initFun();
+    });
+
+    //查询任务信息
+    var getProductInfo=function(productIds) {
+        var layerList=[];
+        var ajax = new BaseAjax();
+        ajax.opts.url = DS_LAYER.findLayerByProductIds_url + "?productIds=" + productIds;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false; //同步请求
+        ajax.opts.type="get";
+        ajax.opts.successFun = function (result) {
+            if (result.flag) {
+                var list = result.data;
+                for (var i=0;i<list.length;i++){
+                    if(layerList.indexOf(list[i].name)<0){
+                        layerList.push(list[i].name);
+                    }
+                }
+            }
+        }
+        ajax.run();
+        return layerList;
+    }
+
+    //字符串模板生成
+    String.prototype.format = function() {
+        if (arguments.length == 0) return this;
+        var param = arguments[0];
+        var s = this;
+        if (typeof(param) == 'object') {
+            for (var key in param)
+                s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+            return s;
+        } else {
+            for (var i = 0; i < arguments.length; i++)
+                s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+            return s;
+        }
+    }
+</script>

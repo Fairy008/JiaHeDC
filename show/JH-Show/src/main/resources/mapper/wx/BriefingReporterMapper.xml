@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.wx.mapping.IBriefingReporterMapper">
+
+
+    <select id="findBriefingByRegionCrop" parameterType="HashMap" resultType="java.util.Map">
+        select MAX(A.reporter_id) AS reporterId,
+        a.region_id as regionId,a.crops_id as cropsId,a.report_data_time_end as reportDataTimeEnd,
+        region.china_name regionName,dict.data_name cropName,reporter_name reporterName
+        from briefing_reporter a join (select region_id,crops_id,max(report_data_time_end) as max_time_end
+        from briefing_reporter
+        where region_id = #{regionId}
+        <foreach collection="cropIdList" item="cropId" open=" and (" close=")" separator="or">
+            crops_id = #{cropId}
+        </foreach>
+        group by region_id,crops_id) b
+        on a.region_id = b.region_id and a.crops_id = b.crops_id and a.report_data_time_end = b.max_time_end
+        left join init_region region on a.region_id = region.region_id
+        left join init_dict dict on a.crops_id = dict.dict_id
+        GROUP BY regionId,cropsId,reportDataTimeEnd,regionName,cropName,reporterName
+        ORDER BY reportDataTimeEnd DESC
+    </select>
+
+    <select id="findBriefingHistory" parameterType="HashMap" resultType="HashMap">
+        select reporter_mobile_content AS reporterMobileContent,report_data_time_end as reportDataTimeEnd from briefing_reporter
+        <where>
+            <if test="regionId != null">
+                region_id = #{regionId}
+            </if>
+            <foreach collection="cropIdList" item="cropId" open=" and (" close=")" separator="or">
+                crops_id = #{cropId}
+            </foreach>
+            <if test="startDate != null and endDate != null">
+                and not(report_data_time_start &gt; to_date(#{endDate},'YYYY-MM-DD') or report_data_time_end &lt; to_date(#{startDate},'YYYY-MM-DD'))
+            </if>
+        </where>
+        order by report_data_time_start desc
+    </select>
+
+    <!-- 根据简报编号获取简报内容 -->
+    <select id="findBriefReporterByReporterId" parameterType="java.lang.Long" resultType="com.jh.show.wx.vo.BriefReporterVO">
+        select reporter_mobile_content as reporterMobileContent,reporter_id as reporterId,
+        report_data_time_end as reportDataTimeEnd,reporter_name reporterName
+        from briefing_reporter
+        where reporter_id = #{reporterId}
+
+    </select>
+
+    <!-- 查找所有注册的微信用户需要推送的最新简报信息 -->
+    <select id="findScheduleBriefReporters" resultType="com.jh.show.wx.vo.BriefReporterVO">
+        select
+            reporter.reporter_id as reporterId,
+            reporter.region_id as regionId,
+            reporter.crops_id as cropsId,
+            reporter.reporter_mobile_content  as reporterMobileContent,
+            reporter.report_data_time_start as reportDataTimeStart,
+            reporter.report_data_time_end as reportDataTimeEnd,
+            maxReporter.wxId
+        from briefing_reporter reporter inner join (
+        select
+            reporter.region_id as regionId,
+            reporter.crops_id as cropsId,
+            max(reporter.report_data_time_end) as maxReportDataTimeEnd,
+            account.wx_id wxId
+            from briefing_reporter reporter
+            inner join wx_region_crop crop on reporter.region_id = crop.region_id and reporter.crops_id = crop.crop_id
+            inner join wx_relate_account account on crop.tel = account.tel
+            group by reporter.region_id,reporter.crops_id,account.wx_id
+        ) maxReporter on reporter.region_id=maxReporter.regionId and reporter.crops_id = maxReporter.cropsId
+        and reporter.report_data_time_end = maxReporter.maxReportDataTimeEnd
+        and not exists (select reporter_id from wx_sent_reporter);
+    </select>
+
+    <!--批量保存发送的消息 -->
+    <insert id="saveWXSentReporter" parameterType="java.util.List">
+        insert into wx_sent_reporter(wx_id,reporter_id,sent_time) values
+        <foreach collection="sentReporters" item="sentReporter" separator=",">
+            (#{sentReporter.wxId},#{sentReporter.reporterId},now())
+        </foreach>
+    </insert>
+
+    <!-- 根据多个wxId来获取对应的数据 -->
+    <select id="findSentReporterByWxids" parameterType="java.util.List" resultType="com.jh.show.wx.model.WXSentReporter">
+        select wx_id AS wxId,reporter_id as reporterId,sent_time as sentTime from wx_sent_reporter WHERE wx_id in
+        <foreach collection="wxIds" item="wxId" separator="," open="(" close=")">
+            #{wxId}
+        </foreach>
+    </select>
+
+</mapper>

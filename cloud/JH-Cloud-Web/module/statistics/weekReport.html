@@ -1,0 +1,313 @@
+<style type="text/css">
+    #dateReport{width:calc(50% - 1px);float:left;text-align:center;}
+
+    #weekReport{float:left;width:50%;border-right:1px solid #ccc;margin:0 auto;text-align:center;}
+
+    h1{height:40px;line-height:40px;font-size:20px !important;font-weight:normal;margin-bottom:10px;}
+
+    .input{
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        width:100px !important;
+        border-radius:5px;
+        height:24px;
+        border:1px solid #ccc;
+        margin:0 5px;
+    }
+
+    .weekContent{width:80%;margin:0 auto;}
+    .title{text-align:left; border-left:5px solid #00A4EC; margin-bottom:10px;padding-left:8px; font-weight:bold; }
+
+    .dataTable{min-height:300px;}
+    .dataTable p:first-child{background-color:#FFFEEC;padding:0 8px;text-indent: 20px;line-height:30px;border:1px solid #E3E2DE;text-align:left;}
+    table{width:100%;margin-bottom:15px;}
+
+    table tr{height:36px;line-height:36px;}
+    table thead th{color:#28ADF8;border-bottom:1px solid #28ADF8;height:24px;line-height:24px;}
+
+    table thead th:first-child{width:25%;}
+    table tr td{border-bottom:1px solid #F0F0F0;}
+
+    .totalClass td{font-weight:bold;}
+    .markClass{color:red;margin:0 5px;}
+</style>
+
+<div class="content">
+    <!--周报数据包含GF1~GF4的数据-->
+    <input type="hidden" id="satellites" value="GF1,GF2,GF3,GF4">
+
+    <div id="weekReport" >
+        <div class="weekContent">
+            <h1>数据周报<em id="weekTime"></em></h1>
+            <div class="title">入库数据统计</div>
+            <div class="dataTable">
+                <p id="weekLoaderContent"></p>
+                <table  border="0" cellpadding="0" cellspacing="0"  id="weekLoaderTable">
+                    <thead>
+                      <tr>
+                          <th>卫星</th>
+                          <th>总景数</th>
+                          <th>本周景数</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="title">订单数据统计</div>
+
+            <div class="dataTable">
+                <p id="weekOrderContent"></p>
+                <table  border="0" cellpadding="0" cellspacing="0" id="weekOrderTable">
+                    <thead>
+                    <tr>
+                        <th>订单状态</th>
+                        <th>订单总条数</th>
+                        <th>本周订单数</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="dateReport" style="">
+       <div class="weekContent">
+           <h1><input type="text" class="input" id="beginTime" readonly />至<input type="text" class="input" id="endTime" readonly />数据统计</h1>
+           <div class="title">入库数据统计</div>
+           <div class="dataTable">
+               <p id="dateLoaderContent"></p>
+
+               <table  border="0" cellpadding="0" cellspacing="0" id="dateLoaderTable">
+                   <thead>
+                   <tr>
+                       <th>卫星</th>
+                       <th>总景数</th>
+                       <th>本阶段景数</th>
+                   </tr>
+                   </thead>
+                   <tbody>
+
+                   </tbody>
+               </table>
+
+           </div>
+           <div class="title">订单数据统计</div>
+
+           <div class="dataTable">
+               <p id="dateOrderContent"></p>
+               <table  border="0" cellpadding="0" cellspacing="0" id="dateOrderTable">
+                   <thead>
+                   <tr>
+                       <th>订单状态</th>
+                       <th>订单总条数</th>
+                       <th>本阶段订单数</th>
+                   </tr>
+                   </thead>
+                   <tbody>
+
+                   </tbody>
+               </table>
+           </div>
+       </div>
+
+    </div>
+
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","custom_settings"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,custom_settings){
+            var init = function(){
+                dateFun("beginTime", 1)
+                dateFun("endTime", 2)
+                $("#weekReport").height($(window).height() - 80)  //画一条竖线
+                $(".dataTable").height(($(window).height() - 260)/2)
+
+                weekReportFun(WEEKREPORT_CONFIG.week_report_url, 1);
+                weekReportFun(WEEKREPORT_CONFIG.date_report_url, 2);
+
+                $(window).resize(function(){
+                    $("#weekReport").height($(window).height() - 80)  //画一条竖线
+                    $(".dataTable").height(($(window).height() - 260)/2)
+                })
+                //
+                //
+                // $("#beginTime").on('blur',function(){
+                //
+                //     weekReportFun(WEEKREPORT_CONFIG.date_report_url, 2)
+                // })
+
+            };
+
+
+            var dateFun = function(idName, flag){
+                $("#"+idName).jeDate({
+                    format: 'YYYY-MM-DD',
+                    maxDate: $.nowDate({DD:"0"}),
+                    isToday:false,
+                    okfun: function(elem, val){
+                        var beginTime = $("#" + idName).val();
+                        var endTime = $("#endTime").val();
+                        if(flag == 2){
+                            beginTime = $("#beginTime").val();
+                            endTime = $("#" + idName).val(); ;
+                        }
+                        weekReportFun(WEEKREPORT_CONFIG.date_report_url, 2 , beginTime, endTime)
+                    }
+
+                });
+            };
+
+
+            /**
+             * 入库数据统计
+             * 1.title时间配置
+             * 2.入库数据查询
+             */
+            var weekReportFun = function(url, _tab, beginTime, endTime){
+
+                var storageParam = {}
+                storageParam.satellites = $("#satellites").val()
+                storageParam.beginTime = beginTime;
+                storageParam.endTime = endTime;
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = url;
+                ajax.opts.type = "POST";
+                ajax.opts.data = JSON.stringify(storageParam);
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (result) {
+                    if(result.flag){
+                        var data = result.data;
+                        if(_tab == 1){ //组装周报
+                            setWeekData(data)
+                        }else if(_tab == 2){//组装时间段数据统计
+                            setDateData(data)
+
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+
+            }
+
+
+            /**
+             *按照周统计数据
+             */
+            var setWeekData = function(data){
+                $("#weekLoaderTable tbody").html("")
+                $("#weekLoaderContent ").html("")
+                $("#weekOrderTable tbody").html("")
+                $("#weekOrderContent ").html("")
+
+                var storages = data.storageList;
+                var orders = data.orderList;
+                $("#weekTime").html("("+ data.beginTime + "~" + data.endTime  +")")
+                // $("#weekLoaderContent").html("截止目前，高分数据管理系统已存储" + )
+
+                var total = 0;
+                var week = 0;
+                $.each(storages, function(index, element){
+                    var _tr = "<tr>";
+                    _tr += "<td>" + element.satellite + "</td>"
+                    _tr += "<td>" + element.total_value + "</td>"
+                    _tr += "<td>" + element.week_value + "</td>"
+                    _tr += "</tr>";
+                    total += parseInt(element.total_value);
+                    week += parseInt(element.week_value);
+
+                    $("#weekLoaderTable").append(_tr)
+
+                })
+
+                $("#weekLoaderTable").append("<tr class='totalClass'><td>合计</td><td>"+ total +"</td><td>"+ week +"</td></tr>")
+
+                $("#weekLoaderContent").append("截止至本周，"+ custom_settings.public_title +"已存储<span class='markClass'>" + total + "</span>景高分影像，本周入库<span class='markClass'>" + week + "</span>景，各高分卫星入库情况如下：")
+
+
+                var order_total = 0;
+                var order_week = 0 ;
+                $.each(orders , function(index, element){
+
+                    var _tr = "<tr>";
+                    _tr += "<td>" + element.name + "</td>"
+                    _tr += "<td>" + element.total_value + "</td>"
+                    _tr += "<td>" + element.week_value + "</td>"
+                    _tr += "</tr>";
+                    order_total += parseInt(element.total_value);
+                    order_week += parseInt(element.week_value);
+                    $("#weekOrderTable").append(_tr)
+                })
+                $("#weekOrderTable").append("<tr class='totalClass'><td>合计</td><td>"+ order_total +"</td><td>"+ order_week +"</td></tr>")
+
+                $("#weekOrderContent").append("截止至本周，"+ custom_settings.public_title +"已产生<span class='markClass'>"+ order_total +"</span>条订单记录，本周共提交<span class='markClass'>" + order_week + "</span>条订单，各订单状态统计情况如下：")
+
+
+            }
+
+            /**
+             * 按照时间段统计数据
+             */
+            var setDateData = function(data){
+                $("#dateLoaderTable tbody").html("")
+                $("#dateLoaderContent ").html("")
+                $("#dateOrderTable tbody").html("")
+                $("#dateOrderContent ").html("")
+
+                var storages = data.storageList;
+                var orders = data.orderList;
+
+                $("#beginTime").val(data.beginTime);
+                $("#endTime").val(data.endTime);
+
+                var total = 0;
+                var week = 0;
+                $.each(storages, function(index, element){
+                    var _tr = "<tr>";
+                    _tr += "<td>" + element.satellite + "</td>"
+                    _tr += "<td>" + element.total_value + "</td>"
+                    _tr += "<td>" + element.week_value + "</td>"
+                    _tr += "</tr>";
+                    total += parseInt(element.total_value);
+                    week += parseInt(element.week_value);
+                    $("#dateLoaderTable").append(_tr)
+                })
+
+                $("#dateLoaderTable").append("<tr class='totalClass'><td>合计</td><td>"+ total +"</td><td>"+ week +"</td></tr>")
+                $("#dateLoaderContent").append("截止至本时间段，"+ custom_settings.public_title +"已存储<span class='markClass'>" + total + "</span>景高分影像，本时间段入库<span class='markClass'>" + week + "</span>景，各高分卫星入库情况如下：")
+
+
+                var order_total = 0;
+                var order_week = 0 ;
+                $.each(orders , function(index, element){
+
+                    var _tr = "<tr>";
+                    _tr += "<td>" + element.name + "</td>"
+                    _tr += "<td>" + element.total_value + "</td>"
+                    _tr += "<td>" + element.week_value + "</td>"
+                    _tr += "</tr>";
+                    order_total += parseInt(element.total_value);
+                    order_week += parseInt(element.week_value);
+                    $("#dateOrderTable").append(_tr)
+                })
+                $("#dateOrderTable").append("<tr class='totalClass'><td>合计</td><td>"+ order_total +"</td><td>"+ order_week +"</td></tr>")
+                $("#dateOrderContent").append("截止至本时间段，"+ custom_settings.public_title +"已产生<span class='markClass'>"+ order_total +"</span>条订单记录，本时间段共提交<span class='markClass'>" + order_week + "</span>条订单，各订单状态统计情况如下：")
+
+            }
+
+
+            init();
+        });
+
+
+
+    </script>
+
+</div>

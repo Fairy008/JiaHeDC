@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/app.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 30%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 70%;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+			.oauth-area {
+				position: absolute;
+				bottom: 20px;
+				left: 0px;
+				text-align: center;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			.btnUnableClass{
+				background:#B9B9B9 !important;
+				border:1px solid #b9b9b9;
+			}
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<header class="mui-bar mui-bar-nav" style="background-image: url(../../images/img-icon/topBG.png)">
+			<button type="button" class="mui-action-back mui-btn mui-btn-link mui-pull-left">
+				<span class="mui-icon mui-icon-back"></span>
+			</button>
+			<h1 class="mui-title">修改密码</h1>
+		</header>
+
+		<div class="mui-content">
+			<form id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>新密码</label>
+					<input id='passwordNew' type="password" class="mui-input-clear mui-input" placeholder="请输入新密码">
+				</div>
+				<div class="mui-input-row">
+					<label>确认密码</label>
+					<input id='passwordComfirm' type="password" class="mui-input-clear mui-input" placeholder="请输入确认密码">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='confirm' type="button" class="mui-btn mui-btn-block mui-btn-primary">确定</button>
+			</div>
+		</div>
+
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script type="text/javascript">
+			var pswNewInput = document.getElementById('passwordNew');
+			var pswComInput = document.getElementById('passwordComfirm');
+			var init = function() {
+				var type = commons.getUrlParam('type');
+				// console.log(self.opener().opener().id)
+				if (type != null) {
+					if (type == 'reg') {
+						mui('.mui-title')[0].innerHTML = '设置密码';
+					}
+				}
+				$("#confirm").addClass("btnUnableClass");
+				$("#confirm").attr('disabled', true);
+			}
+
+			$("#passwordNew").on("keydown", function(e) {
+				$("#confirm").removeClass("btnUnableClass");
+				$("#confirm").attr('disabled', false);
+			});
+
+			$("#passwordComfirm").on("keydown", function(e) {
+				$("#confirm").removeClass("btnUnableClass");
+				$("#confirm").attr('disabled', false);
+			});
+			var getUserInfo = function(url, param, callback) {
+				console.log('123行:'+url)
+				console.log('124行:'+JSON.stringify(param))
+				mui.ajax(url, {
+					data: param,
+					dataType: 'json',
+					type: 'post',
+					timeout: 10000,
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					success: function(result) {
+						console.log(JSON.stringify(result));
+						callback(result);
+					},
+					error: function(xhr, ertype, errorThrown) { //异常处理；
+						console.log(JSON.stringify(xhr) + '  ' + ertype + ' ' + errorThrown);
+					}
+				});
+			};
+
+			//网页预加载
+			mui.init({
+				preloadPages: [{
+					id: 'login.html',
+					url: 'login.html'
+				}]
+			});
+
+			var detailPage = null;
+			//下一步
+			var isSend = false;
+			document.getElementById("confirm").addEventListener('tap', function() {
+				// console.log(pswNewInput.value)
+				// console.log(pswComInput.value)
+				if (pswNewInput.value == '') {
+					// plus.nativeUI.toast('请输入新密码', {'verticalAlign': 'center'});
+					mui.toast('请输入新密码', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (pswNewInput.value.length < 6) {
+					// plus.nativeUI.toast('请输入确认密码', {'verticalAlign': 'center'});
+					mui.toast('新密码最少为6位', {
+						duration: 'long',
+						type: 'div'
+					});
+
+				} else if (pswComInput.value == '') {
+					// plus.nativeUI.toast('请输入确认密码', {'verticalAlign': 'center'});
+					mui.toast('请输入确认密码', {
+						duration: 'long',
+						type: 'div'
+					});
+
+				} else if (pswNewInput.value.length != pswComInput.value.length) {
+					// plus.nativeUI.toast('两次输入密码不同', {'verticalAlign': 'center'});
+					mui.toast('请确认两次输入位数一致', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (pswNewInput.value != pswComInput.value) {
+					// plus.nativeUI.toast('两次输入密码不同', {'verticalAlign': 'center'});
+					mui.toast('两次输入密码不同', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if(isSend ==false){
+					isSend = true;
+					var type = commons.getUrlParam('type');
+					var mobile = commons.getUrlParam('mobile');
+					var smsVerifCode = commons.getUrlParam('smsVerifCode');
+
+					if (type == "reg") {
+						var urlReg = SYS_LOGIN.nolog_forumRegister_url;
+						var paramReg = {};
+						paramReg.phone = mobile;
+						paramReg.pwd = commons.encode(pswNewInput.value);
+						paramReg.smsVerifCode = smsVerifCode;
+						console.log('199行:'+urlReg)
+						console.log('200行:'+JSON.stringify(paramReg))
+						mui.ajax(urlReg, {
+							data: paramReg,
+							dataType: 'json',
+							type: 'post',
+							timeout: 5000,
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							success: function(result1) {
+								isSend = false;
+								// console.log(JSON.stringify( result1));
+								if (result1.flag) {
+									var self = plus.webview.currentWebview();
+									// plus.nativeUI.toast('注册成功', {'verticalAlign': 'center'});
+									// console.log(self.opener().opener().id)
+									// console.log(self.opener().id)
+									// console.log(self.getURL())
+									mui.fire(self.opener().opener(), 'eventToastReg', )
+									self.opener().close();
+									self.close();
+								} else {
+									// plus.nativeUI.toast(result.msg, {'verticalAlign': 'center'});
+									mui.toast(result.msg, {
+										duration: 'long',
+										type: 'div'
+									});
+								}
+							},
+							error: function(xhr, ertype, errorThrown) { //异常处理；
+								isSend = false;
+								mui.toast('设置密码失败，请检查网络环境', {
+										duration: 'long',
+										type: 'div'
+									});
+								console.log(JSON.stringify(xhr) + '  ' + ertype + ' ' + errorThrown);
+							}
+						});
+					} else {
+						var url = SYS_LOGIN.nolog_resetPwd_url;
+						var param = {};
+						param.accountName = mobile;
+						param.accountPwd = commons.encode(pswNewInput.value);
+						param.smsVerifCode = smsVerifCode;
+						console.log(url)
+						console.log(JSON.stringify(param))
+						getUserInfo(url, param, function(result) {
+							console.log(result);
+							if (result.flag) {
+								var self = plus.webview.currentWebview();
+								// plus.nativeUI.toast('密码修改成功', {'verticalAlign': 'center'});
+								// mui.toast('密码修改成功', {
+								// 	duration: 'long',
+								// 	type: 'div'
+								// });
+								mui.fire(self.opener().opener(), 'eventToastPwd')
+								
+								self.opener().close();
+								self.close();
+							} else {
+								// plus.nativeUI.toast(result.msg, {'verticalAlign': 'center'});
+								mui.toast(result.msg, {
+									duration: 'long',
+									type: 'div'
+								});
+							}
+						});
+					}
+				}
+
+
+
+			});
+			init();
+		</script>
+	</body>
+
+</html>

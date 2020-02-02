@@ -1,0 +1,583 @@
+<style type="text/css">
+    #erroInfo{color:red;font-size:12px;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">数据分类：</span>
+                    <span>
+                        <select id="search_dataType" class="input" style="width:120px;text-align:center;" >
+                            <option value="">所有分类</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " value="重置" id="resetBtn" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dowloadConfigGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div  class="form" id="dataTypeInfo" style="display: none;">
+        <div id="erroInfo"></div>
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>数据分类:</td>
+                <td class="two_td2">
+                    <select id="allDataType" class="selectType two_selectType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>下载方式:</td>
+                <td class="two_td2">
+                   <select id="downloadType" class="selectType two_selectType"></select>
+                    <!--<input name="downloadType" id="downloadType" class="inputType" type="text"/>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>下载地址:</td>
+                <td class="two_td2">
+                    <input name="downloadUrl" id="downloadUrl" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>文件夹路径:</td>
+                <td class="two_td2">
+                    <input name="path" id="path" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">端口号:</td>
+                <td class="two_td2">
+                    <input name="port" id="port" class="inputType" type="text" placeholder="请输入0-65535之间的端口号" value="21"/>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>用户名:</td>
+                <td class="two_td2">
+                    <input name="username" id="username" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">密码:</td>
+                <td class="two_td2">
+                    <input name="password" id="password" class="inputType" type="text" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="delDialog" style="margin-top: 10px;display:none;">
+    </div>
+
+    <div id="roleDialog" style="margin-top:10px; dislay:none"></div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","commons"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,commons) {
+            /**
+             * 数据分类
+             *
+             * @version <1> 2018-02-05 djh： Created.
+             */
+            var fileSearchDataType = function() {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.dataType_url;
+                ajax.opts.async = true;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var dictArr = result.data;
+                        for (var i in dictArr) {
+                            var dict = dictArr[i];
+                            var op = "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                            $("#search_dataType").append(op);
+                            $("#allDataType").append(op);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+            fileSearchDataType();
+
+            /**
+             * 下载配置记录的渲染
+             *
+             * @version <1> 2018-02-05 djh： Created.
+             */
+            var dowloadConfigGrid = function () {
+                $("#dowloadConfigGrid").jqGrid({
+                    url: DOWNLOAD_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        'downloadConfigParam': {}
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['downloadMetaId',  'satId','数据分类','下载类型', '下载地址', '文件夹路径', '端口号', '用户名', '密码', '创建者', '创建时间', '操作'],
+                    colModel: [
+                        {name: 'downloadMetaId', index: 'downloadMetaId', hidden: true},
+                        {name: 'satId', index: 'satId', hidden: true},
+                        {name: 'satName', index: 'satName', align: 'center', width: '6%'},
+                        {name: 'downloadTypeName', index: 'download_type_name', align: 'center', width: '6%'},
+                        {name: 'downloadUrl', index: 'downloadUrl', align: 'left', width: '20%'},
+                        {name: 'path', index: 'path', align: 'left', width: '20%'},
+                        {name: 'port', index: 'port', align: 'center', width: '5%'},
+                        {name: 'username', index: 'username', align: 'center', width: '10%'},
+                        {name: 'password', index: 'password', align: 'center', width: '10%'},
+                        {name: 'creatorName', index: 'creatorName', align: 'center', width: '8%'},
+                        {
+                            name: 'createTime',
+                            index: 'createTime',
+                            width: '5%',
+                            align: "center",
+                            formatter: function (cellvalue, options, rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '15%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.downloadMetaId + "' title='编辑' style='margin-right: 3px;'>" +
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.downloadMetaId + "' title='删除' >";
+
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $(".editBtn,.delBtn").off("click");
+                        $(".editBtn").on("click", function () {
+                            editFun($(this).attr("data-id"));
+                        });
+                        $(".delBtn").on("click", function () {
+                            deleteFun($(this).attr("data-id"));
+                        });
+                    }
+                });
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var searchFun = function () {
+                var dictId = $.trim($("#search_dataType").val());
+                $("#dowloadConfigGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {'satId': dictId},
+                    page: 1
+                }).trigger("reloadGrid");
+            }
+
+            /**
+             * 重置
+             * @version<1> 2018-07-04 zhangshen :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+            };
+
+            /**
+             * 清空错误提示信息
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            function clearErrorMessage() {
+                $("#erroInfo").empty();
+            }
+
+            /**
+             * 获取更新或添加的下载配置的数据参数
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var getParam = function() {
+                var dictId = $.trim($("#allDataType").val());
+                //var downloadType=$.trim($("#downloadType").val());
+                var downloadUrl = $.trim($("#downloadUrl").val());
+                var path = $.trim($("#path").val());
+                var port = $.trim($("#port").val());
+                var username = $.trim($("#username").val());
+                var password = $.trim($("#password").val());
+
+                var dataDownloadConfig = {
+                    satId: dictId,
+                    downloadUrl: downloadUrl,
+                    path: path,
+                    port: port,
+                    username: username,
+                    password: password,
+                    downloadType:2301
+                };
+
+                return dataDownloadConfig;
+            }
+
+            var init = function(){
+                dowloadConfigGrid();
+               // initDownloadTypeFun(2300);//初始化参数下载方式
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+
+                $(window).resize(function(){
+                    $("#dowloadConfigGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#dowloadConfigGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+            /**
+             * 新增下载配置记录时，下载配置模板的初始化
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var initAddDataDownloadConfig = function() {
+                $(".inputType").val("");
+                $("#port").val("22");
+                $("#downloadType").attr("readOnly",true);
+                $("#downloadType").css("background-color","rgb(245, 245, 245)");
+                $("#downloadType").val("FTP");
+                $("#allDataType").find("option").first().attr("selected", "selected");
+            }
+
+            /**
+             * 下载配置新增
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var addFun = function() {
+                initAddDataDownloadConfig();
+                initFormValidateFun();
+                var dowloadConfigDialog =  $("#dataTypeInfo");
+                var dialogParent = dowloadConfigDialog.parent();
+                var dialogOwn = dowloadConfigDialog.clone();
+                dowloadConfigDialog.dialog({
+                    autoOpen: false,
+                    title:'下载配置信息',
+                    height: 400,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"保存",
+                            click:function(){
+                                addSaveFun(dowloadConfigDialog);
+                            }},{
+                            text:"取消",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                dowloadConfigDialog.dialog("open");
+            }
+
+            /**
+             * 保存下载配置信息
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var addSaveFun = function(dowloadConfigDialog) {
+                if (!formVerf()) {
+                    return;
+                }
+
+                var dataDownloadConfig = getParam();
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = DOWNLOAD_CONFIG.saveDataDownloadConfigUrl;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify({'dataDownloadConfig': dataDownloadConfig});
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#dowloadConfigGrid").trigger("reloadGrid");
+                        dowloadConfigDialog.dialog("close");
+
+                        PopWin.showMessageWin("下载配置新增成功");
+                    } else {
+                        PopWin.showMessageWin("下载配置新增失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("下载配置新增失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 根据主键id删除指定的下载配置记录
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var deleteFun = function (downloadMetaId) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DOWNLOAD_CONFIG.del_url;
+                            ajax.opts.data = JSON.stringify({'dataDownloadConfig': {'downloadMetaId':downloadMetaId}});
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#dowloadConfigGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 更新下载配置记录
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var editFun = function (downloadMetaId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DOWNLOAD_CONFIG.findById_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify({'downloadMetaId':downloadMetaId});
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result) {
+                    if (result.flag) {
+                        initEditDataDownloadConfig(result.data);
+                        initFormValidateFun();
+                        var dowloadConfigDialog =  $("#dataTypeInfo");
+                        var dialogParent = dowloadConfigDialog.parent();
+                        var dialogOwn = dowloadConfigDialog.clone();
+                        dowloadConfigDialog.dialog({
+                            autoOpen: false,
+                            title:'下载配置信息',
+                            height: 385,
+                            width: 460,
+                            modal: true,
+                            close:function(){
+                                dialogOwn.appendTo(dialogParent);
+                                $(this).dialog("destroy").remove();
+                            },
+                            buttons:[ {
+                                text:"保存",
+                                click:function(){
+                                    if (!formVerf()) {
+                                        return;
+                                    }
+                                    var dataDownloadConfig = getParam();
+                                    dataDownloadConfig.downloadMetaId = downloadMetaId;
+                                    updateDataDownloadConfig(dowloadConfigDialog, dataDownloadConfig);
+                                }},{
+                                text:"取消",
+                                click:function(){
+                                    $(this).dialog("close");
+                                }
+                            }]
+                        });
+                        dowloadConfigDialog.dialog("open");
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 填充要更新的下载配置记录
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var initEditDataDownloadConfig = function(data) {
+                $("#allDataType").find("option[value = '"+data.satId+"']").attr("selected","selected");
+                $("#downloadUrl").val(data.downloadUrl);
+                $("#path").val(data.path);
+                $("#port").val(data.port);
+                $("#username").val(data.username);
+                $("#password").val(data.password);
+                $("#downloadType").attr("readOnly",true);
+                $("#downloadType").css("background-color","rgb(245, 245, 245)");
+                $("#downloadType").val("FTP");
+            }
+
+            /**
+             * 更新下载配置
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var updateDataDownloadConfig = function(dowloadConfigDialog, dataDownloadConfig) {
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = DOWNLOAD_CONFIG.updateDataDownloadConfigUrl;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify({'dataDownloadConfig': dataDownloadConfig});
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#dowloadConfigGrid").trigger("reloadGrid");
+                        dowloadConfigDialog.dialog("close");
+                        PopWin.showMessageWin("下载配置更新成功");
+                    } else {
+                        PopWin.showMessageWin("下载配置更新失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("下载配置更新失败");
+                };
+                baseAjax.run();
+            }
+
+            /**
+             * 校验填写信息
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var formVerf = function () {
+                var dataTypeInfo = $('#dataTypeInfo');
+                if (formVerfication.checkInputLengthAndIsNull(1, 100, $('#downloadUrl'), dataTypeInfo, '下载地址字数不能超过100位', '下载地址不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputLengthAndIsNull(1, 40, $('#path'), dataTypeInfo, '文件夹路径字数不能超过40位', '文件夹路径不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkPort($('#port'), dataTypeInfo, '端口号为0-65535之间的整数')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputLengthAndIsNull(1, 40, $('#username'), dataTypeInfo, '用户名字数不能超过40位', '用户名不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputLength(0, 40, $('#password'), dataTypeInfo, '密码字数不能超过40位')) {
+                    return false;
+                }
+
+                return true;
+            }
+
+            /**
+             * 校验字段的焦点失去事件
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var initFormValidateFun = function () {
+                var dataTypeInfo = $('#dataTypeInfo');
+                //下载地址失去焦点事件
+                $('#downloadUrl').on('blur', function () {
+                    formVerfication.checkInputLengthAndIsNull(1, 100, $('#downloadUrl'), dataTypeInfo, '下载地址字数不能超过100位', '下载地址不能为空');
+                });
+
+                //文件夹失去焦点事件
+                $("#path").on("blur", function () {
+                    formVerfication.checkInputLengthAndIsNull(1, 40, $('#path'), dataTypeInfo, '文件夹路径字数不能超过40位', '文件夹路径不能为空');
+                });
+
+                //端口号失去焦点事件
+                $("#port").on("blur", function () {
+                    formVerfication.checkPort($('#port'), dataTypeInfo, '端口号为0-65535之间的整数');
+                });
+
+                //用户名失去焦点事件
+                $('#username').on('blur', function () {
+                    formVerfication.checkInputLengthAndIsNull(1, 40, $('#username'), dataTypeInfo, '用户名字数不能超过40位', '用户名不能为空');
+                });
+
+                //密码失去焦点事件
+                $('#password').on('blur', function () {
+                    formVerfication.checkInputLength(0, 40, $('#password'), dataTypeInfo, '密码字数不能超过40位');
+                });
+            }
+
+
+            //数据归档状态缓存
+            var downloadTypeCache=[];
+            var initDownloadTypeFun=function (parentId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "";
+                    if(result.flag){
+                        downloadTypeCache = result.data;
+                        $.each(result.data, function(index, element){
+                            if(element.dictId==2301){
+                                str += "<option value='"+ element.dictId+"' selected>"+ element.dataName +"</option>";
+                            }else{
+                                str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                            }
+
+                        })
+                        $("#downloadType").append(str);
+                    }
+                }
+                ajax.run();
+            }
+
+            init();
+        });
+    </script>
+
+</div>

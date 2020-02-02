@@ -1,0 +1,1056 @@
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+
+<!--<link rel="stylesheet" href="../../css/ztree/metroStyle.css" type="text/css">-->
+<div class="outerDiv">
+	<div class="innerDiv">
+		<div class="modulTitle">
+			<span class="blueBlock"></span>
+			<span class="modulTitleInfo">数据字典</span>
+		</div>
+		<div class="infoDiv">
+			<div class="zTreeDemoBackground">
+				<ul id="dictTree" class="ztree"></ul>
+			</div>
+			<div class="dataInfo rightDict">
+				<div id="img" style="display: none;"><span id="dictTitle" style="display: none;color: #1f4350; font-weight: bold;font-size:14px;"></span></div>
+				<table id="saveDict" class="saveTable" style="display: none;" cellpadding="0" cellspacing="0">
+					<input id="editId" type="hidden">
+					<input id="editCode" type="hidden">
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>数据ID<span></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "did" readonly/></td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>字典编码<span></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "dataCode"/></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>数据名称<span></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "dataName"/></td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>数据值<span></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "dataValue"/></td>
+					</tr>
+					<tr>
+                        <td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>父级名称<span></span></div></td>
+                        <td class="secondTdStyle">
+                          <!--  <input type="text" readonly="readonly" data-id="" id = "pid" parentId="" disabled="disabled" style="background-color: rgb(245, 245, 245)"/>-->
+							<input name="pid" id="pid"  class="inputType" type="hidden" />
+							<input name="parentSel" id="parentSel"  class="inputType" type="text" readonly/>
+							<div id="treeDiv" style="z-index: 990;position:absolute;left:0px; top:34px;width:155px;height:160px;background-color:#F5F2F2;overflow-y: auto;display:none;">
+								<ul id="tree" class="ztree" style="margin-top:0; "></ul>
+							</div>
+							<span id="view_parentId" class="viewType"></span>
+                        </td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>是否子节点<span></span></div></td>
+						<td class="fourthTdStyle">
+							<input id="shi" name="leaf" value="true" type="radio" style="height: auto !important;vertical-align:middle;" checked="checked"><span>是</span>&nbsp;
+							<input id="fou"  name="leaf" value="false" type="radio" style="height: auto !important;vertical-align:middle;"><span>否</span>
+						</td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>数据状态<span></span></div></td>
+						<td class="secondTdStyle">
+							<input id="yes" type="radio" style="height: auto !important;vertical-align:middle;" value="true" name="dataStatus" checked="checked"><span>正常</span>&nbsp;
+							<input type="radio" style="height: auto !important;vertical-align:middle;" id="no" name="dataStatus" value="false"><span>禁用</span>
+						</td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>序号<span></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "orderNo"/><!--<input type="hidden" id = "did"/></td>-->
+                       <!-- <td class="thirdTdStyle"><div class="justify">备注<span></span></div></td>
+                        <td colspan="3" class="fourthTdStyle"><textarea class="textareaStyle"  id = "remark" cols="30" rows="5"></textarea></td>-->
+					</tr>
+				</table>
+				<div align="center" id="btnSave" style="display: none">
+					<input class="btn" type="button" id = "saveD" value="保存"/>
+					<input class="btn" type="button" id = "cancelBtn" value="取消"/>
+				</div>
+				<table id="showDict" class="showTable" style="display: none;" cellpadding="0" cellspacing="0">
+					<tr>
+						<td class="firstTdStyle"><div class="justify">数据ID<span></span></div></td>
+						<td class="secondTdStyle" id = "dictIds"></td>
+						<td class="thirdTdStyle"><div class="justify">字典编码<span></span></div></td>
+						<td class="fourthTdStyle" id = "dCode"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">数据名称<span></span></div></td>
+						<td id = "dName" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">数据值<span></span></div></td>
+						<td class="fourthTdStyle" id = "dValue"></td>
+					</tr>
+					<tr>
+                        <td class="firstTdStyle"><div class="justify">父级名称<span></span></div></td>
+                        <td id = "parentId" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">是否子节点<span></span></div></td>
+						<td class="fourthTdStyle" id = "isleaf"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">数据状态<span></span></div></td>
+						<td class="secondTdStyle"  id = "dStatus"></td>
+						<td class="firstTdStyle"><div class="justify">序号<span></span></div></td>
+						<td id = "oNo" class="secondTdStyle"></td>
+						<!-- <td class="thirdTdStyle"><div class="justify">备注<span></span></div></td>
+                        <td class="fourthTdStyle" id = "rmark" title="备注"></td>-->
+						<!--<td colspan="3" class="fourthTdStyle">
+							<div class="textareaStyle"  id = "rmark" style="height:70px;"></div>
+						</td>-->
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="showDialog" class="dialogStyle">
+	<span id="msg"></span>
+</div>
+<script type="text/javascript">
+
+	require(["jquery", "ztree", "BaseAjax", "formVerfication",'PopWin',"commons"], function ($, ztree, BaseAjax, formVerfication,popWin, commons) {
+		function init(){
+			defaultLoadData();
+		};
+		var currentTreeNode;
+		var ZTreeObj;
+		var log, param={},className = "dark", startTime = 0, endTime = 0, perCount = 100, perTime = 100;
+		var setting = {
+			data:{
+				key:{
+					name:"dataName"
+				},
+				simpleData:{
+					enable:false,
+					idKey:"dictId",
+					pIdKey:"parentId",
+					rootPid:null
+				}
+			},
+			async: {
+				enable: true,
+				contentType: "application/json",
+				url: DICT_COFING.queryDictListByPid_url,
+				headers:{"AccessToken":commons.getAccessToken()},
+				dataFilter:ajaxDataFilter, //拦截ajax,预处理返回结果
+				autoParam:["id", "name", "pId","isParent"],
+				otherParam:param,
+			},
+
+			view: {
+				expandSpeed:"",
+				addHoverDom: addHoverDom,
+				removeHoverDom: removeHoverDom,
+				selectedMulti: false
+			},
+			edit: {
+				enable: true,
+				editNameSelectAll: true,
+				removeTitle: "删除",
+				renameTitle: "修改"
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeEditName: beforeEditName,
+				beforeRemove: beforeRemove,
+				onClick:onClickFunction,
+				beforeExpand: beforeExpand,
+				onAsyncSuccess: onAsyncSuccess,
+				onAsyncError: onAsyncError
+			}
+		};
+    //+++++++++++++++++++++++++++++++++++++++++++++树形菜单操作方法++++++++++++++++++++++++++++++++++++++++++++++++++++
+		/**
+		 *拦截处理ResultMessage返回内容，使之满足zTree要求格式
+		 * dataFilter回调函数
+		 * enable:true enable属性配置为true
+		 * @version<1> 2018-02-06 lcw : Created.
+		 */
+		function ajaxDataFilter(treeId,parentNode, responseData){
+			if(responseData.flag){
+				return responseData.data;
+			}
+		}
+
+
+		//用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
+		function beforeExpand(treeId, treeNode) {
+			param.id = treeNode.id;
+			if (!treeNode.isAjaxing) {
+				startTime = new Date();
+				treeNode.times = 1;
+				ajaxGetNodes(treeNode, "refresh");
+				return true;
+			} else {
+				popWin.showMessageWin("zTree 正在加载数据中，请稍后展开节点。。。");
+				return false;
+			}
+		}
+
+		//用于捕获异步加载正常结束的事件回调函数
+		function onAsyncSuccess(event, treeId, treeNode, msg) {
+			if (!msg || msg.length == 0) {
+				return;
+			}
+            //树节点为空判断
+            if(treeNode == null){
+                return;
+            }
+			var zTree = $.fn.zTree.getZTreeObj("dictTree"),
+					totalCount = treeNode.count;
+			if (treeNode.children.length < totalCount) {
+				setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
+			} else {
+				treeNode.icon = "";
+				zTree.updateNode(treeNode);
+				zTree.selectNode(treeNode.children[0]);
+
+			}
+		}
+
+		//用于捕获异步加载出现异常错误的事件回调函数
+		function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+			var zTree = $.fn.zTree.getZTreeObj("dictTree");
+			popWin.showMessage("异步获取数据出现异常。");
+			treeNode.icon = "";
+			zTree.updateNode(treeNode);
+		}
+
+		//刷新树
+		function ajaxGetNodes(treeNode, reloadType) {
+			var zTree = $.fn.zTree.getZTreeObj("dictTree");
+			if (reloadType == "refresh") {
+//				treeNode.icon = "../../../css/zTreeStyle/img/loading.gif";
+				treeNode.isParent=true;
+				zTree.updateNode(treeNode);
+			}
+			zTree.reAsyncChildNodes(treeNode, reloadType, true);
+		}
+
+		//过滤加载数据
+		function filter(treeId, parentNode, childNodes) {
+			if (!childNodes) return null;
+			for (var i=0, l=childNodes.length; i<l; i++) {
+				childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+			}
+			return childNodes;
+		}
+
+		//点击事件（添加字典，显示字典详情,删除字典）
+		function onClickFunction(event, treeId, treeNode,clickFlag) {
+			var tag = $(event.target || event.srcElement).attr("class")
+			if(+treeNode.id){
+				if(tag=='add'){
+					showAddDictHtml(treeNode);
+				}
+				/*if(tag=='remove'){
+				 delDictById(treeNode.id);
+				 }*/
+				if(tag=='node_name')
+				{
+					getDictById(treeNode.id,'show');
+				}
+
+			}
+		}
+
+
+		var log, className = "dark";
+		//用于捕获节点编辑按钮的 click 事件，并且根据返回值确定是否允许进入名称编辑状态
+		function beforeEditName(treeId, treeNode) {
+			currentTreeNode = treeNode;
+			className = (className === "dark" ? "":"dark");
+			var zTree = $.fn.zTree.getZTreeObj("dictTree");
+			zTree.selectNode(treeNode);
+            setTimeout(function() {
+                trid=treeId;
+                trnode = treeNode;
+                getDictById(treeNode.id,'edit');
+            },3);
+
+			return false;
+		}
+
+		//用于捕获节点被删除之前的事件回调函数，并且根据返回值确定是否允许删除操作
+		function beforeRemove(treeId, treeNode) {
+			var flag=false;
+			className = (className === "dark" ? "":"dark");
+			var zTree = $.fn.zTree.getZTreeObj("dictTree");
+			zTree.selectNode(treeNode);
+			//查询是否有子节点 ，有子节点不可删除
+			if(checkLeaf(treeNode.id)){
+				showDialog("确认删除节点'" + treeNode.name + "'吗？",function (){
+					setTimeout(function() {
+						delDictById(treeNode);
+                        //展示邻近的节点
+						var pNode=treeNode.getParentNode();//获取被选中节点的父节点(由于这里不支持多选，所以直接获取第一个就好)
+                        var nextNode = treeNode.getNextNode();//获得下一个节点
+                        if(nextNode){
+                            getDictById(nextNode.id,'show');
+                            zTree.selectNode(nextNode);
+                        }else{
+                            getDictById(pNode.id,'show');
+                            zTree.selectNode(pNode);
+                        }
+                        //删除节点
+                        zTree.removeNode(treeNode,false);
+					}, 0);
+				});
+			}else{
+                //提示
+                showDialogWran("该节点下有子节点，不可删除！");
+			}
+			return flag;
+		}
+
+        //提示框通用方法
+        var showDialogWran=function(msg){
+            var reloadDialog = $("#showDialog");
+            $("#msg").html(msg);
+            reloadDialog.dialog({
+                autoOpen: false,
+                title:'系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons:[
+                    {
+                        text:"确认",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            reloadDialog.dialog("open");
+        };
+
+		//检查叶子节点
+		var checkLeaf=function (parentId) {
+			var flag=false;
+			var checkAjax = new BaseAjax();
+			checkAjax.opts.url = DICT_COFING.queryDictListByPid_url;
+			checkAjax.opts.type = "POST";
+			checkAjax.opts.async = false; //同步请求
+			checkAjax.opts.data = JSON.stringify({'id':parentId});
+			checkAjax.opts.successFun = function(result){
+				if(result.data.length==0){
+					flag=true;
+				}
+			};
+			checkAjax.opts.errorFun = function(){
+				flag=false;
+			};
+			checkAjax.run();
+			return flag;
+		};
+
+
+		var newCount = 1;
+		var bLog = true;
+		var parentNode;
+		//用于当鼠标移动到节点上时，显示用户自定义控件，显示隐藏状态同 zTree 内部的编辑、删除按钮
+		function addHoverDom(treeId, treeNode) {
+			parentNode = treeNode;
+			var sObj = $("#" + treeNode.tId + "_span");
+			if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+					+ "' title='添加' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+
+			var btn = $("#addBtn_"+treeNode.tId);
+			if (btn) btn.bind("click", function(){
+                setTimeout(function(){
+                    trid=treeId;
+                    trnode = treeNode;
+                    bLog = true;
+                    showAddDictHtml(treeNode);
+                },3);
+			});
+		}
+
+		function removeHoverDom(treeId, treeNode) {
+			$("#addBtn_"+treeNode.tId).unbind().remove();
+		}
+
+		//刷新当前节点
+		var refreshNode = function(dataDict){
+            if(dataDict.dictId){
+                var ztree =  $.fn.zTree.getZTreeObj('dictTree');
+                var treeNode = ztree.getNodesByParam('id',dataDict.dictId);
+//                treeNode[0].name = dataDict.dataName;
+                ztree.refresh();
+            }
+            else {
+                setTimeout(function () {
+                    beforeExpand(trid,trnode);//刷新当前节点（新）
+                },500);
+            }
+		};
+
+        /**
+		 * 初始化数据字典树型
+		 * @version<1>
+		 * @version<2> 2018-04-12 lcw :修改， 加载成功后默认展开一级菜单
+		 */
+        var zNodes = [];
+        var defaultLoadData = function(){
+            zNodes = [];
+            var varyAjax = new BaseAjax();
+            varyAjax.opts.url = DICT_COFING.queryDictList_url;
+            varyAjax.opts.type = "POST";
+            varyAjax.opts.contentType = "application/json";
+            varyAjax.opts.async = true; //同步请求
+            varyAjax.opts.successFun = function(result){
+                if(result.flag){
+                    var data = result.data;
+                    var firstId ;
+                    for(var temp in data)
+                    {
+                        var treeData = {
+                            id:"",
+                            pId:"",
+                            name:"",
+                            isParent:true
+                        };
+                        firstId = data[0].id;
+                        treeData.id =  data[temp].id;
+                        treeData.pId = data[temp].pId;
+                        treeData.name =  data[temp].name;
+                        zNodes.push(treeData)
+                        //clearRightData();
+                    }
+                    //初始化详情内容，默认显示第一个区域内容
+                    if(data.length>0)
+                    {
+                        getDictById(firstId,'show');
+                    }
+                    //加载树型
+                    $(document).ready(function(){
+                        $.fn.zTree.init($("#dictTree"), setting, zNodes);
+//						ZTreeObj = $.fn.zTree.init($("#dictTree"), setting, data);
+                        //初始化字典选择，默认选择第一个区域
+                        document.getElementById("dictTree_1_a").style.backgroundColor="#e5e5e5";
+
+						//默认初始化展开第一级菜单
+						var zTree = $.fn.zTree.getZTreeObj("dictTree");
+						var nodes = zTree.getNodes();
+						for (var i = 0; i < nodes.length; i++) { //设置节点展开
+							zTree.expandNode(nodes[i], true, false, true);
+						}
+
+
+                    });
+                }
+            };
+            varyAjax.opts.errorFun = function(){
+                $.fn.zTree.init($("#dictTree"), setting, zNodes);
+            };
+            varyAjax.run();
+        };
+
+    //+++++++++++++++++++++++++++++++++++++++++++++点击树形增删改查字典方法++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+		//根据id查询对应字典信息
+		var getDictById = function(treeId,type){
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = DICT_COFING.queryDictById_url;
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.async = false; //同步请求
+			varyAjax.opts.data = JSON.stringify({'dictId':treeId});
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+					var dataOne =  result.data;
+					/*dataOne.dictId = $.trim(dataOne.id);
+					dataOne.dataName = $.trim(dataOne.name);
+					dataOne.parentId = $.trim(dataOne.pId);*/
+					if(type=='edit') {
+						showsaveData(dataOne);
+					}
+					if(type=='show') {
+						showData(dataOne);
+					}
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				return false;
+			};
+			varyAjax.run();
+		};
+
+        //保存字典信息
+        document.getElementById("saveD").onclick= function(){
+            if (!formVerf()) {
+                return;
+            }
+            var paramData = getParam();
+            var url = '';
+			showDialog("确认保存节点'" + paramData.dataName + "'吗？",function (){
+				if(($("#dictTitle").html()).indexOf("添加")>0){
+					url = DICT_COFING.saveDict_url;
+				}
+				if(($("#dictTitle").html()).indexOf("编辑")>0) {
+					url = DICT_COFING.editDict_url;
+				}
+                saveDictById(paramData,url);
+			});
+        }
+
+		//根据id保存/修改对应字典信息
+		var trid,trnode;
+		var saveDictById = function(paramData,url){
+            if(!formVerf()){//checkDictIdIsExists
+                return ;
+            }
+				var varyAjax = new BaseAjax();
+				varyAjax.opts.url = url;
+				varyAjax.opts.type = "POST";
+				varyAjax.opts.async = false; //同步请求
+				varyAjax.opts.data = JSON.stringify(paramData);
+				varyAjax.opts.successFun = function(result){
+					if(result.flag){
+						var data = result.data;
+						var backNode = {"id":data.dictId,"name":data.dataName,"pId":data.parentId};
+						var zTree = $.fn.zTree.getZTreeObj("dictTree"),
+								type = "refresh",
+								silent = false,
+								nodes = zTree.getSelectedNodes();
+						var dictId = backNode.id;//获取修改字典后，返回字典的数据--字典编号
+						nodes = zTree.getNodeByParam("id",dictId);//获取当前修改的节点
+						if(nodes == null){//为空表示新增
+							nodes = zTree.getSelectedNodes();//获取选中的节点
+							var selectedParentNode = nodes[0];
+							zTree.addNodes(selectedParentNode,-1,backNode);
+							zTree.selectNode(backNode);
+						}else{//修改
+							var originParentNode = zTree.getNodeByTId(nodes.parentTId);//获取原父节点
+
+							if(originParentNode != null ){
+								var originPid = originParentNode.id;//获取原父节点的编号
+								var nowPid = backNode.pId;//现在挂载的父节点编号
+								if(originPid != nowPid){//说明修改了父节点
+									nodes.name =  backNode.name;//字典名称
+									nodes.pid = nowPid;//更新字典父节点
+									var modifyParentNode = zTree.getNodeByParam("id",backNode.pId);//要挂载到的父节点
+									zTree.moveNode(modifyParentNode, nodes, "inner");
+									zTree.updateNode(nodes);//修改节点
+									zTree.selectNode(nodes);//选中新的节点
+								}else {
+									nodes.name = backNode.name;
+									zTree.updateNode(nodes);
+									zTree.selectNode(nodes);
+								}
+							}else{
+								nodes.name = backNode.name;
+								zTree.updateNode(nodes);
+								zTree.selectNode(nodes);
+							}
+
+						}
+						getDictById(dictId,'show');
+						popWin.showMessageWin(result.msg)
+					}else{
+							if(result.code=="id"){//字典ID重复
+								formVerfication.showPromptInfo($('#did'),$('.rightDict'),result.msg);
+							}else{//字典编码重复
+								formVerfication.showPromptInfo($('#dataCode'),$('.rightDict'),result.msg);
+							}
+					}
+				};
+				varyAjax.opts.errorFun = function(){
+					return false;
+				};
+				varyAjax.run();
+		/*	//对字典编码进行重复性验证
+			var checkAjax = new BaseAjax();
+			checkAjax.opts.url = DICT_COFING.checkDictCode_url;
+			checkAjax.opts.async = false; //同步
+			checkAjax.opts.data = JSON.stringify(paramData);
+			checkAjax.opts.successFun = function(result) {
+				if (result.flag) {
+					if(result.code=="0"){//字典ID重复
+						formVerfication.showPromptInfo($('#did'),$('.rightDict'),'字典ID已存在,不可重复添加');
+					}else{//字典编码重复
+						formVerfication.showPromptInfo($('#dataCode'),$('.rightDict'),'字典编码已存在,不可重复添加');
+					}
+				}
+                var varyAjax = new BaseAjax();
+                varyAjax.opts.url = url;
+                varyAjax.opts.type = "POST";
+                varyAjax.opts.async = false; //同步请求
+                varyAjax.opts.data = JSON.stringify(paramData);
+                varyAjax.opts.successFun = function(result){
+                    if(result.flag){
+                        var data = result.data;
+                        var backNode = {"id":data.dictId,"name":data.dataName,"pId":data.parentId};
+						var zTree = $.fn.zTree.getZTreeObj("dictTree"),
+								type = "refresh",
+								silent = false,
+								nodes = zTree.getSelectedNodes();
+						var dictId = backNode.id;//获取修改字典后，返回字典的数据--字典编号
+                        nodes = zTree.getNodeByParam("id",dictId);//获取当前修改的节点
+                        if(nodes == null){//为空表示新增
+                            nodes = zTree.getSelectedNodes();//获取选中的节点
+                            var selectedParentNode = nodes[0];
+                            zTree.addNodes(selectedParentNode,-1,backNode);
+                            zTree.selectNode(backNode);
+                        }else{//修改
+                            var originParentNode = zTree.getNodeByTId(nodes.parentTId);//获取原父节点
+
+							if(originParentNode != null ){
+								var originPid = originParentNode.id;//获取原父节点的编号
+								var nowPid = backNode.pId;//现在挂载的父节点编号
+								if(originPid != nowPid){//说明修改了父节点
+									nodes.name =  backNode.name;//字典名称
+									nodes.pid = nowPid;//更新字典父节点
+									var modifyParentNode = zTree.getNodeByParam("id",backNode.pId);//要挂载到的父节点
+									zTree.moveNode(modifyParentNode, nodes, "inner");
+									zTree.updateNode(nodes);//修改节点
+									zTree.selectNode(nodes);//选中新的节点
+								}else {
+									nodes.name = backNode.name;
+									zTree.updateNode(nodes);
+									zTree.selectNode(nodes);
+								}
+							}else{
+								nodes.name = backNode.name;
+								zTree.updateNode(nodes);
+								zTree.selectNode(nodes);
+							}
+
+                        }
+                        getDictById(dictId,'show');
+                        popWin.showMessageWin(result.msg)
+                    }else{
+                        popWin.showMessageWin(result.msg)
+                    }
+                };
+                varyAjax.opts.errorFun = function(){
+                    return false;
+                };
+                varyAjax.run();
+            };
+		    checkAjax.run();*/
+		};
+
+
+
+		//删除字典
+		var delDictById = function (treeNode) {
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = DICT_COFING.delDict_url;
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.async = false; //同步请求
+			varyAjax.opts.data = JSON.stringify({'dictId':treeNode.id});
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+                    popWin.showMessageWin("数据字典删除成功");
+					//defaultLoadData();
+					if(treeNode.name==$('#dataName').val()||treeNode.name==$('#dName').html()||treeNode.pId ==  $("#pid").attr("data-id"))
+					{
+						clearRightData();
+					}
+				}else{
+                    popWin.showMessageWin("数据字典删除成功");
+                }
+			};
+			varyAjax.opts.errorFun = function(){
+				return false;
+			};
+			varyAjax.run();
+		};
+
+
+        //加载字典详情页
+        var showData = function(data){
+            clearErrorInfo( $('.rightDict'));
+            $("#dictTitle").show();
+            $("#img").show();
+            $("#showDict").show();
+            $("#saveDict").hide();
+            $("#btnSave").hide();
+            $("#dictTitle").html(data.dataName+'详情');
+
+            /*document.getElementById('dictIds').innerHTML=data.dictId;*/
+            document.getElementById('dictIds').innerHTML=data.dictId;
+            document.getElementById('dName').innerHTML=data.dataName;
+            document.getElementById('oNo').innerHTML=data.orderNo;
+            document.getElementById('dCode').innerHTML=data.dataCode;
+            document.getElementById('dValue').innerHTML=data.dataValue;
+            document.getElementById('isleaf').innerHTML=data.leaf==true?'是':'否';
+            document.getElementById('parentId').innerHTML=data.parentName;
+            document.getElementById('dStatus').innerHTML=data.dataStatus=='1'?'正常':'禁用';
+			$('#showDict .secondTdStyle,#showDict .fourthTdStyle').each(function(i,d){d.setAttribute('title',d.innerText)});
+		/*	if(data.remark!=null&&data.remark!='')
+			{
+				if(data.remark.length>30)
+				{
+					document.getElementById('rmark').innerHTML=data.remark.substring(0,31)+'...';
+				}
+				else{
+					document.getElementById('rmark').innerHTML=data.remark;
+				}
+			}
+            $("#rmark").attr("title",data.remark);*/
+
+        }
+
+        //加载字典编辑页
+        var showsaveData = function(data){
+            clearErrorInfo( $('.rightDict'));
+            $("#dictTitle").show();
+            $("#img").show();
+            $("#showDict").hide();
+            $("#saveDict").show();
+            $("#btnSave").show();
+            $("#dictTitle").html(data.dataName+'编辑');
+            $("#did").val(data.dictId);
+			//给editId赋值  做重复性判断时对比
+			//$("#editId").val(data.dictId);
+			//$("#editId").attr("value",data.dictId);
+			//$("#editCode").attr("value",data.dataCode);
+			$("#editId").val(data.dictId);
+			$("#editCode").val(data.dataCode);
+            $("#dataName").val(data.dataName);
+            $("#orderNo").val(data.orderNo);
+            $("#dataCode").val(data.dataCode);
+            $("#dataValue").val(data.dataValue);
+			$('#shi').attr('checked','checked');
+			$('#yes').attr('checked','checked');
+			$('#fou').removeAttr("checked");
+			$('#no').removeAttr("checked");
+           // $("#leaf").val(data.leaf);
+            if(data.leaf){
+                $("#shi").attr("checked","checked")
+            }
+            else{
+                $("#fou").attr("checked","checked")
+            }
+            $("#pid").val(data.parentName);//父节点的名称
+            $("#parentSel").val(data.parentName);//父节点的名称
+            $("#pid").attr("data-id",data.parentId);//父节点数值
+            if(data.dataStatus==1){
+                $("#yes").attr("checked","checked")
+            }
+            else{
+                $("#no").attr("checked","checked")
+            }
+           // $("#remark").val(data.remark);
+			//设置id不可编辑
+			$("#did").attr("readOnly",true);
+			$("#did").css("background-color","rgb(245, 245, 245)");
+
+            $("#dataCode").attr("readOnly",true);
+            $("#dataCode").css("background-color","rgb(245, 245, 245)");
+        };
+
+        //加载添加字典页面
+        var showAddDictHtml  = function(data){
+            clearErrorInfo( $('.rightDict'));
+            currentTreeNode = data;
+            $("#dictTitle").show();
+            $("#img").show();
+            $("#showDict").hide();
+            $("#saveDict").show();
+            $("#btnSave").show();
+            $("#dictTitle").html(data.name+'子节点添加');
+            $("#did").val("");
+			$("#editId").val("");
+			$("#editCode").val("");
+            $("#dataName").val("");
+            $("#orderNo").val("");
+            $("#dataCode").val("");
+            $("#dataValue").val("");
+            $("#leaf").val(true);
+            $("#pid").val(data.name);
+            $("#pid").attr("data-id",data.id)
+            $("#parentSel").val(data.name);//父节点的名称
+            $("#dataStatus").val(1);
+			$('#shi').attr('checked','checked')
+			$('#yes').attr('checked','checked')
+			$('#fou').removeAttr("checked");
+			$('#no').removeAttr("checked");
+			$("#did").attr("readOnly",false);
+			$("#did").css("background-color","#ffffff");
+
+            $("#dataCode").attr("readOnly",false);
+            $("#dataCode").css("background-color","#ffffff");
+            //$("#remark").val("");
+        }
+
+        //获取字典参数
+        var  getParam = function() {
+            var did = $("#did").val().trim();
+			var editId=$("#editId").val();//获取原来的dictId
+			var editCode=$("#editCode").val();//获取原来的dataCode
+            var dataName = $("#dataName").val().trim();
+            var orderNo = $("#orderNo").val().trim();
+            var dataCode = $("#dataCode").val().trim();
+            var dataValue = $("#dataValue").val().trim();
+			//var leaf = $("#leaf").val();
+            var leaf = $('input:radio[name="leaf"]:checked').val();
+			//var parentId = $("#pid").val();
+            //var parentId = $("#pid").attr("parentId");
+            var parentId = $("#pid").attr("data-id");
+            //var dataStatus = $("#dataStatus").val();
+            var dataStatus = $('input:radio[name="dataStatus"]:checked').val();
+            //dataStatus = (dataStatus == 'true' ? 1 : 0);
+            dataStatus = (dataStatus=='true'?1:2);
+           // var remark = $("#remark").val();
+            var paramData = {
+                dictId: did,
+                dataName: dataName,
+                orderNo: orderNo,
+                dataCode: dataCode,
+                dataValue: dataValue,
+                leaf: leaf,
+                parentId: parentId,
+                dataStatus: dataStatus,
+				editId:editId,
+				editCode:editCode
+               // remark: remark
+            }
+            return paramData;
+        }
+
+        //清空右边栏数据
+        var clearRightData = function () {
+            $("#dictTitle").hide();
+            $("#img").hide();
+            $("#showDict").hide();
+            $("#saveDict").hide();
+            $("#btnSave").hide();
+        }
+
+        //input框输入内容判断
+        var formVerf = function(){
+            var dictInfo = $('.rightDict');
+			//验证ID  ID不能为空 并且纯数字 不超过32位 并且不能重复
+			if(formVerfication.checkInputIsEmpty($('#did'),dictInfo,'数据ID不能为空')){
+				return false;
+			}
+
+			if(formVerfication.checkInputLength(1,32,$('#did'),dictInfo,'数据ID大小不能超过32位')){
+				return false;
+			}
+
+			if(formVerfication.checkInputIsPositiveInteger($('#did'),dictInfo,'数据ID只能为正整数')){
+				return false;
+			}
+
+			if(!dataCodeVerf(dictInfo)){//验证编码
+				return false;
+			}
+            if(formVerfication.checkInputIsEmpty($('#dataName'),dictInfo,'名称不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,30,$('#dataName'),dictInfo,'名称字数不能超过30位')){
+                return false;
+            }
+
+
+			if(formVerfication.checkInputIsEmpty($('#dataValue'),dictInfo,'数据值不能为空')){
+				return false;
+			}
+            if($('#dataValue').val().trim()!=null&&$('#dataValue').val().trim()!='')
+            {
+                if(formVerfication.checkInputLength(0,30,$('#dataValue'),dictInfo,'数据值字数不能超过30位'))
+                {
+                    return false;
+                }
+            }
+			if(formVerfication.checkInputIsEmpty($('#orderNo'),dictInfo,'序号不能为空'))
+			{
+				return false;
+			}
+			var orderNoObj = $('#orderNo');
+			if(formVerfication.checkInputIsPositiveInteger(orderNoObj,dictInfo,'序号为1-32767正整数'))
+			{
+				return false;
+			}
+			/*        if(formVerfication.checkInputLength(0,6,$('#orderNo'),dictInfo,'序号字数不能超过6位'))
+			 {
+			 return false;
+			 }*/
+			var orderNoValue = parseInt(orderNoObj.val().trim());
+			if(orderNoValue < 1 || orderNoValue > 32767){
+				formVerfication.showPromptInfo(orderNoObj,dictInfo,'序号为1-32767正整数');
+				return false;
+			}
+            return true;
+        }
+
+        //验证编码输入
+        var dataCodeVerf = function(dictInfo){
+            if(formVerfication.checkInputIsEmpty($('#dataCode'),dictInfo,'编码不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,50,$('#dataCode'),dictInfo,'编码字数不能超过50位')){
+                return false;
+            }
+         /*   if(formVerfication.checkInputIsCharDigitalUnderlineMiddleLine($('#dataCode'),dictInfo,'编码为1-50位字母、数字、下划线或中划线组合')){
+                return false;
+            }*/
+
+            return true;
+        }
+
+        //清除错误信息
+        var clearErrorInfo = function (errorObj) {
+            errorObj.find('.formErrorInfo').remove();
+            initClearErrorInfo();
+        }
+
+        //初次加载添加，修改页面时清除错误信息
+        var initClearErrorInfo = function () {
+            formVerfication.clearInputClass($('#dataName'));
+            formVerfication.clearInputClass($('#dataCode'));
+            formVerfication.clearInputClass($('#orderNo'));
+            formVerfication.clearInputClass($('#dataValue'));
+        }
+
+		//弹出框通用方法
+		var showDialog=function(msg,yesFun,noFun){
+			var reloadDialog = $("#showDialog");
+			$("#msg").html(msg)
+			reloadDialog.dialog({
+				autoOpen: false,
+				title:'系统提示',
+				height: 160,
+				width: 410,
+				modal: true,
+				buttons:[
+					{
+						text:"是",
+						click:function(){
+							yesFun();
+							$(this).dialog("close");
+						}
+					},
+					{
+						text:"否",
+						click:function(){
+							if(!noFun && noFun instanceof Function){
+								noFun();
+							}
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+
+			reloadDialog.dialog("open");
+		}
+
+		var parentSelSetting = {
+			view: {
+				dblClickExpand: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onClick: onClick
+			}
+		};
+
+		var parentNameSetting = {
+			view: {
+				dblClickExpand: false
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onClick: parentNameClick
+			}
+		};
+
+		function parentNameClick(e,treeId, treeNode){
+			$("#search_parentName").val(treeNode.name);
+			$("#search_parentId").val(treeNode.id);
+			$("#treeParentDiv").css("display","none");
+		}
+		function onClick(e, treeId, treeNode){
+			$("#parentSel").val(treeNode.name);
+			$("#pid").val(treeNode.name);//节点名称
+            $("#pid").attr("data-id",treeNode.id);//节点数值
+			$("#treeDiv").css("display","none");
+		}
+
+		$("#parentSel").live("click",function(){
+			initTree();
+			$.fn.zTree.init($("#tree"), parentSelSetting, zNodes1);
+            var zTree = $.fn.zTree.getZTreeObj("tree");
+            //默认初始化展开第一级菜单
+            var nodes = zTree.getNodes();
+            for (var i = 0; i < nodes.length; i++) { //设置节点展开
+                zTree.expandNode(nodes[i], true, false, true);
+            }
+            var height = $(this).height();
+            var width = $(this).width()+50;
+            var clientTop = $(this).position().top+height;
+            var clientLeft = $(this).position().left;
+			$("#treeDiv").css({"display":"block","left":clientLeft,"top":clientTop,"width":width+"px","height":"300px"});
+            $("body").bind("mousedown", onBodyDown);
+		});
+
+		/**
+		 *关闭
+		 */
+		function onBodyDown(event) {
+			var $_obj = $(event.target);
+			if(event.target.id == "" || event.target.id == "resourceInfo" ){
+				$("#treeDiv").css("display","none");
+			}
+			if (event.target.id == "" || event.target.id == 'treeParentDiv'){
+				$('#treeParentDiv').hide();
+				if(event.target.id == 'treeParentDiv'){
+					$('#search_parentName').val('');
+				}
+			}
+//            if(!$('#treeParentDiv').is(":hidden") && !$_obj.hasClass('node_name') && !$_obj.hasClass('ico_docu')){
+//                $('#treeParentDiv').hide();
+//            }
+		}
+
+		function  closeTree(){
+			$("#treeDiv").css("display","none");
+		}
+
+		/**
+		 * 初始化上级资源树
+		 *
+		 */
+		var zNodes1 = [];
+		var initTree = function(){
+            zNodes1 = [];
+			var ajax = new BaseAjax();
+			ajax.opts.url = DICT_COFING.queryDictList_url;
+			ajax.opts.contentType = "application/json";
+			ajax.opts.async = false; //同步请求
+			ajax.opts.successFun = function(result){
+				if(result.flag){
+					var data = result.data;
+					$.each(data, function(index, element){
+						var row = {};
+						row.id= element.id;
+						row.pId = element.pId== null ? 0 : element.pId;
+						row.name = element.name;
+						zNodes1.push(row);
+					})
+				}
+			};
+			ajax.run();
+		};
+		init();
+
+		// 添加和修改界面取消按钮的点击事件
+		$("#cancelBtn").click(function() {
+			$('.formInputHighlight').removeClass('formInputHighlight')//清除错误样式
+			getDictById(currentTreeNode.id, 'show');
+		});
+	});
+</script>

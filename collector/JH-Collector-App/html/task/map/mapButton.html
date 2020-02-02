@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+
+		<link rel="stylesheet" href="../../../css/mui.css" type="text/css" charset="utf-8" />
+		<style type="text/css">
+			html,
+			body {
+				overflow: hidden;
+				background-color: transparent;
+			}
+
+			.jh-right-button-style {
+				width: 32px;
+				height: 32px;
+				/* background-color: rgba(0, 0, 0, 0) -moz-border-radius: 1rem; */
+				/* Gecko browsers */
+				/* -webkit-border-radius: 1rem; */
+				/* Webkit browsers */
+				/* border-radius: 1rem; */
+			}
+
+			.jh-button-div {
+				padding: 5px 3px;
+				margin-top: 0.3125rem;
+				background-color: white;
+				width: 40px;
+				height: 50px;
+				-moz-border-radius: 5px;
+				-webkit-border-radius: 5px;
+				border-radius: 5px;
+			}
+			.jh-button-span-font-style{
+				position: relative;
+				font-size: 12px;
+				top: -10px;
+				width: 32px;
+				padding-left: 4px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="jh-button-div">
+			<input id="add" type="image" class="jh-right-button-style" src="../../../images/button-icon/map-icon/mapIcon4.png"
+			 style="padding:0"></input>
+			 <span class="jh-button-span-font-style">新增</span>
+		</div>
+		<div class="jh-button-div">
+			<input id="edit" type="image" class="jh-right-button-style" src="../../../images/button-icon/map-icon/mapIcon3.png"
+			 style="padding: 0.1rem;"></input>
+			 <span class="jh-button-span-font-style">分离</span>
+		</div>
+		<div style="display: none;" class="jh-button-div">
+			<input id="separate" type="image" class="jh-right-button-style" src="../../../images/button-icon/map-icon/mapIcon3.png"
+			 style="padding: 0.1rem;"></input>
+			 
+		</div>
+		<div class="jh-button-div">
+			<input id="area" type="image" onclick="addAreaItem()" class="jh-right-button-style" src="../../../images/button-icon/map-icon/mapIcon1.png"
+			 style="padding: 0.1rem;"></input>
+			 <span class="jh-button-span-font-style">田块</span>
+		</div>
+		<div style="margin-top: 30px;" class="jh-button-div">
+			<input id="location" type="image" onClick="userLocation()" class="jh-right-button-style" src="../../../images/button-icon/map-icon/mapIcon2.png"
+			 style="padding: 0.1rem;"></input>
+			 <span class="jh-button-span-font-style">定位</span>
+		</div>
+		
+	</body>
+	<script src="../../../js/mui.js"></script>
+	<script type="text/javascript">
+		var self;
+		var mAdd = document.getElementById('add');
+		var mEdit = document.getElementById('edit');
+		var mSeparate = document.getElementById('separate');
+
+		if (window.plus) {
+			myPlusReady();
+		} else {
+			document.addEventListener("plusready", myPlusReady, false);
+		}
+
+
+		function myPlusReady() {
+			self = plus.webview.currentWebview();
+			mAdd.addEventListener('tap', addEvent);
+			mEdit.addEventListener('tap', editEvent);
+			mSeparate.addEventListener('tap', separateEvent);
+		}
+
+		var isAddClick = false
+		var isEditClick = false
+		var isSeparateClick = false
+
+		function addEvent() {
+			// console.log((isAddClick == false) && (isEditClick == false) && (isSeparateClick == false))
+			if ((isAddClick == false) && (isEditClick == false) && (isSeparateClick == false)) {
+				isAddClick = true;
+				changeMapState(0);
+				mAdd.parentElement.style.backgroundColor = "#C0C0C0";
+				mEdit.parentElement.style.backgroundColor = "#FFFFFF";
+				mSeparate.parentElement.style.backgroundColor = "#FFFFFF";
+			} else if ((isAddClick == true) && (isEditClick == false) && (isSeparateClick == false)) {
+				isAddClick = false;
+				changeMapState(1);
+				mAdd.parentElement.style.backgroundColor = "#FFFFFF";
+				mEdit.parentElement.style.backgroundColor = "#FFFFFF";
+				mSeparate.parentElement.style.backgroundColor = "#FFFFFF";
+			}
+		}
+
+		function editEvent() {
+			if ((isAddClick == false) && (isEditClick == false) && (isSeparateClick == false)) {
+				isEditClick = true;
+				changeMapState(2);
+				mAdd.parentElement.style.backgroundColor = "#FFFFFF";
+				mEdit.parentElement.style.backgroundColor = "#C0C0C0";
+				mSeparate.parentElement.style.backgroundColor = "#FFFFFF";
+			} else if ((isAddClick == false) && (isEditClick == true) && (isSeparateClick == false)) {
+				isEditClick = false;
+				changeMapState(3);
+				mAdd.parentElement.style.backgroundColor = "#FFFFFF";
+				mEdit.parentElement.style.backgroundColor = "#FFFFFF";
+				mSeparate.parentElement.style.backgroundColor = "#FFFFFF";
+			}
+		}
+
+
+		function separateEvent() {
+			if ((isAddClick == false) && (isEditClick == false) && (isSeparateClick == false)) {
+				isSeparateClick = true;
+				changeMapState(4);
+				mAdd.parentElement.style.backgroundColor = "#FFFFFF";
+				mEdit.parentElement.style.backgroundColor = "#FFFFFF";
+				mSeparate.parentElement.style.backgroundColor = "#C0C0C0";
+			} else if ((isAddClick == false) && (isEditClick == false) && (isSeparateClick == true)) {
+				isSeparateClick = false;
+				changeMapState(5); //面模式
+				mAdd.parentElement.style.backgroundColor = "#FFFFFF";
+				mEdit.parentElement.style.backgroundColor = "#FFFFFF";
+				mSeparate.parentElement.style.backgroundColor = "#FFFFFF";
+			}
+		}
+
+		function userLocation() {
+			plus.webview.currentWebview().opener().evalJS('mapLocation()');
+		}
+
+		function addAreaItem() {
+			plus.webview.currentWebview().opener().evalJS('addAreaItem()');
+		}
+
+		function changeMapState(modeCode) {
+			plus.webview.currentWebview().opener().evalJS('changeMapState(' + modeCode + ')');
+			mui.fire(self.opener(), 'changeMapState');
+		}
+		//预设值
+		// 		mui('body').on('tap', '.jh-icon-button', function(e) {
+		// 			id = e.target.getAttribute('id');
+		// 			el = document.getElementById(id);
+		// 
+		// 			// el.style.color = '#2da3d5';
+		// 			if (id != 'mapReset') {
+		// 				modeStatus.id = id;
+		// 				modeStatus.isclick = toggleStatus(modeStatus.isclick);
+		// 				changeColor(modeStatus.isclick, modeStatus.id);
+		// 				console.log(JSON.stringify(modeStatus));
+		// 			} else {
+		// 
+		// 			}
+		// 		});
+	</script>
+</html>

@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumArticleMapper" >
+
+
+  <resultMap id="BaseResultMap" type="com.jh.forum.bbs.entity.ForumArticle" >
+    <id column="article_id" property="articleId" jdbcType="INTEGER" />
+    <result column="article_type" property="articleType" jdbcType="INTEGER" />
+    <result column="article_title" property="articleTitle" jdbcType="VARCHAR" />
+    <result column="article_summary" property="articleSummary" jdbcType="VARCHAR" />
+    <result column="article_content" property="articleContent" jdbcType="VARCHAR" />
+    <result column="auditor" property="auditor" jdbcType="INTEGER" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="article_status" property="articleStatus" jdbcType="INTEGER" />
+    <result column="publisher" property="publisher" jdbcType="INTEGER" />
+    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="article_hot" property="articleHot" jdbcType="CHAR" />
+    <result column="article_new" property="articleNew" jdbcType="CHAR" />
+    <result column="article_label" property="articleLabel" jdbcType="VARCHAR" />
+    <result column="report_url" property="reportUrl" jdbcType="VARCHAR" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!--BaseResultVoMap-->
+  <resultMap id="BaseResultVoMap" type="com.jh.forum.bbs.vo.ArticleVO"  extends="BaseResultMap">
+
+    <result column="follow_id" property="followId" jdbcType="INTEGER" />
+
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    article_id, article_type, article_title, article_summary, article_content, auditor,report_url,
+    audit_time, article_status, publisher, publish_time, article_hot, article_new,article_label, data_status,
+    del_flag, create_time, creator_name, creator, modify_time, modifier_name, modifier, 
+    remark
+  </sql>
+
+  <!--分页查询-->
+  <select id="getListByCombination" resultMap="BaseResultVoMap">
+    SELECT
+    article_id, article_type, article_title, article_summary,  auditor,report_url,article_content,
+    audit_time, article_status, publisher, publish_time, article_hot, article_new,article_label, create_time, creator_name, creator
+    FROM forum_article
+    where del_flag = '1'
+    /*关键词搜索*/
+    <if test="keyWords!=null and keyWords !=''">
+      AND (article_title like CONCAT('%','${keyWords}','%') OR article_summary like CONCAT('%','${keyWords}','%'))
+    </if>
+    /*报告类型*/
+    <if test="articleType!=null and articleType !=''">
+      AND article_type = #{articleType}
+    </if>
+    /*报告标签*/
+    <if test="articleLabel!=null and articleLabel !=''">
+      AND article_label like CONCAT('%','${articleLabel}','%')
+    </if>
+    /*报告标题*/
+    <if test="articleTitle!=null and articleTitle !=''">
+      AND article_title like CONCAT('%','${articleTitle}','%')
+    </if>
+    /*报告状态*/
+    <if test="articleStatus!=null and articleStatus !=''">
+      AND article_status = #{articleStatus}
+    </if>
+    <if test="creator != null" >
+      AND creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="articleHot != null and articleHot != ''">
+      AND article_hot = #{articleHot,jdbcType=CHAR}
+    </if>
+    <if test="articleNew != null and articleNew != ''">
+      AND article_new = #{articleNew,jdbcType=CHAR}
+    </if>
+    <if test="articleStatusList != null" >
+      AND article_status in
+      <foreach collection="articleStatusList" index="index" item="item" separator="," open="(" close=")">
+        #{item, jdbcType=INTEGER}
+      </foreach>
+    </if>
+    order by
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord},publish_time desc,article_id desc
+      </when>
+      <otherwise>
+         article_hot desc,article_new desc,publish_time desc,create_time desc,article_id desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--最热报告、问答、调研-->
+  <select id="getHotArticleList" resultMap="BaseResultVoMap">
+    SELECT
+    a.article_id, a.article_type, a.article_title, a.article_summary,  a.auditor,
+    a.audit_time, a.article_status, a.publisher, a.publish_time, a.article_hot,a.article_label ,
+     a.create_time, a.creator_name, a.creator,a.remark
+     <if test="creator != null and creator != ''">
+       , b.follow_id
+     </if>
+    FROM forum_article a
+    <!--只关联收藏的部分-->
+    <if test="creator != null and creator != ''">
+      left join forum_follow b on a.article_id = b.article_id and b.follow_type = 13001 and b.creator = #{creator,jdbcType=INTEGER}
+    </if>
+
+    where a.del_flag = '1' and a.article_hot='1' and a.article_type=#{articleType} and a.article_status = 12004
+    order by a.create_time desc
+  </select>
+
+  <!--最新报告、问答、调研-->
+  <select id="getNewArticleList" resultMap="BaseResultVoMap">
+    SELECT
+    a.article_id, a.article_type, a.article_title, a.article_summary,  a.auditor,
+    a.audit_time, a.article_status, a.publisher, a.publish_time, a.article_new,a.article_label ,
+    a.create_time, a.creator_name, a.creator,a.remark
+    <if test="creator != null and creator != ''">
+      , b.follow_id
+    </if>
+    FROM forum_article a
+    <if test="creator != null and creator != ''">
+      left join forum_follow b on a.article_id = b.article_id and b.follow_type = 13001 and b.creator = #{creator,jdbcType=INTEGER}
+    </if>
+
+    where a.del_flag = '1' and a.article_new='1' and a.article_type=#{articleType} and a.article_status = 12004
+    order by a.create_time desc
+
+
+  </select>
+
+  <select id="findArticleFollows" resultType="Integer">
+    select follow_type from forum_follow where del_flag = '1' and data_status = '1'
+    and article_id = #{articleId,jdbcType=INTEGER} AND creator = #{creator,jdbcType=INTEGER}
+  </select>
+
+
+  <!--新增单条帖子-->
+  <insert id="save" parameterType="com.jh.forum.bbs.vo.ArticleVO" useGeneratedKeys="true" keyProperty="articleId" >
+    insert into forum_article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="articleType != null" >
+        article_type,
+      </if>
+      <if test="articleTitle != null" >
+        article_title,
+      </if>
+      <if test="articleSummary != null" >
+        article_summary,
+      </if>
+      <if test="articleContent != null" >
+        article_content,
+      </if>
+      <if test="auditor != null" >
+        auditor,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+      <if test="articleStatus != null" >
+        article_status,
+      </if>
+      <if test="publishTime != null" >
+        publish_time,
+      </if>
+      <if test="articleHot != null" >
+        article_hot,
+      </if>
+      <if test="articleNew != null" >
+        article_new,
+      </if>
+      <if test="articleLabel != null" >
+        article_label,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+        publisher,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="articleType != null" >
+        #{articleType,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null" >
+        #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSummary != null" >
+        #{articleSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="articleContent != null" >
+        #{articleContent,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null" >
+        #{auditor,jdbcType=INTEGER},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=DATE},
+      </if>
+      <if test="articleStatus != null" >
+        #{articleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=DATE},
+      </if>
+      <if test="articleHot != null" >
+        #{articleHot,jdbcType=CHAR},
+      </if>
+      <if test="articleNew != null" >
+        #{articleNew,jdbcType=CHAR},
+      </if>
+      <if test="articleLabel != null" >
+        #{articleLabel,jdbcType=VARCHAR},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <!--删除单条帖子-->
+  <delete id="delete" parameterType="com.jh.forum.bbs.vo.ArticleVO" >
+    update forum_article set del_flag ='0' where article_id = #{articleId,jdbcType=INTEGER}
+  </delete>
+
+  <!--根据主键查询单条帖子-->
+  <select id="getById" resultMap="BaseResultVoMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_article
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+
+  <!--更新单条帖子-->
+  <update id="update" parameterType="com.jh.forum.bbs.vo.ArticleVO" >
+    update forum_article
+    <set >
+      <if test="articleType != null" >
+        article_type = #{articleType,jdbcType=INTEGER},
+      </if>
+      <if test="articleTitle != null" >
+        article_title = #{articleTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articleSummary != null" >
+        article_summary = #{articleSummary,jdbcType=VARCHAR},
+      </if>
+      <if test="articleContent != null" >
+        article_content = #{articleContent,jdbcType=VARCHAR},
+      </if>
+      <if test="auditor != null" >
+        auditor = #{auditor,jdbcType=INTEGER},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=DATE},
+      </if>
+      <if test="articleStatus != null" >
+        article_status = #{articleStatus,jdbcType=INTEGER},
+      </if>
+      <if test="publisher != null" >
+        publisher =  #{publisher,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        publish_time =  #{publishTime,jdbcType=DATE},
+      </if>
+      <if test="articleHot != null" >
+        article_hot = #{articleHot,jdbcType=CHAR},
+      </if>
+      <if test="articleNew != null" >
+        article_new = #{articleNew,jdbcType=CHAR},
+      </if>
+      <if test="articleLabel != null" >
+        article_label = #{articleLabel,jdbcType=VARCHAR},
+      </if>
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="reportUrl != null" >
+        report_url = #{reportUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where 1 = 1
+    <if test="articleId!=null">
+      and article_id = #{articleId,jdbcType=INTEGER}
+    </if>
+    <if test="articleIds!=null">
+      and article_id in
+      <foreach collection="articleIds" item="id" separator="," open="(" close=")">
+        #{id}
+      </foreach>
+    </if>
+
+
+  </update>
+
+  <!--分页查询-->
+  <select id="findByPage" resultMap="BaseResultVoMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM forum_article
+    WHERE del_flag ='1'
+    <if test="articleType != null" >
+      AND article_type = #{articleType,jdbcType=INTEGER}
+    </if>
+    <if test="articleTitle != null" >
+      AND article_title = #{articleTitle,jdbcType=VARCHAR}
+    </if>
+    <if test="articleSummary != null" >
+      AND article_summary = #{articleSummary,jdbcType=VARCHAR}
+    </if>
+    <if test="articleContent != null" >
+      AND article_content = #{articleContent,jdbcType=VARCHAR}
+    </if>
+    <if test="auditor != null" >
+      AND auditor = #{auditor,jdbcType=INTEGER}
+    </if>
+    <if test="auditTime != null" >
+      AND audit_time = #{auditTime,jdbcType=DATE}
+    </if>
+    <if test="articleStatus != null" >
+      AND article_status = #{articleStatus,jdbcType=INTEGER}
+    </if>
+    <if test="publisher != null" >
+      AND publisher = #{publisher,jdbcType=INTEGER}
+    </if>
+    <if test="publishTime != null" >
+      AND publish_time = #{publishTime,jdbcType=DATE}
+    </if>
+    <if test="articleHot != null" >
+      AND article_hot = #{articleHot,jdbcType=CHAR}
+    </if>
+    <if test="articleNew != null" >
+      AND article_new = #{articleNew,jdbcType=CHAR}
+    </if>
+    <if test="articleLabel != null" >
+      AND article_label = #{articleLabel,jdbcType=VARCHAR}
+    </if>
+    <if test="dataStatus != null" >
+      AND data_status = #{dataStatus,jdbcType=CHAR}
+    </if>
+    <if test="delFlag != null" >
+      AND del_flag = #{delFlag,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null" >
+      AND create_time = #{createTime,jdbcType=DATE}
+    </if>
+    <if test="creatorName != null" >
+      AND creator_name = #{creatorName,jdbcType=VARCHAR}
+    </if>
+    <if test="creator != null" >
+      AND creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="modifyTime != null" >
+      AND modify_time = #{modifyTime,jdbcType=DATE}
+    </if>
+    <if test="modifierName != null" >
+      AND modifier_name = #{modifierName,jdbcType=VARCHAR}
+    </if>
+    <if test="modifier != null" >
+      AND modifier = #{modifier,jdbcType=INTEGER}
+    </if>
+    <if test="remark != null" >
+      AND remark = #{remark,jdbcType=VARCHAR}
+    </if>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord} DESC
+      </when>
+      <otherwise>
+        create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+
+  <!--后台分页查询-->
+  <select id="findByPageCms" resultMap="BaseResultVoMap">
+    SELECT
+    article_id, article_type, article_title, auditor,report_url,
+    audit_time, article_status, publisher, publish_time, article_hot, article_new,article_label, data_status,
+    del_flag, create_time, creator_name, creator, modify_time, modifier_name, modifier,
+    remark
+    FROM forum_article
+    where del_flag = '1'
+    and article_status != 12001
+    /*关键词搜索*/
+    <if test="keyWords!=null and keyWords !=''">
+      AND (article_title like CONCAT('%','${keyWords}','%') OR article_summary like CONCAT('%','${keyWords}','%'))
+    </if>
+    /*报告类型*/
+    <if test="articleType!=null and articleType !=''">
+      AND article_type = #{articleType}
+    </if>
+    /*报告标签*/
+    <if test="articleLabel!=null and articleLabel !=''">
+      AND article_label like CONCAT('%','${articleLabel}','%')
+    </if>
+    /*报告标题*/
+    <if test="articleTitle!=null and articleTitle !=''">
+      AND article_title like CONCAT('%','${articleTitle}','%')
+    </if>
+    /*报告状态*/
+    <if test="articleStatus!=null and articleStatus !=''">
+      AND article_status = #{articleStatus}
+    </if>
+    <if test="creator != null" >
+      AND creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="publishStartTime != null and publishStartTime != '' and publishEndTime != null and publishEndTime != ''">
+      AND publish_time BETWEEN CAST((#{publishStartTime} || ' 00:00:00') AS  TIMESTAMP)AND CAST((#{publishEndTime} || ' 23:59:59') AS TIMESTAMP)
+    </if>
+    <if test="auditStartTime != null and auditStartTime != '' and auditEndTime != null and auditEndTime != ''">
+      AND audit_time BETWEEN CAST((#{auditStartTime} || ' 00:00:00') AS  TIMESTAMP)AND CAST((#{auditEndTime} || ' 23:59:59') AS TIMESTAMP)
+    </if>
+    order by
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord},article_id desc
+      </when>
+      <otherwise>
+        article_status = 12002 desc ,article_type,article_hot desc ,article_new desc ,publish_time desc,article_id desc
+      </otherwise>
+    </choose>
+  </select>
+
+
+  <!--分页查询-->
+  <select id="getListByFollower" resultMap="BaseResultVoMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM forum_article
+    where del_flag = '1'
+    /*关键词搜索*/
+    <if test="keyWords!=null and keyWords !=''">
+      AND (article_title like CONCAT('%','${keyWords}','%') OR article_summary like CONCAT('%','${keyWords}','%'))
+    </if>
+    /*报告类型*/
+    <if test="articleType!=null and articleType !=''">
+      AND article_type = #{articleType}
+    </if>
+    /*报告标签*/
+    <if test="articleLabel!=null and articleLabel !=''">
+      AND article_label like CONCAT('%','${articleLabel}','%')
+    </if>
+    /*报告标题*/
+    <if test="articleTitle!=null and articleTitle !=''">
+      AND article_title like CONCAT('%','${articleTitle}','%')
+    </if>
+    /*报告状态*/
+    <if test="articleStatus!=null and articleStatus !=''">
+      AND article_status = #{articleStatus}
+    </if>
+    <if test="creator != null" >
+      AND creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="followerId != null" >
+      AND article_id IN ( SELECT article_id FROM forum_follow WHERE follow_type = 13001 AND creator = #{followerId,jdbcType=INTEGER} )
+    </if>
+    order by
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord},article_id desc
+      </when>
+      <otherwise>
+        create_time desc,article_id desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="findArticleInfoByAccountId" resultMap="BaseResultVoMap">
+    select
+      <include refid="Base_Column_List" />
+    from forum_article where del_flag = '1' and data_status = '1'
+    and article_id = #{articleId,jdbcType=INTEGER} AND creator = #{creator,jdbcType=INTEGER}
+  </select>
+</mapper>

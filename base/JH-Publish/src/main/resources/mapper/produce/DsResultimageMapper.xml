@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.data.mapping.IDsResultimageMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.data.entity.DsResultimage" >
+    <id column="rg_id" property="rgId" jdbcType="INTEGER" />
+    <result column="ds_type" property="dsType" jdbcType="INTEGER" />
+    <result column="region_id" property="regionId" jdbcType="BIGINT" />
+    <result column="data_time" property="dataTime" jdbcType="DATE" />
+    <result column="crop_id" property="cropId" jdbcType="INTEGER" />
+    <result column="resolution" property="resolution" jdbcType="INTEGER" />
+    <result column="image_title" property="imageTitle" jdbcType="VARCHAR" />
+    <result column="storage_path" property="storagePath" jdbcType="VARCHAR" />
+    <result column="rg_status" property="rgStatus" jdbcType="INTEGER" />
+
+    <result column="publish_status" property="publishStatus" jdbcType="INTEGER" />
+
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+
+    <!--映射字段-->
+    <result column="region_code" property="regionCode" jdbcType="VARCHAR" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="crop_code" property="cropCode" jdbcType="VARCHAR" />
+    <result column="crop_name" property="cropName" jdbcType="VARCHAR" />
+    <result column="ds_name" property="dsName" jdbcType="VARCHAR" />
+    <result column="ds_code" property="dsCode" jdbcType="VARCHAR" />
+    <result column="resolution_name" property="resolutionName" jdbcType="VARCHAR" />
+    <result column="resolution_code" property="resolutionCode" jdbcType="VARCHAR" />
+    <result column="status_name" property="statusName" jdbcType="VARCHAR" />
+    <result column="publish_name" property="publishStatusName" jdbcType="VARCHAR" />
+    <result column="fail_msg" property="failMsg" jdbcType="VARCHAR" />
+
+  </resultMap>
+  <sql id="Base_Column_List" >
+    a.rg_id, a.ds_type, a.region_id, a.data_time, a.crop_id, a.resolution, a.image_title, a.storage_path,a.rg_status,
+    a.data_status, a.del_flag, a.create_time, a.creator_name, a.creator, a.modify_time, a.modifier_name,
+    a.modifier, a.remark,a.fail_msg
+  </sql>
+
+
+  <select id="findById" parameterType="Integer" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from ds_resultimage a
+    where a.del_flag = '1' and a.data_status = '1' and a.rg_id = #{rgId,jdbcType=INTEGER}
+  </select>
+
+
+  <select id="findByPage" parameterType="DsResultimage" resultMap="BaseResultMap">
+
+    select a.rg_id, a.image_title, a.region_id, a.ds_type, a.crop_id, a.resolution,a.data_time,a.rg_status,a.storage_path,a.create_time,publish_status,publisher,publisher_name
+    from ds_resultimage a
+    left join init_region e on a.region_id = e.region_id
+    where  a.data_status = '1' and a.del_flag = '1'
+      <if test="regionCode != null and regionCode != ''">
+        and e.region_code like #{regionCode, jdbcType=VARCHAR} || '%'
+      </if>
+      <if test="dsType != null and dsType != ''">
+        and a.ds_type = #{dsType,jdbcType=INTEGER}
+      </if>
+      <if test="cropId != null and cropId != ''">
+        and a.crop_id = #{cropId,jdbcType=INTEGER}
+      </if>
+      <if test="resolution != null and resolution != ''">
+        and a.resolution = #{resolution,jdbcType=INTEGER}
+      </if>
+      <if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+        and a.data_time BETWEEN to_date(#{startDate,jdbcType=VARCHAR},'yyyy-MM-dd') and to_date(#{endDate,jdbcType=VARCHAR},'yyyy-MM-dd')
+      </if>
+      <if test="rgStatus != null and rgStatus != ''">
+        and a.rg_status = #{rgStatus,jdbcType=INTEGER}
+      </if>
+      <if test="publishStatus != null and publishStatus != ''">
+        and a.publish_status = #{publishStatus,jdbcType=INTEGER}
+      </if>
+      <if test="imageTitle != null and imageTitle != ''">
+        and a.image_title like '%' || #{imageTitle, jdbcType=VARCHAR} || '%'
+      </if>
+      ORDER BY
+      <choose>
+        <when test="sidx != null and sidx != ''">
+          ${sidx} ${sord}
+        </when>
+        <otherwise>
+          a.rg_status=1005 desc,a.rg_status,a.publish_status=2704 desc,a.publish_status,a.ds_type,a.modify_time desc
+        </otherwise>
+      </choose>
+  </select>
+
+
+  <!--只针对未激活的影像数据进行激活-->
+  <update id="updateResultimageByIds" parameterType="DsResultimage" >
+      update ds_resultimage set rg_status = #{rgStatus,jdbcType=INTEGER},modify_time =now(), modifier = #{modifier,jdbcType=INTEGER}, modifier_name = #{modifierName,jdbcType=VARCHAR}
+    WHERE del_flag = '1' and data_status = '1' and rg_status in (1001,1004,1005)  and rg_id in
+
+        <foreach collection="rgIds" item="id" separator="," open="(" close=")">
+          #{id}
+        </foreach>
+  </update>
+
+  <update id="updateResultimageWithPublish" parameterType="DsResultimage">
+    update ds_resultimage set publish_status = #{publishStatus,jdbcType=INTEGER},publish_time =now(), publisher = #{modifier,jdbcType=INTEGER}, publisher_name = #{modifierName,jdbcType=VARCHAR}
+    where rg_id = #{rgId,jdbcType=INTEGER}
+
+  </update>
+
+  <insert id="save" parameterType="DsResultimage">
+    insert into ds_resultimage
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="dsType != null" >
+        ds_type,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="dataTimeStr != null" >
+        data_time,
+      </if>
+      <if test="cropId != null" >
+        crop_id,
+      </if>
+      <if test="resolution != null" >
+        resolution,
+      </if>
+      <if test="imageTitle != null" >
+        image_title,
+      </if>
+      <if test="storagePath != null" >
+        storage_path,
+      </if>
+        create_time,
+      <if test="creatorName != null">
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="rgStatus != null">
+        rg_status,
+      </if>
+      <if test="publishStatus != null">
+        publish_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="dsType != null" >
+        #{dsType,jdbcType=INTEGER},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="dataTimeStr != null" >
+          to_date(#{dataTimeStr,jdbcType=VARCHAR},'yyyy-MM-dd'),
+      </if>
+      <if test="cropId != null" >
+        #{cropId,jdbcType=INTEGER},
+      </if>
+      <if test="resolution != null" >
+        #{resolution,jdbcType=INTEGER},
+      </if>
+      <if test="imageTitle != null" >
+        #{imageTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="storagePath != null" >
+        #{storagePath,jdbcType=VARCHAR},
+      </if>
+      now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="rgStatus != null">
+        #{rgStatus,jdbcType=INTEGER},
+
+      </if>
+      <if test="publishStatus != null">
+        #{publishStatus,jdbcType=INTEGER},
+      </if>
+    </trim>
+
+  </insert>
+
+  <update id="update" parameterType="DsResultimage">
+    update  ds_resultimage
+    <set >
+      <if test="remark != null" > remark = #{remark},</if>
+      <if test="dataStatus != null" > data_status = #{dataStatus},</if>
+      <if test="delFlag != null" > del_flag = #{delFlag}, </if>
+      modify_time = now(),
+      <if test="modifierName != null" > modifier_name = #{modifierName},</if>
+      <if test="modifier != null" > modifier = #{modifier}, </if>
+      <if test="regionId != null" > region_id = #{regionId}, </if>
+      <if test="cropId != null" > crop_id = #{cropId}, </if>
+      <if test="dsType != null" > ds_type = #{dsType}, </if>
+      <if test="dataTimeStr != null" > data_time = to_date(#{dataTimeStr,jdbcType=VARCHAR},'yyyy-MM-dd') ,</if>
+      <if test="imageTitle != null" > image_title = #{imageTitle}, </if>
+      <if test="resolution != null" > resolution = #{resolution}, </if>
+      <if test="publishStatus != null" > publish_status = #{publishStatus}, </if>
+      <if test="publishTime != null" > publish_time = #{publishTime}, </if>
+      <if test="publisherName != null" > publish_name = #{publishName}, </if>
+      <if test="publisher != null" > publisher = #{publisher}, </if>
+    </set>
+    where 1=1
+    <if test="rgId!=null and rgId!=''">
+      AND  rg_id = #{rgId,jdbcType=INTEGER}
+    </if>
+  </update>
+
+
+</mapper>

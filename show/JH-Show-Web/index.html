@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="">
+<title></title>
+<style>
+html,body{ margin:0; padding:0;height: 100%; font-size:12px;  color:#000;}
+div, p, ul, h2, img{margin:0px; padding:0px;}
+ul, li{ list-style:none; margin:0; padding:0}
+a{color:#d38600; text-decoration:none;}
+a:hover{color:#ebb600; text-decoration:underline;}
+img{ border:none;}
+.red{ color:#d38600;}
+
+.input input:focus{ background:#feffe9;}
+.top{ height:10%; padding:2% 0 0 60px}
+.loginBtnWrap{ position:absolute; top:20px; right:20px;}
+.loginBtn{width:50px; height:30px; background:#0896d5; color:#fff; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+
+.main{ height:100%; min-height: 600px; width:100%;display:block;  margin:0 auto; background-position: center center; background-repeat: no-repeat; background-size:100% 100%; }
+.right{float:left;width:50%; margin:0 5% 0 0; text-align:right; }
+.inputWrap{float:left; width:240px;   padding:28px 2% 38px 2%; margin: 6% 0 0 60%;; background:rgba(0, 0, 0, 0.5); box-shadow:0 0px 0px 0px #24a1ce; border-radius:3px; }
+.login{font-size:22px; margin:0 0 10px 0; text-align:center; color:#fff; font-family:"黑体";}
+.wrong{ height:30px; line-height:30px;color:#f20101;}
+.input{ line-height:30px; margin-bottom:15px;}
+.button{width:100%; height:37px; background:#d38600; color:#FFFFFF; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+.zc{height:30px; line-height:30px; text-align:right;color:#CCCCCC;}
+.inputStyle{height:30px; line-height:30px; width:100%; border:1px solid #ccc; border-radius:3px; color:#000;text-indent:3px;background-color:#ffffff !important;}
+.inputStyle2{ width:50%;}
+.copyright{ clear:both;line-height:30px; width:100%; position:fixed;bottom:0; text-align:center; color:#000; font-size:12px; background:rgba(255, 255, 255, 0.3);}
+.orange{color:#FF9900;}
+.yz{ position:absolute; top:0; right:0; cursor:pointer;}
+</style>
+</head>
+<body>
+    
+	<div class="main">
+		<div  class="top"><img src="" />
+		<!--	<span class="loginBtnWrap"><input type="button" class="loginBtn" value="登录" /> </span>-->
+		</div>
+		<!-- <div class="right" ><img src="img/login/earth.png" width="461" height="461" /></div> -->
+		<form action="target.html">
+	    <div class="inputWrap">
+		    <div class="login">用户登录</div>
+			<div id="liError"class="wrong"> &nbsp; </div>
+		    <div class="input" ><input class="inputStyle" type="text" name="username" style="background-color:#ffffff !important;" placeholder="请输入手机号码" id="txtUsername"/></div>
+		    <div class="input"><input  class="inputStyle" type="password" name="password" style="background-color: #ffffff !important;" placeholder="输入密码(密码长度在6-20位)"  id="txtPwd"/></div>
+	        <div class="input" style="position:relative;" ><input  class="inputStyle inputStyle2" type="text" name="code" style="background-color:#ffffff !important;" placeholder="请输入验证码" id="txtValidCode"/><span class="yz" id="dsuccess"><img src="" width="100" height="32" id="imgValidCode"  /></span></div>
+			<div><input type="button" class="button"  value="登录"  id="btnSubmit" /></div>
+			<!-- <div class="zc"><a href="forgotPwd.html">忘记密码? </a> &nbsp;| &nbsp;<a href="register.html"> 注册</a></div> -->
+	    </div>
+		</form>
+		<div style="clear:both;"></div>
+		<!--<div class="copyright" id="copyright">copyright©珈和科技版权所有</div>-->
+		<div class="copyright" id="copyright"></div>
+	</div>
+	
+</body>
+
+</html>
+<script src="js/lib/require/require.js"></script>
+<script src="js/require.config.js"></script>
+<!-- <script src="js/login.js"></script> -->
+<script>
+	require(["jquery","BaseAjax","JHModule","UserModule","formVerfication","custom_settings"],function($,BaseAjax,JHModule,UserModule,formVerfication,custom_settings){
+		/**
+		 * 设置logo、title、ico的公共部分设置
+		 * @param
+		 * @version<1> 2018-11-21 limeiling:created
+		 */
+		function commonSetting(){
+			/**设置页面title */
+			$(document).attr('title',custom_settings.public_title);
+			/**设置页面title小图标*/
+			var link = document.querySelector("link[rel*='icon']");
+			link.href = custom_settings.ico_href;
+			/**设置页面logo*/
+            $('.main .top img').attr('src',custom_settings.login_logo);
+            /**设置背景图*/
+            $('.main').css('background-image','url('+custom_settings.login_background+')');
+			/**设置页面底部copyright信息*/
+			$("#copyright").html(custom_settings.login_copyright);
+		};
+		commonSetting();
+		
+		
+		var liError = document.getElementById("liError");
+		var btnSubmit = document.getElementById("btnSubmit");
+		var txtUsername = document.getElementById("txtUsername");
+		var txtPwd = document.getElementById("txtPwd");
+		var txtValidCode = document.getElementById("txtValidCode");//验证码输入框
+		var imgValidCode = document.getElementById("imgValidCode");//验证码图片控件
+
+		var base64 = new JHModule.Base64();
+
+		/*
+		 * 使用token+验证码进行后台校验
+		 * 1.先验证验证码
+		 * 2.验证码验证通过后验证用户名和密码，并进行登录
+		 * @version <1> 2017-11-28 lcw : created.
+		 */
+		var validToken = base64.guid(); //唯一码
+		var validUrl = System_Env.Login_Valid_Code_URL + validToken;
+		imgValidCode.src =validUrl +"&timestamp="+new Date().getTime();//生成验证码，默认请求一次
+
+		//重置验证码
+		imgValidCode.onclick = function(){
+			this.src = validUrl +"&timestamp="+new Date().getTime(); //点击请求
+		}
+
+		/*
+		 * 回车登录事件
+		 * @version <1> 2017-12-04 cxw : created.
+		 */
+		document.onkeydown = function (event) {
+			var e = event || window.event || arguments.callee.caller.arguments[0];
+			if (e && e.keyCode == 13) {
+				btnSubmit.onclick();
+			}
+		}
+
+		/**
+		 *登录按钮提交事件：
+		 *1. 同步请求验证码是否通过
+		 *2. 请求用户登录
+		 *@version <1> 2017-12-24 lcw:Created.
+		 */
+		btnSubmit.onclick = function(){
+			if(checkPhoneInput($('#txtUsername'))){
+				return false;
+			}
+			else if(checkPasswordInput($('#txtPwd')))
+			{
+				return false;
+			}
+			else if(txtValidCode.value==null||txtValidCode.value=="")
+			{
+				liError.innerHTML="验证码不能为空";
+				return ;
+			}
+
+			var username = txtUsername.value.trim();
+			var pwd = txtPwd.value;
+//			var data = {'accountName':username,'pwd':base64.encode(pwd),'validCode':txtValidCode.value,'validToken':validToken};
+
+			var permAccount = {'accountName': username,
+				'accountPwd': base64.encode(pwd)
+			};
+
+			var jsonData = {
+				'permAccount':permAccount,
+				'validToken': validToken,
+				'verifyCode': txtValidCode.value
+			};
+
+
+
+			var ajax = new BaseAjax();
+			ajax.opts.url = System_Env.Login_URL;
+			ajax.opts.data=JSON.stringify(jsonData);
+			ajax.opts.async = false;
+//			ajax.opts.type = "GET";
+			ajax.opts.contentType = "application/json";
+			ajax.opts.successFun = function(result){
+				//1. 登录成功后，在cookie中保存stoken,30分钟
+				// console.log(result.data.userInfo.accountId,'.....');
+				if(result.flag){
+					if (!result.data.defaultProduct){
+						resetValidCode("没有权限,请联系平台管理员");
+					} else {
+						var accessToken = result.data['AccessToken'];
+						
+						UserModule.UserUtil.saveUserInfo(accessToken,result.data);
+						if(custom_settings.home_html){
+                            location.href = custom_settings.home_html;
+						}else{
+                            location.href="home.html";
+						}
+
+					}
+				}else{
+					resetValidCode(result.msg);
+				}
+			};
+			ajax.opts.errorFun = function(){
+				var msg="登录失败，请联系管理员";
+				resetValidCode(msg);
+			};
+			ajax.run();
+		};
+
+		/**
+		 * 验证码错误时，重置
+		 * version <1> 2017-12-24 Hayden :Created.
+		 */
+		function resetValidCode(msg){
+			$("#imgValidCode").html("");
+			imgValidCode.src =validUrl +"&timestamp="+new Date();// 请求失败时，替换验证码
+			liError.innerHTML=msg;
+			txtValidCode.value="";
+			txtValidCode.focus();
+		}
+
+		/*
+		 *检验手机号码输入
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPhoneInput = function(obj){
+			//clearErrorInfo(obj);
+			liError.innerHTML = '';
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('手机号码不能为空'));
+				liError.innerHTML = "手机号码不能为空";
+				return true;
+			}else if(!formVerfication.isPhone(obj.val())){
+				//obj.parent().append(getHtml('手机号码格式不正确'));
+				liError.innerHTML = "手机号码格式不正确";
+				return true;
+			}
+			return false;
+		};
+
+		/*
+		 *密码验证
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPasswordInput = function(obj){
+			liError.innerHTML = '';
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('密码不能为空'));
+				liError.innerHTML = "密码不能为空";
+				return true;
+			}else if(!formVerfication.isScopeLength(obj.val(),6,20)){
+				//obj.parent().append(getHtml('密码长度在6-20位'));
+				liError.innerHTML = "密码长度在6-20位";
+				return true;
+			}
+			return false;
+		};
+
+		/*//输入框鼠标触发事件
+		 $("#txtUsername").focus(function(){
+		 $("#txtUsername").val('');
+		 });*/
+
+		$(document).ready(function(){
+			if(JHModule.CookieUtil.getCookie("registerPhone"))
+				$("#txtUsername").val(JHModule.CookieUtil.getCookie("registerPhone"));
+			var date = new Date().getFullYear();
+		});
+	});
+
+</script>

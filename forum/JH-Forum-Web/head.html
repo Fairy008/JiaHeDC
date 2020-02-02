@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="description" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <meta name="Keywords" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <style>
+        *{margin:0;padding:0;}
+        ul li{list-style-type: none;}
+        body{ min-width: 1326px;}
+
+        .rightTop{ height: 62px;position:fixed;width:100%;z-index:98;top:0;background-color:#fff;}
+        .rightTop .box{ width: 100%; margin:0 auto; height: 62px;width: calc(100% + 90px); }
+        .rightTop{
+            height: 62px;
+            /* position: fixed; */
+            /* width: 100%; */
+            top: 30px;
+            background-color: #fff;
+            width: calc(100% - 14%);
+            /*left:110px;*/
+            left: 7%;
+            height: 156px;
+            position: absolute;
+        }
+        .clearfix:after {
+            content: ".";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+        .box .logo{ float: left;margin-top:10px;cursor: pointer;box-sizing: border-box }
+        .liA{ float: left; height: 62px; line-height: 62px;width:70%;margin-left: 3%;margin-top: -3px}
+        .liA li.home{
+            margin-left: 15px;
+        }
+        .liA li{ float: left; color:#242b33; font-size: 16px; margin-right: 50px;}
+        /*.liA li:last-child{ margin-right: 0;float:right;margin-right: -10%;position: absolute;top:60px;width: 75%;}*/
+        /*.liA li.home a{ background: url('images/public/forum/home_icon.png') left center no-repeat; padding-left:23px;}*/
+        .liA li a{text-decoration:none; color: #000;font-weight: bold;font-size: 18px}
+        .liA li a.on{ color: #0da6e6;}
+        .liA li a:hover{ cursor: pointer;}
+        /*搜索框*/
+        /*.liA li .searchBox{ margin-top: 11px; background: #f6f6f6; box-sizing: border-box; height: 40px; line-height: 40px; padding: 0 15px; border:1px solid #e6e6e6;border-radius: 4px}*/
+        /*.liA li .searchBox input[type="text"]{ height: 20px; width: 90%;vertical-align: text-bottom; border:0; outline: none; background: transparent;}*/
+        /*.liA li .searchBox span.button{*/
+        /*    margin-top: -1px;*/
+        /*    margin-right: -16px;*/
+        /*    width: 46px;*/
+        /*    height: 40px;*/
+        /*    border: none;*/
+        /*    outline: none;*/
+        /*    background: #2085f1 url(./img/icon-search.png) 10px no-repeat;*/
+        /*    float: right;*/
+        /*    padding-left: 33px;*/
+        /*    font-size: 15px;*/
+        /*    color: white;*/
+        /*    border-radius: 4px;*/
+        /*    cursor: pointer;*/
+        /*}*/
+        /*.liA li .searchBox input[type="button"]:hover{ cursor: pointer;}*/
+
+
+        .qrCode{width:60px;float:left;vertical-align: middle;text-align:center;position:relative;}
+        .qrCode>p{height:62px;line-height:62px;display:inline-block;width:60px;}
+        .qrCode>p:hover{cursor: pointer;}
+        .qrCode img{vertical-align:middle;}
+
+
+        /*个人中心*/
+        .userDiv{
+            /*float:right;*/
+            /*width:110px;*/
+            position: absolute;
+            right: -60px;
+        }
+        .user{ position: relative; float: right; font-size: 14px; line-height: 62px; height: 62px; }
+        .user a{ color: #242b33; text-decoration: none; }
+        .user span{ color: #040000;}
+        .user span.user{ display: block;max-width: 167px;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;padding-left: 5px;}
+        .user.noLogin span{ margin: 0 15px; font-weight: bold; font-size: 15px;}
+        .user.noLogin{ display: none;}
+        .user.isLogin{ display: none;}
+        .user a i img{ margin-top:10px;width: 46px;height: 46px;border-radius: 50%;}
+        .user.isLogin #userNameDiv{display: inline-block;height: 62px;padding-right: 20px;float: left;}
+
+        .user .userContent{padding: 12px 0;z-index: 9999;position:absolute;top:72px ;left:76px;background-color:#fff;border-radius:5px;border:1px solid #d5d5d5;}
+        .user .userContent:before{position: absolute;content: "";width: 0;height: 0;left: 44px;top: -22px;border-bottom: 11px solid #d5d5d5;border-top: 11px solid transparent;border-right: 11px solid transparent;border-left: 11px solid transparent;}
+        .user .userContent:after{position: absolute;content: "";width: 0;height: 0;left: 45px;top: -20px;border-bottom: 10px solid #fff;border-top: 10px solid transparent;border-right: 10px solid transparent;border-left: 10px solid transparent;}
+
+        .user .userContent li{width:98px;height:35px;line-height:35px;padding-left:0;}
+        .user .userContent .solid{height:1px;padding-left:50px; border-bottom:1px solid #d5d5d5;}
+        .user .userContent li a{height:35px;line-height:35px; display: block; padding-left:33px; background: url('images/public/forum/users.png') 0 0 no-repeat;}
+        .user .userContent li a.cmsHome{ background-position: 14px 9px;}
+        .user .userContent li a.myHome{ background-position: 14px 9px;}
+        .user .userContent li a.exit{ background-position: 14px -39px;}
+        .user .userContent li:hover{cursor:pointer;}
+
+        /*回到顶部*/
+        .returnTop{ position: fixed; bottom: 30px; color: transparent; width: 38px; font-size: 12px;line-height: 16px;padding: 2px 6px;box-sizing: border-box; height: 38px; background: #F5A836 url("images/public/forum/returnTop.png") center center no-repeat; border:1px solid #e2e2e2; border-radius: 5px;}
+        .returnTop:hover{  background: #F5A836; cursor: pointer; color: #fff;}
+
+
+        .onlineTool{
+            position: fixed; right:6px;z-index: 100000;
+        }
+
+        /*在线客服*/
+        .talkOnLine{display:block;   font-size: 12px;padding: 50px 0px 0px 0px;box-sizing: border-box; height: 68px;width:70px;  color:#cccccc;text-align:center;}
+        .talkOnLine:hover{  cursor: pointer; }
+
+        .orderOnline{background: white url("./img/right-icon1.png") center 10px no-repeat;border-radius:5px 5px 0 0;border-bottom:1px solid #e2e2e2; }
+        .orderOnline:hover{background:white url("./img/right-icon1H.png") center 10px no-repeat;color:#F5A836}
+        .chartOnline{background: white url("./img/right-icon2.png") center 10px no-repeat;border-bottom:1px solid #e2e2e2; }
+        .chartOnline:hover{background:white url("./img/right-icon2H.png") no-repeat center 10px;color: #F5A836}
+        .topOnline{background: white url("./img/right-icon4.png") center 10px no-repeat;border-radius:0 0 5px 5px; }
+        .topOnline:hover{background:white url("./img/right-icon4H.png") no-repeat center 10px;color: #F5A836}
+        .weChat_icon{background: white url("./img/right-icon3.png") no-repeat center 10px;border-radius:0 0 5px 5px;border-bottom:1px solid #e2e2e2;}
+        .weChat_icon:hover{background:white url("./img/right-icon3H.png") no-repeat center 10px;color: #F5A836}
+
+        #menuInfo{ display: none; position: fixed; left:0; top:0; width: 100%;height: 100%; z-index: 99; background: rgba(0,0,0,0.4)}
+
+        /*登录框和注册框*/
+        .popBox{ display: none; background: #fff; padding: 31px 30px 46px 30px; box-sizing: border-box; position: absolute;left: 50%; top:50%; margin-top:-204px; margin-left: -160px; height: 408px; width: 320px; border-radius: 3px;}
+        .popBox .closeBtn{ position: absolute; right:10px; top: 10px; width: 22px; height: 22px; display: block; background: url("images/public/forum/closed.png") center center no-repeat;}
+        .popBox .closeBtn:hover{ cursor: pointer;}
+        .popBox .login,.popBox .register,.popBox .updPwd{ font-size: 18px; font-weight: bold; color: #1a1a1a; border-bottom: 1px solid #f0f0f0; padding-bottom: 24px;}
+        .popBox .input input{ color: #555; width: 260px; height: 36px; background: #f6f6f6; line-height: 36px; font-size: 14px; border-radius: 3px; border:1px solid #e9e9e9; padding:0 8px; margin-bottom: 17px; box-sizing: border-box;}
+        ::-webkit-input-placeholder { /* WebKit browsers */
+            color:    #c2c2c2;
+        }
+        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color:    #c2c2c2;
+        }
+        ::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color:    #c2c2c2;
+        }
+        :-ms-input-placeholder { /* Internet Explorer 10+ */
+            color:    #c2c2c2;
+        }
+        .popBox .input:first-of-type{ margin-top:30px; }
+        .popBox .wrong { font-size: 14px; height: 30px;line-height: 30px;color: #f20101;}
+        .popBox #code,.popBox #pvalicode,.popBox #validCode{ width: 143px; }
+        .forgetPwdBtn{cursor:pointer; margin-top:15px; height: 38px; line-height: 38px; width: 100%; font-size: 14px; color: #fff; border-radius: 3px; background: #007ac4; text-align: center; }
+        .popBox #pvClickBtn{ width: 110px; height: 36px; text-align: center; font-size: 13px; color: #007ac4; }
+        .popBox #pvClickBtn:hover{ cursor: pointer;}
+        .popBox #pClickBtn{ width: 110px; height: 36px; text-align: center; font-size: 13px; color: #007ac4; }
+        .popBox #pClickBtn:hover{ cursor: pointer;}
+        .popBox .yz{ vertical-align: middle; float: right;cursor: pointer}
+        .popBox #btnLogin,.registerBtn{cursor: pointer; margin-top:15px; height: 38px; line-height: 38px; width: 100%; font-size: 14px; color: #fff; border-radius: 3px; background: #007ac4; text-align: center; }
+        .popBox .zc{ float: right; margin-top:12px; font-size: 12px; color: #007ac4; font-weight: bold; }
+        .popBox .zc a{ font-size: 14px; color: #007ac4; font-weight: normal;vertical-align: text-bottom;}
+        .popBox .zc a:first-child{ margin-right: 12px;}
+        .popBox .zc a:last-child{ margin-left: 7px;}
+
+        /*注册成功页面*/
+        .popBox .succInfo{ height: 300px; padding-top:126px; background: url("images/public/forum/success.png") center 40px no-repeat; }
+        .popBox .succInfo h1{ font-size: 28px; color: #000; text-align: center; }
+        .popBox .succInfo p{ text-align: center;}
+        .popBox .succInfo p.jump{ margin-top:23px; font-size: 14px; color: #393939; }
+        .popBox .succInfo p.jump i{ color: #ce0018;}
+        .popBox .succInfo p.clickLogin{ margin-top:32px;}
+        .popBox .succInfo p.clickLogin a{ font-size: 16px; color: #007ac4; }
+        .popBox .succInfo p.clickLogin a:hover{ cursor: pointer;}
+
+        /*忘记密码页面*/
+        .popBox.forgetPwdBox{height: 430px;}
+
+
+
+        /*android和IOS下载*/
+        .triangle {
+            display:none;
+            width: 320px;
+            height: 100px;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            background-color:#fff;
+            position:absolute;
+            top:75px;
+        }
+
+        .triangle:before {
+            position: absolute;
+            content: "";
+            top: -15px;
+            left: 25px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 15px solid #fff;
+        }
+        /* 白色覆盖*/
+        .triangle:after {
+            position: absolute;
+            content: "";
+            /*减少两像素*/
+            top: -8px;
+            left: 25px;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-bottom: 10px solid #fff;
+        }
+
+
+        .triangle > div{float:left;}
+        .downloadIcon {width:100px;height:100px;line-height: 100px;}
+        .downloadDesc{width:200px;height:100px;padding:20px 10px 10px 10px;text-align:left;position:relative;}
+        .downloadDesc h2{width:100%;height:26px;line-height:26px;font-size:18px;color:#242b33; }
+        .downloadDesc p{width:100%;height:26px;padding-top:18px;color:#9a9a9a;}
+
+        .downloadDesc .downloadClose{position:absolute;top:8px;right:10px;cursor:pointer;}
+        .search_criteria{
+            display: inline-block;
+            width: 400px;
+            height:30px;
+            position: absolute;
+            top:50px;
+            left: 10px;
+        }
+        .search_criteria ul{
+            width: 400px;
+            height: 30px;
+        }
+        .search_criteria ul li{
+            float: left;
+            min-width: 50px;
+            height: 20px;
+            line-height: 30px;
+            text-align:center;
+        }
+        .shoppingBox{
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            cursor: pointer;
+        }
+        .shoppingCarIcon{
+            display: inline-block;
+            width: 26px;
+            height: 38px;
+            background: url(./img/icon-shopping.png) no-repeat 1px -1px;
+            background-size: 100%;
+        }
+        .shoppingContent{
+            display: inline-block;
+            width: 45px;
+            height: 60px;
+            font-size: 15px;
+            position: absolute;
+            top: 2px;
+            left: 30px;
+        }
+        .shoppingCarNum{
+            display: inline-block;
+            font-size: 16px;
+            position: absolute;
+            font-weight: bold;
+            left: 78px;
+            top: 2px;
+            color: red !important;
+        }
+
+        .maskBox{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width:100%;
+            height: 100%;
+            z-index: 1000;
+            background-color:black;
+            opacity: 0.7;
+        }
+        .shoppingCar_promptBox{
+            position: fixed;
+            top:200px;
+            width: 300px;
+            height:120px;
+            left:calc(50% - 200px);
+            background-color: white;
+            z-index: 1001;
+            border-radius: 6px;
+        }
+        .login_promptBox ,.shopping_repart,.checkShopBox,.pay_repart,.collectBox{
+            position: fixed;
+            top:200px;
+            /*width: 400px;*/
+            /*height:200px;*/
+            width: 300px;
+            height: 120px;
+            left:calc(50% - 200px);
+            background-color: white;
+            z-index: 1001;
+            border-radius: 6px;
+        }
+        .closeBox{
+            width: 100%;
+            height: 30px;
+        }
+        .closeBox span.closeIcon{
+            display: inline-block;
+            float: right;
+            margin-top: 7px;
+            margin-right: 7px;
+            width: 18px;
+            height: 18px;
+            background: url(./img/close.png) no-repeat center;
+            background-size: 100%;
+            cursor: pointer;
+        }
+        .shoppingCar_content{
+            width: 100%;
+            height: 80px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .shoppingCar_message{
+            display: inline-block;
+            width: 200px;
+            height: 30px;
+            font-weight: bold;
+            font-size: 20px;
+            color: black;
+            background: url(./img/success.png) no-repeat left;
+            background-size: 28px 28px;
+            padding-left: 15px;
+            padding-top: 2px;
+            background-position: 2px 0px;
+        }
+        .commit_promptBox,.download_promptBox{
+            position: fixed;
+            top:200px;
+            width: 400px;
+            height:200px;
+            left:calc(50% - 200px);
+            background-color: white;
+            z-index: 1001;
+            border-radius: 6px;
+        }
+        .commit_content{
+            display: inline-block;
+            margin-left: 100px;
+            width: 200px;
+            height: 35px;
+            font-weight: bold;
+            font-size: 22px;
+            color: #01e401;
+            background: url(./img/success.png) no-repeat left;
+            background-size: 32px 32px;
+            padding-left: 40px;
+            padding-top: 0px;
+            background-position: 2px -2px;
+            margin-top: 40px;
+        }
+        .commit_foot{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 15px;
+            color: black;
+            font-weight: bold;
+        }
+        .download_promptBox{
+            width: 460px;
+        }
+        .download_promptBox .owner{
+            width:100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            background: url("./img/downloadBG.jpg") no-repeat center;
+            background-size: 94% auto;
+        }
+        .download_promptBox .owner span.fl{
+            display: inline-block;
+            float: left;
+        }
+        .download_promptBox .owner .owner_ing{
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            /*background: url(images/public/forum/userImg.png) no-repeat;*/
+            background-size: 100%;
+            position: absolute;
+            left: 27px;
+            top: 40px;
+        }
+        .download_promptBox .owner .owner_ing img{
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        .download_promptBox .owner .owner_name{
+            display: inline-block;
+            /*width: 100px;*/
+            height: 30px;
+            font-size: 14px;
+            margin-left: 70px;
+        }
+        .download_promptBox .owner .download_meaage{
+            display: inline-block;
+            width: 240px;
+            height: 30px;
+            color: #d69809;
+        }
+        .download_content{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            font-size:16px;
+            /*font-weight: bold;*/
+            text-align: center;
+            margin-top: 10px;
+        }
+        .download_foot{
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+        }
+        .download_bottonTrue{
+            display: inline-block;
+            width: 70px;
+            height: 30px;
+            background: url(./img/icon-downloadW.png) no-repeat 3px 5px;
+            background-size: 20px;
+            padding-left: 30px;
+            line-height: 30px;
+            background-color: #36d400;
+            color: white;
+            font-size: 15px;
+            border-radius: 4px;
+            margin-left: 130px;
+        }
+        .download_bottonCancal{
+            display: inline-block;
+            width: 70px;
+            height: 30px;
+            background-size: 20px;
+            padding-left: 10px;
+            line-height: 30px;
+            background-color: #2085f1;
+            color: white;
+            font-size: 15px;
+            border-radius: 4px;
+            margin-left: 10px;
+        }
+        .search_tital{
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .search_content span{
+            font-size: 14px;
+            padding-left: 10px;
+            padding-right: 10px;
+            cursor: pointer;
+        }
+        .noLogin a{
+            padding: 6px 30px 6px 30px;
+            color: #2085f1;
+            border-radius: 4px;
+        }
+        .noLogin a.active{
+            color: white;
+            background-color: #2085f1 ;
+        }
+
+        .partners_logo_1{
+            background: url("./img/logo1.png") no-repeat top 100%;
+        }
+        .partners_logo_2{
+            background: url("./img/logo2.png") no-repeat top 100%;
+        }
+        .partners_logo_3{
+            background: url("./img/logo3.png") no-repeat top 100%;
+        }
+        .partners_logo_4{
+            background: url("./img/logo4.png") no-repeat top 100%;
+        }
+        .partners_logo_5{
+            background: url("./img/logo5.png") no-repeat top 100%;
+        }
+        .partners_logo_6{
+            background: url("./img/logo6.png") no-repeat top 100%;
+        }
+        .partners_logo_7{
+            background: url("./img/logo7.png") no-repeat top 100%;
+        }
+        .partners_logo_8{
+            background: url("./img/logo8.png") no-repeat top 100%;
+        }
+        .partners_logo_9{
+            background: url("./img/logo9.png") no-repeat top 100%;
+        }
+        .partners_logo_10{
+            background: url("./img/logo10.png") no-repeat top 100%;
+        }
+        .partners_logo_11{
+            background: url("./img/logo11.png") no-repeat top 100%;
+        }
+        .partners_logo_12{
+            background: url("./img/logo12.png") no-repeat top 100%;
+        }
+        .partners_logo_13{
+            background: url("./img/logo13.png") no-repeat top 100%;
+        }
+        .partners_logo_14{
+            background: url("./img/logo14.png") no-repeat top 100%;
+        }
+        .download_bottonTrue,.download_bottonCancal{
+            cursor: pointer;
+        }
+        .searchContentBox{
+            width: 100%;
+            height: 100px;
+            position: absolute;
+            display: block;
+            width: 80%;
+            left: 10%;
+        }
+        .searchContentBox .searchBox{ margin-top: 11px; background: #f6f6f6; box-sizing: border-box; height: 40px; line-height: 40px; padding: 0 15px; border:1px solid #e6e6e6;border-radius: 4px}
+        .searchContentBox .searchBox input[type="text"]{ height: 20px; width: 90%;vertical-align: text-bottom; border:0; outline: none; background: transparent;}
+        .searchContentBox .searchBox span.button{
+            margin-top: -1px;
+            margin-right: -16px;
+            width: 46px;
+            height: 40px;
+            border: none;
+            outline: none;
+            background: #2085f1 url(./img/icon-search.png) 10px no-repeat;
+            float: right;
+            padding-left: 33px;
+            font-size: 15px;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .searchContentBox .searchBox input[type="button"]:hover{ cursor: pointer;}
+        .writeReport_build{
+            display: none;
+            width: 180%;
+            height: 40px;
+            position: relative;
+            z-index: 2000;
+            top: -10px;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            line-height: 40px;
+            border:1px solid #cccccc;
+            border-radius: 4px;
+            background-color: #cccccc;
+        }
+
+        .sanjiao_1{
+            display: inline-block;
+            /*right: 55px;*/
+            left: 35px;
+            width: 0;
+            height: 0;
+            top: -27px;
+            border-width: 13px;
+            border-style: solid;
+            border-color:  transparent transparent #cccccc transparent;
+            position: absolute;
+        }
+
+        .tabBox{
+            display: none;
+            position: absolute;
+            display: none;
+            font-size: 0;
+            top: 125px;
+            left: 435px;
+            width: 230px;
+            text-align: center;
+            background: #fff;
+            z-index:99;
+            box-sizing: border-box;
+        }
+        #tabBox::after{
+            content: '';
+            display: block;
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            margin-left: -10px;
+            border-width: 10px;
+            border-style: solid;
+            border-color: transparent transparent #fff transparent;
+            z-index: 100;
+        }
+
+         .tabBox .tab_panel {
+            padding: 20px 0;
+            box-sizing: border-box;
+             cursor: pointer;
+        }
+
+        .tab_panel .tab_ico {
+            display: inline-block;
+            vertical-align: middle;
+            width: 30px;
+            height: 30px;
+            margin-right: 20px;
+        }
+
+        .tab_panel .tab_ico.ico01{
+            background: url("./images/product/menu/tab1.png") no-repeat;
+        }
+        .tab_panel .tab_ico.ico02{
+            background: url("./images/product/menu/tab2.png") no-repeat;
+        }
+
+        .tab_panel.selected .ico01{
+            background: url("./images/product/menu/tab1_active.png") no-repeat;
+        }
+        .tab_panel.selected .ico02{
+            background: url("./images/product/menu/tab2_active.png") no-repeat;
+        }
+        .tab_panel.selected .tab_panel_info p{
+            color: #00a6d6;
+        }
+
+        .tab_panel_info {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 14px;
+            color: #000000;
+            text-align: left;
+        }
+
+        /*#tan_f {
+            position: relative;
+        }
+
+        #tan_f::after {
+            content: "";
+            display: block;
+            position: absolute;
+            right: -1px;
+            top: 50%;
+            width: 2px;
+            height: 36px;
+            transform: translate(-50%, -50%);
+            background-color: #dadada;
+            !* transform: translateY(-50%); *!
+        }*/
+
+        .tab_panel_info p:nth-child(2) {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+        .liA li .arrow{
+            display: inline-block;
+            vertical-align: baseline;
+            width: 14px;
+            height: 14px;
+            margin-left: 5px;
+            background: url("./images/product/arrow.png") no-repeat;
+            background-size: 14px;
+        }
+
+        .liA li .on+.arrow{
+            background: url("./images/product/arrow_active.png") no-repeat;
+            background-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="rightTop" id="headRightTop">
+    <input type="hidden" id="searchTextFlag">
+    <div class="box">
+        <div class="logo">
+            <img src="images/public/forum/logo.png" width="108px" height="39px">
+        </div>
+        <ul class="liA">
+            <li class="home"><a class="on" href="javascript:void(0)" url="home.html" id="homeControl">首页</a></li>
+            <li><a  href="javascript:void(0)" url="newsCenter.html" id="newsCenter">新闻中心</a></li>
+            <li><a href="javascript:void(0)" id="product">产品与服务</a><i class="arrow"></i></li>
+            <li><a href="javascript:void(0)" url="downloadData.html" id="downloadData">数据中心</a></li>
+            <li><a href="javascript:void(0)"url="orderData.html" id="orderData">定制服务</a></li>
+            <li class="writeReport_parent"><a href="javascript:void(0)" url="writeReport.html" id="writeReport">数据平台</a><div class="writeReport_build"><span class="sanjiao_1"></span>建设中</div></li>
+            <li><a href="javascript:void(0)" url="faqList.html" id="faqList">遥感社区</a></li>
+            <li>
+<!--                <div class="searchBox">-->
+<!--                    <input type="text" id="searchText" placeholder="请输入关键字" maxLength="20" />-->
+<!--                    <span class="button" id="searchBtn">搜索</span>-->
+<!--                    <span class="search_criteria">-->
+<!--                        <span class="search_tital">热门搜索</span>-->
+<!--                        <span class="search_content">-->
+<!--                        </span>-->
+
+<!--                    </span>-->
+<!--                </div>-->
+                <!--<div class="search_criteria">-->
+                <!--<span>热门热搜</span>-->
+                <!--<ul>-->
+                <!--<li>油菜</li>-->
+                <!--<li>大豆</li>-->
+                <!--<li>棉花</li>-->
+                <!--<li>种植分布</li>-->
+                <!--<li>长势</li>-->
+                <!--</ul>-->
+                <!--</div>-->
+            </li>
+        </ul>
+
+        <!--<div class="qrCode">
+            <p id="androidImg"><img src="images/public/forum/phone.png" style="width:24px;height:24px"><span>安卓</span></p>
+
+            <p  id="iosImg"><img src="images/public/forum/phone.png" style="width:24px;height:24px"><span>IOS</span></p>
+
+            <div class="triangle">
+                <div class="downloadIcon" >
+                    <img src="images/public/qrcode/android.png" style="width:80px;height:80px;">
+                </div>
+                <div class="downloadDesc">
+                    <h2>下载手机采集APP></h2>
+                    <p>随时查看最新调研数据</p>
+                    <span class="downloadClose"><img src="images/public/forum/close.png"></span>
+                </div>
+
+
+
+            </div>
+
+        </div>-->
+        <div class="qrCode">
+            <p id="androidImg"><span style="width:24px;height:24px"></span></p>
+
+            <p  id="iosImg"><span style="width:24px;height:24px"></span></p>
+        </div>
+
+        <div class="userDiv">
+
+
+            <div class="user noLogin">
+                <a class="active" href="javascript:void(0)" id="login">登录</a><span style="display:none">|</span><a href="javascript:void(0)" id="register">注册</a>
+            </div>
+            <div class="user isLogin">
+                <!--<div id="userNameDiv"></div>-->
+                <span class="shoppingBox">
+                     <span class="shoppingCarIcon"></span>
+                     <span class="shoppingContent">购物车</span>
+                     <span class="shoppingCarNum">0</span>
+                </span>
+
+                <a href="javascript:void(0);" class="userCenter"><i class="icon"><img id="userPhoto" src="images/public/forum/userImg.png" /></i><span class="user"></span></a>
+                <ul class="userContent" style="display: none;">
+                    <li class="isCms"><a href="admin.html" data-url="admin.html" page-type="1" class="cmsHome">后台管理</a></li>
+                    <!-- <li class="solid">&nbsp;</li> -->
+                    <!-- <li><a href="javascript:void(0)" data-url="user_edit.html" page-type="2">完善资料</a></li> -->
+                    <!-- <li><a href="javascript:void(0)" data-url="pwd_update.html" page-type="3">修改密码</a></li> -->
+                    <li><a href="javascript:void(0)" id="myHomeBtn" class="myHome"><span>我的主页</span></a></li>
+                    <li><a href="javascript:void(0)" id="quitBtn" class="exit"><span>退出</span></a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <div class= "searchContentBox">
+        <div class="searchBox">
+            <input type="text" id="searchText" placeholder="请输入关键字" maxLength="20" />
+            <span class="button" id="searchBtn" searchKey="" tagType="">搜索</span>
+            <span class="search_criteria">
+                        <span class="search_tital">热门搜索</span>
+                        <span class="search_content">
+                        </span>
+
+                    </span>
+        </div>
+    </div>
+
+</div>
+<!--产品与服务页面选项卡-->
+<div class="tabBox" id="tabBox">
+    <div class="tab_panel" data-key="0">
+        <div class="tab_ico ico01"></div>
+        <div class="tab_panel_info">
+            <p>数据服务</p>
+        </div>
+    </div>
+    <div class="tab_panel" data-key="1">
+        <div class="tab_ico ico02"></div>
+        <div class="tab_panel_info">
+            <p>数据查询</p>
+        </div>
+    </div>
+</div>
+<div class="popBox loginBox">
+    <a class="closeBtn"></a>
+    <form class="loginIndex" id="form-signin" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="login">用户登录</div>
+            <div class="wrong" id="loginError"></div>
+            <div class="input" >
+                <input id="accountName" name="accountName" class="inputStyle" type="text" placeholder="请输入手机号码或账号名" tabindex="1"/>
+            </div>
+            <div class="input">
+                <input id="accountPwd" name="accountPwd" class="inputStyle" type="password" placeholder="请输入密码" tabindex="2"/>
+            </div>
+            <div class="input" style="position:relative;" >
+                <input id="code" name="code" class="inputStyle inputStyle2" type="text" placeholder="请输入验证码" tabindex="3"/>
+                <span class="yz"><img src="" id="verifyCode" width="90" height="35" /></span>
+
+            </div>
+            <div><div class="button" id="btnLogin" tabindex="4">登录</div></div>
+            <div class="zc"><a id="forgetPwdBtn" href="javascript:void(0);">忘记密码</a>| <a id="registerBtn" href="javascript:void(0);">注册</a></div>
+        </div>
+    </form>
+</div>
+<div class="popBox registerBox">
+    <a class="closeBtn"></a>
+    <form class="registerIndex" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="register">用户注册</div>
+            <div class="wrong" id="errorInfo"></div>
+            <!-- <div class="input" >
+                 <input id="nickName" name="nickName" class="inputStyle" type="text" placeholder="请输入用户昵称" tabindex="1"/>
+             </div>-->
+            <div class="input" >
+                <input id="pnumber" name="pnumber" class="inputStyle" type="text" placeholder="请输入手机号码" tabindex="2"/>
+            </div>
+            <div class="input">
+                <input id="pwd" name="pwd" class="inputStyle" type="password" placeholder="请设置密码" tabindex="3"/>
+            </div>
+            <div class="input" style="position:relative;" >
+                <input id="pvalicode" name="pvalicode" class="inputStyle inputStyle2" type="text" placeholder="请输入验证码" tabindex="3"/>
+                <span class="yz"><input id="pvClickBtn" class="cantClick" type="button" value="获取手机验证码" /></span>
+
+            </div>
+            <div><div class="button registerBtn" tabindex="4">注册</div></div>
+            <div class="zc"><a id="hasPadLogin" href="javascript:void(0);">已有账号请登录</a></div>
+        </div>
+    </form>
+</div>
+<div class="popBox registerSuccBox">
+    <a class="closeBtn"></a>
+    <form class="registerIndex" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="register">用户注册</div>
+            <div class="succInfo">
+                <h1>注册成功</h1>
+                <p class="jump"><i>3秒</i>后自动跳转</p>
+                <p class="clickLogin"><a class="clickLoginBtn">点此登录</a></p>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="popBox forgetPwdBox">
+    <a class="closeBtn"></a>
+    <form class="findPwdIndex" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="updPwd">忘记密码</div>
+            <div class="wrong" id="updError"></div>
+            <div class="input" >
+                <input id="phone" name="phone" class="inputStyle" type="text" placeholder="请输入手机号码" tabindex="1"/>
+            </div>
+            <div class="input" style="position:relative;" >
+                <input id="validCode" name="validCode" class="inputStyle inputStyle2" type="text" placeholder="请输入验证码" tabindex="2"/>
+                <span class=""><input id="pClickBtn" class="cantClick" type="button" value="获取手机验证码" /></span>
+            </div>
+            <div class="input" >
+                <input id="newPwd" name="newPwd" class="inputStyle" type="password" placeholder="请输入新密码" tabindex="1"/>
+            </div>
+            <div class="input" >
+                <input id="reNewPwd" name="reNewPwd" class="inputStyle" type="password" placeholder="请确认新密码" tabindex="1"/>
+            </div>
+            <div><div class="button forgetPwdBtn" tabindex="4">确认</div></div>
+            <div class="zc"><a id="reLogin" href="javascript:void(0);">返回登录</a></div>
+        </div>
+    </form>
+</div>
+<div class="popBox forgetPwdSuccBox">
+    <a class="closeBtn"></a>
+    <form class="forgetPwdIndex" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="forgetPwd">忘记密码</div>
+            <div class="succInfo">
+                <h1>修改成功</h1>
+                <p class="jump"><i>3秒</i>后自动跳转</p>
+                <p class="clickLogin"><a class="clickLoginBtn">点此登录</a></p>
+            </div>
+        </div>
+    </form>
+</div>
+<div style="clear:both"></div>
+<!--个人中心菜单内容显示-->
+<div id="menuInfo" style="display:none;"></div>
+
+
+<!--提示框-->
+<div class="maskBox" style="display: none;"></div>
+<div class="collectBox" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content collectBoxMessage">
+        <span style="font-size: 18px"></span>
+    </div>
+</div>
+<div class="login_promptBox" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content">
+        <span style="font-size: 18px">请先登陆个人账号</span>
+    </div>
+</div>
+
+<div class="checkShopBox" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content">
+        <span>请先勾选你要买的商品</span>
+    </div>
+</div>
+
+<div class="shopping_repart" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content">
+        <span>商品已经在购物车，请勿重复添加</span>
+    </div>
+</div>
+<div class="pay_repart" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content">
+        <span>该订单已经支付过，请勿重新支付</span>
+    </div>
+</div>
+<div class="shoppingCar_promptBox" style="display: none;">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="shoppingCar_content">
+        <span class="shoppingCar_message">已添加到购物车</span>
+    </div>
+</div>
+
+<div class="commit_promptBox" style="display: none">
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="commit_content">
+        <span class="commit_message">恭喜,已提交成功!</span>
+    </div>
+    <div class="commit_foot">稍后专家将致电你,请保持电话畅通!</div>
+</div>
+
+<div class="download_promptBox" style="display: none" >
+    <div class="closeBox">
+        <span class="closeIcon"></span>
+    </div>
+    <div class="owner">
+        <span class="owner_ing fl"><img src="images/public/forum/userImg.png" /></span>
+        <span class="owner_name fl">一鸣惊人</span>
+        <span class="download_meaage fl">你拥有10次免费下载样例特权</span>
+    </div>
+    <div class="download_content">本次下载会扣除1次免费下载次数,是否继续</div>
+    <div class="download_foot">
+        <span class="download_bottonTrue"><a download style="color: white">继续下载</a></span>
+        <span class="download_bottonCancal">取消下载</span>
+    </div>
+
+</div>
+
+
+<iframe id="qqIframe" width="0" height="0" src=""></iframe>
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax", "formVerfication", "Base64","UserModule","commons","urlConfig"],function($,Marquee,BaseAjax, formVerfication, Base64,UserModule,commons,urlConfig){
+
+        var registerCode;
+        var findPwdCode;
+        var numByFindPwd;
+        var clicktag;
+        var guid = function() {
+            var str = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+            return str.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
+        };
+        var validToken = guid();
+
+        $(".download_promptBox .download_bottonCancal").on("click",function(){
+            $(".maskBox").css({"display":"none"});
+            $(".download_promptBox").css({"display":"none"})
+        });
+
+        //登陆与注册点击切换
+        $(".noLogin a").click(function(){
+            $(this).addClass("active").siblings().removeClass("active")
+        });
+
+        /*$(".writeReport_parent").hover(function () {
+            $(".writeReport_build").css({"display":"block"})
+        },function () {
+            $(".writeReport_build").css({"display":"none"})
+        })*/
+        $("#writeReport").click(function(){
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                //$(".loadContent").load("orderData.html")
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+        });
+
+
+        // $(".search_content span").click(function(){
+        //     var tagValue = $(this).val();
+        //     console.log(tagValue)
+        // })
+
+        //关闭提示框
+        $("span.closeIcon").click(function(){
+            $(this).parent().parent().css({"display":"none"})
+            $(".maskBox").css({"display":"none"})
+        })
+        $(".weChat_icon").hover(function(){
+            $(".sanjiao").css({"display":"block"});
+            $(".erweima").css({"display":"block"});
+        },function () {
+            $(".sanjiao").css({"display":"none"});
+            $(".erweima").css({"display":"none"});
+        })
+
+        //首页购物车点击跳转到个人中心
+        $(".shoppingBox").click(function(){
+//            $(".loadContent").load('personal.html');
+//            $(".liA li:last-child").css({"display":"none"})
+            //加载首页
+            $(".loadContent").load('personal.html');
+            // window.open("index.html#personal")
+
+            // history.pushState({},'',"index.html");  //修改地址栏 URl
+
+            //将显示标志赋值为1表示显示
+            $("#searchTextFlag").val(0)
+
+            initSearchBox(0) //隐藏
+        })
+//        $(document).on("click",".shoppingBox",function(){
+//            alert("aaaaaa")
+//        })
+
+        //首页通过搜索跳转到数据中心
+
+        $(document).off("click",'.search_content span').on('click','.search_content span',function(){
+            var keyWord =$(this)[0].innerText;
+            $("#searchText").val(keyWord);
+            // $(".loadContent").load('downloadData.html');
+            // $("#downloadData").addClass("on").parent().siblings().find("a").removeClass('on')
+
+        })
+        // $("#searchBtn").click(function () {
+        //     console.log("909090000090")
+        //     if(!!$("#searchText").val()){
+        //         $(".loadContent").load('downloadData.html');
+        //         $("#downloadData").addClass("on").parent().siblings().find("a").removeClass('on')
+        //     }
+        // })
+        //获取用户id
+        var initUserId = function(){
+            if($(".isLogin")[0].attributes.personid.nodeValue){
+                return  parseInt($(".isLogin")[0].attributes.personid.nodeValue);
+            }else{
+                return null;
+            }
+        }
+
+        //初始化购物车数量
+        var shoppingCarNum = function(userId){
+            var ajax = new BaseAjax;
+            ajax.opts.url = SHOPPING_CONFIG.queryShoppingCar_url+"?userId="+userId;
+            ajax.opts.successFun = function(data){
+                $(".shoppingCarNum")[0].innerHTML = data.data.length;
+            }
+            ajax.run();
+        }
+
+        //初始化热搜词
+        var initHotSearch = function(){
+            var ajax = new BaseAjax();
+
+            ajax.opts.url= KEYWORDS_CONFIG.getKeywords_url;
+            ajax.opts.successFun = function(data){
+                var listData = data.data;
+                var html="";
+                for(var i =0;i<listData.length;i++){
+                    var keyWord = listData[i].keyWord
+                    html += "<span>"+keyWord+"</span>"
+                }
+                $(".search_content").html(html)
+            };
+            ajax.opts.failureFun = function(error){
+                console.log(error)
+            }
+            ajax.run();
+        }
+        var initOnlineFun = function(){
+            $(".onlineTool").css({"top":"590px","right":"1%"})
+            $(document).scroll(function(){
+                var scrollTop = $(this).scrollTop();
+                var _top = 590;
+                if(scrollTop > 0 && scrollTop < 590){
+                    _top = 590 - scrollTop ;
+                }
+
+                if(scrollTop > 590){
+                    _top = 100 ;
+                }
+
+                $(".onlineTool").css({"top":_top + "px","right": "1%"})
+            })
+        }
+
+        var init = function(){
+
+
+            //初始化头部
+            initHead();
+
+            //初始化热词
+            initHotSearch()
+
+            initAppDownloadFun();
+
+            initSearchBox()
+
+            //登录和注册操作
+            commons.loginAndRegister();
+
+            //登录
+            loginFun();
+            //注册
+            registerFun();
+            //找回密码
+            findPwdFun();
+
+
+            initOnlineFun();
+
+
+            //验证码、
+            var date = new Date();
+            $("#verifyCode").attr("src", LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime());
+
+            $(".logo").bind("click",function(){
+                window.location.href = "index.html";
+            })
+
+            $('.yz').on('click',function(){
+                var date = new Date();
+                $('#verifyCode').attr('src',LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime());
+            });
+
+            myHomeFun()
+
+            //加载用户名和头像
+            generateUserInfo();
+
+//            var userId = initUserId();
+//            if(userIId != null){
+//                shoppingCarNum(userId)
+//            }
+
+            //登录重新刷新验证码
+            $("#login,.clickLogin,#hasPadLogin,#reLogin,.clickLoginBtn").click(function() {
+                //清除倒计时
+                clearInterval(registerCode);
+                clearInterval(findPwdCode);
+                clearInterval(numByFindPwd);
+                //验证码、
+                var date = new Date();
+                $("#verifyCode").attr("src", LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime());
+
+                $("#pClickBtn,#pvClickBtn").val('获取手机验证码');
+                $("#pClickBtn,#pvClickBtn").removeClass("alreadySend");
+                $("#pClickBtn,#pvClickBtn").removeAttr('disabled');
+                clicktag = 0;
+            });
+
+
+            loadQQDialog()
+
+        }
+
+        var loadQQDialog = function(){
+            $(".chartOnline").click(function(){
+                $("#qqIframe").attr("src","http://wpa.qq.com/msgrd?v=3&uin="+ QQ_ONLINE.qq + "&site=qq&menu=yes")
+            })
+
+            $('.topOnline').on('click',function(){
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 300);
+            });
+
+
+            $(".orderOnline").click(function(){
+                // if (commons.checkForumLoginStatus()) {
+                //     $(".loadContent").load("orderData.html")
+                // }
+                var accessToken = commons.getAccessToken();
+                if(accessToken){
+                    $(".loadContent").load("orderData.html")
+                }else{
+                    $("#login").trigger("click");
+                    return
+                }
+
+            })
+
+        }
+
+
+        /**
+         * Android和IOS APP 下载与关闭
+         * @version<1> 2019-06-28 lcw :Created.
+         */
+        var initAppDownloadFun = function(){
+
+            $(".qrCode p").off("click").on("click",function(){
+                var id=$(this).attr("id");
+                if(id == "androidImg"){
+                    $(".downloadIcon img").attr("src","images/public/qrcode/android.png")
+                    $(".triangle").css({"display":"block","left":"20px"});
+                }
+
+                if(id == "iosImg"){
+                    $(".downloadIcon img").attr("src","images/public/qrcode/ios.png")
+                    $(".triangle").css({"display":"block","left":"90px"});
+                }
+
+            })
+
+            //关闭二维码下载框
+            $(".downloadDesc .downloadClose").click(function(){
+                $(".triangle").hide();
+            })
+
+        }
+
+
+        var initSearchBox = function(){
+            if($("#searchTextFlag").val() != "" && $("#searchTextFlag").val() == 0){
+                // $(".searchBox").hide();
+                $(".searchContentBox").css({"display":"none"})
+            }else{
+                $(".searchContentBox").css({"display":"block"})
+                // $(".searchBox").show();
+            }
+        }
+
+        //注册成功之后3s倒计时
+        var secconds = 3;
+        var countFun = function(){
+            var obj = $('.jump i');
+            if (secconds > 0) {
+                obj.text(secconds + "秒");
+                secconds--;
+            } else {
+                clearInterval(registerCode);
+                secconds = 3;
+                obj.text( "3秒");
+                $(".clickLogin").trigger("click");
+            }
+        }
+        //找回密码成功之后3s倒计时
+        var seccondsByFindPwd = 3;
+        var countFunByFindPwd = function(){
+            var obj = $('.jump i');
+            if (seccondsByFindPwd > 0) {
+                obj.text(seccondsByFindPwd + "秒");
+                seccondsByFindPwd--;
+            } else {
+                clearInterval(findPwdCode);
+                obj.text( "3秒");
+                $(".clickLogin").trigger("click");
+                $(".clickLogin").trigger("click");
+            }
+        }
+
+
+
+        //登录
+        var loginFun = function(){
+            /* $("#verifyCode").click(function(){
+             resetValidCode();
+             })*/
+
+            /**
+             * 登录
+             *
+             * @version <1> 2018/1/22 djh： Created.
+             */
+            $("#btnLogin").click(function () {
+                if (checkAccountName() || checkAccountPwd() || checkCode()) {
+                    resetValidCode();
+                    return;
+                }
+
+                var accountName = $("#accountName").val();
+                var accountPwd = $("#accountPwd").val();
+                var code = $("#code").val();
+
+                var permAccount = {'accountName': accountName,
+                    'accountPwd': Base64.encode(accountPwd)
+                };
+
+                var jsonData = {
+                    'permAccount':permAccount,
+                    'validToken': validToken,
+                    'verifyCode': code
+                };
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOGIN_CONFIG.login_url;
+                ajax.opts.data = JSON.stringify(jsonData);
+                ajax.opts.successFun = function (msg) {
+
+                    if (msg.flag) {
+                        console.log("登录成功")
+                        //如果当前页面是首页，登录后刷新首页
+                        if ($('.home a').hasClass('on')) {
+                            location.reload();
+                        }
+                        var data = msg.data ;
+                        commons.setCookie(COOKIE_CONFIG.cookieName,data.AccessToken,120);
+
+                        // var userInfo = UserModule.UserUtil.saveUserInfo(data.AccessToken,data);
+                        // commons.setCookie(data.AccessToken , userInfo, 30)
+
+                        // var url = data.defaultMenu;   //默认页面
+
+                        // window.location.href = LOGIN_CONFIG.index_page_url;
+
+
+                        if($("#sourceDetail").hasClass('hide')){
+                            console.log("数据中心无详情页面")
+                            $(".rightTop").load("head.html",function () {
+                                $("#searchTextFlag").val(1)
+                            });
+                        }else{
+                            $(".rightTop").load("head.html",function () {
+                                $("#searchTextFlag").val(1)
+                            });
+                            window.location.href = "index.html";
+                            // headRightTop
+                        }
+
+                        $(".loginDiv").hide();
+                        $("#menuInfo").hide();
+
+
+
+                    } else {
+                        $("#loginError").text(msg.msg);
+                        resetValidCode();
+                    }
+                };
+                ajax.run();
+            });
+
+            $("body").keydown(function () {
+                if (event.keyCode == "13") {//keyCode=13是回车键
+                    $("#btnLogin").click();
+                }
+            });
+
+            /**
+             * 校验输入的用户名
+             * @version<1> 2018-01-22 djh: Created.
+             */
+            var checkAccountName = function () {
+                var accountName = $.trim($("#accountName").val());
+                if (accountName == "") {
+                    $("#accountName").focus();
+                    $("#loginError").text("请输入手机号码或账号名");
+                    $("#accountName").val("");
+                    return true;
+                }
+
+                //支持accountCode登录, 去掉手机号格式校验
+                /*var myreg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+                 if (!myreg.test(accountName)) {
+                 $("#accountName").focus();
+                 $("#loginError").text("手机号码格式不正确");
+                 return true;
+                 }*/
+
+
+
+                return false;
+            }
+
+            /**
+             * 校验输入的账号密码
+             * @version<1> 2018-01-22 djh: Created.
+             */
+            var checkAccountPwd = function () {
+                var accountPwd = $.trim($("#accountPwd").val());
+                if (accountPwd == "") {
+                    $("#accountPwd").focus();
+                    $("#loginError").text("请输入密码");
+                    $("#accountPwd").val("");
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * 校验用户输入的验证码
+             * @version<1> 2018-01-22 djh: Created.
+             */
+            var checkCode = function () {
+                var code = $.trim($("#code").val());
+                if (code == "") {
+                    $("#code").focus();
+                    $("#loginError").text("请输入验证码");
+                    $("#code").val("");
+                    return true;
+                }
+                return false;
+            }
+            //$("#code").blur(checkCode);
+
+            /**
+             * 重置验证码：1、清空验证码输入框；2、刷新验证码图片
+             * @param msg
+             */
+            function resetValidCode(){
+                $("#verifyCode").html("");
+                var imgValidCode = document.getElementById("verifyCode");
+                var txtValidCode = document.getElementById("code");
+                var date = new Date();
+                imgValidCode.src =  LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime();
+                txtValidCode.value="";
+            }
+        }
+
+        //注册
+        var registerFun = function(){
+            /**
+             * 读秒
+             * @version <1> 2018-02-11 lcw : created.
+             */
+            var countDown = 60;
+            var num;
+            var readSeconds = function(){
+                var obj = $("#pvClickBtn");
+                if (countDown > 0) {
+                    $("#pvClickBtn").addClass("alreadySend");
+                    obj.val(countDown + "秒后重发");
+                    countDown--;
+                } else {
+                    obj.val('获取手机验证码');
+                    countDown = 60;
+                    $("#pvClickBtn").removeAttr("disabled");
+                    $("#pvClickBtn").removeClass("alreadySend");
+                    clicktag = 0;
+                    clearInterval(registerCode);
+                }
+            }
+
+            /**
+             * 校验手机号
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var checkPhoneNumber = function() {
+                $(".Tsuccess").hide();
+
+                var phonenum = $("#pnumber").val();
+                if (phonenum == "") {
+                    $("#pnumber").focus();
+                    $("#errorInfo").text("请输入手机号码");
+                    $("#pnumber").val("");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var myreg = /^0?(13[0-9]|15[0-9]|17[0-9]|18[0-9]|14[0-9]]|19[0-9])[0-9]{8}$/;
+                if (!myreg.test(phonenum)) {
+                    $("#errorInfo").text("手机号码格式不正确");
+                    $("#pvClickBtn").removeClass("alreadySend");
+                    $("#pvClickBtn").removeAttr("disabled");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var flag = false;
+                var ajax = new BaseAjax();
+                ajax.opts.url = REGISTER_CONFIG.checkAccountExists;
+                ajax.opts.type = "GET";
+                ajax.opts.async = false;
+                ajax.opts.data =  {'accountName':phonenum};
+                ajax.opts.successFun = function (result) {
+                    if (result.data) {
+                        $("#errorInfo").text("手机号码已存在");
+                        $("#errorInfo").addClass('red');
+
+                        flag = true;
+                    }
+                };
+                ajax.run();
+
+                if (flag) {
+                    $("#pvClickBtn").removeClass("alreadySend");
+                    $("#pvClickBtn").removeAttr("disabled");
+                    return true;
+                }
+
+                $(".Tsuccess").show();
+                return false;
+            };
+            if(countDown<=0){
+                $("#pnumber").live('input on', function()
+                {
+                    $("#pvClickBtn").removeClass("alreadySend");
+                    $("#pvClickBtn").removeAttr("disabled");
+                })
+            }
+
+            // $("#pnumber").blur(checkPhoneNumber);
+
+            /**
+             * 校验设置的密码
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var checkPwd = function() {
+                var obj = $("#pwd");
+                if (formVerfication.isEmpty(obj.val())) {
+                    // $("#nickname").val("");
+                    obj.focus();
+                    $("#errorInfo").text("请输入密码");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                    $("#errorInfo").text("6-20位字母/数字/符号组合");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                }
+                $("#errorInfo").text("");
+                // $("#errorInfo").removeClass('red');
+                return false;
+            };
+            // $("#pwd").blur(checkPwd);
+
+            /**
+             * 手机验证码的校验
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var phoneValidateCode = function () {
+                var a = $.trim($("#pvalicode").val());
+                if (a == "") {
+                    $("#pvalicode").focus();
+                    // $("#errorInfo").addClass("red");
+                    $("#errorInfo").text("请输入手机验证码");
+                    return true;
+                }
+                // $("#errorInfo").removeClass("red");
+                $("#errorInfo").text("");
+                return false;
+            }
+            // $("#pvalicode").blur(phoneValidateCode);
+
+            /**
+             * 点击获取手机验证码
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            clicktag = 0;  //标志
+            $("#pvClickBtn").click(function () {
+                $("#errorInfo").text("");
+                $("#errorInfo").removeClass('red');
+                if ($("#pvClickBtn").hasClass("alreadySend")) {
+
+                    return;
+                }
+                $(this).attr("disabled",true); //设置变灰按钮
+                if (checkPhoneNumber()) {
+                    $("#pvClickBtn").removeAttr("disabled");
+                    return;
+                }
+                $("#errorInfo").text("");
+                // $("#errorInfo").removeClass("red");
+
+
+                if (clicktag == 0) {  //判断标志
+                    clicktag = 1;   //进行标志，防止多次点击
+                    var phonenum = $("#pnumber").val();
+                    // var picValicode = $.trim($("#pvalicode2").val());
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = REGISTER_CONFIG.sendSmsCode_URL;
+                    ajax.opts.data = {
+                        'mobile':phonenum,
+                        // 'imageVerifyCode':picValicode,
+                        // 'validToken':validToken
+                    };
+                    ajax.opts.contentType = "application/json";
+                    ajax.opts.type = "GET";
+
+                    //                ajax.opts.data = JSON.stringify({tel: phonenum, verifyCode: picValicode});
+                    ajax.opts.successFun = function (result) {
+                        /*console.log(result,'====');*/
+                        if(result.flag){
+                            registerCode = setInterval(function () {
+                                // num = sendCode;
+                                readSeconds();
+                            }, 1000);
+                        }else{
+                            clearInterval(registerCode);
+                            $("#pvClickBtn").val('获取手机验证码');
+
+                            $("#pvClickBtn").removeAttr("disabled");
+                            $("#pvClickBtn").removeClass("alreadySend");
+                            $("#errorInfo").text(result.msg);
+                            $("#errorInfo").addClass("red");
+                            clicktag = 0;   //进行标志，防止多次点击
+                        }
+
+
+                    };
+                    ajax.opts.errorFun = function () {
+                        $("#pvClickBtn").removeClass("alreadySend");
+                        $("#pvClickBtn").removeAttr("disabled");
+                        clicktag = 0;   //进行标志，防止多次点击
+                    };
+                    ajax.run();
+                }
+                setTimeout(function () { clicktag = 0 }, 5000);
+            });
+
+
+
+            /**
+             * 注册按钮的点击事件
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            $(".registerBtn").click(function (){
+
+                /*  var nickName = $.trim($("#nickName").val());
+                  if(nickName == null || nickName == ""){
+                      $("#nickName").focus();
+                      $("#errorInfo").text("请输入用户昵称");
+                      return false;
+                  }*/
+
+                if (checkPhoneNumber() || checkPwd()|| phoneValidateCode()) {
+                    return;
+                }
+
+                var phoneValicode = $.trim($("#pvalicode").val());
+                var phonenum =  $.trim($("#pnumber").val());
+
+                var registerEntity = {};
+                registerEntity.phone = phonenum;
+                registerEntity.pwd = Base64.encode($("#pwd").val());
+                registerEntity.smsVerifCode = phoneValicode;
+
+                /* registerEntity.nickName = nickName;
+ */
+
+                var ajax = new BaseAjax();
+                ajax.opts.url = REGISTER_CONFIG.register_URL;
+                ajax.opts.data = JSON.stringify(registerEntity);
+                ajax.opts.successFun = function (result) {
+                    if(result.flag){
+                        //1、重置输入框
+                        $('#loginError,#errorInfo').text('');//提示信息
+                        $('#accountName,#accountPwd,#code').val('');//手机号或用户名，登录密码，图形验证码
+                        $('#pnumber,#pwd,#pvalicode').val('');//手机号,设置密码，手机验证码
+
+                        //2、隐藏弹框，清除弹框内容并影藏弹框
+                        $('.popBox').hide();
+                        $('body').append($('#registerBtn').parents('.popBox').clone(true));
+                        $('body').append($('.registerBtn').parents('.popBox').clone(true));
+                        $('#menuInfo').empty().hide();
+
+                        //3、追加注册成功提示到弹框，显示弹框
+                        $('.popBox.registerSuccBox').appendTo($('#menuInfo'));
+                        $('#menuInfo .popBox.registerSuccBox').show();
+                        $('#menuInfo').show();
+
+                        //4、每秒定时刷新一次倒计时，3秒后自动跳转到登录弹框
+                        registerCode = setInterval(function () {
+                            countFun();//倒计时方法
+                        }, 1000);
+                    }else{
+                        $("#errorInfo").text(result.msg);
+                    }
+
+                };
+                ajax.opts.errorFun = function(){
+                    alert("系统异常，暂时无法发送验证码");
+                };
+                ajax.run();
+            });
+            $(".success").click(function () {
+                window.location.href = "login.html";
+            });
+
+
+        };
+
+
+        //找回密码
+        var findPwdFun = function(){
+            /**
+             * 读秒
+             * @version <1> 2018-02-11 lcw : created.
+             */
+            var countDownByFindPwd = 60;
+            var readSecondsByFindPwd = function(){
+                var obj = $("#pClickBtn");
+                if (countDownByFindPwd > 0) {
+                    $("#pClickBtn").addClass("alreadySend");
+                    obj.val(countDownByFindPwd + "秒后重发");
+                    countDownByFindPwd--;
+                } else {
+                    obj.val('获取手机验证码');
+                    clearInterval(numByFindPwd);
+                    countDownByFindPwd = 60;
+                    $("#pClickBtn").removeAttr('disabled');
+                    $("#pClickBtn").removeClass("alreadySend");
+                    clicktag = 0;
+                }
+            }
+
+            /**
+             * 校验手机号
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var checkPhone = function() {
+                $(".Tsuccess").hide();
+                var phonenum = $("#phone").val();
+                if (phonenum == "") {
+                    $("#phone").focus();
+                    $("#updError").text("请输入手机号码");
+                    $("#phone").val("");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var myreg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+                if (!myreg.test(phonenum)) {
+                    $("#updError").text("手机号码格式不正确");
+                    // $("#errorInfo").addClass('red');
+                    return true;
+                }
+
+                var flag = true;
+                var ajax = new BaseAjax();
+                ajax.opts.url = REGISTER_CONFIG.checkAccountExists;
+                ajax.opts.type = "GET";
+                ajax.opts.async = false;
+                ajax.opts.data =  {'accountName':phonenum};
+                ajax.opts.successFun = function (data) {
+                    if (data.data) {
+                        flag = false;
+                    }else{
+                        $("#updError").text("手机号码不存在");
+                        $("#updError").addClass('red');
+
+                        // clearInterval();
+                        clearInterval(numByFindPwd);
+                        $("#pClickBtn").val('获取手机验证码');
+                        $("#pClickBtn").removeClass("alreadySend");
+                        $("#pClickBtn").removeAttr("disabled");
+                        flag = true;
+                    }
+                };
+                ajax.run();
+
+                if (flag) {
+                    return true;
+                }
+
+                $(".Tsuccess").show();
+                return false;
+            };
+            if(countDownByFindPwd<=0){
+                $("#phone").live('input on', function()
+                {
+                    $("#pClickBtn").removeClass("alreadySend");
+                    $("#pClickBtn").removeAttr("disabled");
+                })
+            }
+
+            // $("#pnumber").blur(checkPhoneNumber);
+
+            /**
+             * 校验设置的密码
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var checkPwdByFind = function() {
+                var obj = $("#newPwd");
+                if (formVerfication.isEmpty(obj.val())) {
+                    // $("#nickname").val("");
+                    obj.focus();
+                    $("#updError").text("请输入新密码");
+                    // $("#updError").addClass('red');
+                    return true;
+                } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                    $("#updError").text("6-20位字母/数字/符号组合");
+                    // $("#updError").addClass('red');
+                    return true;
+                }
+                $("#updError").text("");
+
+                var obj1 = $("#reNewPwd");
+                if (formVerfication.isEmpty(obj1.val())) {
+                    // $("#nickname").val("");
+                    obj1.focus();
+                    $("#updError").text("请确认新密码");
+                    // $("#updError").addClass('red');
+                    return true;
+                } else if (!formVerfication.isScopeLength(obj1.val(), 6, 20)) {
+                    $("#updError").text("6-20位字母/数字/符号组合");
+                    // $("#updError").addClass('red');
+                    return true;
+                }
+
+                if(obj.val()!=obj1.val()){
+                    $("#updError").text("两次输入的密码不一致");
+                    // $("#updError").addClass('red');
+                    return true;
+                }
+                $("#updError").text("");
+                // $("#updError").removeClass('red');
+                return false;
+            };
+            // $("#pwd").blur(checkPwd);
+
+            /**
+             * 手机验证码的校验
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            var validateCode = function () {
+                var a = $.trim($("#validCode").val());
+                if (a == "") {
+                    $("#validCode").focus();
+                    // $("#updError").addClass("red");
+                    $("#updError").text("请输入手机验证码");
+                    return true;
+                }
+                // $("#updError").removeClass("red");
+                $("#updError").text("");
+                return false;
+            }
+            // $("#pvalicode").blur(phoneValidateCode);
+
+            /**
+             * 点击获取手机验证码
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            clicktag = 0;  //标志
+            $("#pClickBtn").click(function () {
+                if ($("#pClickBtn").hasClass("alreadySend")) {
+                    return;
+                }
+                $(this).attr("disabled","true"); //设置变灰按钮
+                if (checkPhone()) {
+                    return;
+                }
+                $("#updError").text("");
+                // $("#updError").removeClass("red");
+
+
+                if (clicktag == 0) {  //判断标志
+                    clicktag = 1;   //进行标志，防止多次点击
+                    var phonenum = $("#phone").val();
+                    // var picValicode = $.trim($("#pvalicode2").val());
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = LOGIN_CONFIG.sendsms_url;
+                    ajax.opts.data = {
+                        'mobile':phonenum,
+                        // 'imageVerifyCode':picValicode,
+                        // 'validToken':validToken
+                    };
+                    ajax.opts.contentType = "application/json";
+                    ajax.opts.type = "GET";
+
+                    //                ajax.opts.data = JSON.stringify({tel: phonenum, verifyCode: picValicode});
+                    ajax.opts.successFun = function (result) {
+                        if(result.flag){
+                            var sendCodePwd = setInterval(function () {
+                                numByFindPwd = sendCodePwd;
+                                readSecondsByFindPwd();
+                            }, 1000);
+                        }else{
+                            clearInterval();
+                            $("#pClickBtn").val('获取手机验证码');
+                            $("#pClickBtn").removeClass("alreadySend");
+                            $("#updError").html(result.msg);
+                            $("#updError").addClass("red");
+                            $("#pClickBtn").removeAttr("disabled");
+                            clicktag = 0;   //进行标志，防止多次点击
+                        }
+
+                    };
+                    ajax.opts.errorFun = function () {
+                        $("#pClickBtn").removeClass("alreadySend");
+                        $("#pClickBtn").removeAttr("disabled");
+                        clicktag = 0;   //进行标志，防止多次点击
+                    };
+                    ajax.run();
+                }
+                // setTimeout(function () { clicktag = 0 }, 5000);
+            });
+
+
+
+            /**
+             * 忘记密码按钮的点击事件
+             *
+             * @version <1>  2018/1/23 djh: Create
+             */
+            $(".forgetPwdBtn").click(function (){
+
+                if (checkPhone() || validateCode() || checkPwdByFind()) {
+                    return;
+                }
+
+                var phoneValicode = $.trim($("#validCode").val());
+                var phonenum =  $.trim($("#phone").val());
+                var pwd = $.trim($("#pwd").val());
+
+
+                var loginParam = {};
+                loginParam.accountName = phonenum;
+                loginParam.accountPwd = Base64.encode($("#newPwd").val());
+                loginParam.smsVerifCode = phoneValicode;
+                var ajax = new BaseAjax();
+                ajax.opts.url = LOGIN_CONFIG.resetPwd_url;
+                ajax.opts.data = JSON.stringify(loginParam);
+                ajax.opts.successFun = function (result) {
+                    if(result.flag){
+                        //重置
+                        $('#loginError,#errorInfo,#updError').text('');//提示信息
+                        $('#accountName,#accountPwd,#code').val('');//手机号或用户名，登录密码，图形验证码
+                        $('#pnumber,#pwd,#pvalicode').val('');//手机号,设置密码，手机验证码
+                        $('#phone,#validCode,#newPwd,#reNewPwd').val('');//手机号 验证码  新密码 确认新密码
+
+                        $('.popBox').hide();
+                        $('body').append($('#forgetPwdBtn').parents('.popBox').clone(true));
+                        $('#menuInfo').empty().hide();
+
+                        $('.popBox.forgetPwdSuccBox').appendTo($('#menuInfo'));
+                        $('#menuInfo .popBox.forgetPwdSuccBox').show();
+                        $('#menuInfo').show();
+
+                        findPwdCode = setInterval(function () {
+                            countFunByFindPwd();
+                        }, 1000);
+                    }else{
+                        $("#updError").text(result.msg);
+                    }
+
+
+
+                };
+                ajax.opts.errorFun = function(){
+                    alert("系统异常，暂时无法发送验证码");
+                };
+                ajax.run();
+            });
+            $(".success").click(function () {
+                window.location.href = "login.html";
+            });
+
+
+        };
+
+
+        /**
+         * 初始化头部(首页、数据分享、咨询问答)
+         * @version <1> 2019/3/9 18:04 zhangshen:Created.
+         */
+        var initHead = function() {
+            $(".liA li a").on("click",function(){
+                $("#searchText").val("");//清空头部搜索栏
+                // history.pushState({},'',"index.html");  //修改地址栏 URl
+                var url = $(this).attr("url");
+                $(this).parent().parent().find("a").removeClass('on');
+                $(this).addClass('on');
+
+                //将显示标志赋值为1表示显示
+                // $("#searchTextFlag").val(1)
+
+                // debugger;
+                if(url == $("#homeControl").attr("url")||url == $("#downloadData").attr("url")){
+                    $(".searchContentBox").css({"display":"block"}) //显示
+                }else if(url ==$("#orderData").attr("url")||url ==$("#faqList").attr("url") || url ==$("#product").attr("url")){
+                    $(".searchContentBox").css({"display":"none"})
+                }
+                if(url == $("#product").attr("url")){
+                    $("#tabBox").show();
+                }else{
+                    $('#tabBox').hide();
+                    $('#tabBox .tab_panel').removeClass('selected');
+                }
+
+                if(url == $("#downloadData").attr("url")){
+                    $("#searchBtn").attr("searchkey","")
+                }
+
+
+                if(url == $("#orderData").attr("url")){
+                    var accessToken = commons.getAccessToken();
+                    if(accessToken){
+
+                    }else{
+                        $("#login").trigger("click");
+                         return
+                    }
+                }
+
+                if(url  == $("#writeReport").attr("url")){
+                    return;
+                    var accessToken = commons.getAccessToken();
+                    if(accessToken){
+                        window.open(url)
+                    }else{
+                        $("#login").trigger("click");
+                        return
+                    }
+
+                    // if(commons.checkForumLoginStatus()){
+                    //
+                    //     window.open(url)
+                    // }
+                }
+                else{
+
+                    if(url  == $("#orderData").attr("url")){
+                        var accessToken = commons.getAccessToken();
+                        if(accessToken){
+                            $(".loadContent").load(url);
+                        }else{
+                            $("#login").trigger("click");
+                            return
+                        }
+                        // if(commons.checkForumLoginStatus()){
+                        //     $(".loadContent").load(url);
+                        // }
+                    }else{
+                        $("#articleList").html("");//清空列表内容
+                        $(".loadContent").load(url);
+                    }
+
+
+                }
+
+                history.pushState({},'',"index.html");  //修改地址栏 URl
+
+            })
+
+            //悬浮出现二级菜单
+            var setTimeOUt;
+            $("#product").hover(function(){
+                $("#tabBox").show(100);
+            },function(){
+                setTimeOUt = setTimeout(function(){
+                    $("#tabBox").hide(100);
+                },2000);
+            });
+
+            $("#tabBox").hover(function(){
+                clearTimeout(setTimeOUt);
+            },function(){
+                $("#tabBox").hide(100);
+            });
+
+            //选项卡点击事件
+            $("#tabBox .tab_panel").on('click',function(){
+                $('#product').trigger('click');
+                $(this).addClass('selected').siblings().removeClass('selected');
+                var index= $(this).data('key');
+                if(index == 0){
+                    $('.loadContent').load('productService.html');
+                }else if(index == 1){
+                    $('.loadContent').load('productQuery.html');
+                }
+            })
+        };
+
+
+
+
+        var myHomeFun = function(){
+            $("#myHomeBtn").on("click", function(){
+                var accessToken = commons.getAccessToken();
+                if(accessToken){
+                    $(".loadContent").load('personal.html');
+                    // window.open("index.html#personal")
+
+                    history.pushState({},'',"index.html");  //修改地址栏 URl
+
+                    //将显示标志赋值为1表示显示
+                    $("#searchTextFlag").val(0)
+
+                    initSearchBox(0) //隐藏
+                }else{
+                    $("#login").trigger("click");
+                    return
+                }
+
+
+                // if(commons.checkForumLoginStatus()){
+                //     //
+                //     // var accountId = $(".user").attr("accountId");
+                //     //加载首页
+                //     $(".loadContent").load('personal.html');
+                //     // window.open("index.html#personal")
+                //
+                //     history.pushState({},'',"index.html");  //修改地址栏 URl
+                //
+                //     //将显示标志赋值为1表示显示
+                //     $("#searchTextFlag").val(0)
+                //
+                //     initSearchBox(0) //隐藏
+                //
+                // }
+
+            })
+
+        }
+
+        /**
+         * 根据登录用户信息生成用户个人信息区域的内容
+         * @param
+         * @return
+         * @version <1> 2019/3/19 mason:Created.
+         */
+        var generateUserInfo = function(){
+
+            //1、查询当前登录用户
+            var currentUser = commons.getCurrentUser();
+            if(currentUser.personId != undefined ){
+                shoppingCarNum(currentUser.personId );
+            }
+
+            //2、若未登录，则方法终止
+            if (JSON.stringify(currentUser) == '{}') return;
+            var accountId = currentUser.accountId;
+            //3、根据当前登录用户的accountId查询专家信息
+            // var user = commons.findExpertByAccountId(accountId)
+            //4、若当前登录用户并非专家，则查询其用户表信息
+            // if (JSON.stringify(user) == '{}')
+            var user = commons.getUserByAccountId(accountId);
+            var userMessage = commons.isLogion();
+            //5、若当前登录用户没有信息，则方法终止
+            if (JSON.stringify(user) == '{}') return;
+            //6、设置用户名和用户头像
+            if (null != user.photoUrl && '' != user.photoUrl){
+                $('#userPhoto').attr('src',download_config.DOWNLOD_URL + user.photoUrl);
+                $(".owner_ing img").attr('src',download_config.DOWNLOD_URL + user.photoUrl);
+            }
+            $('#userNameDiv').text(user.userName);//用户名
+            // $('.user').attr('title',user.userName);
+            $(".userCenter").attr('title',JSON.parse(userMessage.data).nickName||JSON.parse(userMessage.data).personName||JSON.parse(userMessage.data).accountName||JSON.parse(userMessage.data).accountCode);
+        };
+
+
+        commons.initSystem();
+
+
+        init();
+    })
+</script>
+</body>
+</html>

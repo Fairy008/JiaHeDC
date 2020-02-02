@@ -1,0 +1,823 @@
+<style type="text/css">
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    .inputWidth_250{width:250px;}
+    .four_td1,.four_td2{
+        line-height: 55px!important;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">广告位：</span>
+                    <span><select id="search_advert" class="input inputWidth_100" style="text-align:center;"/></span>
+                </div>
+                <div>
+                    <span class="label2">状态：</span>
+                    <span><select id="search_status" class="input inputWidth_100" style="text-align:center;"/></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " id="queryBtn" value="查询"/>
+                <input type="button" class="btn " id="resetBtn" value="重置"/>
+                <input type="button" class="btn " id="addBtn"   value="新增"/>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="advertGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看广告详情 -->
+<div id="advertInfo" class="form" style="display: none;">
+    <form  id="fileInfo" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <input type="hidden" id="advertId" >
+            </tr>
+
+            <tr>
+                <td class="four_td1 td5"><font color="red">*</font>广告位:</td>
+                <td class="four_td2">
+                    <select class="inputType inputWidth_250" id="advertise"></select>
+                    <span id="view_advertise" class="viewType"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="four_td1 td5"><font color="red">*</font>标题:</td>
+                <td class="four_td2">
+                    <input id="title" class="inputType" type="text" />
+                    <span id="view_title" class="viewType"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="four_td1 td5"><font color="red">*</font>图片:</td>
+                    <td>
+                        <label title="选择文件" for="chooseImg" class="l-btn choose-btn">
+                            <input type="file" accept="image/jpg,image/jpeg,image/png" name="file" id="chooseImg" class="hidden">
+                            <span id="view_chooseImg" class="viewType"></span>
+                        </label>
+                    </td>
+            </tr>
+
+            <tr>
+                <td class="four_td1 td5">链接:</td>
+                <td class="four_td2">
+                    <input id="url" class="inputType" type="text" />
+                    <span id="view_url" class="viewType"></span>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+
+
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons) {
+        var processDialog = $("#process");
+        var blob;
+        var init = function () {
+            loaderGrid();//加载表格
+            commons.findDictList(18000, "advertise");
+            commons.findDictList(18000, "search_advert");
+            commons.findDictList(19000, "search_status");
+
+            $("#queryBtn").bind("click", searchFun);//点击查询
+            $("#resetBtn").on("click", resetFun);//重置
+            $("#addBtn").on("click", addFun);//新增
+
+            $(window).resize(function () {
+                $("#advertGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function () {
+            $(".input").val("");
+        }
+
+        var chanageTableCss = function () {
+            var divObj = $('#advertGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight': ($(".rightMain").height() - $(".searchItems").height() - $(".ui-jqgrid-hdiv").height()) - $("#pager2").height() - 50 + "px"});
+        };
+
+        var colmodel = [
+            {name: 'advertId', index: 'advert_id', hidden: true},
+            {name: 'advertise', index: 'advertise', hidden:true},
+            {name: 'advertiseName', index: 'advertise', align: 'center', width: '10%'},
+            {name: 'title', index: 'title', align: 'center', width: '10%'},
+            {name: 'status', index: 'status', hidden:true},
+            {name: 'statusName', index: 'status', align: 'center', width: '20%'},
+            {name: 'picture', index: 'picture', align: 'center', width: '10%'},
+            {name: 'url', index: 'url', align: 'center', width: '10%'},
+            {
+                name: 'cz',
+                index: 'cz',
+                width: '20%',
+                align: "center",
+                sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    var str = "";
+                    str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.advertId + "' title='查看详情'>&nbsp;";
+
+                    str += "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.advertId + "' title='编辑'>&nbsp;";
+
+                    //str += "<img src='images/public/Tdelete.png' class='deleteBtn' data-id='" + rowObject.advertId + "' title='删除'>&nbsp;";
+
+                    if(rowObject.status == forum_advertStatus.publishedStatus || rowObject.status == forum_advertStatus.offShelf) {
+                        str += "<img src='images/public/icon-passG.png' class='img_c' data-id='" + rowObject.advertId + "' title='发布'>";
+                    }else {
+                        str += "<img src='images/public/icon-pass.png' class='passBtn img_c' data-id='" + rowObject.advertId + "' title='发布'>";
+                    }
+
+                    if(rowObject.status == forum_advertStatus.draftStatus || rowObject.status == forum_advertStatus.offShelf) {
+                        str += "<img src='images/public/icon-refuseG.png' class='img_c' data-id='" + rowObject.advertId + "' title='下架'>";
+                    }else {
+                        str += "<img src='images/public/icon-refuse.png' class='failBtn img_c' data-id='" + rowObject.advertId + "' title='下架'>";
+                    }
+
+                    return str;
+                }
+            }
+        ];
+
+        var permissionFlag = true;
+
+        var loaderGrid = function () {
+            $("#advertGrid").jqGrid({
+                url: CMS_MANAGE.getListByAdvert,
+                datatype: "json",
+                postData: {},
+                mtype: 'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames: ['advertId','advertise', '广告位', '标题','status', '状态', '图片', '链接', '操作'],
+                colModel: colmodel,
+                width: '100%',
+                autowidth: true,
+                height: '100%',
+                rowNum: 15,
+                multiselect: true,//复选框
+                rowList: [15, 30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete: function () {
+                    commons.isNextDisable();
+                    $("#advertGrid").setGridWidth($(".rightMain").width() - 30);
+                    if (permissionFlag) {
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                            "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                            "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll: function (rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow: function (rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var batchStyle = function () {
+            var ids = $("#advertGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#advertGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据撤回和发布下载按钮处理
+            if (ids.length == 0) {
+                $("#batchDeleteBtn").addClass("btn_grey");
+            } else {
+                $("#batchDeleteBtn").removeClass("btn_grey");
+            }
+
+            var records = $("#advertGrid").jqGrid('getGridParam', 'records');
+            if (records <= 0) {
+                $("#batchDeleteBtn").hide("btn_grey");
+            } else {
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var tableEvent = function () {
+            $(".detailBtn, .editBtn,.deteleBtn,#batchDeleteBtn").off("click");
+
+            //详情
+            $(".detailBtn").bind("click", function () {
+                var advertId = $(this).attr("data-id");
+                detailAdvertFun(advertId, 0);
+            });
+
+            //编辑
+            $(".editBtn").bind("click", function () {
+                var advertId = $(this).attr("data-id");
+                detailAdvertFun(advertId, 2);
+            });
+
+
+            //发布
+            $(".passBtn").bind("click",function () {
+                var advertId = $(this).attr("data-id");
+                advertFun([advertId],forum_advertStatus.publishedStatus);
+            });
+
+            //下架
+            $(".failBtn").bind("click",function () {
+                var advertId = $(this).attr("data-id");
+                advertOff([advertId],forum_advertStatus.offShelf);
+            });
+
+
+
+            //删除
+            $(".deleteBtn").bind("click", function () {
+                var advertId = $(this).attr("data-id");
+                deleteAdvertFun([advertId]);
+            });
+
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function () {
+                if (!$(this).hasClass("btn_grey")) {
+                    deleteAdvertFun(getValidData());
+                }
+            });
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-08-15 sxj： Created
+         */
+
+        var getValidData = function () {
+            var ids = [];
+            var rowIds = $("#advertGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index, id) {
+                var row = $("#advertGrid").jqGrid('getRowData', id);
+                var advertId = row.advertId;
+                ids.push(advertId)
+            });
+            return ids;
+        }
+
+
+        /**
+         * 隐藏input输入框，显示信息查看
+         */
+        var viewTypeShow = function () {
+            $(".txtRequired").hide();
+            $(".textareaType").hide();
+            $(".inputType,.label,.selectType").css("display", "none");
+            $(".viewType").css("display", "block");
+            $(".inputType").val("");
+            $(".viewType").text("");
+            $(".textareaType").val("");
+            $(".choose-btn").hide();
+            $(".four_td1 font").hide();
+        }
+
+
+        /**
+         * 显示input输入框值
+         */
+        var viewTypeShowInputValue = function () {
+            $(".txtRequired").show();
+            $(".textareaType").show();
+            $(".inputType,.label,.selectType").css("display", "block");
+            $(".viewType").css("display", "none");
+            $(".inputType").val("");
+            $(".textareaType").val("");
+
+            $(".viewType").text("");
+            $(".choose-btn").show();
+            $(".four_td1 font").show();
+            blob = "";
+            initAllEvent();
+        }
+
+
+        /**
+         * 隐藏input输入框，显示信息查看
+         */
+        var viewTypeHide = function () {
+            $(".txtRequired").show();
+            $(".textareaType").show();
+            $(".inputType,.label,.selectType").css("display", "block");
+            $(".viewType").css("display", "none");
+            $(".inputType").val("");
+            $(".textareaType").val("");
+
+            $(".viewType").text("");
+            $(".choose-btn").show();
+            $(".four_td1 font").show();
+            blob = "";
+            initAllEvent();
+        }
+
+
+        /**
+         * 新增广告位
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var addFun = function () {
+            detailAdvertFun(null, 1);
+        }
+
+
+
+        /**
+         * 发布广告位
+         * @version <1> 2019-08-22 sxj： Created
+         */
+        var advertFun = function(advertId,status,flag) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_advertStatus.publishedStatus){//发布
+                msg="发布";
+            }
+            confirmDialog.html("是否确认" +msg+ "所选广告？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text: "是",
+                    click: function () {
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.editStatus_url;
+                        ajax.opts.data = JSON.stringify({'advertIds': advertId});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            if (result.flag) {
+                                $("#advertGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("发布成功");
+                            } else {
+                                PopWin.showMessageWin("发布失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：发布失败");
+                        };
+                        ajax.run();
+                    }
+                }, {
+                    text: "否",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+
+
+        /**
+         * 下架广告位
+         * @version <1> 2019-08-22 sxj： Created
+         */
+        var advertOff = function(advertId,status,flag) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_advertStatus.offShelf){//下架
+                msg="下架";
+            }
+            confirmDialog.html("是否确认" +msg+ "所选广告？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text: "是",
+                    click: function () {
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.editOff_url;
+                        ajax.opts.data = JSON.stringify({'advertIds': advertId});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            if (result.flag) {
+                                $("#advertGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("下架成功");
+                            } else {
+                                PopWin.showMessageWin("下架失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：下架失败");
+                        };
+                        ajax.run();
+                    }
+                }, {
+                    text: "否",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+
+        /**
+         * 删除广告位
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var deleteAdvertFun = function (ids) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            var ajax = new BaseAjax();
+            confirmDialog.html("是否确认删除该广告位？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close: function () {
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text: "是",
+                    click: function () {
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        ajax.opts.url = CMS_MANAGE.deleteAdvert_url;
+                        ajax.opts.data = JSON.stringify({'advertIds': ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#advertGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }
+                }, {
+                    text: "否",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 查看广告位详情
+         * type 0:详情 1新增 2编辑
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var detailAdvertFun = function (advertId, type) {
+
+            var buttons = [];
+            var close = {
+                text: "关闭",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            };
+
+            var save = {
+                text: "保存",
+                click: function () {
+                    addSaveFun(advertId);
+                }
+            }
+
+            if (type == 0) {
+                viewTypeShow();
+                setAdvertInfo(advertId,0);
+                buttons.push(close);
+            } else if (type == 1) {
+                viewTypeHide();
+                buttons.push(save);
+                buttons.push(close);
+            } else if (type == 2) {
+                viewTypeShowInputValue();
+                setAdvertInfo(advertId,2);
+                buttons.push(save);
+                buttons.push(close);
+            }
+
+            var userDialog = $("#advertInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title: '广告位',
+                height: 580,
+                width: 580,
+                modal: true,
+                close: function () {
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: buttons
+            });
+            userDialog.dialog("open");
+        };
+
+
+        /**
+         * 详情赋值
+         * @version <1> 2019-08-15 sxj： Created.
+         */
+        var setAdvertInfo = function (advertId,type) {
+              advertDetail(advertId,type);
+        }
+
+
+        /**
+         *新增/编辑保存
+         */
+        var addSaveFun = function (advertId) {
+
+            if (!formVerf()) {
+                return;
+            }
+            var url = CMS_MANAGE.addAdvert_url;
+            var msg = "新增";
+            if (advertId != null && advertId != '') {
+                url = CMS_MANAGE.editAdvert_url;
+                msg = "修改"
+            }
+            var form  = $('#fileInfo')[0];
+            var formData = new FormData(form);
+            if (advertId != null && advertId !== '') {
+                formData.append("advertId",advertId);
+            }
+            var formDatas = getAdvertInfo(formData);
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formDatas,
+                //async : false,
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 600000,
+                headers: {"AccessToken": commons.getAccessToken()},
+                success: function (data) {
+                    if (data.flag) {
+                        $("#advertInfo").dialog("close");
+                        $("#advertGrid").trigger("reloadGrid");
+                        PopWin.showMessageWin("广告位" + msg + "成功");
+                    } else {
+                        PopWin.showMessageWin("广告位" + msg + "失败：" + result.msg);
+                    }
+                }, error: function () {
+                    //关闭进度条
+                    PopWin.showMessageWin("系统错误："+msg+"失败");
+                }
+            });
+        };
+
+
+        /**
+         * 保存获取值
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var getAdvertInfo = function (formData) {
+
+            formData.append("advertId",$("#advertId").val());
+            formData.append("advertise",$("#advertise").val());
+            formData.append("title",$("#title").val());
+            formData.append("url",$("#url").val());
+            return formData;
+
+        }
+
+
+
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var searchFun = function() {
+            var advert = {};
+
+            advert.advertise = $("#search_advert").val();
+            advert.status = $("#search_status").val();
+
+            $("#advertGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData: advert,
+                page: 1
+            }).trigger("reloadGrid");
+
+        };
+
+
+
+        /**
+         * 根据广告ID获取详情
+         * @version <1> 2019-08-15 sxj： Created
+         */
+        var advertDetail = function(advertId,type){
+            var advert= {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findAdvertInfo_url+ "?advertId="+ advertId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type= "GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    advert= result.data;
+                    if(type == 0)
+                    {
+                        $("#view_advertise").html(advert.advertise);
+                        $("#view_title").html(advert.title);
+                        $("#view_chooseImg").html(advert.chooseImg);
+                        $("#view_url").html(advert.url);
+                    }
+                    else{
+                        $("#advertise option[value='"+ advert.advertise +"']").attr("selected","selected");
+                        $("#title").val(advert.title);
+                        $("#chooseImg").val(advert.chooseImg);
+                        $("#url").val(advert.url);
+                    }
+
+                }
+            }
+            ajax.run();
+            return advert;
+        };
+
+
+        var formVerf = function(){
+
+            var userInfo = $('#advertInfo');
+
+            if(formVerfication.checkInputIsEmpty($('#advertise'),userInfo, '广告位不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#title'),userInfo, '标题不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,20,$('#title'),userInfo, '标题字数不能超过20位')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#chooseImg'),userInfo, '图片不能为空')){
+                return false;
+            }
+
+            return true;
+
+        };
+
+        init();
+
+        //弹出框水平垂直居中
+        var initAllEvent = function (){
+            (window.onresize = function() {
+                var win_height = $(window).height();
+                var win_width = $(window).width();
+                if (win_width <= 768) {
+                    $(".tailoring-content").css(
+                        {
+                            "top" : (win_height- $(".tailoring-content")
+                                .outerHeight()) / 2,
+                            "left" : 0
+                        });
+                } else {
+                    $(".tailoring-content").css(
+                        {
+                            "top" : (win_height- $(".tailoring-content")
+                                .outerHeight()) / 2,
+                            "left" : (win_width - $(".tailoring-content")
+                                .outerWidth()) / 2
+                        });
+                }
+            })();
+
+            // 选择文件触发事件
+            $("#chooseImg").change(function() {
+                var file =this;
+                //文件为空，返回
+                if (!file.files || !file.files[0]) {
+                    return;
+                }
+                $(".tailoring-container").show();
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+
+                }
+                reader.readAsDataURL(file.files[0]);
+            });
+
+
+            $(".close-tailoring").click(function(){
+                $(".tailoring-container").hide();
+                $("#chooseImg").val("")
+            });
+            $(".black-cloth").click(function(){
+                $(".tailoring-container").toggle();
+                $("#chooseImg").val("")
+            });
+        }
+    });
+
+
+
+</script>

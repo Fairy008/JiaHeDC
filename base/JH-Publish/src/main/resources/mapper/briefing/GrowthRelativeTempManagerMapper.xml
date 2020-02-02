@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.briefing.mapping.IGrowthRelativeTempManagerMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.GrowthRelativeTempManager" >
+    <id column="relative_id" property="relativeId" jdbcType="INTEGER" />
+    <result column="growth_id" property="growthId" jdbcType="INTEGER" />
+    <result column="growth_name" property="growthName" jdbcType="VARCHAR" />
+    <result column="temp_range_start" property="tempRangeStart" jdbcType="INTEGER" />
+    <result column="temp_range_end" property="tempRangeEnd" jdbcType="INTEGER" />
+    <result column="instruction" property="instruction" jdbcType="VARCHAR" />
+    <result column="ifavg" property="ifavg" jdbcType="SMALLINT" />
+    <result column="if_or" property="ifOr" jdbcType="SMALLINT" />
+    <result column="range_limit" property="rangeLimit" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    relative_id, growth_id, growth_name, temp_range_start, temp_range_end, instruction,
+    ifavg, if_or, range_limit
+  </sql>
+  <select id="findGrowthRelativeTempById" parameterType="java.lang.Integer" resultType="com.jh.briefing.model.GrowthRelativeGroundTempParam">
+    select
+    temp.relative_id relativeId,
+    temp.growth_id growthId,
+    prd.growth_name growthName,
+    region.region_id regionId,
+    region.china_name regionName,
+    dict.dict_id cropsId,
+    dict.data_name cropsName,
+    temp.temp_range_start tempRangeStart,
+    temp.temp_range_end tempRangeEnd,
+    temp.instruction,
+    temp.ifavg,
+    temp.if_or ifOr,
+    temp.range_limit rangeLimit
+    from briefing_relative_temp_manager temp
+    left join briefing_crops_growth_manager prd
+    on temp.growth_id = prd.growth_id
+    left join init_region region
+    on prd.region_id = region.region_id
+    left join init_dict dict on prd.crops_id = dict.dict_id
+    where relative_id = #{relativeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteGrowthRelativeTemp" parameterType="java.lang.Integer">
+    delete from briefing_relative_temp_manager
+    where relative_id = #{relativeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="saveGrowthRelativeGroundTemp" parameterType="com.jh.briefing.entity.GrowthRelativeGroundTemp">
+    insert into briefing_relative_temp_manager
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="relativeId != null">
+        relative_id,
+      </if>
+      <if test="growthId != null">
+        growth_id,
+      </if>
+      <if test="growthName != null">
+        growth_name,
+      </if>
+      <if test="tempRangeStart != null">
+        temp_range_start,
+      </if>
+      <if test="tempRangeEnd != null">
+        temp_range_end,
+      </if>
+      <if test="instruction != null">
+        instruction,
+      </if>
+      <if test="ifavg != null">
+        ifavg,
+      </if>
+      <if test="ifOr != null">
+        if_or,
+      </if>
+      <if test="rangeLimit != null">
+        range_limit,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="relativeId != null">
+        #{relativeId,jdbcType=INTEGER},
+      </if>
+      <if test="growthId != null">
+        #{growthId,jdbcType=INTEGER},
+      </if>
+      <if test="growthName != null">
+        #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="tempRangeStart != null">
+        #{tempRangeStart,jdbcType=SMALLINT},
+      </if>
+      <if test="tempRangeEnd != null">
+        #{tempRangeEnd,jdbcType=SMALLINT},
+      </if>
+      <if test="instruction != null">
+        #{instruction,jdbcType=VARCHAR},
+      </if>
+      <if test="ifavg != null">
+        #{ifavg,jdbcType=SMALLINT},
+      </if>
+      <if test="ifOr != null">
+        #{ifOr,jdbcType=SMALLINT},
+      </if>
+      <if test="rangeLimit != null">
+        #{rangeLimit,jdbcType=SMALLINT},
+      </if>
+    </trim>
+  </insert>
+
+  <insert id="saveBatchGrowthRelativeTempManager" parameterType="java.util.List">
+    insert into briefing_relative_temp_manager
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      growth_id,
+      growth_name,
+      temp_range_start,
+      temp_range_end,
+      instruction,
+      ifavg
+    </trim>
+    values
+    <foreach collection="growthConditions" item="growthCondition" separator=",">
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        #{growthCondition.growthId},
+        (select growth_name from briefing_crops_growth_manager where id= #{growthCondition.growthId}),
+        #{growthCondition.tempRangeStart},
+        #{growthCondition.tempRangeEnd},
+        #{growthCondition.instruction},
+        #{growthCondition.ifavg}
+      </trim>
+    </foreach>
+  </insert>
+
+  <delete id="deleteBatchGrowthConditionsByGrowthId" parameterType="java.lang.Integer">
+    delete from briefing_relative_temp_manager
+    where growth_id = #{growthId}
+  </delete>
+
+  <update id="updateGrowthRelativeGroundTemp" parameterType="com.jh.briefing.entity.GrowthRelativeGroundTemp">
+    update briefing_relative_temp_manager
+    <set>
+      <if test="growthId != null">
+        growth_id = #{growthId,jdbcType=INTEGER},
+      </if>
+      <if test="growthName != null">
+        growth_name = #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="tempRangeStart != null">
+        temp_range_start = #{tempRangeStart,jdbcType=SMALLINT},
+      </if>
+      <if test="tempRangeEnd != null">
+        temp_range_end = #{tempRangeEnd,jdbcType=SMALLINT},
+      </if>
+      <if test="instruction != null">
+        instruction = #{instruction,jdbcType=VARCHAR},
+      </if>
+      <if test="ifavg != null">
+        ifavg = #{ifavg,jdbcType=SMALLINT},
+      </if>
+      <if test="ifOr != null">
+        if_or = #{ifOr,jdbcType=SMALLINT},
+      </if>
+      <if test="rangeLimit != null">
+        range_limit = #{rangeLimit,jdbcType=SMALLINT},
+      </if>
+    </set>
+    where relative_id = #{relativeId,jdbcType=INTEGER}
+  </update>
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.briefing.model.GrowthRelativeGroundTempParam">
+    select
+    <include refid="Base_Column_List" />
+    from briefing_relative_temp_manager
+  </select>
+  <select id="queryByPage" resultType="com.jh.briefing.model.GrowthRelativeGroundTempParam" parameterType="com.jh.briefing.model.GrowthRelativeGroundTempParam">
+    select
+    temp.relative_id relativeId,
+    temp.growth_id growthId,
+    prd.growth_name growthName,
+    region.region_id regionId,
+    region.china_name regionName,
+    dict.dict_id cropsId,
+    dict.data_name cropsName,
+    temp.temp_range_start tempRangeStart,
+    temp.temp_range_end tempRangeEnd,
+    temp.instruction,
+    temp.ifavg,
+    temp.if_or ifOr,
+    temp.range_limit rangeLimit
+    from briefing_relative_temp_manager temp
+    left join briefing_crops_growth_manager prd
+    on temp.growth_id = prd.growth_id
+    left join init_region region
+    on prd.region_id = region.region_id
+    left join init_dict dict on prd.crops_id = dict.dict_id
+    <where>
+      <if test="regionId != null and regionId != ''" >
+        region.region_id = #{regionId}
+      </if>
+      <if test="cropsId != null and cropsId != ''" >
+        and dict.dict_id = #{cropsId}
+      </if>
+      <if test="growthId != null and growthId != ''" >
+        and temp.growth_id = #{growthId}
+      </if>
+      <if test="instruction != null and instruction != ''" >
+        and temp.instruction like '%'|| #{instruction} || '%'
+      </if>
+    </where>
+    order by region.region_id,temp.growth_id,temp.temp_range_start
+  </select>
+  <!-- 根据growthId（物候期编号）查询对应生长与地温关系信息 -->
+  <select id="queryGrowthRelativeTemp" resultType="com.jh.briefing.model.GrowthRelativeTempManagerParam" parameterType="java.lang.Integer">
+    select
+    temp.relative_id relativeId,
+    temp.growth_id growthId,
+    prd.growth_name growthName,
+    dict.dict_id cropsId,
+    dict.data_name cropsName,
+    temp.temp_range_start tempRangeStart,
+    temp.temp_range_end tempRangeEnd,
+    temp.instruction,
+    temp.ifavg,
+    temp.if_or ifOr,
+    temp.range_limit rangeLimit
+    from briefing_relative_temp_manager temp
+    left join briefing_crops_growth_manager prd
+    on temp.growth_id = prd.id
+    left join init_dict dict on prd.crops_id = dict.dict_id
+    <where>
+      <if test="growthId != null and growthId != ''" >
+        temp.growth_id = #{growthId}
+      </if>
+    </where>
+    order by temp.temp_range_start
+  </select>
+</mapper>

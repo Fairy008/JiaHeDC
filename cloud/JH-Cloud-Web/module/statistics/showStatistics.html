@@ -1,0 +1,313 @@
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+<div class="outerDiv">
+    <div style="float: left;width: 95%;">
+        <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;">各类卫星归档数据统计<em>(单位：次)</em></div>
+        <div id="archiveDiv" style="float:left;width: 100%;min-height: 225px"></div>
+    </div>
+    <div style="float: left;width: 95%;">
+        <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;">各类卫星下载数据统计<em>(单位：次)</em></div>
+        <div id="downDiv" style="float:left;width: 100%;min-height: 225px"></div>
+    </div>
+    <div style="float: left;width: 95%;">
+        <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;text-align:center;">各类卫星数据统计<em>(单位：次)</em></div>
+        <div id="sateDiv" style="float:left;width: 100%;min-height: 225px"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="../../js/lib/require/require.js"></script>
+<script type="text/javascript" src="../../js/lib/module/config.js"></script>
+
+<script type="text/javascript">
+
+    require(["jquery",  "BaseAjax", "formVerfication","PopWin","echarts","jqueryUi"], function ($, BaseAjax, formVerfication,PopWin,echarts,jqueryUi) {
+        var myChartArchive,myChartDown,myChartSate;
+        var init=function () {
+            resizeContainer();//增加页面自适应的监听事件
+            loadArchiveSum();//归档统计
+            loadDownSum();//下载统计
+            loadSateSum();//卫星数据统计
+        }
+
+        /**
+         * 统计归档数据 不同卫星的数据数量
+         * @version<1> 2018-06-12 wl
+         */
+        var loadArchiveSum = function () {
+            var orderParam = {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.queryArchiveSateSum_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var dataNames=new Array();
+                    var dataTodays=new Array();
+                    var dataTotals=new Array();
+                    $(result.data.total).each(function (i,d) {//组装name
+                        if(d.name!=undefined){
+                            dataNames[i]=d.name;
+                        }else {
+                            dataNames[i]="";
+                        }
+                        dataTotals[i]=d.value;
+                        $(result.data.total).each(function (j,k) {//组装today数据
+                            if(k.id==d.id){
+                                if(k.value!=undefined){
+                                    dataTodays[i] = k.value;
+                                }else{
+                                    dataTodays[i] = 0;
+                                }
+                            }
+                        });
+                    });
+                    var show;
+                    if(dataNames.length>8){
+                        show=true;
+                    }
+                    drawGraph("archiveDiv",dataNames,dataTodays,dataTotals,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        /**
+         * 统计下载数据 不同卫星的数据数量
+         * @version<1> 2018-06-12 wl
+         */
+        var loadDownSum = function () {
+            var orderParam = {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = ORDER_CONFIG.queryDataOrderSum_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var dataNames=new Array();
+                    var dataTodays=new Array();
+                    var dataTotals=new Array();
+                    $(result.data.total).each(function (i,d) {//组装name
+                        if(d.name!=undefined){
+                            dataNames[i]=d.name;
+                        }else {
+                            dataNames[i]="";
+                        }
+                        dataTotals[i]=d.value;
+                        $(result.data.total).each(function (j,k) {//组装today数据
+                            if(k.id==d.id){
+                                if(k.value!=undefined){
+                                    dataTodays[i] = k.value;
+                                }else{
+                                    dataTodays[i] = 0;
+                                }
+                            }
+                        });
+                    });
+                    var show;
+                    if(dataNames.length>8){
+                        show=true;
+                    }
+                    drawGraph("downDiv",dataNames,dataTodays,dataTotals,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+        /**
+         * 统计原始数据 不同卫星的数据数量
+         * @version<1> 2018-06-12 wl
+         */
+        var loadSateSum = function () {
+            var orderParam = {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = DATA_STORAGE.findDataStorageSateSum_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(orderParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var dataNames=new Array();
+                    var dataTodays=new Array();
+                    var dataTotals=new Array();
+                    $(result.data.total).each(function (i,d) {//组装name
+                        if(d.name!=undefined){
+                            dataNames[i]=d.name;
+                        }else {
+                            dataNames[i]="";
+                        }
+                        dataTotals[i]=d.value;
+                        $(result.data.total).each(function (j,k) {//组装today数据
+                            if(k.id==d.id){
+                                if(k.value!=undefined){
+                                    dataTodays[i] = k.value;
+                                }else{
+                                    dataTodays[i] = 0;
+                                }
+                            }
+                        });
+                    });
+                    var show;
+                    if(dataNames.length>8){
+                        show=true;
+                    }
+                    drawGraph("sateDiv",dataNames,dataTodays,dataTotals,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+
+        //柱状图内容填充
+        var drawGraph=function(id,dataNames,dataTodays,dataTotals,show){
+            myChartArchive = echarts.init(document.getElementById(id));
+          var  option = {
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data:['今日数据','历史总计']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : dataNames,
+                        axisLabel: {
+                            interval: 0,
+                            formatter: function (value, index) {
+                                if (show) {
+                                    if (index % 2 != 0) {
+                                        return '\n\n' + value;
+                                    }
+                                    else {
+                                        return value;
+                                    }
+                                } else {
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value'
+                    }
+                ],
+                series : [
+                    {
+                        name:'今日数据',
+                        type:'bar',
+                        data:dataTodays,
+                        //顶部数字展示pzr
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,//是否展示
+                                    position:'top',
+                                    textStyle: {
+                                        fontWeight:'bolder',
+                                        fontSize : '12',
+                                        fontFamily : '宋体',
+                                        color:'black'
+                                    }
+                                }
+                            }
+                        }
+                    },
+
+                    {
+                        name:'历史总计',
+                        type:'bar',
+                        data:dataTotals,
+                        //顶部数字展示pzr
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,//是否展示
+                                    position:'top',
+                                    textStyle: {
+                                        fontWeight:'bolder',
+                                        fontSize : '12',
+                                        fontFamily : '宋体',
+                                        color:'black'
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                ]
+            };
+
+
+            clearBg(id);//清除背景图片
+            myChartArchive.setOption(option);
+            window.onresize = function () {
+                resizeContainer();
+                myChartArchive.resize();
+            }
+            if(dataNames.length==0 && dataTotals.length==0){
+                //销毁echarts
+                myChartArchive.clear();
+                myChartArchive.dispose();
+                //设置div的背景图
+                setBg(id);
+            }
+        }
+
+
+        var resizeContainer = function () {
+            var archiveDiv = document.getElementById('archiveDiv');
+            var downDiv= document.getElementById('downDiv');
+            var sateDiv= document.getElementById('sateDiv');
+            var height=$(".outerDiv").height()/3;
+            if(height<225){
+                height=225+"px";
+            }else{
+                height+="px";
+            }
+
+            archiveDiv.style.height =height;
+            downDiv.style.height =height;
+            sateDiv.style.height =height;
+
+        };
+
+
+        var setBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = 'url(images/public/nodata.jpg)';
+            div.style.backgroundRepeat='no-repeat';
+            div.style.backgroundPosition='center';
+        }
+
+        var clearBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = '';
+        }
+        init();
+    });
+
+</script>
+

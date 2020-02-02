@@ -1,0 +1,571 @@
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/app.css" rel="stylesheet" />
+		<style>
+			/* .clt-span-account-name, */ 
+			.clt-span-time{ margin-left: 5px;}
+			.clt-span-type{ padding: 0px 3px; height: 20px; line-height: 20px;}
+			.mui-table-view .mui-media-object{
+				height: 70px; width: 70px; max-width: 70px;
+			}
+			
+			.mui-pull-bottom-tips {
+				text-align: center;
+				background-color: #efeff4;
+				font-size: 15px;
+				line-height: 40px;
+				color: #777;
+			}
+			.mui-pull-top-tips {
+				position: absolute;
+				top: 0px;
+				left: 50%;
+				margin-left: -25px;
+				width: 40px;
+				height: 40px;
+				border-radius: 100%;
+				z-index: 1;
+			}
+			.mui-pull-top-wrapper {
+				width: 42px;
+				height: 42px;
+				display: block;
+				text-align: center;
+				background-color: #efeff4;
+				border: 1px solid #ddd;
+				border-radius: 25px;
+				background-clip: padding-box;
+				box-shadow: 0 4px 10px #bbb;
+				overflow: hidden;
+			}
+			.mui-pull-top-tips.mui-transitioning {
+				-webkit-transition-duration: 200ms;
+				transition-duration: 200ms;
+			}
+			.mui-pull-top-canvas canvas {
+				width: 40px;
+			}
+			.mui-slider-indicator.mui-segmented-control {
+				background-color: #efeff4;
+			}
+			
+			.mui-slider-item .taskName{
+				display: block;
+				position: absolute;
+				top: 0;
+				width: 100%;
+				margin-top: 70px;
+				color: #fff;
+				font-size: 15px;
+				text-align: center;
+			}
+			.mui-btn.mui-btn-blue{
+				background-color: #2da3d5;
+			}
+			.mui-icon.mui-icon-location-filled.jh-title-button{
+				background-color: rgba(0,0,0,0);
+				border-width: 0;
+				color: white;
+			}
+			.jh-progressbar{
+				background-color: #F0F0F0;
+				/* padding: 0.0625rem; */
+				width: 4rem;
+				height: 1.2rem;
+				margin-top: 0.5rem;
+				margin-bottom: 0.5rem;
+				border:0.0625rem solid #2da3d5 !important;
+				padding: 0;
+				/* border-width:  0.3rem; */
+				z-index: 7;
+			}
+			.jh-progressbar.jh-state-finshed{
+				border:0.0625rem solid #14c13b !important;
+			}
+			.jh-progressbar.jh-state-unstart{
+				border:0.0625rem solid #e69200 !important;
+			}
+			.jh-progressbar .jh-progressbar-text{
+				text-align: center;
+				width: 3.875rem;
+				/* height: 1.075rem; */
+				font-size: 0.8rem;
+				color: white;
+				position: absolute;
+				/* left: 1.2rem; */
+				z-index:9;
+			}
+			/* 3.875rem */
+			.jh-progressbar .jh-progressbar-bar{
+				position: absolute;
+				left: 1rem;
+				width: 2rem;
+				height: 1.075rem;
+				background-color: #2da3d5;
+				z-index:8;
+			}
+			.jh-progressbar.jh-state-finshed .jh-progressbar-bar{
+				background-color: #14c13b;
+				width: 3.875rem;
+			}
+			
+			.jh-progressbar.jh-state-unstart .jh-progressbar-bar{
+				background-color: #e69200;
+				width: 3.875rem;
+			}
+			.jh-progressbar .jh-progressbar-state{
+				position: absolute;
+				top: 2.4rem; 
+				margin-left: 4.5rem;
+				color: #2da3d5;
+				font-size: 1rem;
+			}
+			.jh-progressbar.jh-state-finshed .jh-progressbar-state{
+				color: #14c13b;
+			}
+			.jh-progressbar.jh-state-unstart .jh-progressbar-state{
+				color: #E69200;
+			}
+			.jh-padding-div{
+				padding: 0.7rem;
+			}
+			.jh-li{
+				height: 10rem;
+				margin-bottom: 0.7rem;
+				background-color: #FFFFFF;
+				border: 0 soild #FFFFFF !important;
+				background-position: right;
+				background-repeat: no-repeat;
+				background-size:  40%;
+				-moz-border-radius: 0.625rem;      /* Gecko browsers */
+				-webkit-border-radius: 0.625rem;   /* Webkit browsers */
+				border-radius:0.625rem;            /* W3C syntax */
+			}
+			.jh-li p{
+				margin-left: 1.5rem;
+			}
+			.jh-li p .jh-title{
+				margin-top:1.5rem ;
+				display: inline-block;
+				width: 90%; 
+				font-size: 1.4rem; 
+				color:#d5b200;
+			}
+			.jh-li p .jh-subtitle{
+				color: #000000;
+			}
+			.jh-li .jh-show-button{
+				font-size: 0.7rem;
+				margin-left: 1rem;
+				margin-top: 0.8rem;
+				width: 6rem;
+				height: 2rem;
+				border-radius: 0.5rem
+			}
+			.jh-font-size1{
+				font-size: 1.4rem;
+			}
+			.jh-font-size2{
+				font-size: 1.2rem;
+			}
+			.mui-slider-indicator.mui-segmented-control.mui-segmented-control-inverted{
+				background-color: white;
+			}	
+			
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<header class="mui-bar mui-bar-nav">
+			<h1 class="mui-title jh-font-size1">定标</h1>
+		</header>
+		<div id="clt-home-menu" class="mui-slider mui-fullscreen" style="top: 4rem;">
+			<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item jh-font-size2 mui-active" href="#itemAll" isPublish="All">全部</a>
+				<a class="mui-control-item jh-font-size2" href="#item22004" isPublish="22004">未提交</a>
+				<a class="mui-control-item jh-font-size2" href="#item22002" isPublish="22002">已提交</a>
+			</div>
+			<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+			<div id="clt-home-content" class="mui-slider-group">
+				<div id="itemAll" class="mui-slider-item mui-control-content mui-active">
+					<div class="mui-scroll-wrapper">
+						<div id="scrolAll" class="mui-scroll jh-padding-div">
+							<ul class="mui-table-view" style="background-color: rgba(0,0,0,0);">
+								<li class="jh-li" style="background-image: url(../../images/list-bg/bg5.png);">
+									<p>
+										<span class="jh-title mui-ellipsis">湖北省黄梅县农险试点定验标</span>
+									</p>
+									<p class="mui-ellipsis">
+										<span class="clt-span-account-name jh-subtitle">千克</span>
+										<span class="clt-span-time jh-subtitle">2019-05-08</span>
+									</p>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">待下载：200</button>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">定标中：200</button>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">已定标：200</button>
+								</li>
+								<li class="jh-li" style="background-image: url(../../images/list-bg/bg4.png);">
+									<p>
+										<span class="jh-title mui-ellipsis">湖北省黄梅县农险试点定验标</span>
+									</p>
+									<p class="mui-ellipsis">
+										<span class="clt-span-account-name jh-subtitle">千克</span>
+										<span class="clt-span-time jh-subtitle">2019-05-08</span>
+									</p>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">待下载：200</button>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">定标中：200</button>
+									<button type="button" class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">已定标：200</button>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="item22004" class="mui-slider-item mui-control-content">
+					<div class="mui-scroll-wrapper">
+						<div id="scroll21004" class="mui-scroll jh-padding-div">
+							<ul class="mui-table-view" style="background-color: rgba(0,0,0,0);">
+
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div id="item22002" class="mui-slider-item mui-control-content">
+					<div class="mui-scroll-wrapper">
+						<div id="scroll21002" class="mui-scroll jh-padding-div">
+							<ul class="mui-table-view" style="background-color: rgba(0,0,0,0);">
+
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/mui.pullToRefresh.js"></script>
+		<script src="../../js/mui.pullToRefresh.material.js"></script>
+
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/enums_config.js"></script>
+		<script src="../../js/myloop.js"></script>
+		<script src="../../js/download.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+
+			//判断任务内所有村任务是否都提交
+			function isSubmit(permissionList, index) {
+				var isFoundIndex = false
+				for (var i in permissionList) {
+					if (i == index) {
+						isFoundIndex = true
+						var data = permissionList[i].Data;
+						var isSubmit = true;
+						for (var n in data) {
+							if (data[n].isSubmit == false) {
+								isSubmit = false
+							}
+						}
+						if (isSubmit == false) {
+							return false
+						} else {
+							return true
+						}
+					}
+				}
+				if (!isFoundIndex) {
+					throw "isSubmit函数未找到对应的任务。"
+				}
+			}
+
+			//mui slider禁止滑动
+			//mui('.mui-slider').slider().stopped = true;
+			var tabEventLoop = TabEventLoop.initEventLoop();
+			var init = function() {
+				tabEventLoop.myLoop();
+				var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+				// console.log("123")
+				initArticlePage(isPublish, "up");
+				setTimeout(function() {
+					var taskList = JSON.parse(download.getLocalData())
+					if (taskList == null) {
+						insurace.getTaskList(function() {
+							initArticlePage(isPublish, "up");
+						})
+					}
+				}, 0);
+			};
+
+			(function($) {
+				//阻尼系数
+				var deceleration = mui.os.ios ? 0.003 : 0.0009;
+				$('.mui-scroll-wrapper').scroll({
+					bounce: false,
+					indicators: true, //是否显示滚动条
+					deceleration: deceleration
+				});
+
+				$.ready(function() {
+					//循环初始化所有下拉刷新，上拉加载。
+					$.each(document.querySelectorAll('.mui-slider-group .mui-scroll'), function(index, pullRefreshEl) {
+						$(pullRefreshEl).pullToRefresh({
+							down: {
+								height: 50, //可选,默认50.触发下拉刷新拖动距离,
+								auto: false, //可选,默认false.首次加载自动下拉刷新一次
+								contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+								contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+								contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										page = 1;
+										var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+										initArticlePage(isPublish, "down");
+									}, 100);
+								}
+							},
+							up: {
+								auto: false, //自动执行一次上拉加载，可选；
+								show: true, //显示底部上拉加载提示信息，可选；
+								contentrefresh: '正在加载...', //上拉进行中提示信息
+								contentnomore: '没有更多数据了', //上拉无更多信息时提示信息
+								callback: function() {
+									var self = this;
+									setTimeout(function() {
+										var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+										initArticlePage(isPublish, "up");
+									}, 100);
+								}
+							}
+						});
+					});
+					init();
+				});
+			})(mui);
+
+			var startDate;
+			var endDate;
+			//选项卡切换事件
+			document.getElementById('clt-home-menu').addEventListener('slide', function(e) {
+				if (startDate == null) {
+					startDate = new Date().getTime()
+					// console.log(startDate)
+				} else {
+					endDate = new Date().getTime()
+					// console.log(endDate)
+					if ((endDate - startDate) < 1000) {
+						mToastSet('请勿切换的太过频繁')
+					} else {
+						endDate = null;
+						startDate = null;
+					}
+				}
+				tabEventLoop.setEvent(function() {
+					page = 1;
+					var isPublish = $("#sliderSegmentedControl a").eq(e.detail.slideNumber).attr("isPublish");
+					$("#item" + isPublish).find("ul.mui-table-view").html("");
+					initArticlePage(isPublish, "up");
+				});
+			});
+
+			var page = 1; //开始数据条数
+			var rows = 10; //每页显示条数
+			var initArticlePage = function(isPublish, pullRefreshType) {
+				var taskJson = {
+					page: page,
+					rows: rows
+				};
+				if (isPublish != "All") {
+					taskJson.isPublish = isPublish;
+				}
+
+				var taskList = JSON.parse(download.getLocalData())
+				if (taskList == null) {
+					return
+				}
+				// console.log(JSON.stringify(taskList.data))
+				var taskList = taskList.data
+
+				var ul = $('#item' + isPublish + ' .mui-scroll').find("ul.mui-table-view")[0];
+				mui('#item' + isPublish + ' .mui-scroll').pullToRefresh().refresh(true); //重置
+				ul.innerHTML = ''
+				var fragment = document.createDocumentFragment();
+
+				for (var i in taskList) {
+					var itemTask = taskList[i].task
+					// console.log(JSON.stringify(itemTask))
+					// console.log(isPublish)
+					switch (isPublish) {
+						case "All":
+							fragment.appendChild(addItem(itemTask, i, isPublish));
+							break;
+						case "22004":
+							if (isSubmit(taskList, i) == true) {
+								fragment.appendChild(addItem(itemTask, i, isPublish));
+							}
+							break;
+						case "22002":
+							if (isSubmit(taskList, i) == false) {
+								fragment.appendChild(addItem(itemTask, i, isPublish));
+							}
+							break;
+					}
+				}
+
+				// for (var i = 0; i < 5; i++) {
+				// 	fragment.appendChild(addItem(i, isPublish));
+				// }
+
+
+				//任务列表不分页
+				if (pullRefreshType == "up") {
+					ul.appendChild(fragment);
+					mui('#item' + isPublish + ' .mui-scroll').pullToRefresh().endPullUpToRefresh(true);
+				} else if (pullRefreshType == "down") {
+					//TODO 
+					//下拉在有网络的情况下更新列表
+					$("#item" + isPublish).find("ul.mui-table-view").html("");
+					ul.insertBefore(fragment, ul.firstChild);
+					mui('#item' + isPublish + ' .mui-scroll').pullToRefresh().endPullUpToRefresh(true);
+					mui('#item' + isPublish + ' .mui-scroll').pullToRefresh().endPullDownToRefresh(true);
+				}
+			};
+
+			function listDataChange(result, flag, dom) {
+				emptyStr = '<div class="mui-pull-bottom-wrapper"><span class="mui-pull-loading">没有更多数据了</span></div>';
+				setTimeout(function() {
+					var ul = dom.firstElementChild;
+					var bottomTips = dom.lastElementChild.lastElementChild;
+					if (ul.innerHTML == "" && (result.pages == 0)) {
+						dom.lastElementChild.lastElementChild.innerHTML = "暂无数据";
+					} else if (result.pages == 1 && (result.hasNextPage == false)) {
+						dom.lastElementChild.lastElementChild.innerHTML = "";
+					}
+					// console.log(ul.innerHTML.length);
+					// console.log(dom.lastElementChild.lastElementChild.innerHTML);
+				}, 0)
+			}
+
+			var totalH = document.getElementById('clt-home-content').offsetHeight;
+			//li单个任务的view
+
+			var addItem = function(jsonData, index, isPublish) {
+				var li = document.createElement('li');
+				li.setAttribute('taskId', jsonData.taskId);
+				li.className = "jh-li";
+				var loopImage
+				switch (index % 5) {
+					case 0:
+						loopImage = "background-image: url(../../images/list-bg/bg5.png);"
+						break;
+					case 1:
+						loopImage = "background-image: url(../../images/list-bg/bg4.png);"
+						break;
+					case 2:
+						loopImage = "background-image: url(../../images/list-bg/bg3.png);"
+						break;
+					case 3:
+						loopImage = "background-image: url(../../images/list-bg/bg2.png);"
+						break;
+					default:
+						loopImage = "background-image: url(../../images/list-bg/bg1.png);"
+						break;
+				}
+
+				li.setAttribute('style', loopImage);
+
+				var creatorName = jsonData.creatorName ? jsonData.creatorName : "";
+				var createTime = jsonData.createTime ? jsonData.createTime : "";
+				var unload = "";
+				var unfinsh = "";
+				var finsh = "";
+				li.innerHTML = '<p style =""><span class="jh-title mui-ellipsis">' + jsonData.taskName + '</span></p>' +
+					'<p class="mui-ellipsis"><span class="clt-span-account-name jh-subtitle">' + creatorName + '</span>' +
+					'<span class="clt-span-time jh-subtitle">' + createTime + '</span></p>' +
+					'<button type="button"  class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">待下载：' + unload +
+					'</button>' +
+					'<button type="button"  class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">定标中：' + unfinsh +
+					'</button>' +
+					'<button type="button"  class="jh-show-button mui-btn mui-btn-blue mui-btn-outlined">已定标：' + finsh +
+					'</button>';
+
+
+				return li;
+			}
+
+			function setItemHeight() {
+				var titleH = mui(".mui-bar.mui-bar-nav")[0].scrollHeight
+				var tabH = document.getElementById('sliderSegmentedControl').scrollHeight;
+				var tabShadowH = document.getElementById('sliderProgressBar').scrollHeight;
+				var allH = document.documentElement.clientHeight;
+				var allW = document.documentElement.clientWidth
+				console.log()
+				console.log(document.documentElement.clientHeight)
+				var listH = allH - titleH - tabH - tabShadowH;
+				// console.log('titleH：' + titleH)
+				// console.log('tabH：' + tabH)
+				// console.log('tabShadowH：' + tabShadowH)
+				// console.log('allH：' + allH)
+				// console.log('allW：' + allW)
+				// console.log('listH：' + listH)
+				var mheight = 0;
+				if (listH > 600) {
+					mheight = 200;
+				} else if (listH < 480) {
+					mheight = 160;
+				} else {
+					mheight = (listH / 3);
+				}
+				mheight = mheight - 15;
+				mheight = mheight + 'px'
+				console.log('mheight：' + mheight)
+				return mheight
+			}
+
+			//详情跳转
+			mui(".mui-scroll-wrapper").on('tap', '.jh-li', function() {
+				var taskId = this.getAttribute("taskId");
+				localStorage.setItem("currentTaskId", taskId)
+
+				var taskList = JSON.parse(download.getLocalData())
+				var taskList = taskList.data
+				// console.log(JSON.stringify(taskList))
+
+				for (var i in taskList) {
+					if (taskId == taskList[i].task.taskId) {
+						// console.log(JSON.stringify(taskList[i].subtaskList))
+						localStorage.setItem('currenTask', JSON.stringify(taskList[i].subtaskList));
+					}
+				}
+
+				setTimeout(function() {
+					mui.openWindow({
+						id: "itemlist.html",
+						url: "itemlist.html",
+					})
+				}, 10);
+			});
+			
+			document.addEventListener('loginUpData',function(){
+				var isPublish = $("#sliderSegmentedControl a.mui-active")[0].getAttribute("isPublish");
+				var taskList = JSON.parse(download.getLocalData())
+				if (taskList == null) {
+					insurace.getTaskList(function() {
+						initArticlePage(isPublish, "down");
+					})
+				}
+			})
+		</script>
+	</body>
+
+</html>

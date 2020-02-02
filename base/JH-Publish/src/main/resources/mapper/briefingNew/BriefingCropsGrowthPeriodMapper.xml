@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefingNew.mapping.IBriefingCropsGrowthPeriodMapper">
+    <resultMap id="BaseResultMap" type="com.jh.briefingNew.entity.BriefingCropsGrowthPeriod">
+        <id column="growth_id" jdbcType="INTEGER" property="growthId" />
+        <result column="growth_name" jdbcType="VARCHAR" property="growthName" />
+        <result column="crops_id" jdbcType="INTEGER" property="cropsId" />
+        <result column="crops_name" jdbcType="VARCHAR" property="cropsName" />
+        <result column="region_id" jdbcType="BIGINT" property="regionId" />
+        <result column="range_start" jdbcType="VARCHAR" property="rangeStart" />
+        <result column="range_end" jdbcType="VARCHAR" property="rangeEnd" />
+        <result column="ifspan" jdbcType="SMALLINT" property="ifspan" />
+        <result column="if_growth_start" jdbcType="SMALLINT" property="ifGrowthStart" />
+        <result column="index_no" javaType="INTEGER" property="indexNo"></result>
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        growth_id, growth_name, crops_id, crops_name, region_id, range_start, range_end,
+        ifspan, if_growth_start,index_no,remark
+    </sql>
+
+    <!-- 根据作物编号、区域查询对应的物候期 -->
+    <select id="findGrowthPeriodListByCropsIdAndRegionId" resultType="com.jh.briefingNew.entity.BriefingCropsGrowthPeriod" parameterType="com.jh.briefingNew.model.BriefingCropsGrowthPeriodParam">
+        select
+        period.growth_id growthId,
+        period.growth_name growthName,
+        period.crops_id cropsId,
+        dict.data_name cropsName,
+        period.region_id regionId,
+        region.china_name regionName,
+        period.range_start rangeStart,
+        period.range_end rangeEnd,
+        period.ifspan,
+        period.if_growth_start ifGrowthStart,
+        period.remark
+        from briefing_crops_growth_period period
+        left join init_region region on period.region_id = region.region_id
+        left join init_dict dict on period.crops_id = dict.dict_id
+        <where>
+            <if test="cropsId != null and cropsId != ''" >
+                period.crops_id=#{cropsId}
+            </if>
+            <if test="regionId != null and regionId != ''" >
+                and period.region_id=#{regionId}
+            </if>
+            <if test="ifGrowthStart != null and ifGrowthStart != ''" >
+                and period.if_growth_start=#{ifGrowthStart}
+            </if>
+        </where>
+        order by  growth_id
+    </select>
+
+</mapper>

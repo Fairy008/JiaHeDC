@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumAdvertMapper">
+
+    <resultMap id="BaseResultMap" type="com.jh.forum.bbs.entity.ForumAdvert">
+        <id column="advert_id" property="advertId" jdbcType="INTEGER" />
+        <result column="data_status" property="dataStatus" jdbcType="VARCHAR" />
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+        <result column="creator" property="creator" jdbcType="INTEGER" />
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+        <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+        <result column="modifier" property="modifier" jdbcType="INTEGER" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="advertise" property="advertise" jdbcType="INTEGER" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="picture" property="picture" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="publisher" property="publisher" jdbcType="INTEGER" />
+        <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+
+    <!--BaseResultVoMap-->
+    <resultMap id="BaseResultVoMap" type="com.jh.forum.bbs.vo.AdvertVo" extends="BaseResultMap">
+        <result column="advert_id" property="advertId" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+
+    <sql id="Base_Column_List">
+        advert_id,data_status,del_flag,create_time,creator_name,creator,modify_time,modifier_name,modifier,remark,advertise,title,status,picture,url,publisher,publish_time
+    </sql>
+
+    <insert id="saveAdvert" parameterType="com.jh.forum.bbs.vo.AdvertVo">
+        insert into advert
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="advertId != null" >
+                advert_id,
+            </if>
+            <if test="dataStatus != null" >
+                data_status,
+            </if>
+            <if test="delFlag != null" >
+                del_flag,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="creatorName != null" >
+                creator_name,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="modifyTime != null" >
+                modify_time,
+            </if>
+            <if test="modifierName != null" >
+                modifier_name,
+            </if>
+            <if test="modifier != null" >
+                modifier,
+            </if>
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="advertise != null" >
+                advertise,
+            </if>
+            <if test="title != null" >
+                title,
+            </if>
+            <!--<if test="status != null" >
+                status,
+            </if>-->
+            status,
+            <if test="picture != null" >
+                picture,
+            </if>
+            <if test="url != null" >
+                url,
+            </if>
+            <if test="publisher != null" >
+                publisher,
+            </if>
+            <if test="publishTime != null" >
+                publish_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="advertId != null" >
+                #{advertId,jdbcType=INTEGER},
+            </if>
+            <if test="dataStatus != null" >
+                #{dataStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+
+            <if test="createTime != null" >
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=INTEGER},
+            </if>
+            <if test="modifyTime != null" >
+                #{modifyTime,jdbcType=DATE},
+            </if>
+            <if test="modifierName != null" >
+                #{modifierName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null" >
+                #{modifier,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="advertise != null" >
+                #{advertise,jdbcType=INTEGER},
+            </if>
+            <if test="title != null" >
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <!--<if test="status != null" >
+                #{status,jdbcType=INTEGER},
+            </if>-->
+            19002,
+            <if test="picture != null" >
+                #{picture,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null" >
+                #{url,jdbcType=VARCHAR},
+            </if>
+            <if test="publisher != null" >
+                #{publisher,jdbcType=INTEGER},
+            </if>
+            <if test="publishTime != null" >
+                #{publishTime,jdbcType=DATE},
+            </if>
+        </trim>
+
+    </insert>
+    
+
+
+    <delete id="deleteAdvert" parameterType="com.jh.forum.bbs.vo.AdvertVo">
+        update advert set del_flag ='0' where 1 = 1
+        <if test="advertId!=null">
+            advert_id = #{advertId,jdbcType=INTEGER}
+        </if>
+        <if test="advertIds!=null">
+            and advert_id in
+            <foreach collection="advertIds" item="id" separator="," open="(" close=")">
+                #{id}
+            </foreach>
+        </if>
+        -- 防止不传参数删除全部
+        <if test="advertId==null and advertIds==null">
+            and 1 != 1
+        </if>
+    </delete>
+
+
+    <update id="editAdvert" parameterType="com.jh.forum.bbs.vo.AdvertVo">
+        update advert
+        <set >
+            <if test="advertise != null" >
+                advertise = #{advertise,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null" >
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="picture != null" >
+                picture = #{picture,jdbcType=VARCHAR},
+            </if>
+            <if test="url != null" >
+                url = #{url,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where advert_id = #{advertId,jdbcType=INTEGER}
+    </update>
+
+    <update id="editStatus" parameterType="com.jh.forum.bbs.vo.AdvertVo">
+        update advert set status = '19003' where advert_id = #{advertId,jdbcType=INTEGER}
+    </update>
+
+    <update id="editOff" parameterType="com.jh.forum.bbs.vo.AdvertVo">
+        update advert set status = '19004' where advert_id = #{advertId,jdbcType=INTEGER}
+    </update>
+
+    <select id="queryAdvertList" parameterType="integer" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from advert where del_flag = '1' and data_status = '1'
+        and advert_id = #{advertId,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="findAdvertInfo" resultMap="BaseResultVoMap">
+        select advert_id,advertise,title,status,picture,url
+        from advert where advert_id = #{advertId,jdbcType=INTEGER}
+    </select>
+
+
+
+
+    <!--分页查询-->
+    <select id="getListByAdvert" resultMap="BaseResultVoMap">
+        select advert_id,data_status,del_flag,create_time,creator_name,creator,modify_time,modifier_name,modifier,remark,advertise,title,status,picture,url,publisher,publish_time
+        from advert
+        where del_flag = '1'
+        /*广告位*/
+        <if test="advertise != null and advertise !=''">
+            and advertise = #{advertise,jdbcType=INTEGER}
+        </if>
+        /*状态*/
+        <if test="status != null and status != ''">
+            and status = #{status,jdbcType=INTEGER}
+        </if>
+        order by create_time desc
+    </select>
+
+
+
+</mapper>

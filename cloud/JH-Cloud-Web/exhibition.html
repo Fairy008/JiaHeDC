@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>辽宁省高分数据共享管理及自然生态系统监测评价业务平台</title>
+	<style type="text/css">
+		#bg{
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			bottom: 0px;
+			right: 0px;
+			background-image: url('images/login/loginBG.jpg');
+			background-size: 100% 100%;
+		}
+		#login_username{
+			background-image: url('images/public/userImage.png');
+			background-repeat: no-repeat;
+			padding-left: 30px;
+		}
+		#login div{
+			display: inline-block;
+			color: #ffffff;
+			font-size: 14px;
+			cursor: pointer;
+		}
+		#login{
+			text-align: right;
+			padding: 30px 20px 0px 0px;
+		}
+		#login div{
+			background-color: #016bd4;
+			padding: 10px 15px;
+			border-radius: 5px;
+		}
+		#context{margin-top: 60px;}
+		#context,#fotter{text-align: center;}
+		#sys_list{margin-top: 140px;}
+		#sys_list div{
+			display: inline-block;
+			color: #000000;
+			font-size: 14px;
+			height: 300px;
+		}
+		#sys_list>div{
+			width: 60%
+		}
+		#show_video{
+			float: left;
+			width: 40%;
+		}
+		#show_video video{
+			width: 100%;
+		}
+		#show_text{
+			float: right;
+			width: 55%;
+			text-align: left;
+		}
+		#fotter{
+			position: fixed;
+			bottom: 0px;
+			width: 100%;
+			height: 40px;
+			background: #ffffff;
+			opacity: 0.7;
+			font-size: 14px;
+		}
+		#fotter a {
+			text-decoration: none;
+			color: #000000;
+		}
+	</style>
+</head>
+<body>
+<div id="bg">
+	<div id="login">
+		<!--<div>登录</div>-->
+		<div id="bask_sys">返回</div>
+	</div>
+	<div id="context">
+		<div id="log_img">
+			<img id="log_imgurl"/>
+		</div>
+		<div id="sys_list">
+			<div>
+				<div id="show_video">
+					<video controls="controls">
+						<source src="./test.mp4" type="video/mp4"/>
+						<object data="./test.mp4" width="320" height="240">
+							<embed src="./test.mp4" width="320" height="240"/>
+						</object>
+					</video>
+				</div>
+				<div id="show_text">
+					辽宁高分中心落户省气象局：2015年8月7日，在中国气象局与辽宁省人民政府签署省部合作协议的座谈会上，中国气象局郑国光局长提出在辽宁省气象局建设高分辨率对地观测系统数据与应用中心的意向，辽宁省陈求发省长也提出了在气象部门加强国家高分辨率对地观测系数据应用的建议，最终郑国光局长和陈求发省长就由辽宁省气象局申请成立“高分辨率对地观测系统辽宁省数据与应用中心”（以下简称高分中心）达成一致。
+					辽宁省气象局代辽宁省政府草拟了《关于申请成立高分辨率对地观测系统辽宁省数据与应用中心的函》（辽政函〔2015〕82号），2015年11月16日上报国防科技工业局，2016年1月10日国家国防科技工业局批复，同意依托辽宁省气象局设立高分中心。赵化明副省长在该文件上批示“气象局抓好基础建设，人员培训，工作对接，尽快服务于全省经济社会建设。
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="fotter" class="copyright">
+		辽宁高分中心版权所有
+	</div>
+</div>
+</body>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/lib/module/config.js"></script>
+<script type="text/javascript">
+	require(["jquery","commons"],function($,commons){
+		commons.setTitleFun();
+		/**
+		 * 返回门户首页
+		 * @version <1> 2018-04-20 xzg：Created.
+		 */
+		document.getElementById('bask_sys').onclick = function () {
+			window.location.href = LOGIN_CONFIG.welcome_page_url;
+		};
+	});
+</script>
+</html>

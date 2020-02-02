@@ -1,0 +1,791 @@
+<meta charset="UTF-8">
+<link type="text/css" rel="stylesheet" href="css/zTreeModul.css"/>
+
+
+<div class="outerDiv">
+	<div class="innerDiv">
+		<div class="modulTitle">
+			<span class="blueBlock"></span>
+			<span class="modulTitleInfo">区域配置</span>
+		</div>
+		<div class="infoDiv">
+			<div class="zTreeDemoBackground">
+				<ul id="regionTree" class="ztree"></ul>
+			</div>
+			<div class="dataInfo rightDict">
+				<div id="img" style="display: none;"><span id="areaTitle" style="display: none;color: #1f4350; font-weight: bold;font-size:14px;"></span></div>
+				<table id="saveArea" class="saveTable" style="display: none" cellpadding="0" cellspacing="0">
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>区域主键<span class='p'></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "regionId" readonly style="background-color: rgb(245, 245, 245)"/></td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>区域编码<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "regionCode" readonly="readonly" style="background-color: #EBEBE4;" /></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>区域英文名<span class='p'></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "regionName"/></td>
+						<td class="thirdTdStyle"><div class="justify"><p class="txtRequired">*</p>区域中文名<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "chinaName"/></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">区域级别<span class='p'></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "level" readonly="readonly" style="background-color: #EBEBE4;"/></td>
+						<td class="thirdTdStyle"><div class="justify">上级区域<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "parentId" parentId="" readonly="readonly" style="background-color: #EBEBE4;"/></td>
+						<!--<td class="thirdTdStyle"><div class="justify">区域本语言名称<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "localName"/></td>-->
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">数据状态<span class='p'></span></div></td>
+						<td class="secondTdStyle">
+							<input id="yes" type="radio" style="height: auto !important;vertical-align:middle;" value="true" name="dataStatus" checked="checked"><span>启用</span>&nbsp;
+							<input type="radio"  style="height: auto !important;vertical-align:middle;" id="no" name="dataStatus" value="false"><span>禁用</span>
+						</td>
+						<td class="thirdTdStyle"><div class="justify">区域面积<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "area" readonly="readonly" style="background-color: #EBEBE4;"/></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">中心点经度<span class='p'></span></div></td>
+						<td class="secondTdStyle"><input type="text" id = "lon" readonly="readonly" style="background-color: #EBEBE4;"/></td>
+						<td class="thirdTdStyle"><div class="justify">中心点纬度<span class='p'></span></div></td>
+						<td class="fourthTdStyle"><input type="text" id = "lat" readonly="readonly" style="background-color: #EBEBE4;"/></td>
+					</tr>
+					<!--<tr>
+
+					</tr>-->
+					<tr rows="5">
+						<td class="firstTdStyle"><div class="justify">条带号<span class='p'></span></div></td>
+						<td colspan="3" style="width: 78%;">
+							<textarea class="fourthTdStyle textareaStyle"  id = "stripNumber_edit" cols="30" rows="5"></textarea>
+						</td>
+					</tr>
+				<!--	<tr rows="5">
+						<td class="firstTdStyle"><div class="justify">备注<span class='p'></span></div></td>
+						<td colspan="3"><textarea class="textareaStyle"  id = "remark" cols="30" rows="5"></textarea></td>
+					</tr>-->
+				</table>
+				<div align="center" id="btnSave" style="display: none">
+					<input class="btn" type="button" id = "saveD" value="保存"/>
+					<input class="btn" type="button" id = "cancelBtn" value="取消"/>
+				</div>
+				<table id="showArea" class="showTable" style="display: none;" cellpadding="0" cellspacing="0">
+				<!--	<tr>
+						<td class="firstTdStyle"><div class="justify"><p class="txtRequired">*</p>数据ID<span></span></div></td>
+						<td class="secondTdStyle" id = "rId"></td>
+						<td class="thirdTdStyle"><div class="justify">数据编码<span></span></div></td>
+						<td class="fourthTdStyle" id = "rCode"></td>
+					</tr>-->
+					<tr >
+						<td class="firstTdStyle"><div class="justify">区域主键<span></span></div></td>
+						<td id="rId" class="secondTdStyle" style="color:#000000;"></td>
+						<td class="thirdTdStyle"><div class="justify">区域编码<span class='p'></span></div></td>
+						<td id = "rCode" class="fourthTdStyle"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">区域英文名<span class='p'></span></div></td>
+						<td class="secondTdStyle" id = "rName"></td>
+						<td class="thirdTdStyle"><div class="justify">区域中文名<span class='p'></span></div></td>
+						<td id = "cName" class="fourthTdStyle"></td>
+
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">区域级别<span class='p'></span></div></td>
+						<td id = "lev" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">上级区域<span class='p'></span></div></td>
+						<td id = "pId" class="fourthTdStyle"></td>
+					<!--	<td class="thirdTdStyle"><div class="justify">区域本语言名称<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "lName"></td>-->
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">数据状态<span class='p'></span></div></td>
+						<td class="secondTdStyle" id = "dStatus"></td>
+						<td class="thirdTdStyle"><div class="justify">区域面积<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "rarea"></td>
+					</tr>
+					<tr>
+						<td class="firstTdStyle"><div class="justify">中心点经度<span class='p'></span></div></td>
+						<td id = "rlon" class="secondTdStyle"></td>
+						<td class="thirdTdStyle"><div class="justify">中心点纬度<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "rlat"></td>
+					</tr>
+					<!--<tr>
+						<td class="firstTdStyle"><div class="justify">条带号<span class='p'></span></div></td>
+						<td class="fourthTdStyle" id = "stripNumber_display" colspan="3" style="word-wrap:break-word"></td>
+					</tr>-->
+					<tr>
+						<td class="firstTdStyle"><div class="justify">条带号<span class='p'></span></div></td>
+						<td colspan="3" style="width: 78%;">
+							<textarea class="textareaStyle fourthTdStyle"  readonly id = "stripNumber_display" cols="30" rows="5"></textarea>
+						</td>
+					</tr>
+					<!--<tr>
+						<td class="firstTdStyle"><div class="justify">备注<span class='p'></span></div></td>
+						<td colspan="3">
+							&lt;!&ndash;<textarea class="textareaStyle"  id = "rmark" cols="30" rows="5" readonly="readonly"></textarea>&ndash;&gt;
+							<div class="textareaStyle"  id = "rmark" style="height:70px;"></div>
+						</td>
+					</tr>-->
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="showDialog" class="dialogStyle">
+	<span id="msg"></span>
+</div>
+<script type="text/javascript">
+
+	require(["jquery", "ztree", "BaseAjax", "formVerfication",'PopWin',"commons"], function ($, ztree, BaseAjax, formVerfication,PopWin,commons) {
+
+		function init(){
+			defaultLoadData();
+		};
+		var log, param={ },className = "dark", startTime = 0, endTime = 0, perCount = 100, perTime = 100, currentTreeNode;
+		var trid,trnode;
+		var setting = {
+			async: {
+				enable: true,
+				contentType: "application/json",
+				url: REGION_CONFIG.querySubRegionListByParentId_url,
+				enable:true,
+				headers:{"AccessToken":commons.getAccessToken()},
+				dataFilter:ajaxDataFilter, //拦截ajax,预处理返回结果
+				autoParam:["id", "name", "pId","isParent"],
+				otherParam:param,
+			},
+			view: {
+				expandSpeed:"",
+				//addHoverDom: addHoverDom,
+				//removeHoverDom: removeHoverDom,
+				selectedMulti: false
+			},
+			edit: {
+				enable: true,
+				editNameSelectAll: true,
+				showRemoveBtn:false,
+				removeTitle: "删除",
+				renameTitle: "修改"
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				beforeEditName: beforeEditName,
+				//beforeRemove: beforeRemove,
+				onClick:onClickFunction,
+				beforeExpand: beforeExpand,
+				onAsyncSuccess: onAsyncSuccess,
+				onAsyncError: onAsyncError
+			}
+		};
+
+		/**
+		 *拦截处理ResultMessage返回内容，使之满足zTree要求格式
+		 * dataFilter回调函数
+		 * enable:true enable属性配置为true
+		 * @version<1> 2018-02-06 lcw : Created.
+		 */
+		function ajaxDataFilter(treeId,parentNode, responseData){
+			if(responseData.flag){
+				return responseData.data;
+			}
+		}
+
+		//用于捕获父节点展开之前的事件回调函数，并且根据返回值确定是否允许展开操作
+		function beforeExpand(treeId, treeNode) {
+			param.id = treeNode.id;
+			if (!treeNode.isAjaxing) {
+				startTime = new Date();
+				treeNode.times = 1;
+				ajaxGetNodes(treeNode, "refresh");
+				return true;
+			} else {
+				alert("zTree 正在下载数据中，请稍后展开节点。。。");
+				return false;
+			}
+		}
+
+		//用于捕获异步加载正常结束的事件回调函数
+		function onAsyncSuccess(event, treeId, treeNode, msg) {
+			if (!msg || msg.length == 0) {
+				return;
+			}
+			if(treeNode == null){
+			    return ;
+            }
+			var zTree = $.fn.zTree.getZTreeObj("regionTree"),
+					totalCount = treeNode == null?0:treeNode.count;
+			if (treeNode.children.length < totalCount) {
+				setTimeout(function() {ajaxGetNodes(treeNode);}, perTime);
+			} else {
+				treeNode.icon = "";
+				zTree.updateNode(treeNode);
+				zTree.selectNode(treeNode.children[0]);
+
+			}
+		}
+
+		//用于捕获异步加载出现异常错误的事件回调函数
+		function onAsyncError(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+		    var status = XMLHttpRequest.status;
+		    console.log('status: '+status);
+		    if(status == '6000' || status == '6001'){
+		        //登录过期
+				location.href = 'login.html';
+			}else{
+                var zTree = $.fn.zTree.getZTreeObj("regionTree");
+                alert("异步获取数据出现异常。");
+                treeNode.icon = "";
+                zTree.updateNode(treeNode);
+			}
+		}
+
+		//刷新树
+		function ajaxGetNodes(treeNode, reloadType) {
+			var zTree = $.fn.zTree.getZTreeObj("regionTree");
+			if (reloadType == "refresh") {
+//				treeNode.icon = "../../../css/zTreeStyle/img/loading.gif";
+				treeNode.isParent=true;
+				zTree.updateNode(treeNode);
+			}
+			zTree.reAsyncChildNodes(treeNode, reloadType, true);
+		}
+
+		//过滤加载数据
+		function filter(treeId, parentNode, childNodes) {
+			if (!childNodes) return null;
+			for (var i=0, l=childNodes.length; i<l; i++) {
+				childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+			}
+			return childNodes;
+		}
+
+		//点击事件（添加区域，显示区域详情,删除区域）
+		function onClickFunction(event, treeId, treeNode,clickFlag) {
+			//清除默认加载选择区域样式
+			document.getElementById("regionTree_1_a").style.backgroundColor="";
+			var tag = $(event.target || event.srcElement).attr("class")
+			if(+treeNode.id){
+				if(tag=='add'){
+					showAddAreaHtml(treeNode);
+				}
+				/*if(tag=='remove'){
+				 delDictById(treeNode.id);
+				 }*/
+				if(tag=='node_name')
+				{
+					getAreaById(treeNode.id,'show');
+				}
+
+			}
+		};
+
+		//加载区域编辑页
+		var showsaveData = function(data){
+			clearErrorInfo( $('.rightDict'));
+			$("#areaTitle").show();
+			$("#img").show();
+			$("#showArea").hide();
+			$("#saveArea").show();
+			$("#btnSave").show();
+			$("#areaTitle").html(data.chinaName+'区域信息编辑');
+			$("#regionId").val(data.regionId);
+			$("#chinaName").val(data.chinaName);
+			$("#regionName").val(data.regionName);
+			$("#regionCode").val(data.regionCode);
+			//$("#localName").val(data.localName);
+			$("#parentId").val(data.parentId);
+			$("#level").val(data.level);
+			$("#area").val(data.area);
+			$("#lon").val(data.lon);
+			$("#lat").val(data.lat);
+			$("#stripNumber_edit").val(data.stripNumber);
+			//$("#bbox").val(data.bbox);
+			if(data.dataStatus==1){
+				$("#yes").attr("checked","checked")
+			}
+			else{
+				$("#no").attr("checked","checked")
+			}
+			$("#dataStatus").attr('status-id',data.dataStatus);
+			//$("#remark").val(data.remark);
+		}
+
+		//加载添加区域页面
+		var showAddAreaHtml  = function(data){
+			clearErrorInfo( $('.rightDict'));
+			currentTreeNode = data;
+			$("#areaTitle").show();
+			$("#img").show();
+			$("#showArea").hide();
+			$("#saveArea").show();
+			$("#btnSave").show();
+			$("#areaTitle").html(data.name+'节点添加');
+			$("#regionId").val("");
+			$("#chinaName").val("");
+			$("#regionName").val("");
+			$("#regionCode").val("");
+			//$("#localName").val("");
+			$("#parentId").attr("parentId", data.id);
+			$("#parentId").val(data.name);
+			$("#level").val(parseInt(data.regionLevel) + 1);
+			$("#area").val("");
+			$("#lon").val("");
+			$("#lat").val("");
+			//$("#bbox").val("");
+			$("#dataStatus").val('');
+			//$("#remark").val("");
+			$("#stripNumber_edit").val("");
+		}
+
+		/**
+		 * 校验区域编码是否唯一
+		 *
+		 * @version <1> 2018-02-10 djh： Created.
+		 */
+		var checkRegionCodeIsExists = function() {
+			var flag = false;
+			var regionCode = $.trim($('#regionCode').val());
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = REGION_CONFIG.checkRegionCodeIsExistsUrl;
+			varyAjax.opts.data = JSON.stringify({regionCode:regionCode});
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.contentType = "application/json";
+			varyAjax.opts.async = false; //同步请求
+			varyAjax.opts.successFun = function(result){
+				if(result.flag) {
+					var code = result.code;
+					if (code == '1') {
+						flag = true;
+					}
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				PopWin.showMessageWin('系统错误');
+			};
+			varyAjax.run();
+			return flag;
+		}
+
+		/**
+		 * 校验字段的焦点失去事件
+		 *
+		 * @version <1> 2018-02-10 djh： Created.
+		 */
+		var initFormValidateFun = function () {
+			var dataTypeInfo = $('.rightDict');
+
+			//区域编码失去焦点事件
+		/*	$('#regionCode').on('blur', function () {
+				if (!formVerfication.checkChinese($('#regionCode'), dataTypeInfo, "区域编码不能含中文")) {
+					if (!formVerfication.checkInputLengthAndIsNull(1, 20, $('#regionCode'), dataTypeInfo, '区域编码字数为20个以内', '区域编码不能为空')) {
+						if (checkRegionCodeIsExists()) {
+							formVerfication.showErroInfo($('#regionCode'), dataTypeInfo, "区域编码已存在");
+						}
+					}
+				}
+			});*/
+
+		/*	//区域中文名失去焦点事件
+			$("#chinaName").on("blur", function () {
+				formVerfication.checkInputLengthAndIsNull(1, 50, $('#chinaName'), dataTypeInfo, '区域中文名字数为50个以内', '区域中文名不能为空');
+			});
+
+			//区域英文名失去焦点事件
+			$("#regionName").on("blur", function () {
+				formVerfication.checkInputLengthAndIsNull(1, 75, $('#regionName'), dataTypeInfo, '区域英文名字数为75个以内', '区域英文名不能为空');
+				formVerfication.checkIsLetter($('#regionName'), dataTypeInfo);
+			});*/
+		}
+		initFormValidateFun();
+
+		/**
+		 * 校验填写信息
+		 *
+		 * @version <1> 2018-02-10 djh： Created.
+		 */
+		var formVerf = function () {
+			var dataTypeInfo = $('.rightDict');
+			if (formVerfication.checkInputLengthAndIsNull(1, 20, $('#regionCode'), dataTypeInfo, '区域编码不能超过20位', '区域编码不能为空') || formVerfication.checkChinese($('#regionCode'), dataTypeInfo, "区域编码不能含中文")) {
+				return false;
+			}
+/*
+			if (checkRegionCodeIsExists()) {
+				formVerfication.showErroInfo($('#regionCode'), dataTypeInfo, "区域编码已存在");
+				return false;
+			}*/
+
+			if (formVerfication.checkInputLengthAndIsNull(1, 70, $('#regionName'), dataTypeInfo, '区域英文名字不能超过70位', '区域英文名不能为空')) {
+				return false;
+			}
+
+			if(formVerfication.checkIsLetter($('#regionName'), dataTypeInfo))
+			{
+				return false;
+			}
+
+			if (formVerfication.checkInputLengthAndIsNull(1, 20, $('#chinaName'), dataTypeInfo, '区域中文名不能超过20位', '区域中文名不能为空')) {
+				return false;
+			}
+			return true;
+		}
+
+		//获取区域参数
+		var  getParam = function(){
+			var regionId = $("#regionId").val().trim();
+			var chinaName = $("#chinaName").val().trim();
+			var regionName = $("#regionName").val().trim();
+			//var regionCode=  $("#regionCode").val();
+			//var localName = $("#localName").val();
+			var parentId = $("#parentId").attr("parentId");
+			var parentName = $("#parentId").val().trim();
+			var level = $("#level").val().trim();
+			var area = $("#area").val().trim();
+			var lon = $("#lon").val().trim();
+			var lat = $("#lat").val().trim();
+			var stripNumber = $.trim($("#stripNumber_edit").val());
+			//var bbox = $("#bbox").val();
+			//var dataStatus = $("#dataStatus").val();
+			var dataStatus = $('input:radio[name="dataStatus"]:checked').val();
+			dataStatus = (dataStatus=='true'?1:2);
+			//var remark = $("#remark").val();
+			var paramData = {
+				regionId:regionId,
+				chinaName:chinaName,
+				regionName:regionName,
+				//regionCode:regionCode,
+				//localName:localName,
+				level:level,
+				area:area,
+				lon:lon,
+				lat:lat,
+				parentId:parentId,
+				parentName:parentName,
+				dataStatus:dataStatus,
+				//remark:remark,
+				stripNumber:stripNumber
+			}
+			return paramData;
+		}
+
+		//加载区域详情页
+		var showData = function(data){
+			$("#areaTitle").show();
+			$("#img").show();
+			$("#showArea").show();
+			$("#saveArea").hide();
+			$("#btnSave").hide();
+			$("#areaTitle").html(data.chinaName+'区域信息详情');
+			document.getElementById('rId').innerHTML=data.regionId;
+			document.getElementById('cName').innerHTML=data.chinaName;
+			document.getElementById('rName').innerHTML=data.regionName;
+			document.getElementById('rCode').innerHTML=data.regionCode;
+			//document.getElementById('lName').innerHTML=data.localName;
+			document.getElementById('pId').innerHTML=data.parentId;
+			document.getElementById('dStatus').innerHTML=data.dataStatus==1?'启用':'禁用';
+			document.getElementById('lev').innerHTML=data.level;
+			document.getElementById('rarea').innerHTML=data.area;
+			document.getElementById('rlat').innerHTML=data.lat;
+			document.getElementById('rlon').innerHTML=data.lon;
+			//document.getElementById('rmark').innerHTML=data.remark;
+			document.getElementById('stripNumber_display').innerHTML=data.stripNumber;
+			$($('#showArea tr>td:odd')).each(function(i,d){d.setAttribute('title',d.innerText)});
+		}
+
+		//初始化数据区域树型
+		var zNodes = [];
+		var defaultLoadData = function(){
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = REGION_CONFIG.queryFirstLevelInitRegionList_url,
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.contentType = "application/json";
+			varyAjax.opts.async = true; //同步请求
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+					var data = result.data;
+					var firstId ;
+					for(var temp in data)
+					{
+						var treeData = {
+							id:"",
+							pId:"",
+							name:"",
+							regionLevel:"",
+							isParent:true
+						};
+						firstId = data[0].id;
+						treeData.id =  data[temp].id;
+						treeData.pId = data[temp].pId;
+						treeData.name =  data[temp].name;
+						treeData.regionLevel =  data[temp].regionLevel;
+						zNodes.push(treeData)
+						//clearRightData();
+					}
+					//初始化详情内容，默认显示第一个区域内容
+					if(data.length>0)
+					{
+						getAreaById(firstId,'show');
+					}
+					//加载树型
+					$(document).ready(function(){
+						$.fn.zTree.init($("#regionTree"), setting, zNodes);
+						//初始化区域选择，默认选择第一个区域
+                        if(document.getElementById("regionTree_1_a")){
+                            document.getElementById("regionTree_1_a").style.backgroundColor="#e5e5e5";
+                        }
+					});
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				$.fn.zTree.init($("#regionTree"), setting, zNodes);
+			};
+			varyAjax.run();
+		};
+
+		//清空右边栏数据
+		var clearRightData = function () {
+			$("#areaTitle").hide();
+			$("#img").hide();
+			$("#showArea").hide();
+			$("#saveArea").hide();
+			$("#btnSave").hide();
+		}
+
+		//根据id查询对应区域信息
+		var getAreaById = function(treeId,type){
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = REGION_CONFIG.queryInitRegionByInitRegionId_url+"?regionId=" + treeId;
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.async = false; //同步请求
+//			varyAjax.opts.data = {'regionId':treeId};
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+					var dataOne =  result.data;
+					if(type=='edit')
+						showsaveData(dataOne);
+					if(type=='show'){
+						showData(dataOne);
+						$('.formErrorInfo').html('');//
+					}
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				return false;
+			};
+			varyAjax.run();
+		};
+
+		//根据id保存/修改对应区域信息
+		var saveAreaById = function(paramData,url){
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = url;
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.async = false; //同步请求
+			varyAjax.opts.data = JSON.stringify({'initRegion':paramData});
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+					refreshNode(paramData);//刷新当前节点（旧）
+					//beforeExpand(trid,trnode)//刷新当前节点（新）
+//					showsaveData(paramData);
+					$("#cancelBtn").click();
+					PopWin.showMessageWin('保存成功');
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				return false;
+				PopWin.showMessageWin('保存失败');
+			};
+			varyAjax.run();
+		};
+
+		//刷新当前节点
+		var refreshNode = function(dataArea){
+			if(dataArea.regionId){
+				var dataAreaZtree =  $.fn.zTree.getZTreeObj('regionTree');
+				var treeNode = dataAreaZtree.getNodesByParam('id',dataArea.regionId);
+				if(treeNode.length==0)
+				{
+					defaultLoadData();
+				}
+				else
+				{
+					treeNode[0].name = treeNode[0].chinaName = dataArea.chinaName;
+					treeNode[0].dataStatus = dataArea.dataStatus;
+					dataAreaZtree.refresh();
+				}
+			}
+			else {
+				setTimeout(function () {
+					//defaultLoadData();
+					beforeExpand(trid,trnode)//刷新当前节点（新）
+				},500);
+			}
+		}
+
+		//保存区域信息
+		document.getElementById("saveD").onclick= function(){
+			if (!formVerf()) {
+				return;
+			}
+			$(".rightDict").remove(".formErrorInfo");
+			var paramData = getParam();
+			var url = '';
+
+			showDialog("确认保存节点'" + paramData.chinaName + "'吗？",function(){
+				if(($("#areaTitle").html()).indexOf("添加")>0)
+				{
+					url = REGION_CONFIG.saveInitRegion_url;
+				}
+				if(($("#areaTitle").html()).indexOf("编辑")>0)
+				{
+					url = REGION_CONFIG.updateInitRegionByInitRegionId_url;
+				}
+				saveAreaById(paramData,url);});
+
+		}
+
+		//删除区域
+		var delAreaById = function (treeId) {
+			var varyAjax = new BaseAjax();
+			varyAjax.opts.url = REGION_CONFIG.deleteInitRegionByInitRegionId_url;
+			varyAjax.opts.type = "POST";
+			varyAjax.opts.async = false; //同步请求
+			varyAjax.opts.data = JSON.stringify({'initRegion':{regionId:treeId}});
+			varyAjax.opts.successFun = function(result){
+				if(result.flag){
+					clearRightData();
+				}
+			};
+			varyAjax.opts.errorFun = function(){
+				return false;
+			};
+			varyAjax.run();
+		}
+
+		var log, className = "dark";
+		//用于捕获节点编辑按钮的 click 事件，并且根据返回值确定是否允许进入名称编辑状态
+		function beforeEditName(treeId, treeNode) {
+			clearErrorInfo( $('.rightDict'));
+			var flag=false;
+			currentTreeNode = treeNode;
+			className = (className === "dark" ? "":"dark");
+			var zTree = $.fn.zTree.getZTreeObj("regionTree");
+			zTree.selectNode(treeNode);
+			setTimeout(function() {
+
+                trid=treeId;
+                trnode = treeNode;
+                setTimeout(function() {
+                    //zTree.editName(treeNode);
+                    getAreaById(treeNode.id,'edit');
+
+                }, 0);
+
+//				showDialog("进入节点'" + treeNode.name + "'的编辑页吗？",function () {
+//
+//				});
+
+			}, 0);
+			return flag;
+		}
+
+
+		//用于捕获节点被删除之前的事件回调函数，并且根据返回值确定是否允许删除操作
+		function beforeRemove(treeId, treeNode) {
+			className = (className === "dark" ? "":"dark");
+			var zTree = $.fn.zTree.getZTreeObj("regionTree");
+			zTree.selectNode(treeNode);
+			showDialog("确认删除节点'" + treeNode.name + "'吗？",function (){
+			setTimeout(function() {
+				delAreaById(treeNode.id);
+			}, 0);
+			});
+		}
+
+		var newCount = 1;
+		var bLog = true;
+		//用于当鼠标移动到节点上时，显示用户自定义控件，显示隐藏状态同 zTree 内部的编辑、删除按钮
+		function addHoverDom(treeId, treeNode) {
+			currentTreeNode = treeNode;
+			var sObj = $("#" + treeNode.tId + "_span");
+			if (treeNode.editNameFlag || $("#addBtn_"+treeNode.tId).length>0) return;
+			var addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+					+ "' title='添加' onfocus='this.blur();'></span>";
+			sObj.after(addStr);
+			var btn = $("#addBtn_"+treeNode.tId);
+			if (btn) btn.bind("click", function(){
+                trid=treeId;
+                trnode = treeNode;
+                bLog = true;
+                showAddAreaHtml(treeNode);
+
+
+//				showDialog("进入节点" + treeNode.name + "的添加页吗？",function (){
+//
+//				},function () {
+//					bLog = false;
+//					return false;
+//				});
+			});
+		};
+		//弹出框通用方法
+		var showDialog=function(msg,yesFun,noFun){
+			var reloadDialog = $("#showDialog");
+			$("#msg").html(msg)
+			reloadDialog.dialog({
+				autoOpen: false,
+				title:'系统提示',
+				height: 160,
+				width: 410,
+				modal: true,
+				buttons:[
+					{
+						text:"是",
+						click:function(){
+							yesFun();
+							$(this).dialog("close");
+						}
+					},
+					{
+						text:"否",
+						click:function(){
+							if(!noFun && noFun instanceof Function){
+								noFun();
+							}
+							$(this).dialog("close");
+						}
+					}
+				]
+			});
+
+			reloadDialog.dialog("open");
+		}
+
+		//用于当鼠标移出节点时，隐藏用户自定义控件，显示隐藏状态同 zTree 内部的编辑、删除按钮
+		function removeHoverDom(treeId, treeNode) {
+			$("#addBtn_"+treeNode.tId).unbind().remove();
+		};
+
+		//清除错误信息
+		var clearErrorInfo = function (errorObj) {
+			errorObj.find('.formErrorInfo').remove();
+			//清楚所有的文本框高亮样式
+			$('#regionCode').removeClass('formInputHighlight');
+			$('#chinaName').removeClass('formInputHighlight');
+			$('#regionName').removeClass('formInputHighlight');
+			$('#stripNumber_edit').removeClass('formInputHighlight');
+		};
+
+		init();
+
+		// 添加和修改界面取消按钮的点击事件
+		$("#cancelBtn").click(function() {
+			$('.formInputHighlight').removeClass('formInputHighlight')//清除错误样式
+			getAreaById(currentTreeNode.id, 'show');
+		});
+	});
+
+</script>
+

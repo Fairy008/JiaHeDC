@@ -1,0 +1,2598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据下载</title>
+    <link rel="stylesheet" href="css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/daterangepicker-bs3.css" />
+    <link type="text/css" rel="stylesheet" href="css/jquery.ui.css">
+    <link type="text/css" rel="stylesheet" href="./css/pagination.css">
+    <style type="text/css">
+        body{
+            background-color: #ededed;
+        }
+        #carousel{height:520px;width:100%;}
+
+        .content{ width: 984px;padding:30px 20px 0 20px; margin:0 auto ;font-size:14px;width: 96% }
+        /*左侧轮播*/
+        .content .conMain{ width: 742px; float: right;position: relative ;width: 100%}
+
+        /*左侧*/
+        .sidebar{ width: 220px; float: left;     margin-right: 5px;}
+        .sidebar li{margin:3px 0px;cursor:pointer;padding-left:15px;height:32px;line-height:32px;}
+        .sidebar ul ul{padding-left:15px;}
+        .sidebar ul ul ul{padding-left:15px;}
+        .sidebar ul ul ul ul{padding-left:15px;}
+
+        .classify_one{background-color:#F3F3F3;}
+        .classify_one img{float:right;padding-right:20px;margin-top:7px;}
+
+        .classify_two{ text-indent: 2px;vertical-align: middle;position:relative;border-bottom:1px solid #f1f1f1;}
+        .circle{height:6px;width:6px; border-radius: 50%;      -moz-border-radius: 50%;      -webkit-border-radius: 50%;display: inline-block;background-color:#505050;position:absolute;top:10px;left:5px;}
+        .classify_tip{display:inline-block;padding-left:5px;}
+
+        .show{display:block;}
+        .hide{display:none;}
+        .on{color:#48c446;}
+
+
+
+        /**右侧样式 */
+        .searchArea{background-color: #fafafa}
+        .searchArea .row{border-bottom:1px solid #f0f0f0;overflow:auto;padding:2px 2px;}
+        .searchArea label{display:block;width:60px;float:left;height:32px;line-height:32px;font-weight:bold;padding-left: 10px}
+        .searchArea .searchData{float:left;width:678px;color:#717171;width: 90%}
+
+        .searchArea span{min-width:45px;display:inline-block;height:28px;line-height:28px;padding:0 .3em;cursor:pointer;text-align: center;border-radius: 4px;margin-bottom: 3px;margin-right: 10px;margin-top: 3px}
+        .searchArea span:hover{background-color:#289dfd;color: white}
+        .select{color:white;background-color:#289dfd;}
+        #timeBtn{
+            background-color: #289dfd;
+            color: #fff;
+            width: 45px;
+            text-align: center;
+            padding-right: 5px;
+            cursor: pointer;
+        }
+
+        .dataArea{margin-top:15px;min-height:360px;}
+        .dataArea .title{border-bottom:1px solid #F1F1F1;}
+        .dataArea .title span:first-child{font-size:18px;font-weight:bold;border-bottom:2px solid #000;height:42px;line-height:42px;display:inline-block;width:80px;padding-left:5px;}
+        .dataArea .title .tip{min-width:120px;float:right;display:flex;height:40px;line-height:40px;color:#717171;}
+
+         .btn{ height: 36px;width: 110px; background-color: #13c33a; border-radius: 20px;color: white; text-align: center;line-height: 40px; justify-content: center;align-items: Center;cursor:pointer;}
+         #orderDataBtn{float: right;}
+        .inputBox2 input{width:70px; height: 20px;border-radius: 5px;line-height: 20px;border: 1px solid #b9b7b7;padding-left:5px;}
+
+
+        #noComment{height: 84px;width: 100%;border-bottom: 1px solid #f0f0f0;padding-bottom: 16px;padding-top: 16px;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noComment img{width: 33px;height: 33px;border-radius: 50%;}
+        #noComment p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+
+        /*左侧列表**/
+        .dataList{ width: 730px; }
+        .dataList > dl{border-bottom:1px solid #f1f1f1;padding-bottom:20px;overflow: auto;margin-top:20px;}
+        .dataList > dl dt{display:block;float:left;}
+        .dataList > dl .imgBox img{width:140px;height:140px;}
+        .dataList > dl .detailBox{width:570px;padding-left:20px;}
+        .detailBox h2{font-size:20px;font-weight: bold;height:32px;line-height:32px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+        .detailBox p{    margin: 8px 0px;overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;    font-size: 14px; color: #7b7b7b; line-height: 27px;text-indent: 18px;}
+
+        .detailBox a{height:40px;line-height: 40px;border:1px solid #585858;width:120px;display:block;text-align:center;color:#000;border-radius:20px;}
+
+        .loadMore{ height: 38px; line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px 0 10px 0;}
+        .loadMore:hover{ cursor: pointer;color:#00a4da;}
+
+        .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight{color:#363636 !important;}
+
+        .titleBtn:hover{cursor:pointer;color:#00a4da;}
+        .detailBtn{margin:35px auto 35px auto; text-align:center;}
+        .detailBtn span{display:inline-block;}
+
+        .detailBtn .tip{    color: #ff0000;margin: 20px 0 0 0;}
+
+        .detailContent h2{font-size:20px;font-weight: bold;height:32px;line-height:32px;text-align:center;}
+        #buyDataBtn{background-color:#F5A836;}
+        #backBtn{background-color:#c6c6c6;}
+
+        .fileList{display:none;}
+        .searchData_down{
+            width: 80px;
+            height: 40px;
+            margin-left: 50%;
+            background-color: #fafafa;
+        }
+        .searchData_down .dropDown{
+            display: inline-block;
+            background: url("./img/icon-Down-B.png") no-repeat top right;
+            background-size: 24px;
+            padding-right: 16px;
+            padding-left: 5px;
+        }
+        .searchData_up{
+            width: 80px;
+            height: 40px;
+            margin-left: 50%;
+            display:none;
+        }
+        .searchData_up .dropUp{
+            display: inline-block;
+            background: url("./img/icon-UP-B.png") no-repeat top right;
+            background-size: 24px;
+            padding-right: 16px;
+            padding-left: 5px;
+        }
+        .dataList{
+            position: relative;
+            top:10px;
+            width: 100%;
+            height: auto;
+            font-size: 14px;
+            min-height: 200px;
+            clear: both;
+        }
+        .dataList ul{
+            width: 100%;
+            height: auto;
+        }
+        .dataList ul.box li{
+            float: left;
+            width: 18.5%;
+            height: 360px;
+            position: relative;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            background-color: #fafafa;
+            width: calc(20% - 12px);
+            cursor: pointer;
+            border: 1px solid #eeeeee;
+        }
+        .dataList ul li .data_img{
+            width: 100%;
+            height: 200px;
+            /*background-color: red;*/
+        }
+        .dataList ul li .data_img img{
+            width: calc(100% - 20px);
+            /* width: 100%; */
+            height: calc(118% - 10px);
+            margin-left: 10px;
+            margin-top: 10px;
+            border: 1px solid #eeeeee;
+        }
+
+        .data_name{
+            width: 90%;
+            text-overflow:ellipsis;/* 超出部分显示省略号 */
+            white-space: nowrap;
+            overflow: hidden;
+            margin-top: 55px;
+            /*margin-top: 20%;*/
+            font-weight: bold;
+            padding-left: 15px;
+            font-size: 15px;
+        }
+        .data_icon{
+            margin-top: 8px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .data_tag{
+            width: 100%;
+            min-height:30px;
+            margin-top: 10px;
+            border-bottom: 1px solid #eeeeee;
+        }
+        .data_tag span{
+            display: inline-block;
+            border-radius: 4px;
+            border: 1px solid #2b99f8;
+            color: #2b99f8;
+            margin-left: 3px;
+            padding: 3px;
+            font-size: 13px;
+            margin-top:5px;
+            padding-left: 3px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+        span.icon_start{
+            display: inline-block;
+            height: 24px;
+            /*width: 20px;*/
+            background: url(./img/icon-collect.png) no-repeat 3px 0px;
+            /* background-size: 24px; */
+            padding-left: 28px;
+            padding-top: 2px;
+            padding-top: 6px;
+            margin-left: 8px;
+            margin-top: 4px;
+            font-size: 15px;
+        }
+        span.icon_download{
+            display: inline-block;
+            height: 24px;
+            width: 30px;
+            /* background-size: 24px; */
+            padding-left: 28px;
+            padding-top: 6px;
+            margin-top: 4px;
+            font-size: 15px;
+            background: url("./img/icon-download.png") no-repeat 3px 0px;
+        }
+        span.download_button{
+            display: inline-block;
+            float: right;
+            margin-right: 10px;
+            margin-top: 4px;
+            background-color: #289dfd;
+            color: white;
+            border-radius: 4px;
+            padding: 5px 8px 5px 8px;
+            cursor: pointer;
+        }
+        #sourceDetail{
+            width: 90%;
+            height: auto;
+            margin: 0 auto;
+            margin-top: 65px;
+        }
+        .detailHeader{
+            width: 86%;
+            /*height: 350px;*/
+            height: auto;
+            margin: 0 auto;
+            /*position: absolute;*/
+        }
+        .detailHeader .leftContent{
+            width: 45%;
+            /*height: 320px;*/
+            height: 31%;
+           float: left;
+            border: 1px solid #cccccc
+        }
+        .detailHeader .leftContent img{
+            width: 100%;
+            height: 100%;
+        }
+
+        .titalMessage{
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            font-size: 16px;
+            font-weight: bold;
+            text-overflow:ellipsis;/* 超出部分显示省略号 */
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .detailHeader .rightContent{
+            width: 51%;
+            height: 280px;
+            margin-left: 2%;
+            float: right;
+        }
+        .introduceMessage{
+            width: 100%;
+            min-height: 90px;
+            margin-top: 20px;
+        }
+        .introduceMessage ul{
+            width:100%;
+            height: auto;
+        }
+        .introduceMessage ul li{
+            width: 47%;
+            height: 30px;
+            float: left;
+            font-size: 15px;
+            margin-right: 2%;
+        }
+        .introduceMessage ul li span{
+            font-weight: bold;
+            padding-left: 20px;
+        }
+        .dataPrice{
+            background-color: #f5f5f5;
+            /*width: 100%;*/
+            height: 50px;
+            line-height: 50px;
+            padding-left: 40px;
+            margin-top: 30px;
+            margin-top: 5%;
+        }
+        .dataPrice span.tital{
+            font-size: 14px;
+        }
+        .dataPrice span.price{
+            font-size: 25px;
+            font-weight: bold;
+            color: #f12e00;
+        }
+        .sourceButton{
+            width: 100%;
+            height: 40px;
+            margin-top: 30px;
+            margin-top: 5%;
+            /*margin-top: 22%;*/
+        }
+        .sourceButton .downloadButton{
+            display: inline-block;
+            background-color: #f5a836;
+            width: 120px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 4px;
+            /*float: left;*/
+            color: white;
+            font-size: 15px;
+            text-align: center;
+            float: left;
+            cursor: pointer;
+        }
+        .sourceButton .buyButton{
+            display: inline-block;
+            background-color: #36d300;
+            width: 120px;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 4px;
+            /*float: left;*/
+            color: white;
+            font-size: 15px;
+            text-align: center;
+            margin-left: 10px;
+            float: left;
+            cursor: pointer;
+            /*display: none;*/
+        }
+        .sourceButton .collect{
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: #D9D9D9 url(./img/icon-collectW.png) no-repeat center;
+            margin-left: 10px;
+            background-size: 24px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .dataSample{
+            width: 86%;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+        .dataParameter{
+            display: none;
+            width: 86%;
+            margin: 0 auto;
+        }
+        .dataSample_content{
+            width: 100%;
+            /*height: 400px;*/
+            height:71.5%;
+            padding-bottom: 20px;
+            border: 1px solid #cccccc;
+            margin: 0 auto;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        .dataSample_content img{
+             /*width: 100%;*/
+             /*height: 100%;*/
+        }
+        .dataParameter_content{
+            width:100%;
+            min-height: 150px;
+            border: 1px solid #cccccc;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            background-color: #FAFAFA;
+        }
+        .dataParameter_content .productName{
+            width: 100%;
+            height: 50px;
+            border-bottom: 1px solid #cccccc;
+        }
+        .productName .productName_tital{
+            display: inline-block;
+            width: 20%;
+            height: 50px;
+            text-align:center;
+            line-height: 50px;
+            float: left;
+        }
+        .productName .productName_content{
+            display: inline-block;
+            width: 80%;
+            height: 50px;
+            line-height: 50px;
+            float: left;
+            margin-top: -50px;
+            margin-left: 20%;
+            box-sizing: border-box;
+        }
+        .productMessage{
+              width: 100%;
+              min-height:120px;
+          }
+        .productMessage .productMessage_tital{
+            width: 20%;
+            height: 100px;
+            float: left;
+            line-height: 28px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .productMessage .productMessage_content{
+            width: 80%;
+            min-height: 100px;
+            margin-left: 20%;
+            margin-top: 10px;
+        }
+        .productMessage .productMessage_content ul{
+            width: 100%;
+            height: auto;
+        }
+        .productMessage .productMessage_content ul li{
+            float: left;
+            width: 46%;
+            height: 30px;
+            line-height: 30px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-right: 10px;
+            box-sizing: border-box;
+        }
+        .productDescript .tital,.dataSample .tital,.dataParameter .tital{
+            width: 100%;
+            height: 30px;
+            font-size: 17px;
+            font-weight: bold
+        }
+        .productDescript{
+            width: 86%;
+            margin: 0 auto;
+        }
+        .productDescript_content {
+            width: 100%;
+            font-size: 16px;
+            letter-spacing: 2px;
+            text-indent: 20px;
+
+        }
+        .recommend{
+            width: 100%;
+            height: 150px;
+            margin-top: 40px;
+            margin-bottom: 110px;
+        }
+        .recommend .recommendTital{
+            width: 100%;
+            height: 30px;
+            background: url("./img/recommend.png") no-repeat center;
+            background-size: 100%;
+
+        }
+        .recommendIcon{
+            width: 100%;
+            height: 120px;
+            margin-top: 20px;
+        }
+        .recommendIcon ul{
+            width:100%;
+            height: auto;
+        }
+        .recommendIcon ul li{
+            float: left;
+            /*width:23%;*/
+            /*margin-left:1%;*/
+            /*height:23%;*/
+            height: 240px;
+            background-color: #FAFAFA;
+            margin-bottom: 20px;
+            cursor: pointer;
+            width: calc(25% - 10px);
+            margin-right: 10px;
+        }
+        .recommendIcon ul li img{
+            width: calc(100% - 20px);
+            height: calc(100% - 45px);
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+        .dataSource{
+            /*margin-top: 30px;*/
+            border-radius: 4px;
+        }
+        .searchMessageBox{
+            height: 45px;
+            width: 100%;
+            font-size: 15px;
+            line-height: 50px;
+            padding-left: 8px;
+            font-weight: bold;
+        }
+        .searchMessageBox span{
+            color: red;
+        }
+       .dataSourceTitalIcon{
+           display: inline-block;
+           width: 15px;
+           height: 15px;
+           background: url(./img/icon-decorate.png) no-repeat;
+           background-size: 100%;
+       }
+        #carousel{
+            display: none;
+        }
+        .data_loadding{
+            width:100%;
+            height:200px;
+            background:url("./img/loadding.gif") no-repeat center;
+            display:none;
+        }
+        .noData{
+            display:none;
+            width:100%;
+            height:200px;
+            background:url("./img/nodata.png") no-repeat center;
+            text-align: center;
+            line-height: 370px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .downloadBox{
+            height:100%;
+            background-color: white;
+        }
+        .recommended_tital{
+            margin-top: 10px;
+            padding-left: 10px;
+            padding-right: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            height: 30px;
+        }
+        .collect_start{
+            background: #f5a836 url(./img/icon-collectW.png) no-repeat center !important;
+        }
+        .download_loaddingData{
+            width: 100%;
+            height: 300px;
+            background: url("./img/loadding.gif") no-repeat center;
+        }
+        .searchBoxContent{
+            display:block;
+        }
+        .download_meaage span{
+            font-size: 24px;
+        }
+        #ui-datepicker-div{
+            z-index:1111 !important; ;
+        }
+        .NOpicImg{
+            display: none;
+            height: 10px;
+            position: relative;
+            width: 100%;
+            top: -30px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+<div class="downloadBox">
+    <div id="carousel"></div>
+
+    <div class="content">
+        <div class="sidebar" style="display: none">
+            <ul id="classify_17000">
+
+            </ul>
+        </div>
+
+        <!--右侧侧边栏-->
+        <div class="conMain">
+            <input type="hidden" id="homeDataId">
+           <div id="list">
+               <div style="width: 100%;height: 2px;background-color:#0088fd;margin-bottom: 3px"></div>
+               <div class="searchArea">
+                   <div class="row">
+                       <label>大类</label>
+                       <div class="searchData" id="bigCategory">
+
+                       </div>
+                   </div>
+                   <div class="row" style="display: none">
+                       <label>小类</label>
+                       <div class="searchData" id="smallCategory">
+
+                       </div>
+                   </div>
+                   <div class="row">
+                       <label>区域</label>
+                       <div class="searchData" id="region">
+                       </div>
+                   </div>
+                   <div style="clear:both"></div>
+                   <div class="row">
+                       <label>作物</label>
+                       <div class="searchData" id="crop">
+                       </div>
+                   </div>
+                   <div style="clear:both"></div>
+                   <div class="row" style="display: none">
+                       <label>精度</label>
+                       <div class="searchData" id="accuracy">
+<!--                           <span class='select'>不限</span>-->
+<!--                           <span begin="0" end="1"><1m</span>-->
+<!--                           <span begin="1" end="10">1m-10m</span>-->
+<!--                           <span begin="10" end="100">10m-100m</span>-->
+<!--                           <span begin="100" end="1000">100m-1000m</span>-->
+<!--                           <span  begin="1000">1000m以上</span>-->
+                       </div>
+                   </div>
+                   <div style="clear:both"></div>
+                   <div class="row" style="display:none">
+                       <label>时间</label>
+                       <div class="searchData" id="dataTime">
+                           <span timeFlag="" class='select'>不限</span>
+                           <span timeFlag="1">近一月</span>
+                           <span timeFlag="3">近三月</span>
+                           <span timeFlag="6">近六月</span>
+                           <span timeFlag="12">近一年</span>
+                           <span timeFlag="0" class="inputBox2">其他&nbsp;
+                           <input type="text" readonly  id="startDate" class="dataInput" placeholder="时间区间起"/>
+                           -<input type="text" readonly  id="endDate" class="dataInput" placeholder="时间区间止"/>
+                           <input type="button" value="确定" id="timeBtn">
+
+                       </span>
+
+                       </div>
+                   </div>
+                   <div>
+                       <div class="searchData_down">
+                           <span class="dropDown">更多</span>
+                           <span class="icon_down" style="display: none"></span>
+                       </div>
+                       <div class="searchData_up">
+                           <span class="dropUp">收起</span>
+                           <span class="icon_up" style="display: none"></span>
+                       </div>
+                   </div>
+               </div>
+               <div style="clear:both;"></div>
+               <div class="searchMessageBox"></div>
+               <div class="data_loadding"></div>
+               <div class="noData">对不起,Sorry! 没有找到符合条件的数据</div>
+               <div class="dataSource">
+                   <div class="dataList" id="newDataList">
+                       <ul class="box">
+                           <!--<li>-->
+                               <!--<div class="data_img"></div>-->
+                               <!--<div class="data_name">旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测</div>-->
+                               <!--<div class="data_tag">-->
+                                   <!--<span>农业灾害</span>-->
+                                   <!--<span>农业灾害</span>-->
+                                   <!--<span>农业灾害</span>-->
+                               <!--</div>-->
+                               <!--<div class="data_icon">-->
+                                   <!--<span class="icon_start">80</span>-->
+                                   <!--<span class="icon_download">90</span>-->
+                                   <!--<span class="download_button">立即下载</span>-->
+                               <!--</div>-->
+                           <!--</li>-->
+                       </ul>
+                       <div style="clear:both;height: 10px"></div>
+                   </div>
+               </div>
+               <div id="Pagination" class="digg" style="position: relative;top: 50px;margin-bottom: 100px"></div>
+
+               <!--<div class="dataArea">-->
+                   <!--<div class="title">-->
+                       <!--<span>数据列表</span>-->
+                       <!--<span class="btn" id="orderDataBtn">数据定制</span>-->
+                       <!--<span class="tip">找不到想要的数据？</span>-->
+                   <!--</div>-->
+                   <!--<div class="dataList" id="dataList">-->
+                       <!--&lt;!&ndash;<dl>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<dt class="imgBox"><img src="images/public/forum/userImg.png"></dt>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<dt class="detailBox">&ndash;&gt;-->
+                       <!--&lt;!&ndash;<h2>2019年6月湖北降雨数据</h2>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<p>湖北雷静简单你看来放大就爱看六发动机考虑打飞机离开1就看到这是江月极大南科大可能答复金克拉对方金克拉阿凡达解开了阿道夫你单反啊的房间咖啡大家快来啊的房间了骄傲的考虑到发家啊大家方法大家金克拉的发就立刻我i2uiou的就是佛的骄傲弗兰克金克拉加拉就立刻即可</p>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<a href="#" >查看详情</a>&ndash;&gt;-->
+                       <!--&lt;!&ndash;</dt>&ndash;&gt;-->
+                       <!--&lt;!&ndash;</dl>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<dl>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<dt class="imgBox"><img src="images/public/forum/userImg.png"></dt>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<dt class="detailBox">&ndash;&gt;-->
+                       <!--&lt;!&ndash;<h2>2019年6月湖北降雨数据</h2>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<p>湖北雷静简单你看来放大就爱看六发动机考虑打飞机离开1就看到这是江月极大南科大可能答复金克拉对方金克拉阿凡达解开了阿道夫你单反啊的房间咖啡大家快来啊的房间了骄傲的考虑到发家啊大家方法大家金克拉的发就立刻我i2uiou的就是佛的骄傲弗兰克金克拉加拉就立刻即可</p>&ndash;&gt;-->
+                       <!--&lt;!&ndash;<a href="#" >查看详情</a>&ndash;&gt;-->
+                       <!--&lt;!&ndash;</dt>&ndash;&gt;-->
+                       <!--&lt;!&ndash;</dl>&ndash;&gt;-->
+                   <!--</div>-->
+                   <!--<p class="loadMore" style="display: none;">加载更多>></p>-->
+
+                   <!--<div id="noComment" style="display:none;" >-->
+                       <!--<img src="images/public/forum/POKERFACE.png"><p>持续更新中，敬请期待...</p>-->
+                   <!--</div>-->
+               <!--</div>-->
+
+           </div>
+
+            <div id="sourceDetail" class="hide">
+                <div class="detailHeader">
+                    <div class="leftContent">
+                        <!--<img src="">-->
+                    </div>
+                    <div class="rightContent">
+                          <div class="titalMessage"></div>
+                          <div class="introduceMessage">
+                                <ul>
+                                    <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                </ul>
+                              <div style="clear: both"></div>
+                          </div>
+                          <div class="dataPrice">
+                              <span class="tital">价格</span>
+                              <span class="price" style="font-size: 18px">￥</span>
+                              <span class="price priceNum"></span>
+                          </div>
+                        <div class="sourceButton">
+                            <div class="downloadButton">免费高清样例</div>
+                            <div class="buyButton">购买详细数据</div>
+                            <div class="collect" checked = false></div>
+                        </div>
+                    </div>
+                    <div style="clear:both"></div>
+                </div>
+
+                <div class="dataSample">
+                    <div class="tital">
+                        <span class="dataSourceTitalIcon"></span>
+                        <span>样例</span>
+                    </div>
+                    <div class="dataSample_content">
+                        <img src="" id="img" alt="">
+                    </div>
+                </div>
+                <div class="dataParameter">
+                    <div class="tital">
+                        <span class="dataSourceTitalIcon"></span>
+                        <span>数据参数</span>
+                    </div>
+                    <div class="dataParameter_content">
+                           <div class="productName">
+                               <span class="productName_tital">产品名称</span>
+                               <span class="productName_content"></span>
+                           </div>
+                           <div class="productMessage">
+                               <div class="productMessage_tital">数据详情</div>
+                               <div class="productMessage_content">
+                                   <ul>
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                       <!--<li>2018/2019武汉油菜种植分布卫星图csv</li>-->
+                                   </ul>
+                                   <div style="clear: both"></div>
+                               </div>
+                           </div>
+
+                    </div>
+                </div>
+                <div class="productDescript">
+                    <div class="tital">
+                        <span class="dataSourceTitalIcon"></span>
+                        <span>产品描述</span>
+                    </div>
+                    <div class="productDescript_content">
+                        <!--冰雹是哦啊似乎都i赛季放到盎司附近哦按实际按时间佛案件来看的阿士东i阿士东i就阿松i大家i阿散井 四阿娇覅欧萨啊是破解大神埃斯珀放假撒-->
+                    </div>
+                </div>
+                <div class="recommend">
+                    <div class="recommendTital"></div>
+                    <div class="recommendIcon">
+                        <ul>
+                            <!--<li>推荐图片一</li>-->
+                            <!--<li>推荐图片二</li>-->
+                            <!--<li>推荐图片三</li>-->
+                            <!--<li>推荐图片四</li>-->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="detail" >
+                <div class="detailContent">
+
+
+                </div>
+                <div class="detailBtn" style="display: none">
+                    <span class="btn" id="demoDownloadBtn">样例下载</span>
+                    <span class="btn" id="buyDataBtn">购买数据</span>
+                    <span class="btn" id="backBtn" >返回列表</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div style="clear:both;"></div>
+    <div id="footer"></div>
+</div>
+<script type="text/javascript" src="js/jquery.pagination.js"></script>
+<script type="text/javascript" src="js/fly.js"></script>
+<script type="text/javascript">
+
+require(["jquery","Marquee","moment","jqueryUi","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings","RegionModule","daterangepicker","waterMask"],function($,Marquee,moment,jqueryUi,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings, RegionModule,daterangepicker,waterMask){
+    var pageCount;
+    var init = function(){
+        $(".loadContent").css({"margin-top":"180px"})
+        // $(".liA li:last-child").css({"display":"block"})
+        $(".searchContentBox").css({"display":"block"})
+        //处理home=>downloadData页面的详情
+
+
+        //加载轮播框
+        $("#carousel").load("carousel.html");
+        //免費下載样例
+        $(".downloadButton").click(function(){
+        // $(document).off("click").on("click",".downloadButton",function(){
+            var result = isLogion();
+            var dataId = $(this)[0].attributes.dataId.nodeValue;
+            // var user = commons.getUserByAccountId(accountId);
+            var userId;
+            var dataLoadUrl;
+            // console.log("用户登录下载样例",result)
+            if(result.flag){
+                var accountId = JSON.parse(result.data).accountId
+                var userMessage = commons.getUserByAccountId(accountId);
+                if (null != userMessage.photoUrl && '' != userMessage.photoUrl){
+                    $('#userPhoto').attr('src',download_config.DOWNLOD_URL + userMessage.photoUrl);
+                    $(".owner_ing img").attr('src',download_config.DOWNLOD_URL + userMessage.photoUrl);
+                }
+            }
+
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                var userId = JSON.parse(result.data).personId;
+                var userName =JSON.parse(result.data).nickName||JSON.parse(result.data).personName||JSON.parse(result.data).accountName||JSON.parse(result.data).accountCode;
+                freeDownloadData(userId,dataId,userName);
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+
+            // if(commons.checkForumLoginStatus()){
+            //     // data.nickName || data.personName || data.accountName || data.accountCode
+            //     // var userName = JSON.parse(result.data).nickName||JSON.parse(result.data).personName||JSON.parse(result.data).accountName||JSON.parse(result.data).accountCode;
+            //     var userId = JSON.parse(result.data).personId;
+            //     var userName =commons.getUserByAccountId(JSON.parse(result.data).accountId).userName
+            //     freeDownloadData(userId,dataId,userName);
+            //
+            // }else{
+            //
+            // }
+
+        })
+
+
+        $(".download_promptBox .download_bottonTrue").off("click").on("click",function () {
+            var downstatu = $(this).attr("downTrue")
+            var dataId = $(this)[0].attributes.dataId.nodeValue;
+            var userId = JSON.parse(isLogion().data).personId;
+            if(downstatu){
+                freeDown(userId,dataId)
+            }
+
+        })
+
+        $(".buyButton").click(function(event){
+//        $(document).off("click").on('click','.buyButton',function(e){
+            var result = isLogion();
+            var userId;
+            var dataId = $(this)[0].attributes.dataId.nodeValue;
+
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                userId = JSON.parse(result.data).personId;
+                //用户已经登陆
+                goShoppingCar(userId,dataId)
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+            // console.log("用户登录",result)
+            // if(commons.checkForumLoginStatus()){
+            //     userId = JSON.parse(result.data).personId;
+            //     //用户已经登陆
+            //     goShoppingCar(userId,dataId)
+            // }else{
+            //
+            // }
+
+
+            // if(userName != undefined){
+            //     userId = $(".isLogin")[0].attributes.personid.nodeValue
+            //    //用户已经登陆
+            //     goShoppingCar(userId,dataId)
+            //
+            // }else{
+            //     //用户未登录
+            //     $(".maskBox").css({"display":"block"});
+            //     $(".login_promptBox").css({"display":"block"})
+            // }
+
+        })
+
+        loadDateRangePicker();//加载双日历插件
+
+        //过滤条件 更多<==>收起切换
+        $(".searchData_down").click(function(){
+            $("#dataTime").parent().css({"display":"block"});
+            $("#accuracy").parent().css({"display":"block"})
+            $(".searchData_up").css({"display":"block"});
+            $(this).css({"display":"none"})
+        })
+        $(".searchData_up").click(function(){
+            $(this).css({"display":"none"})
+            $("#dataTime").parent().css({"display":"none"});
+            $("#accuracy").parent().css({"display":"none"})
+            $(".searchData_down").css({"display":"block"});
+        })
+
+        //加载大类
+       initBigCategory(17001,"bigCategory")
+
+        //加载区域
+        initRegion(3100000000);
+        //加载精度
+        initAccuracy(4000)
+        //加载作物
+        queryDictsByParentId(500,"crop");
+
+        bindEvent();
+
+        delWithSearchBox();
+
+        //加载更多
+        loadMore();
+        //加载数据分类
+        initClassify();
+        var dataId = $("#homeDataId").val();
+        if(dataId != null && dataId != ""){
+            showDetailFun(dataId);
+        }else{
+            // $("#classify_17000 ul:first li:first").trigger("click");
+            loadData();
+
+        }
+
+        $(".detailBtn .tip").remove();
+        $("#footer").load("footer.html")
+    }
+    var anelr = function(){
+        console.log("bbbbbbbb")
+    }
+
+    var delWithSearchBox = function(){
+        var home_downloadData_dataId = localStorage.getItem('home_downloadData');
+        if(!!home_downloadData_dataId){
+            // $(".liA li:last-child").css({"display":"none"})
+            $(".searchContentBox").css({"display":"none"})
+            localStorage.clear();
+            $("#list").addClass("hide")
+            $("#sourceDetail").removeClass("hide")
+            showDetailFun(home_downloadData_dataId);
+
+            //修改头部样式
+            $("#indexRightTop").css({"height":"115px"});
+            $("#headRightTop").css({"height":"85px"});
+            $(".downloadBox").css({"margin-top":"-50px"});
+            return;
+        }else{
+            $("#indexRightTop").css({"height":"200px"});
+            $("#headRightTop").css({"height":"56px"});
+            $(".downloadBox").css({"margin-top":"270px"});
+        }
+
+        var keyword = $("#searchText").val();
+        checkKeyword(keyword);
+    }
+
+
+    //查询免费下载商品样例次数
+    var freeDownloadData = function(userId,dataId,userName){
+        var ajax = new BaseAjax();
+        // var formData = {
+        //     "userId":userId
+        // }
+        ajax.opts.url = CMS_MANAGE.freeDownloadData_url+"?userId="+userId;
+        ajax.opts.async = false;
+        // ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function(data){
+            // console.log("下载样例成功",data);
+            var downloadFreeNum = data.data;
+            $(".maskBox").css({"display":"block"});
+            var message=""
+            if(downloadFreeNum<10){
+                message= "你拥有"+"<span>"+(10-downloadFreeNum)+"</span>"+"次免费下载样例特权";
+                var fileName = $(".titalMessage").attr("title");
+                $(".download_promptBox .download_bottonTrue a").attr("href", $("#sourceDetail .leftContent img").attr("src"));
+                $(".download_promptBox .download_bottonTrue a").attr("download",fileName);
+                $(".download_promptBox .download_bottonTrue").attr("downTrue",true);
+                $(".download_content").html("本次下载会扣除1次免费下载次数,是否继续？");
+                $(".download_foot").css({"display":"block"})
+            }else if(downloadFreeNum>=10){
+                message= "你免费下载样例特权已用完";
+                $(".download_promptBox .download_bottonTrue a").attr("href","");
+                $(".download_promptBox .download_bottonTrue").attr("downTrue",false)
+                $(".download_content").html("请购买数据包，享更多服务");
+                $(".download_foot").css({"display":"none"})
+            }
+            $(".download_promptBox .download_meaage").html(message)
+            $(".download_promptBox").css({"display":"block"})
+            $(".download_promptBox .download_bottonTrue").attr("dataId",dataId);
+            $(".download_promptBox .owner_name").html(userName);
+
+        }
+        ajax.run()
+    }
+
+    //记录免费下载商品
+    var freeDown = function (userId,dataId) {
+        var ajax = new BaseAjax();
+        var formData = {
+            "userId":userId,
+            "dataId":dataId
+        }
+        ajax.opts.url = CMS_MANAGE.freeDown_url;
+        ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.async = false;
+        ajax.opts.successFun = function(data){
+            // console.log("样品下载成功",data)
+            if(data.flag){
+                $(".maskBox").css({"display":"none"});
+                $(".download_promptBox").css({"display":"none"})
+            }
+        }
+        ajax.run()
+    }
+
+
+
+    /**
+     * 判断用户是否登陆,若登录成功，返回用户信息
+     * @param
+     * @return boolean
+     * @version <1> 2019/3/11 mason:Created.
+     */
+    var isLogion = function(){
+        var userInfo;
+        var ajax = new BaseAjax();
+        ajax.opts.type = "get";
+        ajax.opts.url = LOGIN_CONFIG.check_user_login;
+        ajax.opts.async = false;
+        ajax.opts.successFun = function (result){
+            userInfo = result;
+        };
+        ajax.opts.errorFun = function () {
+            return null;
+        };
+        ajax.run();
+        return userInfo;
+    }
+
+     //分页器分页回调
+    var  pageselectCallback = function(page_id){
+        var page = page_id+1;
+        window.scrollTo(0,0);
+        loadData(page,10)
+
+    }
+
+    //初始化分页器
+    var initPagination = function(page,pageSize,PageCount){
+
+            var pageIndex = page;     //页面索引初始值
+            var pageSize = pageSize;     // 每页加载多少条数据
+            var PageCount = pageCount;   //总条数
+//            function pageselectCallback(page_id, jq) {
+//                var page = page_id+1;
+//                console.log(page);
+//                loadData(page,pageSize)
+//            }
+            $("#Pagination").pagination(PageCount, {
+                callback: pageselectCallback,//PageCallback() 为翻页调用次函数。
+                prev_text: " 上一页",
+                next_text: "下一页 ",
+                items_per_page: pageSize, //每页的数据个数
+//                num_display_entries: 3, //两侧首尾分页条目数
+                current_page: pageIndex,   //当前页码
+//                num_edge_entries: 3, //连续分页主体部分分页条目数
+//                    link_to:"?page=__id__"
+            });
+//            InterlacesColor(); //隔行换色(这个不是分页里面的js方法)
+        };
+
+   //加载大类顺便把小类的数据绑定在大类上面
+    var initBigCategory = function(parentId,targetId){
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findType_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        var bigCategoryNode = document.getElementById(targetId);
+        bigCategoryNode.innerHTML = "<span class='select' sondata='' dictId=''>不限</span>"
+        ajax.opts.successFun = function (result) {
+
+            if(result.flag){
+                var data = result.data;
+                $.each(data,function(index, element){
+                    var dataName = element.dataName;
+                    var dictId = element.dictId;
+                    var dataCode = element.dataCode;
+                    var dataValue = element.dataValue;
+                    var childDatalist = [];
+                    var sonData = element.sonList
+                    if(sonData!=null){
+                        $.each(sonData,function(i,item){
+                        var childName = item.dataName;
+                            var id = item.dictId;
+                            var obj = {
+                                dataName:childName,
+                                dictId:id
+                            }
+                            childDatalist.push(obj)
+                        })
+                    }
+//                    $.each(element.sonList,function(index,item){
+//                        var childName = item.dataName;
+//                        var id = item.dictId;
+//                        var obj = {
+//                            dataName:childName,
+//                            dictId:id
+//                        }
+//                        childDatalist.push(obj)
+//                    })
+                    var span = document.createElement("span");
+                    span.setAttribute("dictId", dictId);
+                    span.setAttribute("dataCode", dataCode);
+                    span.setAttribute("dataValue", dataValue);
+                    span.setAttribute("sonData",JSON.stringify(childDatalist));
+                    span.innerHTML = dataName;
+                    bigCategoryNode.appendChild(span);
+                })
+
+            }
+        }
+        ajax.run();
+    }
+
+    var initsmaillCategory = function (obj,targetId) {
+        var smaillCategoryNode = document.getElementById(targetId);
+        smaillCategoryNode.innerHTML = "<span class='select'>不限</span>";
+        if(!!obj){
+            $.each(obj,function(index,item){
+                var dataName = item.dataName
+                var dictId = item.dictId;
+                var span = document.createElement("span");
+                span.setAttribute("dictId",dictId);
+                span.innerHTML = dataName;
+                smaillCategoryNode.appendChild(span);
+            })
+        }
+
+    }
+
+
+    //添加购物车
+    var goShoppingCar = function(userId,dataId){
+        var ajax = new BaseAjax();
+        var formData = {
+            userId:userId,
+            dataId:dataId
+        };
+        ajax.opts.url = SHOPPING_CONFIG.addData_url;
+        ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function(data){
+             // console.log("购物i车",data);
+            var shoppingCarTotal = data.data.total;
+            var repeat = data.data.repeat;
+            var total = data.data.total;
+            $(".shoppingCarNum")[0].innerHTML = total
+            if(repeat == false){
+                $(".maskBox").css({"display":"block"});
+                $(".shoppingCar_promptBox").css({"display":"block"});
+            }else{
+                $(".maskBox").css({"display":"block"});
+                $(".shopping_repart").css({"display":"block"})
+            }
+            setTimeout(function () {
+                $(".maskBox").css({"display":"none"})
+                $(".shoppingCar_promptBox").css({"display":"none"});
+                $(".shopping_repart").css({"display":"none"})
+            },2000)
+        };
+        ajax.opts.errorFun = function(error){
+
+        };
+        ajax.run()
+
+    }
+
+    var bindEvent = function(){
+        $("#bigCategory").off("click").on("click","span", function(){
+            getBigCategoryFun(this);
+        })
+//        $("#smallCategory").off("click").on("click","span", function(){
+//            getSmallCategoryFun(this);
+//        })
+        $(document).on("click","#smallCategory span",function(){
+            getSmallCategoryFun(this);
+        })
+        $("#region").off("click").on("click", " span", function(){
+            getRegionId(this);
+        })
+
+        $("#crop").off("click").on("click", "span", function(){
+            getCropId(this)
+        })
+
+        $("#accuracy").off("click").on("click", "span", function(){
+            getAccuracy(this);
+        })
+
+
+        $("#dataTime").off("click").on("click","span", function(){
+            getDataTime(this);
+        })
+
+        $("#orderDataBtn").on("click",function(){
+            // if (commons.checkForumLoginStatus()) {
+            //     orderDataFun();
+            // }
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                orderDataFun();
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+        })
+
+        $("#timeBtn").on("click",function(){
+            loadData();
+        })
+
+        $("#searchBtn").click(function(){
+            var keyword = $("#searchText").val();
+            $("#searchBtn").attr("searchKey",$("#searchText").val());
+            var idList = ["dataTime","accuracy","crop","region","smallCategory","bigCategory"]
+            resetFilter(idList)
+            checkKeyword(keyword);
+        })
+        //头部回车查询
+        $("#searchText").bind("keyup",function(event){
+            if (event.keyCode == "13") {
+                $("#searchBtn").attr("searchKey",$("#searchText").val());
+                var idList = ["dataTime","accuracy","crop","region","smallCategory","bigCategory"];
+                var keyword = $("#searchText").val();
+                resetFilter(idList)
+                checkKeyword(keyword);
+            }
+        })
+
+        $("#dataList").off("click").on("click",".showDetailBtn,.titleBtn", function(){
+            showDetailFun($(this).attr("data-id"));
+        })
+
+        //商品详情 商品收藏
+        $(".sourceButton .collect").off("click").on("click",function(ev){
+            var oEvent = ev || event;
+            oEvent.cancelBubble = true;
+            oEvent.stopPropagation();
+
+            //js阻止链接默认行为，没有停止冒泡
+            oEvent.preventDefault();
+            // console.log("89899989989")
+            var result = isLogion();
+            var dataId =  $(".buyButton").attr("dataId");
+
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                var checkStatu = $(this)[0].attributes.checkedStatu.nodeValue;
+                var userId = JSON.parse(result.data).personId
+                if(checkStatu == "false"){
+                    $(this).addClass("collect_start");
+                    addDataCollection(userId,dataId);
+                }else{
+                    $(this).removeClass("collect_start")
+                    removeDataCollection(userId,dataId)
+                }
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+
+            // if(commons.checkForumLoginStatus()){
+            //     var checkStatu = $(this)[0].attributes.checkedStatu.nodeValue;
+            //     var userId = JSON.parse(result.data).personId
+            //     if(checkStatu == "false"){
+            //         $(this).addClass("collect_start");
+            //         addDataCollection(userId,dataId);
+            //     }else{
+            //         $(this).removeClass("collect_start")
+            //         removeDataCollection(userId,dataId)
+            //     }
+            // }else{
+            //
+            // }
+            setTimeout(function () {
+                $(".maskBox").css({"display":"none"});
+                $(".login_promptBox").css({"display":"none"});
+                $(".collectBox").css({"display":"none"});
+            },2000)
+        })
+
+        //查看详情
+        // $(document).on('click','#newDataList li .download_button',function(){
+        $(document).off('click','#newDataList li').on('click','#newDataList li',function(){
+//        $("#newDataList li").on("click",function(){
+            //修改 头部样式
+            $("#indexRightTop").css({"height":"115px"});
+            $("#headRightTop").css({"height":"85px"});
+            $(".downloadBox").css({"margin-top":"-50px"});
+            // $(".liA li:last-child").css({"display":"none"})
+            $(".searchContentBox").css({"display":"none"})
+            $('html,body').animate({
+                scrollTop: 0
+            }, 300);
+            $("#list").addClass("hide")
+            $("#sourceDetail").removeClass("hide")
+            var dataId = $(this).get(0).attributes.dataid.nodeValue;
+            showDetailFun(dataId);
+        })
+
+
+        //返回列表
+        $("#backBtn").off("click").on("click",function(){
+            backToList();
+        })
+
+        //详情页面里面的相关推荐局部刷新详情
+        $(document).on("click",".recommendIcon ul li",function () {
+             var dataId = $(this).attr("dataId");
+             // console.log("详情推荐id",dataId)
+            $(".recommendIcon ul").html("");
+             window.location.href="index.html";
+            localStorage.setItem('home_downloadData',dataId);
+            // $('html,body').animate({
+            //     scrollTop: 0
+            // }, 100);
+            $("#sourceDetail").css({"display":"none"})
+            setTimeout(showDetailFun(dataId),2000)
+        })
+
+        //下载样例数据
+        $("#demoDownloadBtn").off("click").on("click", function(){
+
+            var accessToken = commons.getAccessToken();
+            if(accessToken){
+                downloadFun();
+            }else{
+                $("#login").trigger("click");
+                return
+            }
+
+            // if (commons.checkForumLoginStatus()) {
+            //
+            //     downloadFun();
+            // }
+        })
+
+        $("#buyDataBtn").off("click").on("click", function(){
+
+            //直接打开在线客服
+
+            $("#qqIframe").attr("src","http://wpa.qq.com/msgrd?v=3&uin="+ QQ_ONLINE.qq + "&site=qq&menu=yes")
+
+            // if (commons.checkForumLoginStatus()) {
+            //     orderDataFun();
+            // }
+        })
+    }
+
+
+    //搜索过滤框关键字匹配“大类”，“小类”，“作物”，“区域”
+    var checkKeyword = function(keyword){
+        var ajax = new BaseAjax();
+        var formData ={
+            "keyWord": keyword
+        }
+        ajax.opts.url = DICT_COFING.checkKeyword_url+"?keyWord="+keyword;
+        // ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function (data) {
+            // console.log("peizhi",data)
+            if(data.flag){
+                var resource = data.data;
+                var tagType = resource.tagType;
+                $("#searchBtn").attr("tagType",tagType);
+                if(tagType == 1){
+                    //大类
+                    var dictid = resource.dict_id
+                    var list = $("#bigCategory span");
+                    for(var i=1;i<list.length;i++){
+                        var _dictid=$(list[i]).attr("dictid");
+                        if(_dictid!=null&&dictid!=null){
+                            if(_dictid == dictid){
+                                $(list[i]).addClass("select")
+                            }else{
+                                $(list[i]).removeClass("select");
+                                $(list[0]).removeClass("select");
+                            }
+                        }
+
+                    }
+                }
+                if(tagType == 2){
+                    $("#smallCategory").parent().css({"display":"block"})
+                    //小类
+                    var parentId = resource.parentId;
+                    var dictId_smaill = resource.dictId;
+                    //tag大类
+                    var list = $("#bigCategory span");
+                    for(var i=1;i<list.length;i++){
+                        var _dictid=$(list[i]).attr("dictid");
+                        if(_dictid!=null&&parentId!=null){
+                            if(_dictid == parentId){
+                                $(list[i]).addClass("select");
+                                // $($(list[7])[0]).attr("sonData")
+                                var obj =JSON.parse( $($(list[i])[0]).attr("sondata"))
+                                initsmaillCategory(obj,"smallCategory");
+                            }else{
+                                $(list[i]).removeClass("select");
+                                $(list[0]).removeClass("select");
+                            }
+                        }
+
+                    }
+
+                    //tag小类
+                    var list = $("#smallCategory span");
+                    for(var i=1;i<list.length;i++){
+                        var _dictid=$(list[i]).attr("dictid");
+                        if(_dictid!=null&&dictId_smaill!=null){
+                            if(_dictid == dictId_smaill){
+                                $(list[i]).addClass("select")
+                            }else{
+                                $(list[i]).removeClass("select");
+                                $(list[0]).removeClass("select");
+                            }
+                        }
+
+                    }
+
+
+                }
+                if(tagType == 3){
+                    //作物
+                    var regionId = resource.regionId;
+                    //tag省份
+                    var list = $("#region span");
+                    for(var i=1;i<list.length;i++){
+                        var _regionId=$(list[i]).attr("regionId");
+                        if(_regionId!=null&&regionId!=null){
+                            if(_regionId == regionId){
+                                $(list[i]).addClass("select")
+                            }else{
+                                $(list[i]).removeClass("select");
+                                $(list[0]).removeClass("select");
+                            }
+                        }
+
+                    }
+
+                }
+                if(tagType == 4){
+                    //区域
+                    var cropId = resource.cropId;
+                    var list = $("#crop span");
+                    for(var i=1;i<list.length;i++){
+                        var _cropId=$(list[i]).attr("crop");
+                        if(_cropId!=null&&cropId!=null){
+                            if(_cropId == cropId){
+                                $(list[i]).addClass("select")
+                            }else{
+                                $(list[i]).removeClass("select");
+                                $(list[0]).removeClass("select");
+                            }
+                        }
+
+                    }
+                }
+            }
+            loadData();
+        }
+        ajax.opts.errorFun = function(){
+            loadData();
+        }
+        ajax.opts.type="post"
+        ajax.run()
+    }
+
+
+
+
+    /**
+     * 下载样例数据
+     */
+    var downloadFun = function(){
+
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+
+        if($(".fileList").html() == undefined){
+            $(".detailBtn .tip").remove();
+
+
+            var div = document.createElement("p")
+            div.setAttribute("class","tip");
+            div.innerHTML = "*暂无可下载样例数据";
+
+            $(".detailBtn").append(div)
+
+            return ;
+        }
+
+
+        $(".fileList").each(function(){
+            var file = $(this).html();
+
+            var url = download_config.DOWNLOD_URL + file;
+            commons.createIframe(url, triggerDelay, removeDelay);
+
+        })
+
+    }
+
+    var resetFilter = function(idList){
+      if(idList.length>0){
+          for(var i=0;i<idList.length;i++){
+              var BoxContentId = idList[i];
+              $("#"+BoxContentId).find("span").removeClass("select");
+              $("#"+BoxContentId).find("span").eq(0).addClass("select");
+          }
+      }
+    }
+
+    /**
+     * 返回列表
+     */
+    var backToList = function(){
+        $("#detail").addClass("hide");
+        $("#list").removeClass("hide");
+    }
+
+    
+    //添加收藏
+    var addDataCollection = function (userId,dataId) {
+        var ajax = new BaseAjax();
+        var formData = {
+            "userId":userId,
+            "dataId":dataId
+        }
+        ajax.opts.url = CMS_MANAGE.addDataCollection_url
+        ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function(data){
+            // console.log("收藏商品成功",data)
+            if(data.flag){
+                $(".maskBox").css({"display":"block"});
+                $(".collectBox").css({"display":"block"});
+                $(".collectBox .collectBoxMessage span").html("添加收藏成功")
+                $(".sourceButton .collect").attr("checkedStatu",true);
+            }
+        }
+        ajax.run()
+    }
+
+    //取消收藏
+    var removeDataCollection = function(userId,dataId){
+        var ajax = new BaseAjax();
+        var formData = {
+            "userId":userId,
+            "dataId":dataId
+        }
+        ajax.opts.url = CMS_MANAGE.removeDataCollection_url
+        ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function(data){
+            // console.log("取消商品成功",data)
+            if(data.flag){
+                $(".sourceButton .collect").attr("checkedStatu",false);
+                $(".maskBox").css({"display":"block"});
+                $(".collectBox").css({"display":"block"});
+                $(".collectBox .collectBoxMessage span").html("取消收藏成功")
+            }
+
+        }
+        ajax.run()
+    }
+
+    //检查商品是否收藏
+    var checkCollection = function (userId,dataId) {
+        var ajax = new BaseAjax();
+        var formData = {
+            "userId":userId,
+            "dataId":dataId
+        }
+        ajax.opts.url = CMS_MANAGE.checkCollection_url;
+        ajax.opts.data = JSON.stringify(formData);
+        ajax.opts.successFun = function(data){
+            if(data.data == 0){
+                $(".sourceButton .collect").removeClass("collect_start")
+                $(".sourceButton .collect").attr("checkedStatu",false);
+            }else{
+                $(".sourceButton .collect").addClass("collect_start")
+                $(".sourceButton .collect").attr("checkedStatu",true);
+            }
+        }
+        ajax.run()
+    }
+
+
+
+    /**
+     * 查看数据详情
+     */
+    var showDetailFun = function(dataId){
+
+        // var dataId = $(evt).attr("data-id");
+
+        var ajax = new BaseAjax();
+        ajax.opts.url = DOWNLOADDATA_CONFIG.getById_url + "?dataId="+dataId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+        ajax.opts.type = "GET";
+        // ajax.opts.cache = false;
+        ajax.opts.successFun = function (result) {
+            if(result.flag){
+                // console.log("aaaaaaaaa")
+                $("#sourceDetail").css({"display":"block"});
+                var data = result.data;
+                var titalName = data.dataTitle;   //产品名称
+                var imgUrl = data.imageUrl;         //产品图片
+                var classifyName = data.classifyName;  //数据分类
+                var cropName = data.cropName;      //作物名称
+                var dataTime = data.dataTime;   //数据日期
+                var regionName = data.regionName; //数据区域
+                var accuracyName = data.accuracyName;  //数据开始时间
+               // var accuracyEnd = data.accuracyEnd ;  //数据结束时间
+                var price = data.price;   //数据价格
+                var dataClassify = data.dataClassify;
+                var taghtml = "";
+                var productMessage_contentData = data.fileList;    //参数数据详情
+                initRecommended(dataClassify)
+                if(productMessage_contentData.length == 0){
+                    productMessage_contentData = ["模拟数据1","模拟数据2","模拟数据3","模拟数据4","模拟数据5","模拟数据6"]
+                }
+                // var dataIntroduction = data.dataIntroduction    //产品描述
+                var dataIntroduction = data.dataContent;
+                if(dataIntroduction == null){
+                    // dataIntroduction = "模拟数据产品介绍：暗杀部队哦i爱上第哦啊安排时间到按时间都i啊"
+                }
+
+
+                if(classifyName!=null){
+                    taghtml += "<li><label>数据分类</label><span>"+classifyName+"</span></li>"
+                }
+                if(regionName!=null){
+                    taghtml += "<li><label>区域</label><span>"+regionName+"</span></li>"
+                }
+                if(dataTime!=null){
+                    taghtml += "<li><label>数据时间</label><span>"+dataTime+"</span></li>"
+                }
+                if(cropName != null){
+                    taghtml += "<li><label>作物</label><span>"+cropName+"</span></li>"
+                }
+                if(accuracyName!=null){
+                    taghtml += "<li><label>精确度</label><span> "+accuracyName+"</span></li>"
+                }
+
+
+//                var html_1 = "<div class='leftContent'><img src='"+imgUrl+"' /></div>" +
+//                            "<div class='rightContent'>" +
+//                                "<div class='titalMessage' title='"+titalName+"'>"+titalName+"</div>"+
+//                                "<div class='introduceMessage'>" +
+//                                   "<ul>"+taghtml+"</ul>"+
+//                                "</div>"+
+//                                 "<div class='dataPrice'> <span class='tital'>价格</span> <span class='price'>￥</span><span class='price priceNum'>"+price+"</span></div>" +
+//
+//                            "</div>";
+//                 $(".dataSample_content").html("<img src='' id='img'/><span class='NOpicImg'>图片走丢了</span>");
+                // 给图片制作水印
+                var wm;
+                if(dataClassify == 18100 || dataClassify == 18200 || dataClassify == 18300){
+                     wm = new waterMask.Watermask({
+                        maskImage: './img/icon_sy.png',
+                        position: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        scale: 0.6,
+                        margin: 100,
+                        radius: 30,
+                        sigma: 20,
+                        quality: 0.6
+                    });
+                }else{
+                    wm = new waterMask.Watermask({
+                        maskImage: './img/icon_sy.png',
+                        position: {
+                            horizontal: 'center',
+                            vertical: 'middle'
+                        },
+                        scale: 0.6,
+                        margin: 100,
+                        radius: 10,
+                        sigma: 3.5
+                    });
+                };
+                var imgList = [imgUrl];
+                var outputImages = [];
+                var index = 0;
+                wm.setStatusListener(function(status){
+                    if (status == 1 && index < imgList.length) {
+                        wm.setSourceImage([imgList[index]])
+                    }
+                    if (status == 3) {
+                        index = index + 1;
+                        // getWatermaskImage() 返回输出图像对象数组，如果发生错误，则会用错误信息替代这个图像对象
+                        // 遍历该数组，如果遍历的项目无 src 属性，表示该项目发生错误，项目为错误信息
+                        var imgSrc = wm.getWatermaskImage()[0].src;
+                        document.getElementById('img').src = imgSrc;
+                    }
+                });
+                var parent_width = $(".dataSample_content").width();
+                var width_1 = $(".dataSample_content img").width();
+                    if(width_1<2000){
+                        $(".dataSample_content img").css({"width":"70%","marginTop":"2%"});
+                    }else{
+                        $(".dataSample_content img").css({"width":"70%"});
+                    }
+                $(".dataSample_content img").bind("error",function(event){
+                    $(this).attr("src","./img/NOpic.png");
+                });
+                $(".leftContent").html("<img src='"+imgUrl+"' /><span class='NOpicImg'>图片走丢了</span>");
+                $(".leftContent img").bind("error",function(event){
+                    $(this).attr("src","./img/NOpic.png");
+                    // $(this).siblings().css({"display":"block"});
+                    $(this).parent().css({"width":"32%"});
+                    $($(this).parent().siblings()[0]).css({"width":"64%"});
+
+                })
+                 $(".titalMessage").attr("title",titalName);
+                $(".titalMessage")[0].innerHTML = titalName
+                 $(".introduceMessage ul").html(taghtml)
+                if(parseInt(price) == 0){
+                    $(".buyButton").css({"display":"none"})
+                }else{
+                    $(".buyButton").css({"display":"block"})
+                }
+                if(parseInt(price)==price*100/100){
+                    //价格是整数
+                    price = parseFloat(price).toFixed(2);
+                }
+                 $(".priceNum")[0].innerHTML = price;
+                // $(".priceNum")[0].innerHTML = parseFloat(price).toFixed(2);
+                $(".downloadButton").attr("dataId",dataId);
+                $(".buyButton").attr("dataId",dataId);
+
+
+                var html_2 =""
+//                productMessage_content  productName_content
+                  for(var i=0;i<productMessage_contentData.length;i++){
+                      var name = productMessage_contentData[i]
+                      html_2 +="<li>"+name+"</li>"
+                  }
+                  //数据详情 =》数据参数加载
+                  $(".productMessage_content ul").html(html_2);
+                  $(".productName_content")[0].innerHTML = titalName;
+                if(dataIntroduction == null){
+                   $(".productDescript").css({"display":"none"})
+                }else{
+                    $(".productDescript").css({"display":"block"})
+                    $(".productDescript_content")[0].innerHTML = dataIntroduction;
+                }
+                //检查商品受否被收藏
+                var userMessage = isLogion();
+                if(userMessage.flag){
+                    var userId = JSON.parse(userMessage.data).personId;
+                    checkCollection(userId,dataId)
+                }
+            }
+        }
+        ajax.run();
+
+    }
+
+   //  相关推荐
+    var initRecommended = function(classify){
+        var ajax = new BaseAjax();
+        ajax.opts.url =DOWNLOADDATA_CONFIG.getSimilarData_url+"?classify="+classify;
+        ajax.opts.async = false;
+        ajax.opts.type = "GET";
+        ajax.opts.successFun = function(data){
+            // console.log("99999——88888888888",data)
+            var dataList = data.data;
+            var html ="";
+            if(dataList.length>0){
+                for(var i=0;i<dataList.length;i++){
+                    var url = dataList[i].dataPath;
+                    var titalName = dataList[i].dataTitle;
+                    var dataId = dataList[i].dataId;
+                    html+= "<li dataId = '"+dataId+"'>" +
+                        "<img src='"+url+"' />" +
+                        "<div class='recommended_tital'>"+titalName+"</div>"+
+                        "</li>";
+//                        <li>推荐图片一</li>
+                }
+                $(".recommendIcon ul").html(html)
+                $(".recommendIcon").parent().css({"display":"block"})
+            }else{
+                $(".recommendIcon").parent().css({"display":"none"})
+            }
+
+            $(".recommendIcon ul li img").bind("error",function(event){
+                $(this).attr("src","./img/NOpic.png");
+                // $(this).siblings().css({"display":"block"});
+            })
+        }
+        ajax .run()
+
+    }
+
+    var orderDataFun = function(){
+        $(".loadContent").load("orderData.html")
+    }
+
+    //大类
+    var getBigCategoryFun = function (evt) {
+        var tagType = $("#searchBtn").attr("tagType");
+        $(evt).addClass("select").siblings().removeClass("select");
+        if(tagType==1){
+            if(evt.innerText!="不限"){
+                $("#searchText").val(evt.innerText);
+                $("#searchBtn").attr("searchKey",evt.innerText);
+            }else{
+                $("#searchText").val("");
+                $("#searchBtn").attr("searchKey","");
+                $("#searchBtn").attr("tagType",0);
+            }
+            // var html = "以下为“"+"<span>"+evt.innerText+"</span>"+"”相关搜索结果"
+            // $(".searchMessageBox").html(html)
+        }
+        var obj = [];
+        if(!!$(evt)[0].attributes.sondata.nodeValue){
+            obj = JSON.parse( $(evt)[0].attributes.sondata.nodeValue)
+        }
+
+        //加载小类
+        if(obj.length>0){
+            $("#smallCategory").parent().css({"display":"block"})
+            initsmaillCategory(obj,"smallCategory");
+        }else{
+            $("#smallCategory").parent().css({"display":"none"})
+        }
+        loadData();
+    }
+
+
+    var getSmallCategoryFun = function (evt){
+        var tagType = $("#searchBtn").attr("tagType");
+        $(evt).addClass("select").siblings().removeClass("select");
+        loadData();
+        if(tagType==2){
+            // var html = "以下为“"+"<span>"+evt.innerText+"</span>"+"”相关搜索结果"
+            // $(".searchMessageBox").html(html)
+            if(evt.innerText!="不限"){
+                $("#searchText").val(evt.innerText);
+                $("#searchBtn").attr("searchKey",evt.innerText);
+            }else{
+                $("#searchText").val("");
+                $("#searchBtn").attr("searchKey","");
+                $("#searchBtn").attr("tagType",0);
+            }
+        }
+
+    }
+
+
+    //时间
+    var getDataTime = function(evt){
+        var timeFlag = $(evt).attr("timeflag");
+        $(evt).addClass("select").siblings().removeClass("select");
+
+        if(parseInt(timeFlag) == 5){
+            return ;
+        }
+        if(parseInt(timeFlag) == 0){
+            return;
+        }
+
+        loadData();
+    }
+
+    //精度
+    var getAccuracy = function(evt){
+        var accuracy = $(evt).attr("accuracy");
+        $(evt).addClass("select").siblings().removeClass("select");
+
+        loadData();
+    }
+
+    //作物
+    var getCropId = function(evt){
+        var tagType = $("#searchBtn").attr("tagType");
+        var cropId = $(evt).attr("crop");
+        $(evt).addClass("select").siblings().removeClass("select");
+        if(tagType==4){
+            if(evt.innerText!="不限"){
+                $("#searchText").val(evt.innerText);
+                $("#searchBtn").attr("searchKey",evt.innerText);
+            }else{
+                $("#searchText").val("");
+                $("#searchBtn").attr("searchKey","");
+                $("#searchBtn").attr("tagType",0);
+            }
+            // var html = "以下为“"+"<span>"+evt.innerText+"</span>"+"”相关搜索结果"
+            // $(".searchMessageBox").html(html)
+        }
+        loadData();
+    }
+
+
+    /**
+     * 选中区域
+     */
+    var getRegionId = function(evt){
+        var tagType = $("#searchBtn").attr("tagType");
+        var regionId = $(evt).attr("regionid");
+        $(evt).addClass("select").siblings().removeClass("select");
+        if(tagType==3){
+            if(evt.innerText!="不限"){
+                $("#searchText").val(evt.innerText);
+                $("#searchBtn").attr("searchKey",evt.innerText);
+            }else{
+                $("#searchText").val("");
+                $("#searchBtn").attr("searchKey","");
+                $("#searchBtn").attr("tagType",0);
+            }
+
+            // var html = "以下为“"+"<span>"+evt.innerText+"</span>"+"”相关搜索结果"
+            // $(".searchMessageBox").html(html)
+        }
+        loadData();
+    }
+
+
+
+    /**
+     * 加载列表数据
+     * page：当前页码
+     * rows: 一页几条数据
+     * flag:是否首次加载
+     */
+    var initFirstRows = 10;//第一次夹加载条数
+    var initRows = 4;//之后每次加载条数
+    var loadData =function(page, rows, flag){
+        //处理搜索框里面的内容与点击
+
+//        $("#list").removeClass("hide");
+//        $("#detail").addClass("hide");
+
+        if(page == undefined){
+            page = 1;
+        }
+        if(rows == undefined){
+            rows = initFirstRows;
+            flag = true;
+            $("#dataList").html("");
+
+        }
+        $(".data_loadding").css({"display":"block"});
+
+        var classify = "";
+        var bigClassify = $("#bigCategory .select").attr("dictId");
+        var smallClassify = $("#smallCategory .select").attr("dictId");
+       if(bigClassify!=undefined && smallClassify == undefined){
+           classify = bigClassify
+       }else if(bigClassify != undefined && smallClassify != undefined){
+           classify = smallClassify
+       }else if(bigClassify == undefined && smallClassify == undefined){
+           classify = ""
+       }
+
+        var ifLeaf = $("#classify_17000 .on").attr("leaf");
+        if(ifLeaf == "true"){
+            classify = $("#classify_17000 .on").attr("dict-id");
+        }
+        var keyword = $("#searchBtn").attr("searchKey").trim();
+        if(!!keyword){
+
+            var html = "以下为“"+"<span>"+keyword+"</span>"+"”相关搜索结果"
+            $(".searchMessageBox").html(html)
+        }else{
+            $(".searchMessageBox").html("全部数据搜索结果");
+        }
+        var tagType = $("#searchBtn").attr("tagType");  //关键字匹配 ”大类小类作物区域“
+        var regionId = $("#region .select").attr("regionid") ; //区域
+        var regionCode =$("#region .select").attr("regioncode") ; //区域
+        var cropId =$("#crop .select").attr("crop") ; //作物
+        var accuracy_begin =$("#accuracy .select").attr("begin") ; //精度
+        var accuracy_end =$("#accuracy .select").attr("end") ; //精度
+        var dictId = $("#accuracy .select").attr("dictId");
+        var timeFlag = $("#dataTime .select").attr("timeflag"); //时间
+        var startDate = "";
+        var endDate = "";
+        if(0 == parseInt(timeFlag)){
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+        }else{
+            $("#startDate").val("");
+            $("#endDate").val("");
+        }
+
+        var data = {
+            tagType:tagType,
+            keyWords:keyword,
+            dataClassify: classify,
+            regionId: regionId,
+            regionCode:regionCode,
+            cropId : cropId,
+           /* accuracyBegin: accuracy_begin,
+            accuracyEnd : accuracy_end,*/
+            dictId:dictId,
+            timeFlag : timeFlag,
+            startDate : startDate,
+            endDate : endDate,
+            page : page,
+            rows: rows
+        }
+        var dataList = document.getElementById("dataList");
+        $("#newDataList").css({"display":"none"});
+        var ajax = new BaseAjax();
+        ajax.opts.url = DOWNLOADDATA_CONFIG.findAllByPage_url;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+        ajax.opts.data = JSON.stringify(data);
+        ajax.opts.successFun = function (result) {
+            $(".data_loadding").css({"display":"none"});
+            if(result){
+                if(result.list.length == 0){
+                    $(".noData").css({"display":"block"});
+                    $("#Pagination").css({"display":"none"});
+                }else{
+                    $(".noData").css({"display":"none"});
+                    $("#Pagination").css({"display":"block"})
+                    $("#newDataList").css({"display":"block"});
+                }
+                //获取分页器总条数
+                pageCount = result.total;
+                initPagination(page-1,10,pageCount)
+                var list = result.list;
+                var html = "";
+                for(var i=0;i<list.length;i++){
+//                    var imgUrl = list[i].dataPath;
+                    var dataId = list[i].dataId
+                    var imgUrl = list[i].dataPath;
+                    var dataName = list[i].dataTitle;
+                    var bigClass = list[i].parentType;
+                    var smallClass = list[i].sonType;
+                    var downloadNum =  (list[i].downloadNum == null||list[i].downloadNum == undefined)?0:list[i].downloadNum;
+                    var collectionNum = (list[i].collectNum == null||list[i].collectNum == undefined)?0:list[i].collectNum;
+                    var taghtml = "";
+                    if(bigClass != null&& smallClass==null){
+                        taghtml += "<span>"+bigClass+"</span>";
+                    }else if(bigClass == null&& smallClass!=null){
+                        taghtml += "<span>"+smallClass+"</span>";
+                    }else if(bigClass == null&& smallClass==null){
+                        taghtml += "";
+                    }else if(bigClass != null&& smallClass!=null){
+                        taghtml += "<span>"+bigClass+"</span><span>"+smallClass+"</span>";
+                    }
+                    html += "<li dataId='"+dataId+"'>" +
+                            "<div class='data_img'><img src='"+imgUrl+"'><span class='NOpicImg'>图片走丢了</span></div>" +
+                            "<div class='data_name' title='"+dataName+"'>"+dataName+"</div>"+
+                            "<div class='data_tag'>"+taghtml+"</div>"+
+                            "<div class='data_icon'>" +
+                            "<span class='icon_start'>"+collectionNum+"</span><span class='icon_download'>"+downloadNum+"</span><span class='download_button' dataId='"+dataId+"'>查看详情</span>"+
+                            "</div>" +
+                            "</li>";
+
+                    $("#newDataList ul").html(html);
+                    $(".data_img img").bind("error",function(event){
+                       $(this).attr("src","./img/NOpic.png");
+                        // $(this).siblings().css({"display":"block"})
+                    })
+//                <li>
+//                    <div class="data_img"></div>
+//                            <div class="data_name">旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测旱灾遥感监测</div>
+//                            <div class="data_tag">
+//                            <span>农业灾害</span>
+//                            <span>农业灾害</span>
+//                            <span>农业灾害</span>
+//                            </div>
+//                            <div class="data_icon">
+//                            <span class="icon_start">80</span>
+//                            <span class="icon_download">90</span>
+//                            <span class="download_button">立即下载</span>
+//                            </div>
+//                            </li>
+                }
+            }
+
+//            if(result){
+//                var list = result.list;
+//                 console.log("list",list)
+//                $.each(list,function(index, element){
+//                    var title = element.dataTitle == null ? "" : element.dataTitle;
+//                    var intro = element.dataIntroduction;
+//
+//                    var imgUrl = element.imageUrl;
+//                    if(imgUrl == null || imgUrl == ""){
+//                        imgUrl =  "images/public/forum/list_img.png";
+//                    }
+//                    var dl = document.createElement("dl");
+//                    var dt = document.createElement("dt");
+//                    dt.setAttribute("class", "imgBox");
+//                    dt.innerHTML = "<img src='"+ imgUrl +"'>";
+//
+//                    var dt2 = document.createElement("dt");
+//                    dt2.setAttribute("class", "detailBox");
+//                    dt2.setAttribute("title", title);
+//
+//                    var _str = "<h2 class='titleBtn' data-id='"+ element.dataId +"'>" + title + "</h2><p>"+ intro +"</p><a href='javascript:void(0)' class='showDetailBtn' data-id='"+ element.dataId +"'>查看详情</a>"
+//                    dt2.innerHTML = _str;
+//
+//                    dl.appendChild(dt);
+//                    dl.appendChild(dt2);
+//                    dataList.appendChild(dl);
+//                })
+//
+//
+//                if (result.hasNextPage) {
+//                    if (flag) {
+//                        $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+//                    } else {
+//                        $(".loadMore").attr("nextPage", result.nextPage).html("加载更多>>");
+//                    }
+//                } else {
+//                    $(".loadMore").attr("nextPage", result.nextPage).html("没有更多了");
+//                }
+//
+//                if (list.length > 0) {
+//                    $(".loadMore").show();
+//                    $("#noComment").hide();
+//                } else {
+//                    $(".loadMore").hide();
+//                    $("#noComment").show();
+//                }
+//            }
+        }
+        ajax.opts.failureFun = function(){
+
+        }
+        ajax.run();
+
+    }
+
+    /**
+     * 点击帖子更多
+     * @param
+     * @return
+     */
+    var loadMore = function () {
+        $('.loadMore').on('click',function(){
+            var nextPage = $(".loadMore").attr("nextPage");
+            if (nextPage != 0) {
+                loadData(nextPage, initRows, false);
+            }
+        });
+    };
+
+
+    /**
+     * 初始化数据分类
+     */
+    var initClassify = function(){
+         findDictList(17000, 1);  //数据分类入口
+    }
+
+
+    /**
+     * 初始化区域查询条件
+     */
+    var initRegion = function(parentId){
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findSubListByRegionId_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        var regionNode = document.getElementById("region");
+        regionNode.innerHTML = "<span class='select'>不限</span>"
+        ajax.opts.successFun = function (result) {
+
+            if(result.flag){
+                var data = result.data;
+                $.each(data,function(index, element){
+                    var localName = element.chinaName;
+                    var span = document.createElement("span");
+                    span.setAttribute("regionId", element.regionId);
+                    span.setAttribute("regioncode", element.regionCode);
+                    span.innerHTML = localName;
+                    regionNode.appendChild(span);
+                })
+
+            }
+        }
+        ajax.run();
+    }
+    
+
+    //初始化精度查询条件
+    var initAccuracy = function(parentId){
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+        var regionNode = document.getElementById("accuracy");
+        regionNode.innerHTML = "<span class='select' dictId=''>不限</span>";
+        ajax.opts.successFun = function (result) {
+         // console.log("99999999",result)
+            if(result.flag){
+                var data = result.data;
+                $.each(data,function(index, element){
+                    // console.log("精度",element);
+                    var localName = element.dataName;
+                    var span = document.createElement("span");
+                     span.setAttribute("dictId", element.dictId);
+                    // span.setAttribute("regioncode", element.regionCode);
+                    span.innerHTML = localName;
+                    regionNode.appendChild(span);
+                })
+
+            }
+        }
+        ajax.run();
+    }
+
+    /**
+     * 查询字典
+     */
+    var queryDictsByParentId = function(parentId, targetNode){
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        var node = document.getElementById(targetNode);
+        node.innerHTML = "<span class='select'>不限</span>"
+
+        ajax.opts.successFun = function (result) {
+            if(result.flag){
+                var data = result.data;
+                $.each(data,function(index, element){
+                    var dataName = element.dataName;
+                    var span = document.createElement("span");
+                    span.setAttribute(targetNode, element.dictId);
+                    span.innerHTML = dataName;
+                    node.appendChild(span);
+                })
+            }
+        }
+        ajax.run();
+    }
+
+
+
+    /**
+     * 获取各级数据分类数据
+     * @param parentId
+     * @param flag
+     * @param target
+     */
+    var findDictList = function(parentId, flag, target){
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        ajax.opts.successFun = function (result) {
+            if(result.flag){
+
+                if(flag == 1){ //第一级分类
+                    initClassify_one(result.data)
+                }
+                if(flag == 2){ //加载第二级分类
+                    loadClassify_two(result.data,target)
+                }
+            }
+
+        }
+        ajax.run();
+    }
+
+
+
+
+    /**
+     * 初始化一级UI数据
+     * @param data
+     */
+    var  initClassify_one = function(data){
+
+        var classifyNode = document.getElementById("classify_17000")
+
+        $.each(data, function(index, element){
+        // <li class="classify_one" dict-id="1" show="false" target="classify_17001">
+            // <span>数据分类</span><img src="images/public/forum/show.png"></li>
+
+            var li = document.createElement("li");
+            li.setAttribute("class","classify_one");
+            li.setAttribute("dict-id",element.dictId);
+            li.setAttribute("show","false");
+            li.setAttribute("leaf",element.leaf)
+            if(!element.leaf){
+                li.setAttribute("target", "classify_" + element.dictId)
+            }
+            li.innerHTML = "<span>"+ element.dataName + "</span><img src=\"images/public/forum/hide.png\">";
+            classifyNode.appendChild(li);
+            if(!element.leaf){
+                var ul = document.createElement("ul");
+                ul.setAttribute("id", "classify_" + element.dictId)
+                ul.setAttribute("class","hide"); //ul隐藏
+                classifyNode.appendChild(ul)
+            }
+        })
+
+        //绑定点击事件
+        $("#classify_17000 li").bind("click",function(){
+
+            //修改图标方向
+            var showFlag = $(this).attr("show") == "false"
+            var bool = $(this).attr("leaf") == "true" //是否叶子节点(字符串leaf)
+
+
+            $("li").removeClass("on")
+            $(this).addClass("on");
+
+            if(showFlag){ //此时是关闭状态且是非叶子节点，需要打开，同时加载数据
+                if(!bool){
+                    var targetId = $(this).attr("target");
+                    $("#" + targetId).removeClass("hide").addClass("show");
+                }
+
+                $(this).attr("show","true");
+                $(this).find("img").attr("src", "images/public/forum/show.png")
+
+            }else{
+                if(!bool){
+                    var targetId = $(this).attr("target");
+                    $("#" + targetId).removeClass("show").addClass("hide");
+                }
+
+                $(this).attr("show","false");
+                $(this).find("img").attr("src", "images/public/forum/hide.png")
+            }
+
+            if(!bool){
+                findDictList($(this).attr("dict-id"),2, $(this).attr("target"))
+            }else{ //加载数据
+                loadData();
+            }
+        });
+
+        //触发打开第一个大分类
+        $("#classify_17000 li:first").trigger("click");
+
+    }
+
+
+    /**
+     * 加载二级UI
+     * @param data ： 数据列表
+     * @param target : UL的id
+     * @param indent: 偏移量
+     */
+    var loadClassify_two = function(data, target , indent){
+
+        var ulNode = document.getElementById(target);
+        ulNode.innerHTML = "";
+
+        //组装数据
+        $.each(data, function(index, element){
+        // <li class="classify_two"><span class="circle"></span><span class="classify_tip">地块分割</span></li>
+            var li = document.createElement("li");
+            li.setAttribute("class", "classify_two");
+            li.setAttribute("dict-id",element.dictId);
+            li.setAttribute("show","false");
+            li.setAttribute("leaf",element.leaf)
+            li.innerHTML = "<span class=\"circle\"></span><span class=\"classify_tip\">"+ element.dataName +"</span>";
+
+            if(!element.leaf){
+                li.setAttribute("target", "classify_" + element.dictId)
+            }
+
+            ulNode.appendChild(li);
+
+            if(!element.leaf){
+                var ul = document.createElement("ul");
+                ul.setAttribute("id", "classify_" + element.dictId)
+                ul.setAttribute("class","hide"); //ul隐藏
+                ulNode.appendChild(ul)
+            }
+
+
+
+            $(li).bind("click", function(){
+                $("li").removeClass("on")
+                $(this).addClass("on");
+                $("li").find(".circle").css("backgroundColor","#505050");
+                $(this).find(".circle").css("backgroundColor","#48c446");
+
+
+                //修改图标方向
+                var showFlag = $(this).attr("show") == "false"
+
+                var bool = $(this).attr("leaf") == "true" //是否叶子节点(字符串leaf)
+                if(!bool){
+                    if(showFlag){ //此时是关闭状态且是非叶子节点，需要打开，同时加载数据
+                        var targetId = $(this).attr("target");
+                        $("#" + targetId).removeClass("hide").addClass("show");
+                        $(this).attr("show","true");
+                    }else{
+                        var targetId = $(this).attr("target");
+                        $("#" + targetId).removeClass("show").addClass("hide");
+
+                        $(this).attr("show","false");
+                    }
+                    // loadClassify_two($(this).attr("dict-id"))
+                    findDictList($(this).attr("dict-id"),2, $(this).attr("target"))
+                }else{ //加载数据
+                    loadData();
+                }
+            })
+        })
+    }
+
+
+
+    /**
+     * 双日历插件
+     * @param select对象
+     * @version<1> 2018-9-27 limeiling:created
+     */
+    var loadDateRangePicker = function(){
+        // dateRangePicker.selDaterangepicker($('#reservation'));
+        stay.init();
+    };
+
+
+    /**
+     * 双日历控件
+     * @version<1> 2018-9-28 limeiling:created
+     */
+    var stay = {
+        start:$('#startDate'),
+        end:$('#endDate'),
+        today:(new Date()),
+        init:function(){
+            stay.inputVal();
+            stay.endFun();
+            stay.startFun();
+        },
+        startFun:function(){
+            stay.start.datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat : 'yy-mm-dd',
+                dayNamesMin : ['日','一','二','三','四','五','六'],
+                monthNames : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                altFormat : 'yy-mm-dd',
+                yearSuffix:'年',
+                showMonthAfterYear:true,
+                // appendText : '明天',
+                firstDay : 1,
+                showOtherMonths:true,
+                // minDate : 0,
+                maxDate:'+0D',
+                onSelect:function(dateText,inst){
+                    stay.end.datepicker('option', 'minDate', new Date(moment(stay.start.val()).add('days', 0)));
+                }
+
+            });
+        },
+        endFun:function(){
+            stay.end.datepicker('refresh');
+            stay.end.datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat : 'yy-mm-dd',
+                dayNamesMin : ['日','一','二','三','四','五','六'],
+                monthNames : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                altFormat : 'yy-mm-dd',
+                yearSuffix:'年',
+                showMonthAfterYear:true,
+                // appendText : '后天',
+                firstDay : 1,
+                showOtherMonths:true,
+                // minDate : new Date(moment(stay.start.val()).add('days', 1)),
+                maxDate:'+0D',
+                onSelect:function(dateText,inst){
+
+                }
+            });
+        },
+        transformStr:function(day,strDay){
+            switch (day){
+                case 1: strDay  = '星期一'; break;
+                case 2: strDay  = '星期二'; break;
+                case 3: strDay  = '星期三'; break;
+                case 4: strDay  = '星期四'; break;
+                case 5: strDay  = '星期五'; break;
+                case 6: strDay  = '星期六'; break;
+                case 0: strDay  = '星期日'; break;
+            }
+            return strDay;
+        },
+        compare:function(obj){
+            var strDay = '今天';
+            var myDate = new Date(stay.today.getFullYear(),stay.today.getMonth(),stay.today.getDate());
+            var day = (obj.datepicker('getDate') - myDate)/(24*60*60*1000);
+            strDay = stay.transformStr(obj.datepicker('getDate').getDay(),30)
+            return strDay;
+        },
+        inputVal:function(){
+        },
+        inputTimes:function(obj,day){
+            var m = new Date(moment(stay.today).add('days', day));
+            obj.val(m.getFullYear() + "-" + stay.addZero((m.getMonth()+1)) + "-" + stay.addZero(m.getDate()));
+        },
+        addZero:function(num){
+            num < 10 ? num = "0" + num : num ;
+            return num;
+        }
+    }
+
+
+    init();
+    $(document).onload = function () {
+        $(".data_img img").error = function () {
+            alert("图片加载报错")
+        }
+    }
+})
+
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.wx.mapping.WXRelateAccountMapper">
+
+
+    <insert id="insertRelateAccount" parameterType="com.jh.show.wx.model.WXRelateAccount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wx_relate_account(wx_id,tel,register_time)
+        VALUES (#{wxId},#{tel},now())
+    </insert>
+
+    <select id="findWxUserByWxid" parameterType="java.lang.String" resultType="com.jh.show.wx.model.WXRelateAccount">
+        SELECT id,wx_id AS wxId ,tel,register_time AS registerTime FROM wx_relate_account WHERE wx_id = #{wxId}
+    </select>
+
+    <!-- 获取所有微信号已经注册到我们平台的用户 -->
+    <select id="findAllWxUsers" resultType="com.jh.show.wx.model.WXRelateAccount">
+        SELECT id,wx_id AS wxId ,tel,register_time AS registerTime FROM wx_relate_account
+    </select>
+
+    <!-- 根据微信id删除账户表该微信用户的信息 -->
+    <select id="deleteWxUserById" parameterType="java.lang.String" resultType="java.lang.Integer">
+        DELETE FROM wx_relate_account WHERE wx_id = #{wxId}
+    </select>
+
+</mapper>

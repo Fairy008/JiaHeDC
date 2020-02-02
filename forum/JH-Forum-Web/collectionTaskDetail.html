@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <link type="text/css" rel="stylesheet" href="css/jquery.ui.css">
+    <!-- <link rel="stylesheet" type="text/css" href="css/index/index.css" > -->
+    <style>
+        body{  min-width:100%;  }
+        .leftFixed {  position: fixed;  z-index: 99;  left: 0; top: 0; width: 420px; padding:5px 10px;  height: calc(100% );  background: rgba(245, 245, 247, 1);  }
+        .tabList{background-color: white;margin-top: 10px;border-radius: 2px;width: 420px; }
+        .tabList table{border-collapse: collapse;}
+        .tabList tr td{ padding: 5px 5px 10px 5px;border-bottom: 1px solid #eee;text-align: center; }
+        .tabList  .td1{ width: 60%;}
+        .tabList .td2{ width: 25%;}
+        .tabList .td3{ width: 10%;}
+        .tabList{height:calc(100% - 198px)}
+        .collection_left{  display:inline-block;  width: 85px !important;  text-align: right;  font-size: 13px;  color:grey;  }
+        .collection_right{  display:inline-block;  font-size: 13px;  font-weight: 550;  padding-left: 15px;  }
+        .titleDiv {  height: 135px;  }
+        .titleAndLabel {  display: inline-block;  float: left;  width: 400px;  height: 100%;  }
+        #articleTitle {  font-size: 20px;  font-weight: bold;  padding-top: 15px;  }
+        #articleLabel {  height: 22px;  width: 320px;  margin-left: 13px;  line-height: 22px;  margin-top: 12px;  }
+        #publishTime{  margin-top:8px;  }
+        #publishTime,#workplace {  margin-left:13px;  font-size: 12px;  color: grey;  width:400px;  height:26px;  line-height:26px;  }
+        .userInfo {  display: inline-block;  float: right;  }
+        .userInfo img {  width: 30px;  height: 30px;  border-radius: 50%;  margin-top: 15px;  float: left;  }
+        .userInfo .userSub {  height: 46px;  width: 50px;  display: inline-block;  float: right;  margin-top: 7px;  margin-left: 6px;  position: relative;  }
+        .userSub #userName {  font-size: 14px;  font-weight: bold;  position: absolute;  top: 6px;  }
+        .userSub #remark {  font-size: 12px;  color: #b7b7b7;  height: 12px;  position: absolute;  bottom: 6px;  }
+        /*----地图部分----*/
+        #divMap{width:100%;}
+        #divMap  {position: absolute; z-index: 1; height:calc(100% ) ;width:calc(100%);background-color: #93dbff;}
+        #divMap {float: left;}
+        .see{background: url("images/public/forum/icon-seeG.png") no-repeat center top;  vertical-align: middle;  }
+        .onSee{background: url("images/public/forum/icon-see.png") no-repeat center top;  }
+        .ol-popup{position:absolute;  background-color:white;  padding:25px 5px 10px 0px;  border-radius:5px;  border:1px solid #cccccc;  bottom:45px;  left:-49px;  min-width: 140px;  }
+        .ol-popup:after,.ol-popup:before{  top:100%;  border:solid transparent;  content:" ";  height:0px;  width:0px;  position:absolute;  pointer-events:none;  }
+        .ol-popup:after { border-top-color:white;border-width:10px;left:48px;margin-left:-10px;}
+        .ol-popup-closer{text-decoration:none;position:absolute;top:1px;right:1px;font-size: 12px;}
+        .ol-popup-closer img{width: 16px;height: 16px;}
+        #popup-content{font-size:14px;font-family:"宋体";}
+        #popup-content .markerInfo{font-weight:bold;}
+        /*弹框样式*/
+        #popBox {display: none;background-color: #FFFFFF;z-index: 11;width: 450px;height: 400px;position:absolute;top:100px;left:50%;margin:auto;}
+        /*图片左右滚动*/
+        .rollBox{width:490px;overflow:hidden;padding:5px 5px 5px 5px;}
+        .rollBox .LeftBotton{height:52px;width:30px;background:url(images/public/prePage.png) no-repeat 0px 0;overflow:hidden;float:left;display:inline;margin:25px 0 0 0;cursor:pointer;}
+        .rollBox .RightBotton{height:52px;width:40px;background:url(images/public/nextPage.png) no-repeat 0px 0;overflow:hidden;float:right;display:inline;margin:25px 0 0 0;cursor:pointer;}
+        .rollBox .Cont{width:420px;overflow:hidden;float:left;}
+        .rollBox .ScrCont{width:10000000px;}
+        .rollBox .Cont .pic{width:105px;float:left;text-align:center;}
+        .rollBox .Cont .pic img{padding:4px;background:#fff;border:1px solid #ccc;display:block;margin:0 auto;}
+        .rollBox .Cont .pic p{line-height:26px;color:#505050;}
+        .rollBox .Cont a:link,.rollBox .Cont a:visited{color:#626466;text-decoration:none;}
+        .rollBox .Cont a:hover{color:#f00;text-decoration:underline;}
+        .rollBox #List1,.rollBox #List2{float:left;}
+        .text_bold{font-weight: bold;color:black}
+        /**jsGrid表格样式*/
+        .jsgrid-pager{text-align:center;}
+        .jsgrid-pager-container{margin-bottom: 10px!important;}
+        .jsgrid-table tr td:first-child{padding-left:18px;}
+        tr.highlight td.jsgrid-cell { background-color: #c4e2ff;}
+        .dataTable .jsgrid-cell{height:24px;line-height:24px;}
+        .dataTable{display:block;background-color:#fff; height:calc(100% - 190px );margin:15px 0px 0px 0;/*min-height: 790px*/}
+        .dataTable{font-size:13px;}
+        .jsgrid-grid-body .jsgrid-cell {border-right: none!important;border-left: none!important;border-top: none!important;}
+        .jsgrid-header-cell{border-right: none!important;border-left: none!important;border-top: none!important;}
+        .jsgrid-grid-header,.jsgrid-grid-body,.jsgrid-header-row > .jsgrid-header-cell,.jsgrid-filter-row > .jsgrid-cell,.jsgrid-insert-row > .jsgrid-cell,.jsgrid-edit-row > .jsgrid-cell {  border: 0px!important;}
+        .jsgrid-grid-body,.jsgrid-grid-header { overflow-y: auto!important;}
+        .jsgrid-header-row{height:30px;font-weight: bold;line-height: 30px;}
+        .jsgrid-header-row > .jsgrid-header-cell{background: #fff!important;border-bottom: solid 1px #f0f0f0!important;}
+        .jsgrid-row,.jsgrid-alt-row{cursor: pointer;}
+        #mouse-position{position:absolute;bottom:50px;right:3px;color:red !important;font-size:18px !important;z-index:199;}
+        /* 显示鼠标信息的自定义样式设置 */
+        .custom-mouse-position {color: #fff;font-size: 20px;font-family: "宋体";}
+
+        #collectionData::-webkit-scrollbar {/*滚动条整体样式*/
+            width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+            height: 4px;
+            scrollbar-arrow-color:red;
+
+        }
+        #collectionData::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            background: rgba(100,100,100,0.2);
+            scrollbar-arrow-color:red;
+        }
+        #collectionData::-webkit-scrollbar-track {/*滚动条里面轨道*/
+            -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+            border-radius: 0;
+            background: rgba(255,255,255,0.1);
+        }
+
+        /*去掉双击出现蓝色背景*/
+        body{
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+    </style>
+    <title>珈和农情遥感 | 任务详情</title>
+</head>
+<body>
+
+<div id="divMap">
+    <div id="mouse-position"></div>
+    <div id="popup" class="ol-popup">
+        <a href="javascript:void(0);" id="popup-closer" class="ol-popup-closer"><img src="images/public/forum/icon-Delete.png" style="vertical-align: middle;"></a>
+        <div id="popup-content" style="position: relative">
+
+            <!--弹框显示采集数据-->
+            <div id="popBox">
+                <div class="content" style="clear:both;width:480px">
+                    <ul id="collectionData" style="max-height: 250px;/*height: 250px;*/padding-left: 15px;line-height: 25px;overflow-y: auto;">
+                        <li><span class="collection_left" >任务名称</span>
+                            <span id="collectionTask" class="collection_right"></span>
+                            <span id="collectionId" style="display: none"></span>
+                        </li>
+                        <li><span class="collection_left" >调查时间</span><span id="collectionDate" class="collection_right"></span></li>
+                        <li><span class="collection_left" >调查作物</span><span id="collectionCrop" class="collection_right"></span></li>
+                        <li><span class="collection_left" >调查地址</span><span id="collectionAddress" class="collection_right"></span></li>
+                    </ul>
+                    <div class="rollBox">
+                        <div class="LeftBotton" onmousedown="ISL_GoUp()" onmouseup="ISL_StopUp()" onmouseout="ISL_StopUp()"></div>
+                        <div class="Cont" id="ISL_Cont">
+                            <div class="ScrCont">
+                                <div id="List1">
+                                </div>
+                                <div id="List2"></div>
+                            </div>
+                        </div>
+                        <div class="RightBotton" onmousedown="ISL_GoDown()" onmouseup="ISL_StopDown()" onmouseout="ISL_StopDown()"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+<div>
+<dl class="leftFixed">
+    <dd style="height:150px;background-color: white;border-radius: 2px;width: 420px;margin-top: 15px">
+        <div class="titleDiv">
+            <div class="titleAndLabel">
+                <div id="articleTitle">【任务】<span id="taskNameId"></span></div>
+                <div id="articleLabel"><span class="lab" style="background-color: #20C8FF;" id="taskTypeId"></span><span class="lab" style="background-color: #FFE700;" id="cropId"></span></div>
+                <div id="publishTime">
+                    <div style="float: left">任务类型：<span id="datasetName" class="text_bold"></span></div>
+                    <div style="margin-left:170px">调研作物：<span id="cropIdName" class="text_bold"></span></div>
+                </div>
+                <div id="workplace">
+                    <div style="float: left">创建时间：<span id="createTimeId" class="text_bold"></span></div>
+                    <div style="margin-left:170px">调研区域：<span id="workplaceId" class="text_bold"></span></div>
+                </div>
+            </div>
+        </div>
+    </dd>
+
+    <!--表格数据-->
+    <dl class="dataTable">
+        <div id="listGrid"  ></div>
+    </dl>
+</dl>
+
+</div>
+<!-- 放大图片 -->
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:100;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+
+<script type="text/javascript" src="js/report/imageOperator.js"></script>
+<script type="text/javascript" src="js/url_config.js"></script>
+<script type="text/javascript">
+    require(["jquery","BaseAjax","jqGrid","jqueryUi","UserModule","commons",'MapModule','ol',"custom_settings","jsgrid"],function($,BaseAjax,jqGrid,jqueryUi,UserModule,commons,MapModule,ol,custom_settings,jsgrid){
+        var mapClazz ;
+        var Municipality = ['3103000019','3102000003','3102000002','3103000018','3103000295','3102000026','3102000024','3103000261'
+            ,3103000019,3102000003,3102000002,3103000018,3103000295,3102000026,3102000024,3103000261];
+        var tabValue = document.getElementsByClassName('tab_title')
+        var cropsJson;
+        var taskTypeJson;
+        var regioId_G = 3102000006;
+
+        var firstCenter;//第一行的中心点
+
+        var resultList;
+
+        var popup;
+
+        var init = function() {
+            cropsJson = loadDictData(500);//作物
+            taskTypeJson = loadDictData(1800);//数据集
+            getTaskItemList_new();//根据任务ID获取数据列表
+            initGrid();
+            loadGrid(GetQueryString('taskInfoId'));
+            mapClazz = new mapClazz();  //实例化底图操作类
+            mapClazz.initMap(regioId_G);//2019-03-09新增
+
+            clickFirstRow();
+
+        }
+
+        var initGrid = function(){
+            var fields=[];
+            $("#listGrid").jsGrid({
+                width: "100%",
+                height:"100%",
+                sorting: false,
+                autoload:true,
+                paging: true,
+                pageSize:150,
+                selecting:true,
+                oddRowClass: "jsgrid-row",
+                evenRowClass: "jsgrid-row",
+                loadMessage: "加载中...",
+                data: [],
+                fields: fields,
+                noDataContent:'没有查询到数据',
+
+            });
+        }
+
+        /**
+         * 加载数据
+         * 1.遥感数据
+         * 2.调研数据
+         * @param param
+         * @version<1> 2019-04-10 lcw :Created.
+         */
+        var  loadGrid = function(taskInfoId) {
+            var ajax = new BaseAjax();
+            var url = COLLECTION_TASK_NEW.nolog_findTaskItemList_url;
+            var taskParam = {  taskId:taskInfoId }
+            ajax.opts.data = JSON.stringify(taskParam);
+            ajax.opts.async =false;
+            var fields = [{
+                name: 'itemId', title: '数据ID', type: 'text',visible:false
+            },{
+                name: 'taskId', title: '任务ID', type: 'text',visible:false
+            },{
+                name: 'position', title: '任务ID', type: 'text',visible:false
+            },{
+                name: 'surveyAddress', title: '调研地址', type: 'text',visible:true,width:'65%',align : 'left',
+            },{
+                name: 'surveyTime', title: '数据日期', type: 'text',visible:true,width:'25%',align : 'center'
+            }, {
+                name: 'cz',
+                title: '操作',
+                type: 'text',
+                visible: true,
+                width: '10%',
+                align: 'center',
+                itemTemplate: function (value, item) {
+                   var str = '<img src= "images/public/forum/icon-see.png" style="vertical-align: middle" itemId="'+item.itemId+'" class = "onSee item" />';
+                    return str;
+                }
+            }]
+            //给jsGrid赋予fields属性
+            $("#listGrid").jsGrid({
+                fields:fields,
+                rowClick:function (args) {
+
+                    var $row = this.rowByItem(args.item),
+                            selectedRow = $("#listGrid").find('table tr.highlight');
+
+                    if (selectedRow.length) {
+                        selectedRow.toggleClass('highlight');
+                    };
+                    $row.toggleClass("highlight");
+
+                    var $row = this.rowByItem(args.item);
+                    var e = args.event;
+                   if(e.target.tagName == "IMG"){
+                        return false;
+                   }
+                   var isHide = selectedRow.find("img").hasClass("onSee");
+                    //展示详情
+                    mapClazz.loadFeatureInfo(mapClazz.getFeatureByItemId(args.item.itemId),!isHide);
+                    //定位到点
+                    mapClazz.moveFeaturesByItemId(args.item.itemId);
+
+                }
+            })
+            ajax.opts.url = url;
+            ajax.opts.successFun = function (result) {
+                var myData = [];
+                if(result.flag && result.data != null && result.data.length > 0){
+                    $.each(result.data, function (index, element) {
+                        var item = {
+                            'itemId': element.itemId,
+                            'taskId': element.taskId,
+                            'position': element.position,
+                            'surveyAddress': element.surveyAddress,
+                            'surveyTime': new Date(element.surveyTime).Format("yyyy-MM-dd"),
+                        }
+                        myData.push(item)
+                    })
+                    resultList = result.data
+
+                }
+                $("#listGrid").jsGrid({
+                    data: myData,
+                    pageButtonCount: 7,
+                    noDataContent: '没有查询到数据',
+                    pagerFormat: "页码: {first} {prev} {pages} {next} {last} &nbsp;&nbsp; {pageIndex} / {pageCount}"
+                });
+                $("#listGrid").jsGrid("reset");
+                $("#listGrid").jsGrid("loadData").done(function (e) {
+                    //给调查地址添加title
+                    $("#listGrid").find("tr.jsgrid-row").each(function(){
+                        var firstObj = $(this).find("td:first");
+                        var address = firstObj.text();
+                        firstObj.attr("title",address);
+                        if(address && address.length>16){
+                            firstObj.text(address.substring(0,16)+"...");
+                        }else{
+                            firstObj.text(address);
+                        }
+                    });
+                    //绑定显示隐藏事件
+                    $(".item").click(function(e){
+
+                        var itemId = $(this).attr("itemId");
+                        var imgo =$(this);
+                        if(imgo.hasClass("onSee")){
+                            imgo.removeClass("onSee");
+                            imgo.attr("src","images/public/forum/icon-seeG.png")
+                            var layers = mapClazz.getLayerByItemId(itemId);
+                            for(var i=0;i<layers.length;i++){
+                                layers[i].setVisible(false);
+                                //将标记去掉选中
+                                mapClazz.setPointStyle(layers[i]);
+                            }
+                            //如果弹窗打开则关闭
+                            if(!!popup){
+                                var selectedId =$("#popup").find("#collectionId").text();
+                                if(itemId == selectedId){
+                                    popup.setPosition(undefined);
+                                }
+                            }
+                        }else{
+                            imgo.addClass("onSee");
+                            imgo.attr("src","images/public/forum/icon-see.png")
+                            var itemId = itemId;
+                            var layers = mapClazz.getLayerByItemId(itemId);
+                            for(var i=0;i<layers.length;i++){
+                                layers[i].setVisible(true);
+                            }
+                            //展示详情
+                            mapClazz.loadFeatureInfo(mapClazz.getFeatureByItemId(itemId));
+                            //定位到点
+                            mapClazz.moveFeaturesByItemId(itemId);
+                        }
+                    });
+                    //获取第一行的坐标点
+                   firstCenter = $("#listGrid").find("tr.jsgrid-row:first").find("img").attr("itemId");
+
+
+                });
+
+            };
+            ajax.run();
+        }
+
+        //第一次默认点击第一行，因为存在加载顺序的问题，单独处理
+        var clickFirstRow = function(){
+            //定位到第一行
+            var firstRow = $("#listGrid").find("tr.jsgrid-row:first");
+
+            if (firstRow.length) {
+                firstRow.addClass('highlight');
+            };
+            var itemId = firstRow.find("img").attr("itemId")
+            //展示详情
+            mapClazz.loadFeatureInfo(mapClazz.getFeatureByItemId(itemId));
+            //定位到点
+            mapClazz.moveFeaturesByItemId(itemId);
+        }
+
+        function mapClazz() {
+            /**
+             *图层层级显示
+             * @version<1> 2018-10-10 lcw :Created.
+             */
+            this.layerIndex = {
+                'bgLayer': 1,
+                'gfLayer': 3,
+                'countryLayer': 4,
+                'tifLayer': 20,
+                'colorLayer': 5,
+                'childLayer': 21,
+            };
+            //默认加载世界地图实例（矢量数据通过该名称去获取）
+            this.defaultLayerName = "JiaHeDC:ly_WORLD";
+
+            this.provinceLayer = "JiaHeDC:ly_WORLD_GF";
+
+            var _this = this;
+            var highStrokeColor = '#6495ED';//鼠标移入区域后高亮显示的边框颜色
+
+            var preFeature;//上一个选中feature
+
+            //类成员变量
+            var mapTool, countryLayer, provinceLayer, cityLayer, districtLayer, colorLayer, tifLayer;
+            var vectorLayers = [];
+            //2019-03-09新增
+            var highStrokeColor = '#6495ED';//鼠标移入区域后高亮显示的边框颜色
+
+            /**
+             * 页面初始化地图
+             * 1.默认加载高清底图
+             * 2.默认加载省级矢量边界
+             * 3.根据所选区域加载矢量边界：
+             *   1）如果所选区域为省级，则加载当前区域的市州边界
+             *   2）如果所选区域为市州，则加载当前市州所在省的各市州矢量边界，同时加载该市的各区县适量边界
+             *   3）同2
+             *
+             * @param _regionCode : 当前区域code
+             * @param _level : 当前区域的级别 ， 省2 ，市3，区4
+             * @version <1> 2017-11-07 Hayden:Created.
+             */
+            this.initMap = function (_regionId) {
+                if (mapTool === undefined) {
+                    var url = FORUM__Layer.nolog_Layer_Init_URL;
+                    // mapTool = new MapModule.MapTool("divMap",{"url":url,"maxZoom":14,"minZoom":5,"logoSrc":"","logoHref":""});
+                    //2019-03-09改变
+                    mapTool = new MapModule.MapTool("divMap", {
+                        "url": url,
+                        "zoom": 11,
+                        "maxZoom": 18,
+                        "minZoom": 3,
+                        "logoSrc": "",
+                        "logoHref": ""
+                    });
+
+                    mapTool.createMap();
+                    //加载世界地图
+                    mapTool.addTileWMSLayer(this.defaultLayerName, {'zIndex': this.layerIndex.bgLayer});
+
+                    _this.loadHighDefinitionMap(); //高清地图
+                    //展示所有坐标点
+                    if(resultList){
+                        _this.addAllPointMarker(resultList);
+                    }
+
+                    _this.loadVector(_regionId)
+
+//                    _this.loadPointDiglog();//鼠标移动事件，显示提示框
+
+
+
+
+                }
+
+            };
+
+            /**
+             * 构建高清底图
+             * @version<1> 2018-10-14 lcw :Created.
+             */
+            this.loadHighDefinitionMap = function () {
+                //高清底图
+                var gfLayerName = 'JiaHeDC:ly_WORLD_GF';
+                gfLayer = mapTool.addTileWMSLayer(gfLayerName, {'zIndex': _this.layerIndex.gfLayer});
+            }
+
+            /**
+             * 1.构建所选区域的家族关系
+             * 2.根据构建的关系加载矢量边界
+             * @version<1> 2018-10-14 lcw :Created.
+             */
+            this.loadVector = function (_regionId) {
+                //移除图层
+                 //_this.removeLayers();
+
+                if (_regionId == undefined) {
+//                    var param = getParam();
+//                    _regionId = param.regionId;
+                    _regionId = 3102000006
+                }
+
+                var opts = {
+                    url: USER_CONFIG.nolog_REGION_FAMILY_URL,
+                    data: {regionId: _regionId},
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    async: false
+                };
+                var ajax = new BaseAjax();
+                ajax.opts = opts;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var data = result.data;
+                        var _provinceId = data.provinceId;
+                        var _cityId = data.cityId;
+                        var _level = data.level;
+                        var _regionCode = data.regionCode;
+                        var _regionId = data.regionId
+                        var centroid = data.centroid
+                        if (!!districtLayer) {
+                            mapTool.removeLayer(districtLayer);
+                        }
+                        if (!!cityLayer) {
+                            mapTool.removeLayer(cityLayer);
+                        }
+                        if (!!provinceLayer) {
+                            mapTool.removeLayer(provinceLayer);
+                        }
+                        if (!!countryLayer) {
+                            mapTool.removeLayer(countryLayer)
+                        }
+                        // console.log((_regionId+"").substring(0,(_regionId+"").length-8) + "00000000")
+                        _this.addVectoryInCountry((_regionId + "").substring(0, (_regionId + "").length - 8) + "00000000"); //加载国家级各省的矢量边界
+
+                        if (_level >= 2) {
+                            //非直辖市才加载省级，避免直辖市省级和市级边界和名字与市级重叠
+                            if (Municipality.indexOf(_provinceId) < 0) {
+                                _this.addVectorInProvince(_regionCode) //加载省级矢量边界，默认市全国
+
+                            }
+
+
+                            _this.addCityVector(_provinceId, 3); //加载选中省份的市州级矢量边界
+                            if (_level >= 3) {
+                                _this.addDistrictVector(_cityId, 4); //加载选中省份的区县矢量边界
+                            }
+                            //当前选中的区域为直辖市
+                            if (_level == 2 && Municipality.indexOf(_provinceId) > 0) {
+                                _this.addDistrictVector(data.capitalId, 4); //加载选中省份的区县矢量边界
+                            }
+                        }
+                        var wkt_parser = new ol.format.WKT();
+                        var geom = wkt_parser.readGeometry(centroid);
+                        if (_level < 2) {
+                            mapTool.moveToCenter(geom); //移动至中心点，并加载底图层级
+                        } else {
+                            if(firstCenter){
+                                _this.moveFeaturesByItemId(firstCenter);
+                            }else{
+                                _this.moveToCenter(_regionCode, _level) //移动至当前选中区域
+                            }
+
+                        }
+
+
+                    }
+
+                };
+                ajax.opts.errorFun = function () {
+                    console.info("加载区域家族关系失败");
+                };
+                ajax.run();
+
+            }
+            /**
+             *wmslayer：国家级的各省
+             *@param _parentId : 国家及区域ID
+             *@version<1> 2018-11-23 lcw :Created.
+             */
+            this.addVectoryInCountry = function (_parentId) {
+                var opts = {zIndex: _this.layerIndex.countryLayer};
+
+                countryLayer = mapTool.addTileWMSLayer(this.provinceLayer, {
+                    'filter': "parent_id='" + _parentId + "'",
+                    'zIndex': _this.layerIndex.countryLayer
+                })
+
+            }
+
+            this.getLayerByItemId =function (itemId){
+                var selectLayers = [];
+                for(var i=0;i<vectorLayers.length;i++){
+                    var source = vectorLayers[i].getSource();
+                    if(source instanceof ol.source.Vector){
+                        var features = source.getFeatures();
+                        if(features.length>0){
+                            for(var j=0;j<features.length;j++){
+                                if(features[j].get("itemId") == itemId ){
+                                    selectLayers.push(vectorLayers[i]);
+                                }
+                            }
+                        }
+                    }
+                }
+                return selectLayers;
+            }
+
+            this.moveFeaturesByItemId =function (itemId){
+                var selectFeatures = [];
+                for(var i=0;i<vectorLayers.length;i++){
+                    var source = vectorLayers[i].getSource();
+                    if(source instanceof ol.source.Vector){
+                        var features = source.getFeatures();
+                        if(features.length>0){
+                            for(var j=0;j<features.length;j++){
+                                if(features[j].get("itemId") == itemId && features[j].get("type") == 1){
+                                    selectFeatures = features[j];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                var coordinate = selectFeatures.getGeometry().getCoordinates()
+                mapTool.map.getView().fit([coordinate[0],coordinate[1],coordinate[0],coordinate[1]],11);
+                mapTool.map.getView().setZoom(11)
+            }
+
+            this.getFeatureByItemId =function (itemId){
+                var selectFeatures;
+                for(var i=0;i<vectorLayers.length;i++){
+                    var source = vectorLayers[i].getSource();
+                    if(source instanceof ol.source.Vector){
+                        var features = source.getFeatures();
+                        if(features.length>0){
+                            for(var j=0;j<features.length;j++){
+                                if(features[j].get("itemId") == itemId && features[j].get("type") == 1){
+                                    selectFeatures = features[j];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                return selectFeatures;
+            }
+
+            this.setPointStyle =function (layers){
+                var source = layers.getSource();
+                if(source instanceof ol.source.Vector){
+                    var features = source.getFeatures();
+                    if(features.length>0){
+                        for(var j=0;j<features.length;j++){
+                            features[j].set('style', _this.createStyle('images/public/forum/icon-location.png', undefined));
+                        }
+                    }
+                }
+            }
+
+            /**
+             * 在各省份上覆盖图层，只显示省级geometry的名称，当前选中区域除外
+             * @param _regionCode : 需要排除在外的区域
+             *
+             * @version<1> 2018-10-12 lcw :Created.
+             */
+            this.addVectorInProvince = function (_regionCode) {
+                var provinceStyle = MapModule.MapTool.setLayerStyle({
+                    'fillColor': "rgba(255,255,255, 0)",
+                    'strokeColor': "#E3C458"
+                });
+                //其他区域各省级图层均只显示省
+                var opts = {
+                    filter: "region_code ='" + _regionCode + "' and level = '2'",
+                    style: provinceStyle,
+                    zIndex: _this.layerIndex.childLayer
+                };
+                if (!!provinceLayer) {
+                    mapTool.removeLayer(provinceLayer);
+                }
+
+                provinceLayer = mapTool.filterWMSToVectorLayerFillColor(this.defaultLayerName, opts);
+
+            }
+
+            /**
+             * 构建所选区域的各级矢量边界
+             * 1.构建市州级矢量边界
+             * @param _provinceId : 所选区域的省级RegionId
+             * @param _level : 市州的层级
+             * @version<1> 2018-10-12 lcw :Created.
+             */
+            this.addCityVector = function (_provinceId, _level) {
+                var _style = MapModule.MapTool.setLayerStyle({
+                    'fillColor': "rgba(255,255,255, 0)",
+                    'strokeColor': "#fff"
+                });
+                var opt = {
+                    filter: "parent_id = '" + _provinceId + "' and level = '" + _level + "'",
+                    style: _style,
+                    strokeColor: '#fff',
+                    zIndex: _this.layerIndex.childLayer
+                };
+
+                cityLayer = mapTool.filterWMSToVectorLayerFillColor(_this.defaultLayerName, opt);
+            };
+
+            /**
+             * 构建所选区县的下级矢量边界
+             * @param _cityId :所选区域的市州regionId
+             * @param _level : 区县的level
+             * @version<1> 2018-10-14 lcw :Created.
+             */
+            this.addDistrictVector = function (_cityId, _level) {
+                var _style = MapModule.MapTool.setLayerStyle({
+                    'fillColor': "rgba(255,255,255, 0)",
+                    'strokeColor': "#fff"
+                });
+                var opt = {
+                    filter: "parent_id = '" + _cityId + "' and level = '" + _level + "'",
+                    style: _style,
+                    strokeColor: '#fff',
+                    zIndex: _this.layerIndex.childLayer
+                };
+                districtLayer = mapTool.filterWMSToVectorLayerFillColor(this.defaultLayerName, opt);
+
+
+            };
+
+            /**
+             * 将中心店移动至所选区域的中心点
+             * @param _regionCode : 所选区域ID
+             * @version<1> 2018-10-14 lcw :Created.
+             */
+            this.moveToCenter = function (_regionCode, _level) {
+                var _layer = null;
+                if (_level == 1) {
+                    _layer = countryLayer;
+                    mapTool.moveToLayerFeature(countryLayer, "region_code", _regionCode, true);
+                } else if (_level == 2) {
+                    _layer = provinceLayer;
+                } else if (_level == 3) {
+                    _layer = cityLayer
+                } else if (_level == 4) {
+                    _layer = districtLayer;
+                }
+                _layer.getSource().once("addfeature", function () {
+                    mapTool.moveToLayerFeature(_layer, "region_code", _regionCode);
+                });
+            };
+            //根据经纬度在地图上瞄点
+            this.romovePointMarker = function (layer) {
+                  mapTool.removeLayer(layer);
+            };
+            //根据经纬度在地图上瞄点
+            this.addAllPointMarker = function (data) {
+                var container = document.getElementById('popup');
+                var content = document.getElementById('popup-content');
+                var vectorSource;
+
+                var features = [];
+                for(var i = 0; i < data.length; i++){
+                    //面图层
+                    var gonvectorLayer;
+                    //点图层
+                    var vectorLayer;
+                    var obj = data[i];
+                    //大于3个点则画面，小于3个点画点
+                    var polygonArr ;
+                    var positionStr = obj.position;
+                    var positionArr = positionStr.replace(/\[/g,"").replace(/\]/g,"").replace(/\(/g,"").replace(/\)/g,"");
+                    positionArr=positionArr.split("lat/lng:");
+                    if(positionArr && positionArr.length>0){
+                        //第一个会有空格，去掉第一个
+                        positionArr.shift();
+                    }
+                    if(positionArr.length >= 3){
+                        var innerPoint =[];
+                        for(var p in positionArr){
+                            var positionPoint = positionArr[p];
+                            if(positionPoint){
+                                var pArr = positionPoint.split(",") ;
+                                if(pArr[1] && pArr[0]){
+                                    innerPoint .push([pArr[1],pArr[0]]);
+                                }
+                            }
+                        }
+                        //后台点需要收尾连接
+                        var positionPoint = positionArr[0];
+                        if(positionPoint){
+                            var pArr = positionPoint.split(",") ;
+                            if(pArr[1] && pArr[0]){
+                                innerPoint .push([pArr[1],pArr[0]]);
+                            }
+                        }
+                        polygonArr= [innerPoint];
+                        if(innerPoint && innerPoint.length >= 4) {
+                            //面
+                            var gonFeature = new ol.Feature({
+                                geometry: new ol.geom.Polygon(polygonArr),
+                                itemId : obj.itemId,
+                            });
+                            var gonvectorSource = new ol.source.Vector({
+                                features: [gonFeature]
+                            });
+                            var gonStyle = [
+                                new ol.style.Style({
+                                    fill: new ol.style.Fill({ color: 'rgba(230,146,0, 0.6)' }),//文字填充颜色
+                                    stroke: new ol.style.Stroke({ color: "red", width: 1 }),//文字线颜色
+                                })
+                            ];
+                            gonvectorLayer = new ol.layer.Vector({
+                                style: gonStyle,
+                                source: gonvectorSource
+                            });
+                            vectorLayers.push(gonvectorLayer);
+                            gonvectorLayer.setZIndex(9999);//顶层
+                            mapTool.map.addLayer(gonvectorLayer);
+                            var center = ol.extent.getCenter(gonFeature.getGeometry().getExtent());
+                            var iconFeature = new ol.Feature({
+                                geometry: new ol.geom.Point(center),
+                                name: obj.surveyAddress,
+                                population: 4000,
+                                rainfall: 500,
+                                type: '1',
+                                itemId : obj.itemId,
+                            });
+                            iconFeature.setProperties(obj, true);
+                            iconFeature.set('style', _this.createStyle('images/public/forum/icon-location.png', undefined));
+                            features.push(iconFeature);
+                            var vectorSource = new ol.source.Vector({
+                                features: [iconFeature]
+                            });
+                            vectorLayer = new ol.layer.Vector({
+                                style: function (feature) {
+                                    return feature.get('style');
+                                },
+                                source: vectorSource
+                            });
+                            vectorLayers.push(vectorLayer);
+                            vectorLayer.setZIndex(9999);//顶层
+                            mapTool.map.addLayer(vectorLayer);
+                        }
+                    }else{
+                        var start = obj.position.indexOf("(");
+                        var end = obj.position.indexOf(")");
+                        var coordinate = obj.position.substring(start+1,end);
+
+                        var iconFeature = new ol.Feature({
+                            geometry: new ol.geom.Point([coordinate.split(",")[1], coordinate.split(",")[0]]),
+                            name: obj.surveyAddress,
+                            population: 4000,
+                            rainfall: 500,
+                            type: '1',
+                            itemId : obj.itemId,
+                        });
+                        iconFeature.setProperties(obj, true);
+                        iconFeature.set('style', _this.createStyle('images/public/forum/icon-location.png', undefined));
+                        features.push(iconFeature);
+                        var vectorSource = new ol.source.Vector({
+                            features: [iconFeature]
+                        });
+                        vectorLayer = new ol.layer.Vector({
+                            style: function (feature) {
+                                return feature.get('style');
+                            },
+                            source: vectorSource
+                        });
+                        vectorLayers.push(vectorLayer);
+                        vectorLayer.setZIndex(9999);//顶层
+                        mapTool.map.addLayer(vectorLayer);
+                        //移动到中心点
+                        //mapTool.map.getView().setZoom(13)
+                    }
+
+
+
+                }
+
+                //默认展示区域内的点
+                // _this.loadDefaultPoinInfo(defultTaskItem);
+                popup  = new ol.Overlay(({
+                    //元素内容
+                    element: container,
+                    autoPan: true,
+                    ////覆盖层如何与位置坐标匹配
+                    positioning: 'bottom-center',
+                    //事件传播到地图视点的时候是否应该停止
+                    stopEvent: true,
+                    autoPanAnimation: {
+                        //动画持续时间
+                        duration:0
+                    }
+                }));
+                mapTool.map.addOverlay(popup);
+                mapTool.map.on('click', function (evt) {
+                    var feature = mapTool.map.forEachFeatureAtPixel(evt.pixel,function (feature) {return feature;});
+                    mapClazz.loadFeatureInfo(feature);
+
+                });
+                mapTool.map.on('pointermove',function(evt){
+                    var feature = mapTool.map.forEachFeatureAtPixel(evt.pixel,function (feature) {return feature;});
+                    if(feature && feature.get('type') == '1'){
+                        mapTool.map.getTargetElement().style.cursor = 'pointer';
+                    }
+                    else{
+                        mapTool.map.getTargetElement().style.cursor = '';
+                    }
+                });
+
+            }
+            this.loadFeatureInfo = function(feature,isHide){
+                if (feature && feature.get('type') == '1') {
+                    if (preFeature) {
+                        preFeature.set('style', _this.createStyle('images/public/forum/icon-location.png', undefined));
+                    }
+                    preFeature = feature
+                    feature.set('style', _this.createStyle('images/public/forum/icon-dot2.png', undefined));
+                    var property = feature.getProperties();
+                    var coordinates = feature.getGeometry().getCoordinates();
+                    mapClazz.loadTaskItemStatistics_new(feature.get('itemId'));
+                    //反选行
+                    if(feature.get('itemId')){
+                        $("#listGrid").find("tr.jsgrid-row").each(function(){
+                            if($(this).find("img").attr("itemId") == feature.get('itemId')){
+                                $(this).addClass("highlight");
+                                $(this).siblings("tr").removeClass("highlight");
+                            }
+                        });
+                    }
+
+                    $("#popup-content").html($("#popBox").html());
+                    //关闭弹窗
+                    $("#popup-closer").on("click",function(){
+                        popup.setPosition(undefined);
+                        feature.set('style', _this.createStyle('images/public/forum/icon-location.png', undefined));
+                    });
+                    if(isHide){
+                        popup.setPosition(undefined);
+                    }else{
+                        popup.setPosition(coordinates);
+                    }
+
+                }
+            }
+            this.createStyle = function(src, img){
+                return new ol.style.Style({
+                    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                        anchor: [0.5, 0.96],
+                        src: src,
+                        img: img,
+                        imgSize: img ? [img.width, img.height] : undefined
+                    }))
+                });
+            }
+            //加载子任务图片
+            this.loadTaskItemImage_new = function(taskItemId){
+                var itemInfo = taskItemDetail(taskItemId);
+                if (itemInfo) {
+                    //回显图片和录音
+                    var pngMediaList = [];
+                    var cltMediaSourceList = itemInfo.cltMediaSourceList;
+                    $.each(cltMediaSourceList,function(i,obj){
+                        if(obj.mediaType == 1){
+                            pngMediaList.push(obj);
+                        }
+                    })
+                    //先清空
+                    $("#List1").html("");
+                    if(pngMediaList && pngMediaList.length > 0){
+                        $.each(pngMediaList,function(i,e){
+                            var pngMediaPath = download_config.DOWNLOD_URL+e.mediaPath;
+                            var itemStr = '<div class="pic"><img class="simg" src="'+pngMediaPath+'" onclick="imgShow(\'#outerdiv\', \'#innerdiv\', \'#bigimg\', $(this))" width="90" height="70" /></div>'
+                            $("#List1").append(itemStr);
+                        })
+                        $(".rollBox").show();
+                        //$("#collectionData").css("min-height","250px");
+                    }else{
+                        $(".rollBox").hide();
+                        //$("#collectionData").css("min-height","340px");
+                    }
+                };
+            };
+            this.loadTaskItemStatistics_new = function(taskItemId){
+                if(!taskItemId){
+                    return;
+                }
+                var $this = $(this);
+                var itemInfo=taskItemDetail(taskItemId);
+                if(itemInfo){
+                    $("#collectionId").text(itemInfo.itemId);
+                    $("#collectionTask").text($("#taskNameId").text());
+                    $("#collectionDate").text(new Date(itemInfo.surveyTime).Format("yyyy-MM-dd"));
+                    $("#collectionCrop").text($("#cropId").text());
+                    $("#collectionPosition").text(itemInfo.position);
+                    var surveyAddress = itemInfo.surveyAddress;
+                    $("#collectionAddress").attr("title",surveyAddress);
+                    surveyAddress = surveyAddress.length>20 ? surveyAddress.substring(0,20)+"...":surveyAddress;
+                    $("#collectionAddress").text(surveyAddress);
+                    var templateVO= itemInfo.templateVO;
+                    var fieldModelVOList = templateVO.fieldModelVOList;
+                    var collectionData = fieldModelVOList;
+                    var $collectionList = $("#collectionData");
+                    var tbodyStr = "";
+                    //清空数据
+                    $("#collectionData li:gt(3)").remove();
+                    if(collectionData){
+                        $.each(collectionData,function(i,e){
+                            var collectionFeildCh = e.fieldNameCh;
+                            var collectionFeildChTitle = e.fieldNameCh;
+                            var collectionFeildEn = e.fieldNameEn;
+                            var collectionValue = e.value;
+                            if(collectionFeildCh && collectionFeildCh.length>5){
+                                collectionFeildCh = collectionFeildCh.substring(0,5)+"...";
+                            }
+                            tbodyStr +="<li>";
+                            tbodyStr +="<span class='collection_left' title='"+collectionFeildChTitle+"'>"+collectionFeildCh+"</span>";
+                            tbodyStr +="<span class='collection_right'>"+collectionValue+"</span>";
+                            tbodyStr +="</li>";
+                        })
+                        $collectionList.append(tbodyStr);
+                    }
+                    //加载子任务图片
+                    mapClazz.loadTaskItemImage_new(taskItemId);
+                }else{
+                    $(".noDataBox").show();
+                    $('#chartList ul').hide();
+                }
+            };
+        }
+        /**
+         * 获取url中的参数
+         * @param 参数名称
+         * @return 参数值
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var GetQueryString = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
+
+        /**
+         * 获取任务信息
+         */
+        var getTask_detail = function(taskInfoId) {
+            var task={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK.nolog_getTaskInfoeById_url+"?id="+taskInfoId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function (result) {
+                task = result.data;
+            }
+            ajax.run();
+            return task;
+
+        }
+        /**
+         * 获取任务下所有采集数据
+         */
+        var getTaskItemList_new = function(){
+            var taskInfoId = GetQueryString('taskInfoId');
+            var taskInfo=taskDetail(taskInfoId);
+            if(taskInfo){
+                var taskName = taskInfo.taskName;
+                var taskType = taskInfo.taskTypeName;
+                var cropId = taskInfo.cropName;
+                var createTime = new Date( taskInfo.createTime).Format("yyyy-MM-dd");
+                var workplace = taskInfo.regionName ? taskInfo.regionName  :"";
+                regioId_G = taskInfo.regionId;
+                $("#cropId").text(cropId);
+                $("#taskTypeId").text(taskType);
+                $("#cropIdName").text(cropId);
+                $("#datasetName").text(taskType);
+                $("#createTimeId").text(createTime);
+                $("#taskNameId").attr("title",taskName);
+                $("#workplaceId").attr("title",workplace);
+                if(taskName && taskName.length>15){
+                    taskName = taskName.substring(0,15)+"...";
+                }
+                if(workplace && workplace.length>15){
+                    workplace = workplace.substring(0,15)+"...";
+                }
+                $("#workplaceId").text(workplace);
+                $("#taskNameId").text(taskName);
+            }
+
+        }
+
+        //查看采集数据详情
+        var seeDetail = function(){
+            $("#dataList").on("click",".item",function(){
+                if($(this).hasClass("onSee")){
+                    $(this).removeClass("onSee");
+                    closeBox();
+                }else{
+                    $(".item").addClass("see");
+                    $(this).addClass("onSee");
+                    //同级取消
+                    $(this).parent("tr").siblings().children("td.item").removeClass("onSee");
+                    var itemId = $(this).attr("itemId");
+                    var collectionDate = $(this).attr("collectionDate");
+                    var collectionAddress = $(this).attr("collectionAddress");
+                    var position = $(this).attr("position");
+                    mapClazz.loadTaskItemStatistics_new(itemId,collectionDate,collectionAddress,position);
+                    var obj ={};
+                    obj.position = $(this).attr("position");
+                    obj.surveyAddress = $(this).attr("collectionAddress");
+                    mapClazz.addPointMarker(obj);
+                    popBox();
+                }
+
+            })
+        }//加载数据字典信息
+        var loadDictData = function (dictId) {
+            var dataJson = {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId="+dictId;//REDIS_CONFIG.findSubListByDictId_url+"?parentId="+dictId,DICT_COFING.queryDictByParentId_url
+            ajax.opts.async = false;
+            //ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        dataJson[status.dictId] = status.dataName;
+                    }
+                }
+            };
+            ajax.run();
+            return dataJson;
+        };
+
+        /**
+         * 根据任务ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var taskDetail = function(taskId){
+            var task={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.nolog_getTaskById_url;
+            ajax.opts.data = JSON.stringify({taskId:taskId})
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    task=result.data;
+                }
+            }
+            ajax.run();
+            return task;
+        };
+
+        /**
+         * 根据任务明细ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var taskItemDetail = function(itemId){
+            var taskItem={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.nolog_findTaskItemByItemId_url;
+            ajax.opts.data = JSON.stringify({itemId:itemId})
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    taskItem=result.data;
+                }
+            }
+            ajax.run();
+            return taskItem;
+        };
+
+
+        init();
+    })
+    /*点击弹出按钮*/
+    var popBox = function() {
+        var popBox = document.getElementById("popBox");
+        popBox.style.display = "block";
+    };
+    /*点击关闭按钮*/
+    var closeBox = function() {
+        var popBox = document.getElementById("popBox");
+        popBox.style.display = "none";
+    }
+
+</script>
+</body>
+</html>

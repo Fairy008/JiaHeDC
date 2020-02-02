@@ -1,0 +1,131 @@
+/* 左边菜单 */
+.leftMenuWrap{
+	float:left;
+	width:220px;
+	height: 100%;
+	/* height:calc(100% - 51px); */
+	background:#35567e url(../../images/public/leftBG.jpg)  no-repeat;
+	overflow-y:auto;
+}
+.leftLogo{
+	/*margin-bottom:10px;*/
+}
+
+.leftLogo{ margin-top:15px;color:#fff;}
+/*.leftLogo img{float:left;margin-top:5px;}*/
+/*.leftLogo h1{font-size:20px!important;height:50px;float:left;padding-left:10px;}*/
+.leftLogo img{
+	width:180px;
+}
+.leftMenuCoat{
+	width:80%;
+	margin:0 auto;
+	padding-bottom:10px;
+	margin-top:10px;
+	/*padding-top: 15px;*/
+}
+.leftMenuCoat img{
+	border:none;
+}
+.leftMenuCoat ul .leftFirstMenu a ,.leftSecondMenu li a{
+	display:block;
+	line-height:40px;
+	text-decoration:none;
+	color:#FFFFFF;
+	/* font-weight:bold; */
+	background:url(../../images/public/toOpen.png) right center no-repeat;
+}
+
+.firstOpenDir{
+	background:url(images/public/toDown.png) right center no-repeat !important;
+}
+.leftMenuCoat ul .leftFirstMenu a:hover ,.leftSecondMenu li a:hover{
+	color:#7CCD7C;
+}
+.leftSecondMenu li a{
+	padding-left:25px;
+	/*background:#305379;*/
+	font-weight:100;
+	background:right center no-repeat;
+}
+
+.leftMenuWrap a img{
+	padding-top:10px;
+}
+.nowpage{ color:#7CCD7C !important;}
+
+
+
+
+.rightMainWrap{
+	float:left;
+	width:calc(100% - 220px);
+	/*min-width: 1100px !important;*/
+	height:100%;
+	background:#f4f6f9;
+}
+
+.rightMainWrap>div{
+	min-width: 1100px !important;
+}
+
+.rightTop{
+	/*margin: 0px 0px 12px 0px;*/
+	/*min-width:1200px;*/
+	width:calc(100% - 12px);
+	height:50px;
+	background:#fff;
+	box-shadow:3px 3px 5px 0px #e5e8ed;
+}
+
+.logo{padding-left:20px;}
+.logo span{font-size: 20px!important;font-weight: bold;font-family: sans-serif;padding-top: 10px;display: inline-block;float: left;}
+.logo img {
+	float: left;
+	margin-top: 15px;
+}
+.logo a{color:#000;float: left; position: relative;top:10px;}
+.logo a:hover{color:#ebb600;}
+
+.rightTop h1{
+	float:left;
+	padding:11px 0 0 15px;
+	font-size:20px!important;
+}
+
+.rightMain{
+	position: relative;
+	/*min-width:1200px;*/
+	margin:12px;
+	padding-top:10px;
+	width:calc(100% - 24px);
+	height:calc(100% - 84px);
+	/* min-height: 580px !important; */
+	background:#fff;
+	box-shadow:0px 0px 3px 3px #e5e8ed;
+	overflow-y: auto;
+}
+.searchItemsWrap{
+	width:97%;
+	line-height:50px;
+	margin:0 auto;
+	margin-top:10px;
+	background:#fafafa;
+	border:1px solid #efefef;
+}
+/*
+* 文本不换行，这样超出一行的部分被截取，显示..
+*/
+.company{
+	max-width: 123px;
+	overflow: hidden;
+	/*text-overflow: ellipsis;*/
+	white-space: nowrap;
+}
+
+#userName{
+	width: 82px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}

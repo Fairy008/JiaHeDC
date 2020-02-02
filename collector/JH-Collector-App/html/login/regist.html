@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/app.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}			
+			.mui-input-group label {
+				width: 25%;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 75%;
+			}
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.mui-input.sendcode-input {
+				float: left;
+				width: 50%;
+			}
+			.mui-input-row .mui-btn.sendcode-button {
+				width: 25%;
+			}
+			.useragree-row {
+				margin: 15px auto auto 18px;
+			}
+			.custom-textcolor {
+				color: #8F8F94;
+			}
+			.userlogin-text {
+				text-align: center;
+				margin-top: 20px;
+			}
+			.btnUnableClass{
+				background:#B9B9B9 !important;
+				border:1px solid #b9b9b9;
+			}
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset">
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">手机注册</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group" style="padding-left:0.5rem ;padding-right: 0.5rem;">
+				<div class="mui-input-row">
+					<label>手机号</label>
+					<input id="phone" type="tel" class="mui-input-clear mui-input" placeholder="请输入手机号码">
+				</div>
+				<div class="mui-input-row">
+					<label>验证码</label>
+					<input id="verificode" type="number" style="width: 40%;" class="mui-input sendcode-input" placeholder="请输入验证码">
+					<button id="sendcode_btn" type="button" style="margin-top: 0.3rem;padding: 0.4rem;" class="mui-btn mui-btn-outlined sendcode-button">发送验证码</button>
+				</div>
+			</form>
+			<div class="useragree-row">
+				<input id="useragree_chkbx" type="checkbox">
+				<label class="custom-textcolor">我已阅读并同意</label><a id="useragreement">《用户服务协议》</a>
+			</div>
+			<div class="mui-content-padded">
+				<button id='reg_btn' class="mui-btn mui-btn-block mui-btn-primary">下一步</button>
+			</div>
+			<div class="mui-input-row userlogin-text">
+				<a id="userlogin" href="#">已有账户，立即登录</a>
+			</div>
+			<!-- <div class="mui-content-padded">
+				<p>注册真实可用，注册成功后的用户可用于登录，但是示例程序并未和服务端交互，用户相关数据仅存储于本地。</p>
+			</div> -->
+		</div>
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script src="../../js/app.js"></script>
+		<script>
+			mui.init();
+			// 			(function($, doc) {
+			// 				$.init();
+			// 				$.plusReady(function() {
+			// 								
+			// 				});
+			// 				
+			// 			}(mui, document));
+
+			//var settings = app.getSettings();
+			var sendToMobileCode = '';
+			var reg_Button = document.getElementById('reg_btn');
+			var sendcode_Button = document.getElementById('sendcode_btn');
+			var useragree_CheckBox = document.getElementById('useragree_chkbx');
+			var phone_Input = document.getElementById('phone');
+			var verificode_Input = document.getElementById('verificode');
+
+			var init = function() {
+				// $("#reg_btn").addClass("btnUnableClass");
+				// $("#reg_btn").attr('disabled', true);
+			}
+
+			// 			$("#phone").on("keydown", function (e) {
+			// 				$("#reg_btn").removeClass("btnUnableClass");
+			// 				$("#reg_btn").attr('disabled',false);
+			// 			});
+
+			$("#verificode").on("keydown", function(e) {
+				// $("#reg_btn").removeClass("btnUnableClass");
+				// $("#reg_btn").attr('disabled', false);
+			});
+
+			document.getElementById("useragreement").addEventListener('tap', function() {
+				mui.alert(
+					"			在您使用珈和遥感平台前，请您务必仔细阅读并透彻理解本声明。您访问、浏览或使用珈和遥感平台，表明您已阅读、理解并同意接受以下条款的约束，并遵守所有适用的相关法律法规。您一旦使用珈和遥感平台，则应遵守以下条款：\n" +
+					"			1、作为遥感信息上传、储存、管理及服务平台，您了解并同意珈和遥感平台的定位、坐标、资讯内容等信息可能来自于第三方的链接或数据，系由珈和遥感根据您的搜索需求而提供或主动推送，您可能从第三方平台上获得资讯及享用服务，我司对从第三方获取的任何信息、数据、服务、图片、建议等内容的真实性、准确性和合法性均不承担任何责任，用户应自行承担定位、坐标、数据等信息不实、不准确等风险。\n" +
+					"			2、您完全理解并同意，鉴于珈和遥感平台以非人工检索方式、根据您键入的关键字或点击特定的服务自动生成第三方的网页链接或服务商的相关产品信息描述，例如定位等，上述非人工检索方式，因缓存时间间隔或检索方式非完全智能等原因，有可能造成信息更新不及时或产品服务信息聚合、抽取不精准等瑕疵，您完全理解并豁免上述产品或服务瑕疵给您造成的不便和损失，珈和遥感平台不承担任何责任。\n" +
+					"			3、珈和遥感平台所发布的原文或推荐的第三方文章、资讯、信息、数据等内容仅供您参考，不得作为商业或商业决策使用，珈和遥感不对自己发布或推荐的第三方文章、资讯、信息、数据的真实性、准确性和完整性承担任何责任。\n" +
+					"			4、您完全理解并同意，您在遥感数据采集、储存、传送过程中，因网络中断、第三方平台等非珈和遥感平台的原因造成的任务失败，由您自行承担，珈和遥感平台不承担任何责任。珈和遥感平台不对信息网络连接故障、通讯或其他系统的故障、黑客、病毒、政府行为、司法行政机关的命令、台风、地震、海啸、洪水、停电、战争、恐怖袭击等不可抗力之因素造成本公司系统障碍不能执行业务的、第三方原因等其他珈和遥感平台不能预测或控制的行为造成的不能服务或延迟服务承担责任，但将尽力减少因此而给您造成的损失和影响。\n" +
+					"			5、本公司保留您违反国家、地方法律法规、规章、行业规范或违反本服务协议的情况下，中止或终止为您提供服务的权利。您同意并授权珈和遥感平台，您在使用珈和遥感平台服务时如有欺诈、发布虚假信息或侵犯他人合法权益或其他违反法律、法规及行业规范行为，您的珈和遥感平台账号可能会被注销，不能再登录且所有服务同时终止。\n" +
+					"			6、本公司可能会以手机短信方式通知您服务进展情况以及提示用户进行下一步的操作，但本公司不保证用户能够收到或者及时收到该信息，因此，在服务过程中您应当及时登录到本平台查看和进行操作。因您没有及时查看和对服务状态进行修改或确认或未能提交相关申请而导致的任何纠纷或损失，珈和遥感平台不负任何责任。\n" +
+					"			7、在法律允许的情况下，珈和遥感平台对于与本协议有关或由本协议引起的任何间接的、惩罚性的、特殊的、派生的损失（包括业务损失、收益损失、利润损失、使用数据或其他经济利益的损失），不论是如何产生的，也不论是由对本协议的违约（包括违反保证）还是由侵权造成的，均不负有任何责任，即使事先已被告知此等损失的可能性。\n" +
+					"			8、您授权我们收集您的以下个人信息：身份识别信息包括但不限于您的姓名、身份证明、联系地址、电话号码、生物特征信息、您所处的地理位置信息、平台操作信息包括但不限于文字、声音、图像信息、遥感信息包括但不限于采集内容、采集数据等。    \n" +
+					"			9、我方承诺，为珈和遥感提供服务之必须，您以自愿填写的方式提供注册所需的姓名、性别、电话以及其他类似的信息，则表示您已经了解并接受您信息的用途，同意珈和遥感为该特定目的使用您的信息。除此之外，其他任何您发送或提供给珈和遥感的材料、信息或文本均被视为非保密和非专有的，您如果提交时没有特别声明的，可视为珈和遥感平台及其授权人可以因商业或非商业的目的复制、透露、分发、合并和以其他方式利用这些信息和所有数据、图像、声音、文本及其他内容。\n" +
+					"			10、访问、浏览或使用珈和遥感平台服务过程中发生的争议首先应友好协商，若协商不成的，各方一致同意由武汉珈和科技有限公司所在地人民法院管辖。",
+					'用户服务协议');
+			});
+
+			var isSend = false;
+			// mui(".mui-input-row").on("tap", "#sendcode_btn", sendcode_btn_func);
+			sendcode_Button.addEventListener("tap", sendcode_btn_func)
+
+			function sendcode_btn_func() {
+				if (isSend == false) {
+					var mobileNo = phone_Input.value;
+					if (mobileNo == '') {
+						// plus.nativeUI.toast('请输入手机号码', {'verticalAlign': 'center'});
+						mui.toast('手机号码不能为空', {
+							duration: 'long',
+							type: 'div'
+						});
+						return;
+					} else if (!checkMobile(mobileNo)) {
+						mui.toast('手机号格式不正确', {
+							duration: 'long',
+							type: 'div'
+						});
+						return;
+					} else {
+						var sendCode;
+						var url = SYS_LOGIN.nolog_findForumValidCodeForRegister_url;
+						url += '?mobile=' + mobileNo;
+						getVerCode(url, function(result) {
+							console.log(JSON.stringify(result));
+							if (result.flag) {
+								sendToMobileCode = result.data;
+								// plus.nativeUI.toast('验证码发送成功', {'verticalAlign': 'center'});
+								mui.toast('验证码发送成功', {
+									duration: 'long',
+									type: 'div'
+								});
+								//立即执行
+								readSeconds();
+								sendCode = setInterval(function() {
+									readSeconds()
+								}, 1000);
+							} else {
+								// plus.nativeUI.toast(result.msg, {'verticalAlign': 'center'});
+								mui.toast(result.msg, {
+									duration: 'long',
+									type: 'div'
+								});
+								clearInterval(sendCode);
+							}
+						});
+					}
+				}
+			}
+
+			//定时执行方法
+			var countDown = 60;
+			var readSeconds = function() {
+				var obj = $("#sendcode_btn");
+				if (countDown > 0) {
+					isSend = true;
+					obj.text(countDown + "秒后重发");
+					countDown--;
+				} else {
+					isSend = false;
+					obj.text('获取验证码');
+					$("#sendcode_btn").removeClass("getCodeClass");
+				}
+			}
+
+			var checkMobile = function(str) {
+				var flag = true;
+				var re = /^1\d{10}$/;
+				if (!re.test(str)) {
+					flag = false;
+					// mui.toast('手机号码格式不正确',{ duration:'long', type:'div' });
+				}
+				return flag;
+			};
+
+			var getVerCode = function(url, callback) {
+				mui.ajax(url, {
+					data: {},
+					dataType: 'json',
+					type: 'get',
+					timeout: 10000,
+					success: function(result) {
+						// console.log(result);
+						callback(result);
+					},
+					error: function(xhr, ertype, errorThrown) { //异常处理；
+						console.log(JSON.stringify(xhr) + '  ' + ertype + ' ' + errorThrown);
+					}
+				});
+			};
+
+			reg_Button.addEventListener('tap', function(event) {
+				var mobileNo = phone_Input.value;
+				if (mobileNo == '') {
+					mui.toast('手机号码不能为空', {
+						duration: 'long',
+						type: 'div'
+					});
+					return;
+				} else if (!checkMobile(mobileNo)) {
+					mui.toast('手机号码格式不正确', {
+						duration: 'long',
+						type: 'div'
+					});
+					return;
+				} else if (verificode_Input.value == '') {
+					mui.toast('验证码不能为空', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (!useragree_CheckBox.checked) {
+					mui.toast('请阅读并勾选用户服务协议', {
+						duration: 'short',
+						type: 'div'
+					});
+					return;
+				}
+				// console.log(phone_Input.value)
+				// console.log(verificode_Input.value)
+				// console.log(sendToMobileCode);
+				else if (verificode_Input.value == sendToMobileCode) {
+					mui.openWindow({
+						id: 'newPwd.html',
+						url: 'newPwd.html?mobile=' + phone_Input.value + '&smsVerifCode=' + sendToMobileCode + '&type=reg',
+						show: {
+							aniShow: 'pop-in'
+						},
+						styles: {
+							popGesture: 'hide'
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+				} else {
+					// plus.nativeUI.toast('请输入正确的短信验证码', {'verticalAlign': 'center'});
+					mui.toast('验证码不正确', {
+						duration: 'long',
+						type: 'div'
+					});
+				}
+				// 				app.reg(regInfo, function(err) {
+				// 					if (err) {
+				// 						mui.toast(err);//自动消失的弹出框
+				// 						return;
+				// 					}
+				// plus.nativeUI.toast('注册成功');
+				/*
+				 * 注意：
+				 * 1、因本示例应用启动页就是登录页面，因此注册成功后，直接显示登录页即可；
+				 * 2、如果真实案例中，启动页不是登录页，则需修改，使用mui.openWindow打开真实的登录页面
+				 */
+				//屏幕切换效果,此处为点击.
+				// 					plus.webview.getLaunchWebview().show("pop-in",200,function () {
+				// 						plus.webview.currentWebview().close("none"); //关闭当前页面
+				// 					});
+				//若启动页不是登录页，则需通过如下方式打开登录页
+				//							$.openWindow({
+				//								url: 'login.html',
+				//								id: 'login',
+				//								show: {
+				//									aniShow: 'pop-in'
+				//								}
+				//							});
+				// });
+			});
+
+			//已有账号登录
+			document.getElementById("userlogin").addEventListener('tap', function() {
+				mui.openWindow({
+					id: 'login',
+					url: 'login.html',
+					show: {
+						aniShow: 'pop-in'
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+
+			init();
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,1413 @@
+<style type="text/css">
+    #erroInfo{color:red;font-size:12px;}
+    h3{font-weight:normal;padding-top:10px;}
+    /***选项卡样式***/
+    .contentBottom{height: 90%;}
+    .gridRight{float: left;width: 100%;height: 100%;border-radius: 10px;}
+    .gridRight .btLabelTop{height: 28px;}
+    .gridRight .btLabelTop span{float: left;width: 12%; height: 28px; line-height: 28px;background:#3FC7F7;color:#fff;display:block;width:135px;text-align:center;border-right: 1px solid #fff;cursor:pointer;}
+    .gridRight .btLabelTop .on{background:#00A7ED !important;}
+    .span_ellipsis {
+        display:block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    /* 下拉多选 */
+    .dropdown {
+        position:relative;
+        height: 28px;
+    }
+    .dropdown-toggle {
+        display:inline-block;
+        height:28px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        text-align:left;
+        border-radius:5px;
+        background:#fff right no-repeat;
+        background-position:358px 13px;
+
+        width: calc(100% - 88px - 5px - 20px);
+        line-height: 28px;
+        color: #0b0b0b;
+        border: 1px solid rgb(212, 212, 212);
+        outline: none;
+    }
+    .dropdown-menu {
+        background:#fff;
+        border:1px #ccc solid;
+        margin-top:30px;
+        border-radius:5px;
+        position:absolute;
+        left:0;
+        width: 100%;
+        display: none;
+        z-index: 999;
+    }
+    .dropdown-menu ul {
+        padding:0px 10px 0px 10px;
+    }
+    .dropdown-menu .scroll {
+        overflow-y:auto;
+        position:relative;
+    }
+    .dropdown-menu ul li {
+        width:auto;
+        text-align:left;
+        height:32px;
+        margin-top:6px;
+        border-bottom:1px #ccc dashed;
+    }
+    .dropdown-menu ul li a {
+        text-decoration:none;
+        color:#666;
+        float: left;
+    }
+    .dropdown-menu ul li input {
+        width:14px;
+        height:14px;
+        display:inline-block;
+        border:none;
+        margin-right:5px;
+        padding-left:0;
+    }
+    #dsId input{
+        width: 14px !important;
+        float: left;
+    }
+    .errorInfo{
+        color: red;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input id = "search_regionId" class="input" type="text" placeholder="请选择区域" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id = "search_cropId" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label2">数据集：</span>
+                    <!--<span>
+                       <span class="dropdown">
+                           <button class="dropdown-toggle" type="button" value=""></button>
+                           <span class="dropdown-menu">
+                               <span class="scroll">
+                                   <ul id="dsId"></ul>
+                               </span>
+                           </span>
+                       </span>
+                    </span>-->
+                    <span><select id = "search_dataSet" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span>
+                        <select id="search_resolution" class="input">
+                            <option value="">--请选择--</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />&nbsp;&nbsp;
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">发布状态：</span>
+                    <span><select id = "search_publishStatus" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label2">图层名称：</span>
+                    <span><input id="search_layerName" class="input" type="text" /></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="layerGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <!-- 预览图层 -->
+    <div id="seeDialog" class="form" style="display:none;" >
+        <table>
+            <tr>
+                <td class="two_td1" style="text-align:center;">标题:</td>
+                <td class="two_td2">
+                    <span id="titleV" class="span_ellipsis" style="width: 98%"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">名称:</td>
+                <td class="two_td2">
+                    <span id="nameV" class="span_ellipsis" style="width: 98%"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">区域:</td>
+                <td class="two_td2">
+                    <span id="regionNameV"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">作物:</td>
+                <td class="two_td2">
+                    <span id="cropNameV"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">图层类型:</td>
+                <td class="two_td2">
+                    <span id="typeV"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">图层URL:</td>
+                <td class="two_td2">
+                    <span id="urlV" class="span_ellipsis" style="width: 98%"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">数据集:</td>
+                <td class="two_td2">
+                    <span id="dsV"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">精度:</td>
+                <td class="two_td2">
+                    <span id="resolutionV"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="two_td1" style="text-align:center;">数据源类型:</td>
+                <td class="two_td2">
+                    <span id="dataTypeV"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="text-align:center;">数据时间:</td>
+                <td class="two_td2">
+                    <span id="dataTimeV"></span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 图层内容 -->
+    <div id="infoDialog" class="form" style="display: none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>样式:</td>
+                <td class="two_td2">
+                    <select id="geo_style" name="geoStyle" class="selectType one_selectType"></select>
+                </td>
+            </tr>
+            <tr>
+                <td class="td1"></td>
+                <td class="td2"><span class="errorInfo"></span></td>
+            </tr>
+        </table>
+    </div>
+
+
+
+    <!-- 确认对话框 -->
+    <div id="confirmDialog" class="dialogStyle" style="display:none">
+    </div>
+    <!--END ADD-->
+
+
+    <!-- 遮罩层DIV -->
+    <div id="process" class="dialogStyle" style="display: none;text-align:center;">
+        <img src="images/public/process.gif" />
+    </div>
+
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","jedate","RegionModule","commons","jqExtends"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,jedate,RegionModule,commons,jqExtends) {
+            var processDialog = $("#process");
+            /**
+             * 区域选择控件
+             * @version <1> 2018-06-07 lxy: created.
+             */
+            var RegionSelectFun = function(regionIdName,cropIdName){
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        var regionId = txtArea.getAttribute("regionId");
+                        queryCropFun(regionId,cropIdName);
+                    }};
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                    regionSelector.show();
+                };
+                queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+            };
+
+            /**
+             * 获取作物下拉框数据
+             * @param parentId = 500
+             * @version <1> 2018-05-09 wl: created.
+             */
+            /*var initCropIdFun=function (parentId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        });
+                        $("#search_cropId").append(str);
+                    }
+                };
+                ajax.run();
+            };*/
+
+            /**
+             * Description: 初始化发布状态
+             * @param parentId = 2200
+             * @return
+             * @version <1> 2018/6/22 16:32 zhangshen: Created.
+             */
+            var initPublishStatusFun = function(parentId, publishStatusIdName){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        $("#"+publishStatusIdName).html("");//清空
+                        $("#"+publishStatusIdName).append(str);
+                    }
+                }
+                ajax.run();
+            };
+            /**
+             * 点击区域时查询作物列表
+             * @param regionId 区域ID
+             * @version <1> 2018-06-07 lxy: created.
+             */
+            var queryCropFun = function(regionId,cropIdName){
+                if (regionId) {
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url + "?regionId="+regionId;
+                    ajax.opts.async = false;
+                    ajax.opts.contentType = "application/json";
+                    ajax.opts.successFun = function (data) {
+                        var crop = data.data;
+                        initCropFun(crop,cropIdName);
+                    };
+                    ajax.run();
+                } else {
+                    $('#'+cropIdName).html('<option value="">--请选择--</option>');
+                }
+            };
+
+            /**
+             * 初始化作物下拉框
+             * @param crop 查询出的作物对象集合
+             * @version <1> 2018-06-07 lxy: created.
+             */
+            var initCropFun = function(crop,cropIdName){
+                var result='<option value="">--请选择--</option>';
+                if(crop!=null){
+                    $.each(crop,function(i,o){
+                        result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                    });
+                    if(result != ''){
+                        $('#'+cropIdName).html(result);
+                    }else{
+                        $('#'+cropIdName).html('<option value="">--请选择--</option>');
+                    }
+                }
+                $('#'+cropIdName).html(result);
+            };
+
+            //日期控件
+            var dateFun = function(id){
+                $("#"+id).jeDate({
+                    format:"YYYY-MM-DD",
+                    isTime:false
+                });
+            };
+
+            /**
+             * 图层列表展示
+             * @version<1> 2018-06-07 wl: Created.
+             */
+            var layerGrid = function () {
+                $("#layerGrid").jqGrid({
+                    url: DS_LAYER.findLayerPageInfo,
+                    datatype: "json",
+                    postData: {
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: 0,
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['layerId','publishStatus','dsName','区域','区域编码','影像路径','影像ID', '数据集', '精度', '作物', '数据时间', '图层名称', '图层地址','创建时间','发布状态','操作'],
+                    colModel: [
+                        {name:'layerId',index:'layerId', align:'center', width:'0',hidden:true},
+                        {name:'publishStatus',index:'publishStatus', align:'center', width:'0',hidden:true},
+                        {name:'dsName',index:'dsName', align:'center', width:'0',hidden:true},
+                        {name:'regionName',index:'region_name', align:'center', width:'5%'},
+                        {name:'regionCode',index:'regionCode', align:'center', width:'5%',hidden:true},
+                        {name:'filePath',index:'file_path', align:'center', width:'5%',hidden:true},
+                        {name:'resultimageId',index:'resultimage_id', align:'center', width:'5%',hidden:true},
+                        {name:'ds',index:'ds', align:'center', width:'3%',
+                            formatter:function(cellvalue,options,rowObject){
+                                var dsName = rowObject.dsName;
+                                return dsName==null?"":dsName;
+                            }
+                        },
+                        {name:'resolutionValue',index:'resolution_value', align:'center', width:'5%'},
+                        {name:'cropName',index:'crop_name', align:'center', width:'5%'},
+                        {name:'dataTime',index:'data_time', align:'center', width:'5%'},
+                        {name:'name',index:'name', align:'left', width:'12%'},
+                        {name:'url',index:'url', align:'center', width:'15%',sortable: false},
+                        {name:'createTime',index:'create_time', width:'7%',align:'center'},
+                        {name:'publishStatusView',index:'publish_status', align:'center', width:'5%',
+                            formatter:function (cellvalue,options,rowObject) {
+                                var str = "";
+                                if (rowObject.publishStatus == '2201') {
+                                    str += "<span class='statusStyle'>已发布</span><img src='images/public/Ton.png' class='statusBtn' data-id='" + rowObject.layerId + "' data-status='2202' title='已发布' >";
+                                } else {
+                                    str += "<span class='statusStyle'>待发布</span><img src='images/public/Toff.png' class='statusBtn' data-id='" + rowObject.layerId + "' data-status='2201' title='待发布' >";
+                                }
+                                return str;
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '5%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str= "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.layerId +"' data-no='0' title='修改样式' >"+
+//                                        "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.layerId +"' title='查看明细' >"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='"+rowObject.layerId+"' title='删除图层'>";
+                                var suffix = DATA_STORAGE.download_suffix;
+                                str += "<img src='images/public/download.png' class='downloadBtn' data-url='"+suffix+ rowObject.filePath +"' title='文件下载'>";
+
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    //sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    multiselect: true,//复选框
+                    loadComplete: function () {
+                        $("#pager2_left").html("<input type='button' value='批量发布' class='btn btn_grey' id='batchPublishBtn' />" + "&nbsp;&nbsp;"
+                                + "<input type='button' value='批量撤回' class='btn btn_grey' id='batchCancelBtn' />"  + "&nbsp;&nbsp;"
+                                + "<input type='button' value='图层预览' class='btn btn_grey' id='previewLayer' />" + "&nbsp;&nbsp;"
+                                +"<input type='button' class='btn btn_grey' value='批量下载' id='batchDownloadBtn' />"
+                        );
+                        tableEvent();//绑定表格操作中相关事件
+                        commons.isNextDisable();
+                    },
+                    onSelectAll:function(rowIds,status){
+                        btnStyle();//全选：设置发布按钮的样式
+                    },
+                    onSelectRow:function (rowid,status) {
+                        btnStyle();//单选的时候
+                    }
+                });
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var tableEvent = function(){
+                $(".previewBtn,.editBtn,.delBtn,.seeBtn,.statusBtn,.downloadBtn,#batchPublishBtn,#batchCancelBtn").off("click");
+                $(".editBtn").on("click",editLayerTab);//弹出编辑简报对话框
+                $(".delBtn").on("click",deleteLayer);//删除
+//                $(".seeBtn").on("click",seeLayer);//查看
+                $(".statusBtn").on("click",function () {
+                    var layerId = $(this).attr("data-id");//
+                    var publishStatus = $(this).attr("data-status");
+                    var ids = [];
+                    ids.push(layerId);
+                    statusFun(ids,publishStatus);
+                });//发布状态
+                $("#batchPublishBtn").bind("click", function () {//批量发布简报
+                    if(!$("#batchPublishBtn").hasClass("btn_grey")){
+                        modifyLayersFun("2201");//发布状态：发布
+                    }
+                });
+                $("#batchCancelBtn").bind("click", function () {//撤回发布简报
+                    if(!$("#batchCancelBtn").hasClass("btn_grey")){
+                        modifyLayersFun("2202");//发布状态：撤销
+                    }
+                });
+                //图层预览
+                //$('#previewLayer').bind('click',previewLayerFun);
+                $('#previewLayer').bind('click',function(){
+                    if(!$("#previewLayer").hasClass("btn_grey")){
+                        previewLayerFun();
+                    }
+                });
+                //下载
+                $(".downloadBtn").bind("click",function(){
+                    var thisobj=$(this);
+                    var url = $(this).attr("data-url");
+                    if($(this).attr("src")=="images/public/download.png"){
+                        $(this).attr("src","images/public/downloadG.png")
+                        downBatch(url);
+                    }
+
+                    //防止重复点击，灰5秒
+                    setTimeout( function(){
+                        thisobj.attr("src","images/public/download.png")
+                    }, 5 * 1000 );//延迟5000毫米
+                });
+
+                //批量下载
+                $("#batchDownloadBtn").bind("click",function(){
+                    if(!$(this).hasClass("btn_grey")){
+                        batchDownloadFun();
+                    }
+                });
+
+            };
+
+
+            /**
+             * Description: 批量下载
+             * @version <1> 2019/3/24 lijie: Created.
+             */
+            var batchDownloadFun = function(){
+                $("#batchDownloadBtn").addClass("btn_grey")
+                var ids = $("#layerGrid").jqGrid("getGridParam", "selarrrow");
+                //遍历这个集合,存放reportId
+                $(ids).each(function (index, id){
+                    //由id获得对应数据行
+                    var row = $("#layerGrid").jqGrid('getRowData', id);
+                    var suffix = DATA_STORAGE.download_suffix;
+                    downBatch(suffix + row.filePath);
+                });
+                //防止重复点击，灰3秒
+                setTimeout( function(){
+                    $("#batchDownloadBtn").removeClass("btn_grey")
+                }, 5 * 1000 );//延迟5000毫米
+
+            };
+
+            /**
+             * 发布和撤回图层
+             * @version <1> 2018-06-07 lxy： Created
+             */
+            var statusFun = function(ids,publishStatus) {
+                var tip = "是否确认发布图层？";
+                if (publishStatus == "2202") {
+                    tip = "是否确认撤回图层？";
+                }
+                var confirmDialog = $("#confirmDialog");//操作确认对话框
+                var dialogParent = confirmDialog.parent();
+                var dialogOwn = confirmDialog.clone();
+                confirmDialog.html(tip);
+                confirmDialog.dialog({
+                    autoOpen: false,
+                    title: '提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_LAYER.publish_url;
+                            ajax.opts.data = JSON.stringify({'idList':ids, 'publishStatus':publishStatus});
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#layerGrid").trigger("reloadGrid");//刷新列表
+                                    confirmDialog.dialog("close");
+                                    if (publishStatus == "2202") {
+                                        PopWin.showMessageWin("撤回成功");
+                                    } else {
+                                        PopWin.showMessageWin("发布成功");
+                                    }
+                                } else {
+                                    if (publishStatus == "2202") {
+                                        PopWin.showMessageWin("撤回失败");
+                                    } else {
+                                        PopWin.showMessageWin("发布失败");
+                                    }
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                if (publishStatus == "2202") {
+                                    PopWin.showMessageWin("系统错误：撤回失败");
+                                } else {
+                                    PopWin.showMessageWin("系统错误：发布失败");
+                                }
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                confirmDialog.dialog("open");
+            };
+
+            /**
+             * 批量发布
+             */
+            var modifyLayersFun = function(publishStatus){
+                var rowIds = $("#layerGrid").jqGrid("getGridParam", "selarrrow");
+                if(rowIds.length <= 0){
+                    PopWin.showMessageWin("请勾选要发布的图层");
+                    return;
+                }
+                var layerIds = [];
+                $(rowIds).each(function (index, id) {
+                    //由id获得对应数据行
+                    var row = $("#layerGrid").jqGrid('getRowData', id);
+                    var reportId = row.layerId;//图层编号
+                    var status = row.publishStatus;//发布状态
+                    if(publishStatus != status){ //根据操作状态来装入非本次操作状态的图层编号，如果是批量发布，那么就是需要获取未发布的图层
+                        layerIds.push(reportId)
+                    }
+                });
+                if(layerIds.length<0){
+                    if(publishStatus == "2201"){
+                        PopWin.showMessageWin("没有需要发布的图层");
+                    }
+                    if(publishStatus == "2202"){
+                        PopWin.showMessageWin("没有需要撤回的图层");
+                    }
+                    return;
+                }
+                statusFun(layerIds,publishStatus);
+            };
+
+            /**
+             * 批量按钮样式
+             * @version <1> 2018-06-03 lxy: Created.
+             */
+            var btnStyle = function(){
+                var ids = $("#layerGrid").jqGrid("getGridParam", "selarrrow");
+                var rowNum = $("#layerGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+                if(ids.length == rowNum){//全选
+                    $("input[type='checkbox']").prop("checked",true);
+                }
+                var reportIds2201 = [];//已发布
+                var reportIds2202 = [];//待发布
+                //遍历这个集合,存放reportId
+                $(ids).each(function (index, id){
+                    //由id获得对应数据行
+                    var row = $("#layerGrid").jqGrid('getRowData', id);
+                    var reportId = row.layerId;//
+                    var publishStatus = row.publishStatus;//获取发布状态
+                    if(publishStatus == '2201'){//如果此条报告信息的发布状态为已发布2201
+                        reportIds2201.push(reportId)
+                    }else if(publishStatus == '2202'){
+                        reportIds2202.push(reportId)
+                    }
+                });
+
+                if(ids.length > 0){
+                    $("#previewLayer").removeClass("btn_grey");
+                    $("#batchDownloadBtn").removeClass("btn_grey");
+                } else {
+                    $("#previewLayer").addClass("btn_grey");
+                    $("#batchDownloadBtn").addClass("btn_grey");
+                }
+
+                if(reportIds2202.length > 0){
+                    $("#batchPublishBtn").removeClass("btn_grey");
+                } else {
+                    $("#batchPublishBtn").addClass("btn_grey");
+                }
+
+                if(reportIds2201.length > 0){
+                    $("#batchCancelBtn").removeClass("btn_grey");
+                } else {
+                    $("#batchCancelBtn").addClass("btn_grey");
+                }
+
+            };
+
+            var downBatch =function(href){
+                var index = href .lastIndexOf("\/");
+                var name  = href .substring(index + 1, href .length);
+                var a = document.createElement("a"), e = document.createEvent("MouseEvents"); //创建鼠标事件对象
+                e.initEvent("click", false, false); //初始化事件对象
+                a.href = href; //设置下载地址
+                a.download = name; //设置下载文件名
+                a.dispatchEvent(e); //给指定的元素，执行事件click事件
+            }
+
+            /**
+             * 初始化图层
+             */
+            var initLayerType = function(){
+                var data = initCommonDict(2000);
+                $.each(data,function (i,dataSet) {
+                    var op = $("<option value='"+dataSet.dictId+"'>"+dataSet.dataName+"</option>");
+                    $("#type").append(op);
+                });
+            };
+
+            /**
+             * 初始化对话框中的数据集
+             */
+            var initDataSet = function(){
+                var data = initCommonDict(1800);
+                $.each(data,function (i,dataSet) {
+                    var op = $("<option value='"+dataSet.dictId+"'>"+dataSet.dataName+"</option>");
+                    $("#ds").append(op);
+                });
+            };
+
+
+
+            /**
+             * 初始精度值（分辨率）
+             */
+            var initResolutionType = function(id){
+                var data = initCommonDict(4000);
+                $.each(data,function (i,dataSet) {
+                    var op = $("<option value='"+dataSet.dictId+"'>"+dataSet.dataName+"</option>");
+                    $("#"+id).append(op);
+                });
+            };
+
+            /**
+             * 数据来源类别
+             */
+            var initDataType = function(){
+                var data = initCommonDict(400);
+                $.each(data,function (i,dataSet) {
+                    var op = $("<option value='"+dataSet.dictId+"'>"+dataSet.dataName+"</option>");
+                    $("#dataType").append(op);
+                });
+            };
+
+            /**
+             * 初始化字典数据，用于不同类别的数据
+             */
+            var initCommonDict = function(parentId){
+                var data = {};
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId':parentId});
+                ajax.opts.successFun = function (result) {
+                    data = result.data;
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("系统错误!");
+                    return false;
+                };
+                ajax.run();
+                return data;
+            };
+
+
+
+            /**
+             * 获取数据集产品
+             * @version<1> 2018-05-07 zhangshen :Created.
+             */
+            var getDataSet = function(dictId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : dictId});
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var statusArry = result.data;
+                        if(statusArry && statusArry.length >0){
+                            var optList = "<li class='option'><input id='selectall' class='allcase' name='all' type='checkbox' value='all'><a href='#'>全选</a></li>";
+                            var dataSetList = "";//数据集页签
+                            var str = "";//数据集文字
+                            var val = "";//数据集值
+                            for (var i in statusArry) {
+                                var status = statusArry[i];
+                                optList += "<li class='option'><input class='case' name='checkbox' type='checkbox' value='"+ status.dictId +"'><a href='#'>"+ status.dataName +"</a></li>";
+                                dataSetList += "<span class='t2' data-id='"+ status.dictId +"' style='display: none;'>"+ status.dataName +"</span>";
+                            }
+                            $("#dsId").html(optList);
+                            $(".contentBottom .btLabelLeft").html(dataSetList);
+                        }
+                    }
+                };
+                ajax.run();
+                dataSetInit();//下拉框多选初始化
+            };
+
+
+            /**
+             * 下拉框多选初始化
+             * @version<1> 2018-05-08 zhangshen :Created.
+             */
+            var dataSetInit = function(){
+                //显示\隐藏下拉菜单
+                $(".dropdown-toggle").click(function() {
+                    $(".dropdown-menu").toggle();
+                })
+                var dropdown = $('.dropdown');
+                dropdown.on('click',function(e){e.stopPropagation();}).find('>a').on('click',function(){
+                    dropdown.find('>.dropdown-menu').show();
+                });
+                $(document).on('click',function(){dropdown.find('>.dropdown-menu').hide()});
+
+                //全选和取消全选
+                $("#selectall").click(function() {
+                    $("input[name='checkbox']").prop('checked', this.checked);
+                    //赋值
+                    var str = "";
+                    var val = "";
+                    $("input:checkbox[name='checkbox']:checked").each(function() {
+                        str += $(this).next().text() + ";";
+                        val += $(this).attr("value") + ";";
+                    });
+                    str = str.substr(0,str.length-1);
+                    val = val.substr(0,val.length-1);
+                    $(".dropdown-toggle").html(str).attr('value',val);
+                });
+                $("input[name='checkbox']").click(function() {
+                    if ($("input[name='checkbox']").length == $("input[name='checkbox']:checked").length) {
+                        $("#selectall").prop("checked", "checked");
+                    } else {
+                        $("#selectall").removeAttr("checked");
+                    }
+                    //赋值
+                    var str = "";
+                    var val = "";
+                    $("input:checkbox[name='checkbox']:checked").each(function() {
+                        str += $(this).next().text() + ";";
+                        val += $(this).attr("value") + ";";
+                    });
+                    str = str.substr(0,str.length-1);
+                    val = val.substr(0,val.length-1);
+                    $(".dropdown-toggle").html(str).attr('value',val);
+                });
+            };
+
+            /**
+             * 获取数据集下拉框数据
+             * @param parentId = 1800
+             * @version <1> 2018-06-22 zhangshen : created.
+             */
+            var initDataSetFun = function(parentId, dataSetIdName){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        //str += "<option value='"+ 1850 +"'>"+ '混合数据集' +"</option>";
+                        $("#"+dataSetIdName).html("");//清空
+                        $("#"+dataSetIdName).append(str);
+                    }
+                }
+                ajax.run();
+            };
+
+            /**
+             * Description:
+             * @param dataSetId 数据集 id选择器名称
+             * @param resolutionId 精度 id选择器名称
+             * @return
+             * @version <1> 2018/8/30 15:11 zhangshen: Created.
+             */
+            var initResolution = function(dataSet, resolution) {
+                $("#"+dataSet).change(function() {
+                    queryResolutionFun(dataSet, resolution);
+                });
+                queryResolutionFun(dataSet, resolution);
+            };
+
+            /**
+             * Description:
+             * @param dataSetId 数据集 id选择器名称
+             * @param resolutionId 精度 id选择器名称
+             * @return
+             * @version <1> 2018/8/30 15:11 zhangshen: Created.
+             */
+            var queryResolutionFun = function(dataSet, resolution){
+                var dataSetId = $("#"+dataSet).val();
+                if (dataSetId) {
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = DICT_COFING.queryResolutionListByDataSetId_url + "?dataSetId="+dataSetId;
+                    ajax.opts.contentType = "application/json";
+                    ajax.opts.successFun = function (data) {
+                        if (data.flag) {
+                            var result = data.data;
+                            initResolutionFun(result,resolution);
+                        } else {
+                            $('#'+resolution).html('<option value="">--请选择--</option>');
+                        }
+                    };
+                    ajax.run();
+                } else {
+                    $('#'+resolution).html('<option value="">--请选择--</option>');
+                }
+            };
+
+            /**
+             * Description:
+             * @param result 根据数据集id查询出来的精度列表
+             * @param resolution 精度id选择器名称
+             * @return
+             * @version <1> 2018/8/30 16:51 zhangshen: Created.
+             */
+            var initResolutionFun = function(result,resolution){
+                var resultHtml = '<option value="">--请选择--</option>';
+                if(result) {
+                    $.each(result,function(i,o){
+                        resultHtml += '<option value = "' + o.resolutionId + '">' + o.resolutionName + '</option>';
+                    });
+                }
+                $('#'+resolution).html(resultHtml);
+            };
+
+            //初始化加载所有样式
+            var loadLayerStyleFun = function () {
+                //初始化样式列表
+                var ajax = new BaseAjax();
+                ajax.opts.url = DS_GEO_STYLE.getGeoStyleList_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (result) {
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        $.each(result.data, function(index, element){
+                            str += "<option>"+ element.styleName +"</option>";
+                        })
+                        $("#geo_style").html("").append(str);//清空 赋值
+                    }
+                };
+                ajax.run();
+            }
+
+
+            /**
+             * 修改图层样式
+             * @version<1> 2018-05-24 lxy :Created.
+             */
+            var editLayerTab = function(){
+                var layerId = $(this).data('id');
+                var dialog =  $("#infoDialog");
+                var dialogParent = dialog.parent();
+                var dialogOwn = dialog.clone();
+                dialog.dialog({
+                    autoOpen: false,
+                    title: '修改样式',
+                    height: 180,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            var style = $("#geo_style").val();
+                            $('.errorInfo').text('');
+                            if(style == "" || style == null){
+                                $('.errorInfo').text('样式不能为空');
+                                return false;
+                            }
+                            //显示进度条 关闭提示框
+                            dialog.dialog("close");
+                            showProcess();
+
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_LAYER.modifyStyle_url;//修改图层样式
+                            ajax.opts.data = JSON.stringify({layerId: layerId, layerStyleName: style});
+                            ajax.opts.successFun = function (data) {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                if(data.flag){
+                                    PopWin.showMessageWin("图层样式修改成功");
+                                    $("#dataReprocessGrid").trigger("reloadGrid");
+                                }else{
+                                    PopWin.showMessageWin("图层样式修改失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                //关闭进度条
+                                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                PopWin.showMessageWin("图层样式修改异常，请联系管理员");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                dialog.dialog("open");
+
+//                dateFun("dataTime");//初始化数据时间
+//                var layerId = $(this).attr("data-id");//图层编号
+//                var layerData = initLayerData(layerId);//加载对应的报表信息
+//                var regionId = layerData.regionId;//区域编号
+//                queryCropFun(regionId,"cropId");//根据区域加载对应的作物
+//                fillLayerDataToInfoDialog(layerData);//填充图层数据修改对话框
+//                popEditLayerShown(layerId);//弹出对话框
+            };
+
+            var showProcess=function(){
+                processDialog.dialog({
+                    autoOpen: false,
+                    height: 460,
+                    width: 460,
+                    modal: true ,
+                    closeOnEscape: false,
+                    open: function(event, ui) {
+                        $(".ui-dialog-titlebar").hide();
+                        $(".ui-dialog").css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                    },
+                });
+                processDialog.dialog("open");
+            }
+
+            /**
+             * 弹出编辑图层对话框
+             * @param layerId 图层编号
+             * @param dataNo Tab页面序号
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+//            var popEditLayerShown = function (layerId) {
+//                var title = "编辑图层内容";
+//                var height = 469;//高度$(document.body).height()*0.73
+//                var width = 760;//宽度$(document.body).width()*0.50
+//                var infoDialog = $("#infoDialog");//图层修改对话框
+//                var dialogParent = infoDialog.parent();
+//                var dialogOwn = infoDialog.clone();
+//                infoDialog.dialog({
+//                    autoOpen: false,
+//                    title: title,
+//                    height: height,
+//                    width: width,
+//                    modal: true,
+//                    close:function(){
+//                        dialogOwn.appendTo(dialogParent);
+//                        $(this).dialog("destroy").remove();
+//                    },
+//                    buttons: [
+//                        {
+//                            text:"保存",
+//                            click:function(){
+//                                updateLayer(layerId,infoDialog);//更新图层内容
+//                            }
+//                        },
+//                        {
+//                            text:"关闭",
+//                            click:function(){
+//                                $(this).dialog("close");
+//                            }
+//                        }
+//
+//                    ]
+//                });
+//                infoDialog.dialog("open");
+//            };
+
+
+            /**
+             * 删除图层
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var deleteLayer = function(){
+                var layerId = $(this).attr("data-id");
+                var confirmDialog = $("#confirmDialog");//操作确认对话框
+                var dialogParent = confirmDialog.parent();
+                var dialogOwn = confirmDialog.clone();
+                confirmDialog.html("是否确认删除所选记录？");
+                confirmDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_LAYER.delete_url+"?layerId="+layerId;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#layerGrid").trigger("reloadGrid");
+                                    confirmDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                confirmDialog.dialog("open");
+            };
+
+            /**
+             * 查看图层详情
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+//            var seeLayer = function () {
+//                var layerId = $(this).attr("data-id");
+//                var layerData = initLayerData(layerId);//加载对应的图层信息
+//                fillSeeLayerDataToSeeDialog(layerData);//将数据填入到图层详情对话框中
+//                var seeDialog = $("#seeDialog");//图层详情对话框
+//                var dialogParent = seeDialog.parent();
+//                var dialogOwn = seeDialog.clone();
+//                seeDialog.dialog({
+//                    autoOpen: false,
+//                    title: '查看图层详情',
+//                    height: 469,
+//                    width: 760,
+//                    modal: true,
+//                    close:function(){
+//                        dialogOwn.appendTo(dialogParent);
+//                        $(this).dialog("destroy").remove();
+//                    },
+//                    buttons: [
+//                        {
+//                            text:"关闭",
+//                            click:function(){
+//                                $(this).dialog("close");
+//                            }
+//                        }
+//                    ]
+//                });
+//                seeDialog.dialog("open");
+//            };
+            /**
+             * 将数据填入到图层详情对话框中
+             */
+//            var fillSeeLayerDataToSeeDialog = function(layerData){
+//                $("#titleV").html(layerData.title);
+//                $("#titleV").attr("title",layerData.title);
+//                $("#nameV").html(layerData.name);
+//                $("#nameV").attr("title",layerData.name);
+//                $("#regionNameV").html(layerData.regionName);
+//                $("#cropNameV").html(layerData.cropName);
+//                $("#typeV").html(layerData.typeName);
+//                $("#urlV").html(layerData.url);
+//                $("#urlV").attr("title",layerData.url);
+//                $("#dsV").html(layerData.dsName);
+//                $("#resolutionV").html(layerData.resolutionValue);
+//                $("#dataTypeV").html(layerData.dataTypeValue);
+//                $("#dataTimeV").html(layerData.dataTime);
+//            };
+
+            /**
+             * 将数据填入到图层修改对话框中
+             */
+//            var fillLayerDataToInfoDialog = function(layerData){
+//                $("#title").val(layerData.title);
+//                $("#name").val(layerData.name);
+//                $("#regionId").val(layerData.regionName);
+//                $("#regionId").attr("regionid",layerData.regionId);
+//                $("#cropId").find("option[value='"+layerData.cropId+"']").attr("selected",true);
+//                $("#type").val(layerData.type);
+//                $("#url").val(layerData.url);
+//                $("#ds").val(layerData.ds);
+//                $("#resolution").val(layerData.resolution);
+//                $("#dataType").val(layerData.dataType);
+//                $("#dataTime").val(layerData.dataTime);
+//            };
+
+            /**
+             * 根据图层编号（layerId）查询对应的图层信息
+             * @Param layerId 图层编号
+             */
+//            var initLayerData = function(layerId){
+//                var layerData = {};
+//                var ajax = new BaseAjax();
+//                ajax.opts.url = DS_LAYER.findById_url+"?layerId="+layerId;
+//                ajax.opts.contentType = "application/json";
+//                ajax.opts.async = false; //同步请求，false：表示非异步，有线程阻塞
+//                ajax.opts.successFun = function(result){
+//                    if(result.flag){
+//                        layerData = result.data;
+//                    }else{
+//                        PopWin.showMessageWin("系统错误!");
+//                    }
+//                };
+//                ajax.opts.errorFun = function(){
+//                    PopWin.showMessageWin("系统错误!");
+//                    return false;
+//                };
+//                ajax.run();
+//                return layerData;
+//            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             * @version <1> 2018-06-07 lxy： Created.
+             */
+            var searchFun = function () {
+                //var dsListStr = $("button[class='dropdown-toggle']").attr("value");
+                $("#layerGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData:{
+                        'regionId':$("#search_regionId").attr("regionid") || '',
+                        'cropId':$("#search_cropId").val(),
+                        'ds':$("#search_dataSet").val(),//dsListStr,
+                        'resolution':$('#search_resolution').val(),
+                        'publishStatus':$('#search_publishStatus').val(),
+                        'name' : $("#search_layerName").val().trim()
+                    },
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * Description: 重置
+             * @version <1> 2018/6/22 16:40 zhangshen: Created.
+             */
+            var resetFun = function(){
+                $("#search_regionId").val("");//区域
+                $("#search_regionId").removeAttr("regionid");
+                //$("#search_cropId").val("");//作物
+                queryCropFun(document.getElementById("search_regionId").getAttribute("regionid"), "search_cropId");
+                $("#search_dataSet").val("--请选择--");//数据集
+                //$("#search_resolution").val("--请选择--");//分辨率
+                queryResolutionFun("search_dataSet", "search_resolution");//根据数据集，初始化精度
+                $("#search_publishStatus").val("--请选择--");//发布状态
+                $("#search_layerName").val("");//图层名称
+            };
+
+            /**
+             *
+             *  提交后台的数据
+             * @version <1> 2018-03-02 xzg： Created.
+             */
+//            var getParam = function() {
+//                var title = $("#title").val().trim();//标题
+//                var name = $("#name").val().trim();//名称
+//                var regionId = $("#regionId").attr('regionid');//区域编号
+//                var cropId = $("#cropId").val();//作物编号
+//                var type = $("#type").val();//图层类别
+//                var url = $("#url").val().trim();//url地址
+//                var ds = $("#ds").val();//数据集
+//                var resolution = $("#resolution").val();//精度
+//                var dataType = $("#dataType").val();//数据集类型
+//                var dataTime = $("#dataTime").val();//数据集时间
+//                var postObject = {
+//                    'title': title,
+//                    'name':name,
+//                    'regionId':regionId,
+//                    'cropId':cropId,
+//                    'type': type,
+//                    'url': url,
+//                    'ds': ds,
+//                    'resolution':resolution,
+//                    'dataType': dataType,
+//                    'dataTime': dataTime
+//                };
+//                return postObject;
+//            };
+
+            //初始化
+            var init = function(){
+                initLayerType();//初始化图层
+                initDataSet();//初始化数据集
+                initResolutionType("resolution");//初始化精度--修改对话框
+                //initResolutionType("search_resolution");//初始化精度--查询
+                initDataType();//初始化数据类别
+                //getDataSet(1800);//获取数据集产品
+                initDataSetFun(1800, "search_dataSet");//初始化数据集下拉框
+                initResolution("search_dataSet", "search_resolution");//根据数据集，初始化精度
+                RegionSelectFun("search_regionId","search_cropId");//初始化区域，选择区域后加载作物
+                //initCropIdFun(500);//初始化作物下拉框
+                initPublishStatusFun(2200, "search_publishStatus");//初始化发布状态
+                loadLayerStyleFun();
+                layerGrid();//加载图层列表
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").bind("click",resetFun);//点击重置
+                $(window).resize(function(){
+                    $("#layerGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#layerGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            //生成图层表单验证
+//            var formVerf = function () {
+//                var infoDialog  =  $('#infoDialog');
+//                if (formVerfication.checkInputIsEmpty($('#title'),infoDialog,'标题不能为空')){
+//                    return false;
+//                }
+//
+//                if (formVerfication.checkInputLength(1,50,$('#title'),infoDialog,'标题字符不能超过50位')){
+//                    return false;
+//                }
+//
+//                if (formVerfication.checkInputIsEmpty($('#name'),infoDialog,'名称不能为空')){
+//                    return false;
+//                }
+//
+//                if (formVerfication.checkInputLength(1,100,$('#name'),infoDialog,'名称字符不能超过100位')){
+//                    return false;
+//                }
+//
+//                if (formVerfication.checkInputIsEmpty($('#regionId'),infoDialog,'区域不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#cropId'),infoDialog,'作物不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#type'),infoDialog,'图层类型不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#url'),infoDialog,'图层URL不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputLength(1,200,$('#url'),infoDialog,'图层URL字符不能超过100位')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#ds'),infoDialog,'数据集不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#resolution'),infoDialog,'分辨率不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#dataType'),infoDialog,'数据源类型不能为空')){
+//                    return false;
+//                }
+//                if (formVerfication.checkInputIsEmpty($('#dataTime'),infoDialog,'数据时间不能为空')){
+//                    return false;
+//                }
+//                $(infoDialog).find('.formErrorInfo').remove();
+//                return true;
+//            };
+
+
+            //显示提示内容
+            var getHtml = function(msg){
+                return '<div class="formErrorInfo"><span>' + msg + '</span></div>';
+            };
+
+            /**
+             * 更新图层内容
+             * @param layerId 图层编号
+             * @param infoDialog 编辑对话框
+             * @version <1> 2018-4-13 lxy： Created.
+             */
+//            var updateLayer = function(layerId,infoDialog) {
+//                if(!formVerf()){
+//                    return;
+//                }
+//                //修改数据
+//                //获取图层内容
+//                var updateParam = getParam();
+//                updateParam['layerId']=layerId;//图层编号
+//                var baseAjax = new BaseAjax();
+//                baseAjax.opts.url = DS_LAYER.edit_url;
+//                baseAjax.opts.async = false; //同步
+//                baseAjax.opts.contentType = "application/json";
+//                baseAjax.opts.data = JSON.stringify(updateParam);
+//                baseAjax.opts.successFun = function (result) {
+//                    if (result.flag) {
+//                        $("#layerGrid").trigger("reloadGrid");
+//                        infoDialog.dialog("close");
+//                        PopWin.showMessageWin("更新图层成功");
+//                    } else {
+//                        PopWin.showMessageWin("更新图层失败");
+//                        $("#erroInfo").html(result.msg);
+//                    }
+//                };
+//                baseAjax.opts.errorFun = function (result) {
+//                    PopWin.showMessageWin("更新图层失败");
+//                };
+//                baseAjax.run();
+//            };
+
+
+            /**
+             * 图层预览
+             * @version <1> 2018-06-19 xzg: Created.
+             */
+            var previewLayerFun = function () {
+                var layerList = [];
+                var rowIds = $("#layerGrid").jqGrid("getGridParam", "selarrrow");
+                $(rowIds).each(function (index,id) {
+                    var row = $("#layerGrid").jqGrid('getRowData', id);
+                    layerList.push(row.resultimageId);
+                });
+//                window.open(project_path2 + 'previewLayer.html?layerList='+layerList.join(','));
+                window.open(project_path2 + 'previewLayer.html?productIds='+layerList);
+            };
+
+            init();
+        });
+    </script>
+
+</div>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.collection.mapping.CollectionMediaSourceMapper">
+    <resultMap id="BaseResultMap" type="com.jh.collection.entity.CollectionMediaSource">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="sound_time" jdbcType="INTEGER" property="soundTime"/>
+        <result column="media_type" jdbcType="VARCHAR" property="mediaType"/>
+        <result column="media_path" jdbcType="VARCHAR" property="mediaPath"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="createor" jdbcType="VARCHAR" property="createor"/>
+        <result column="updateor" jdbcType="VARCHAR" property="updateor"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="del_flag" jdbcType="INTEGER" property="delFlag"/>
+    </resultMap>
+    <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.jh.collection.entity.CollectionMediaSource">
+        <result column="media_bin" jdbcType="BINARY" property="mediaBin"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id,sound_time, media_type,media_path, create_time, update_time, createor, updateor, remark, del_flag
+  </sql>
+    <sql id="Blob_Column_List">
+    media_bin
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from collection_media_source
+        where id = #{id,jdbcType=INTEGER} and del_flag = 1
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collection_media_source
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.jh.collection.entity.CollectionMediaSource">
+    insert into collection_media_source (sound_time,media_type,media_path, create_time,
+      update_time, createor, updateor, 
+      remark, del_flag, media_bin
+      )
+    values ( #{soundTime,jdbcType=INTEGER},#{mediaType,jdbcType=VARCHAR},#{mediaPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP}, #{createor,jdbcType=VARCHAR}, #{updateor,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER}, #{mediaBin,jdbcType=BINARY}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.jh.collection.entity.CollectionMediaSource">
+        insert into collection_media_source
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="soundTime != null">
+                sound_time,
+            </if>
+            <if test="mediaType != null">
+                media_type,
+            </if>
+            <if test="mediaPath != null">
+                media_path,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createor != null">
+                createor,
+            </if>
+            <if test="updateor != null">
+                updateor,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="mediaBin != null">
+                media_bin,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="soundTime != null">
+                #{soundTime,jdbcType=INTEGER},
+            </if>
+            <if test="mediaType != null">
+                #{mediaType,jdbcType=VARCHAR},
+            </if>
+            <if test="mediaPath != null">
+                #{mediaPath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createor != null">
+                #{createor,jdbcType=VARCHAR},
+            </if>
+            <if test="updateor != null">
+                #{updateor,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="mediaBin != null">
+                #{mediaBin,jdbcType=BINARY},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.jh.collection.entity.CollectionMediaSource">
+        update collection_media_source
+        <set>
+            <if test="soundTime != null">
+                sound_time = #{soundTime,jdbcType=INTEGER},
+            </if>
+            <if test="mediaType != null">
+                media_type = #{mediaType,jdbcType=VARCHAR},
+            </if>
+            <if test="mediaPath != null">
+                media_path = #{mediaType,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createor != null">
+                createor = #{createor,jdbcType=VARCHAR},
+            </if>
+            <if test="updateor != null">
+                updateor = #{updateor,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=INTEGER},
+            </if>
+            <if test="mediaBin != null">
+                media_bin = #{mediaBin,jdbcType=BINARY},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.jh.collection.entity.CollectionMediaSource">
+    update collection_media_source
+    set
+      sound_time = #{soundTime,jdbcType=INTEGER},
+      media_type = #{mediaType,jdbcType=VARCHAR},
+      media_path = #{mediaPath,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      createor = #{createor,jdbcType=VARCHAR},
+      updateor = #{updateor,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=INTEGER},
+      media_bin = #{mediaBin,jdbcType=BINARY}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.jh.collection.entity.CollectionMediaSource">
+    update collection_media_source
+    set
+      sound_time = #{soundTime,jdbcType=INTEGER},
+      media_type = #{mediaType,jdbcType=VARCHAR},
+      media_path = #{mediaPath,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      createor = #{createor,jdbcType=VARCHAR},
+      updateor = #{updateor,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <!--根据媒体资源Ids查询媒体资源list-->
+    <select id="getMediaList" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>,
+        <include refid="Blob_Column_List"/>
+        from collection_media_source
+        where del_flag = 1 and cast(id as varchar) in
+        <foreach collection="list" item="mediaId" open="(" close=")" separator=",">
+            #{mediaId}
+        </foreach>
+    </select>
+</mapper>

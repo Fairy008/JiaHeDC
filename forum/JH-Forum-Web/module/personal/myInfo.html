@@ -1,0 +1,437 @@
+<style>
+    .content{ width: 993px;margin:0 auto}
+    /*左侧轮播*/
+    .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+    /*左侧列表**/
+    .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 599px;*/}
+    .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+    .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+    .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+    .list h1 a:hover{ cursor: pointer;}
+    .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+    .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+    .list span.lab:first-of-type{margin-left:8px;}
+    .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+    .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+    .list dl dt.report{ float: right; margin-top:10px;}
+    .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+    .list dl dd p.brief{ height: 54px; margin-top:16.5px;}
+    .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+    .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+    .list dl dd p.info i.time{ margin-right: 24px;}
+    .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+    .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+    .list dl dd p.info span.collect{ background-position: 0px -49px;}
+
+    .personDiv img{width: 70px;height: 70px;border-radius: 50%;margin-top: 38px;}
+
+    .menuDiv dt:not(:last-child){border-bottom:1px solid #EEEEEE;}
+    .menuDiv dt p{text-align: left;padding-left: 31px;line-height: 35px;}
+    .menuDiv dt p.on{border-left: 4px solid #007bc3}
+    .btn3{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;background-color:#42A7F4;color:#ffffff;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}
+    .btn4{float:left;width:165px;margin-top: 20px;margin-left: 220px;margin-bottom: 20px;}
+
+    .myFollow div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+
+    .myArticle div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+    #listTitle{font-size: 30px;margin-bottom: 20px;}
+
+    .expertName a{font-size: 14px;}
+
+    dl{min-height: 260px;border-bottom: none !important;}
+
+    #addTaskForm ul li {
+        height: 40px;
+        width: 100%;
+        line-height: 50px;
+        margin-left: 58px;
+        font-size: 14px;
+        color: #808080;
+    }
+
+    #addTaskForm ul li span{margin-right: 23px;}
+
+    #addTaskForm ul li:last-child{
+        height:105px;
+    }
+    #addTaskForm ul li span label{
+        color:red;
+        /*padding:2px 8px;*/
+        vertical-align: middle;
+
+    }
+    #addTaskForm ul li span input{
+        height: 35px;
+        width: 392px;
+        border-radius: 5px;
+        border: 1px solid #eaeaea;
+    }
+    #addTaskForm ul li span select{
+        height: 35px;
+        width: 71%;
+    }
+    #addTaskForm ul li span textarea{
+        height: 105px;
+        width: 392px;
+        border-radius: 5px;
+        border: 1px solid #eaeaea;
+        resize: none;
+    }
+
+    #personName{width: 212px !important;}
+    #nickName{width: 212px !important;}
+
+    /*.btn3{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;background-color:#42A7F4;color:#ffffff;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}*/
+    /*.btn4{float:left;width:165px;margin-top: 20px;margin-left: 260px;margin-bottom: 20px;}*/
+
+    .success{display:none;z-index:99999;position:absolute;left:56%;bottom:20%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px; height:30px;border:1px solid #00BB24;color:#00BB24;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:165px;}
+    .failure{display:none;z-index:99999;position:absolute;left:56%;top:20%;margin-left: -73px;margin-top: -15px;text-align:center;margin-right:18px;height:30px;border:1px solid #D53C00;color:#D53C00;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;float:left;width:165px;}
+
+    .btn{display: block;height: 40px;width: 100%;text-align: center;margin-top: 43px;cursor:pointer;}
+    .btn a{width: 175px;height: 40px;background-color: #007bc4;color: #f3f6f6;display: inline-block;border-radius: 5px;text-align: center;line-height: 40px;font-size: 14px;}
+</style>
+
+
+<div class="list">
+    <div style="border-bottom: 1px solid #EEEEEE">
+        <p id="listTitle">基本信息</p>
+    </div>
+    <div class="addTaskForm">
+        <div class="success"><img src="images/public/forum/icon-pass.png" style="float:left;margin-left: 40px;margin-top: 5px;"><span id="successMsg"></span></div>
+        <div class="failure"><img src="images/public/forum/icon-Delete.png" style="float:left;margin-left: 40px;margin-top: 5px;"><span id="failureMsg"></span></div>
+        <form id="addTaskForm" action="">
+
+            <ul>
+                <li style="margin-top: 25px;">
+                    <span class="txtLabel">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>*</label>昵称</span>
+                    <span><input id="nickName" type="text" name="nickName"/></span>
+                </li>
+                <li style="margin-top: 25px;">
+                    <span class="txtLabel">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>*</label>姓名</span>
+                    <span><input id="personName" type="text" name="personName"/></span>
+                    <input id="personId" type="hidden" name="personId"/>
+                    <input id="accountId" type="hidden" name="accountId"/>
+                    <input id="personMobile" type="hidden" name="personMobile"/>
+                    <input id="accountCode" type="hidden" name="accountCode"/>
+                </li>
+                <li style="margin-top: 15px;">
+                    <span class="txtLabel">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label>*</label>性别</span>
+                    <div id="sex" style="  height: 30px;width: 70%;margin-top:-50px;margin-left: 85px;"></div>
+                </li>
+                <li style="margin-top: 15px;">
+                    <span class="txtLabel">工作单位</span>
+                    <span><input id="company" type="text"/></span>
+                </li>
+                <li style="margin-top: 25px;">
+                    <!--<span class="txtLabel" id="menoId" style="float: left;margin-right: 27px;">个人简介</span>-->
+                    <!--<span><textarea id="remark" /></span>-->
+                    <span class="txtLabel" id="menoId">个人头衔</span>
+                    <span><input id="remark" type="text"/></span>
+                </li>
+            </ul>
+            <div id="msgInfo" style="color:red;width: 58%;margin: 0 auto;height: 30px;line-height: 30px;"></div>
+            <div class="btn"><a id="saveBtn">保存</a></div>
+        </form>
+    </div>
+</div>
+<div style="clear: both;"></div>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","enums","formVerfication"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,enums,formVerfication){
+        var personType = forum_userType.expert_user;
+
+        //初始化方法
+        var init = function(){
+            initSexFun(300);//用户性别
+            getExpertInfo();//查询个人信息
+            $("#saveBtn").click(function(){
+                updateInfo();
+            });
+        }
+        //同步修改用户信息
+        var updateUserInfo = function(redisKey,accountName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.updateUserInfo_url+"?redisKey="+redisKey+"&accountName="+accountName;
+            ajax.opts.successFun = function () {
+
+            }
+            ajax.run()
+        }
+
+        /**
+         * 后台查询专家的个人信息
+         * @param
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getExpertInfo = function () {
+            var result =  isLogion();
+            if (!result.flag || null == result.data){
+                return
+            }
+            var person = JSON.parse(result.data);
+            var accountId = person.accountId;
+            $("#accountId").val(accountId);
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.nolog_getByAccountId_url+"?accountId="+accountId;
+            ajax.opts.type = 'get';
+            ajax.opts.successFun = function (result) {
+                if (result.flag && null != result.data){
+                    var exportInfo = commons.findExpertByAccountId(accountId);
+                    if(exportInfo && JSON.stringify(exportInfo) != '{}'){
+                        personType = forum_userType.expert_user;
+                        $("#personName").attr("readonly","readonly");
+                        /*$("#nickName").attr("readonly","readonly");*/
+                        $("#personName").css("background-color","#FCFCFC");
+                        $("#nickName").css("background-color","#FCFCFC");
+                    }else{
+                        personType = forum_userType.ordinary_user;
+                    }
+                }
+            };
+            ajax.opts.errorFun = function () {
+              //  showUser(accountId);//如果当前用户不是专家，则查询并显示用户信息
+            };
+            ajax.run();
+            showUser(accountId);//如果当前用户不是专家，则查询并显示用户信息
+        }
+
+        /**
+         * 获取并加载作者详情
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var showUser = function(accountId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.nolog_getByAccountId_url + "?accountId=" + accountId;
+            ajax.opts.type = 'get';
+            ajax.opts.successFun = function(result){
+                var user = result.data;
+                $("#nickName").val(user.nickName);
+                $("#personName").val(user.personName);
+                $("#company").val(user.company);
+                $("#remark").val(user.remark);
+                $("#personMobile").val(user.mobile);
+                $("#accountCode").val(user.accountCode);
+                $("input[type='radio'][name='sex'][value='"+ user.sex +"']").attr("checked","checked");
+                $("#personId").val(user.personId);//获取用户personId
+            };
+            ajax.run();
+        };
+
+        //用户性别
+        var sexCache = [];
+        /**
+         * 获取用户性别下拉框数据
+         * @param parentId = 300
+         * @version <1> 2018-03-15 wl : created.
+         */
+        var initSexFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if(result.flag){
+                    sexCache = result.data;
+                    $.each(result.data, function(index, element){
+                        if(index==0){
+                            str+='<input   type="radio" name="sex" value="'+element.dictId+'" checked="checked"/><span class="radioText">'+element.dataName+'</span>';
+                        }else{
+                            str+='<input   type="radio" name="sex" value="'+element.dictId+'"/><span class="radioText">'+element.dataName+'</span>';
+                        }
+
+                    });
+                    $("#sex").html(str);
+                }
+            };
+            ajax.run();
+        };
+
+        /**
+         * 判断用户是否登陆,若登录成功，返回用户信息
+         * @param
+         * @return boolean
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+        var updateInfo = function () {
+            editSaveFun($("#personId").val(),$("#accountId").val());
+            //如果是专家用户出了修改原始用户信息表还需要修改专家表
+            if(personType == forum_userType.expert_user){
+                editExpert();
+            }
+        }
+
+        var formVerf = function(){
+            var msgInfo = $('#msgInfo');
+            if(formVerfication.checkInputIsEmpty($('#nickName'),msgInfo,'昵称不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(1,10,$('#nickName'),msgInfo,'昵称长度不能超过10个字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsEmpty($('#personName'),msgInfo,'姓名不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(1,10,$('#personName'),msgInfo,'姓名长度不能超过10个字')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,30,$('#company'),msgInfo,'单位长度不能超过30个字')){
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,100,$('#remark'),msgInfo,'个人头衔长度不能超过15个字')){
+                return false;
+            }
+            return true;
+        }
+
+
+        /**
+         * 修改保存
+         * @param roleDialog
+         */
+        var editSaveFun = function(){
+            var personId = $("#personId").val();
+            var accountId = $("#accountId").val();
+            if(!formVerf()){
+                return ;
+            }
+
+            var person = {};
+            person.personName = $("#personName").val().trim();//姓名
+            person.sex = $("input[type='radio'][name='sex']:checked").val();//性别
+            person.company = $("#company").val().trim();//公司
+            person.remark = $("#remark").val().trim();//简介
+            person.personId = personId;
+            person.mobile = $("#personMobile").val();
+            person.personType=$("#personType").val();
+
+            var account = {};
+            account.nickName = $("#nickName").val().trim();//昵称
+            account.remark = $("#remark").val().trim();
+            account.accountId =  accountId;
+            account.accountCode =  $("#accountCode").val();
+            var personParam  = {};
+            personParam.permPerson  = person;
+            personParam.permAccount = account;
+
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = USER_CONFIG.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(personParam);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    /*$("#successMsg").html("保存成功");
+                    $(".success").show();
+                    window.setTimeout(function(){
+                        $(".success").hide();
+                    },1500);*/
+                    //重置用户名称
+                    $(".userCenter .user").text(account.nickName);
+                    $(".personDiv #p_userName").text(account.nickName);
+
+                    var intro = $("#remark").val().trim();
+                    if(intro != null && intro != "" && intro.length > 15){}
+
+                    //修改简介
+                    $(".personDiv #p_introduction").text();
+
+                    var redisKey = commons.getCookie(COOKIE_CONFIG.cookieName);
+                    var accountName = JSON.parse(commons.isLogion().data).accountName;
+                    updateUserInfo(redisKey,accountName)
+
+
+
+                    commons.tipMessageShow("保存成功", 3000, true);
+                }else{
+                   /* $("#failureMsg").html("保存失败");
+                    $(".failure").show();
+                    window.setTimeout(function(){
+                        $(".failure").hide();
+                    },1500);*/
+                    commons.tipMessageShow("保存失败", 3000, false);
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+               /* $("#failureMsg").html("保存失败");
+                $(".failure").show();
+                window.setTimeout(function(){
+                    $(".failure").hide();
+                },1500);*/
+                commons.tipMessageShow("保存失败", 3000, false);
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 修改专家信息
+         * @param
+         */
+        var editExpert = function(){
+            var accountId = $("#accountId").val();
+
+            var expertParam  = {};
+            expertParam.accountId = accountId;
+            expertParam.expertName  =  $("#personName").val().trim();//姓名
+            expertParam.sex = $("input[type='radio'][name='sex']:checked").val();//性别
+            expertParam.company = $("#company").val().trim();//公司
+            expertParam.introduction = $("#remark").val().trim();//简介
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_EXPERT.editExpertByAccount_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(expertParam);
+            ajax.opts.successFun = function(result){
+                if(!result.flag){
+                   /* $("#failureMsg").html("专家信息保存失败");
+                     $(".failure").show();
+                     window.setTimeout(function(){
+                     $(".failure").hide();
+                     },1500);*/
+                    commons.tipMessageShow("专家信息保存失败", 3000, false);
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+               /* $("#failureMsg").html("专家信息保存失败");
+                $(".failure").show();
+                window.setTimeout(function(){
+                    $(".failure").hide();
+                },1500);*/
+                commons.tipMessageShow("专家信息保存失败", 3000, false);
+            };
+            ajax.run();
+        };
+
+        init();
+
+    })
+</script>
+

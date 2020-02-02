@@ -1,0 +1,470 @@
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{padding-left:15px;color:red;}
+    /*#pager2_left .btn{float:left;margin-right:10px;}*/
+    .statisticsTable{height:110px;width:40%;margin:0 auto;}
+    .statisticsTable>h3{text-align:center;height:30px;line-height:30px;}
+    .statisticsTable #sTable>div{border:1px solid #000;height:26px;line-height:26px;width:100%;}
+    .statisticsTable #sTable>div:first-child{border-bottom:0px}
+    .statisticsTable #sTable div>span{width:calc(20% - 2px);height:26px;line-height:26px;display:block;float:left;border-right:1px solid #000;text-align:center;}
+    .statisticsTable #sTable div>span:last-child{border-right:0px;}
+
+    .statisticsTitle em{font-weight:normal !important;font-size:10px !important;}
+    #formDiv .btLabel span{background:#3FC7F7;color:#fff;float:left;display:block;width:20%  !important;text-align:center;border-right:1px solid #fff;cursor:pointer;}
+    .on{background:#00A7ED !important;}
+    .divStatis{width:300px !important;}
+
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" id="formDiv">
+                <!--<div class="btLabel divStatis">-->
+                    <!--<span  class="t1"  id="day">当日</span>-->
+                    <!--<span  class="t1" id="threeDay">近三天</span>-->
+                    <!--<span  class="t1 on" id="week">一周</span>-->
+                    <!--<span  class="t1" id="month">一个月</span>-->
+                <!--</div>-->
+
+                <div class="divStatis">
+                    <span class="label">数据时间：</span>
+                    <span><input type="text" class="input"  id="search_Date"/></span>
+                </div>
+
+                <div class="divStatis">
+                    <span class="label">入库时间：</span>
+                    <span><input type="text" class="input" id="search_create_date"/></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+            </div>
+        </div>
+    </div>
+
+    <div class="statisticsTable">
+        <h3>高分数据统计</h3>
+        <div id="sTable"></div>
+
+    </div>
+
+    <div class="grid">
+        <table id="dataStorageGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule){
+
+        var Dict_DataSat_Flag = 400;//数据集：卫星
+        var Dict_DataSat_Default = null; //卫星默认值
+        var init = function(){
+
+            //高分数据统计
+            loaderGFStatistics({});
+
+            loaderGrid();//加载表格
+
+
+
+            dateFun('search_Date');//日期控件
+            dateFun('search_create_date');//日期控件
+
+
+
+            /*initSatIdFun(400);//初始化卫星下拉框的值400
+            initSensorFun(401);//初始化卫星下拉框的值401*/
+            getDataDictOption("satNameSelect",Dict_DataSat_Flag, Dict_DataSat_Default );
+            // getDataDictOption("dsTypeSelect",Dict_DataStorageType_Flag,Dict_DataStorageType_Default );
+            getSensorOption(); //获取传感器下拉列表
+            $("#queryBtn").bind("click",searchFun);//查询方法
+            $("#resetBtn").on("click",resetFun);
+
+            $(window).resize(function(){
+                $("#dataStorageGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            getDataDictOption("satNameSelect",Dict_DataSat_Flag, Dict_DataSat_Default );
+            $("#search_sensor").html('');
+        }
+
+
+        /**
+         * 通过卫星change事件获取传感器下拉列表
+         * @param sensNameSelect 传感器class
+         *        satId  卫星Id
+         * @version <1> 2018-2-26 lcw : Created.
+         */
+        var getSensorOption = function(){
+            $("#search_satName").on("change",function(){
+                getDataDictOption("sensNameSelect",$('#search_satName option:selected').attr('data-id'));
+            })
+        }
+
+        /**
+         * 查询数据字典数据
+         * @param selectClass ： 类选择器
+         * @paran dictId : 上级节点ID
+         * 数据集下拉框查询参数： "dsSelect","1"
+         */
+        var getDataDictOption = function(selectClass, dictId, defaultValue) {
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DICT_CONFIG.queryDictByParentId_url;
+            baseAjax.opts.data = JSON.stringify({'parentId': dictId});
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    $('.' + selectClass).html("");
+
+                    var dataStatusArray = resultData.data;
+                    var optionHtml = "";
+
+                    if(defaultValue == undefined || defaultValue == null || defaultValue == ""){
+                        optionHtml += "<option value=''>--请选择--</option>";
+                    }
+
+
+                    for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                        var dataStatus = dataStatusArray[i];
+                        if(dataStatus.dictId == defaultValue){
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" data-id="' + dataStatus.dictId + '" selected>' + dataStatus.dataName + '</option>';
+                            if(selectClass == "satNameSelect"){
+                                getDataDictOption("sensNameSelect",dataStatus.dictId );
+                            }
+                        }else{
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" data-id="' + dataStatus.dictId + '">' + dataStatus.dataName + '</option>';
+                        }
+                    }
+                    $('.' + selectClass).append(optionHtml);
+                } else {
+
+                }
+            }
+            baseAjax.run();
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#dataStorageGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height() - $(".statisticsTable").height() -$(".ui-jqgrid-hdiv").height())-$("#pager2").height() - 20 +"px"});
+            $("table[role='grid']").each(function () {//jqgrid 创建的表格都有role属性为grid
+                $('.' + $(this).attr("class") + ' tr:first th:first').css("width", "60"); //使表头的序号列宽度为40
+                $('.' + $(this).attr("class") + ' tr:first td:first').css("width", "60"); // 使表体的序号列宽度为40
+            });
+        };
+
+        /**
+         * 统计高分数据入库情况
+         *
+         */
+        var loaderGFStatistics = function(storageParam){
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = DATA_STORAGE.queryGFDatas;
+            ajax.opts.type = "POST";
+
+            $("#sTable").html("")
+            $("#sTable a").unbind("click")
+            storageParam.satellites = "GF1,GF2,GF3,GF4"
+
+            ajax.opts.data = JSON.stringify(storageParam);
+
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+
+                    var _th = "<div><span>卫星</span>"
+                    var _td = "<div><span>景数</span>"
+                    $.each(result.data,function(index, element){
+                        _th += "<span>"+ element.satellite +"</span>"
+                        _td += "<span><a href='javascript:void(0)' value='"+ element.satellite +"'>"+ element.value +"</a></span>"
+                    })
+                    _th += "</div>"
+                    _td += "</div>"
+
+                    $("#sTable").append(_th).append(_td)
+
+                    $("#sTable a").bind("click",function(){
+                        searchFun($(this).attr("value"));
+                    })
+
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+
+            };
+            ajax.run();
+
+        }
+
+
+        var permissionFlag = true;
+        var loaderGrid = function(){
+            var storageParam = {};
+            storageParam.satellites = 'GF1,GF2,GF3,GF4';
+
+            $("#dataStorageGrid").jqGrid({
+                url: DATA_STORAGE.findByPage_url,
+                datatype: "json",
+                postData:storageParam,
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['storageId','storageUrl','','卫星','传感器', '数据日期','产品序列号','景序列号','云量','入库日期','文件名', '文件大小','操作'],
+                colModel: [
+                    {name:'storageId',index:'storage_id', hidden:true,key:true},
+                    {name:'storageUrl',index:'storageUrl', hidden:true},
+                    {name:'thumbnailUrl',index:'thumbnail_url', width:'3%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            if(cellvalue != null && cellvalue != ''){
+                                return '<span class="data_img" bbox="'+rowObject.bbox+'" storage_id="'+rowObject.storageId+'"><img src="'+ DATA_STORAGE.showThumbnail_url+'?storageId='+  rowObject.storageId + '&AccessToken=' + commons.getAccessToken() + '"></span>';
+                            }else{
+                                return '<span class="data_img" bbox="'+rowObject.bbox+'" storage_id="'+rowObject.storageId+'"></span>';
+                            }
+                        }},
+                    {name: 'satellite', index: 'satellite', align: 'center', width: '8%', sortable: true},
+                    {name: 'sensor', index: 'sensor', align: 'center', width: '10%', sortable: true},
+                    {name:'dataTime',index:'data_time', width:'10%',align:"center", sortable:true,formatter:function(cellvalue, options, rowObject){
+                            return new Date(rowObject.dataTime).Format('yyyy-MM-dd');
+                        }},
+                    {name: 'productLevel', index: 'product_level', align: 'center', width: '10%', sortable: true},
+                    {name: 'sceneId', index: 'scene_id', align: 'center', width: '10%', sortable: true},
+                    {name: 'cloudPercent', index: 'cloud_percent', align: 'center', width: '6%', sortable: true},
+                    {name:'createTime',index:'create_time', width:'10%',align:"center", sortable:true,formatter:function(cellvalue, options, rowObject){
+                            if(rowObject.createTime == null){
+                                return ""
+                            }
+                            return new Date(rowObject.createTime).Format('yyyy-MM-dd');
+                        }},
+                    {name: 'fileName', index: 'file_name', align: 'left', width: '35%', sortable: false},
+                    {name: 'dataSize', index: 'data_size', align: 'right', width: '4%', sortable: false},
+
+                    {name: 'cz', index:'cz', width:'6%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str="";
+                            var suffix = DATA_STORAGE.download_suffix;
+                            str+= "<a href='"+suffix+ rowObject.storageUrl +"' target='_blank' title='文件下载' data-id='"+suffix+ rowObject.storageId +"'><img src='images/public/download.png'></a>";
+                            return str;
+                        }}
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+
+
+                    $("#dataStorageGrid").setGridWidth($(".rightMain").width() - 30);
+
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html("<input type='button' class='btn btn_grey' value='批量下载' id='batchDownloadBtn' />" +
+                            "<span id='errorInfo'></span>");
+                    }
+
+
+                    tableEvent();//绑定table表格操作事件
+
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+
+                    var ids = $("#dataStorageGrid").jqGrid("getGridParam", "selarrrow");
+                    var rowNum = $("#dataStorageGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+                    if(ids.length == rowNum){//全选
+                        $("input[type='checkbox']").prop("checked",true);
+                    }
+                    if(ids.length == 0 &&  !$("#createBtn").hasClass("btn_grey")){
+                        $("#batchDownloadBtn").addClass("btn_grey");
+//                        $("#batchDownloadBtn").addClass("btn_grey");
+                    }else{
+                        $("#batchDownloadBtn").removeClass("btn_grey");
+//                        $("#batchDownloadBtn").removeClass("btn_grey");
+                    }
+                },
+                onSelectRow:function(rowid, e) {
+                    var ids = $("#dataStorageGrid").jqGrid("getGridParam", "selarrrow");
+                    var rowNum = $("#dataStorageGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+                    if(ids.length == rowNum){//全选
+                        $("input[type='checkbox']").prop("checked",true);
+                    }
+                    if (ids.length == 0 && !$("#createBtn").hasClass("btn_grey")) {
+                        $("#batchDownloadBtn").addClass("btn_grey");
+                    } else {
+                        $("#batchDownloadBtn").removeClass("btn_grey");
+                    }
+                }
+            })
+
+
+        };
+
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var tableEvent = function(){
+            $(".downloadBtn,#batchDownloadBtn").off("click");
+
+            $(".downloadBtn").on("click",function(){
+                //var path = $(this).attr("path");
+                //path = encodeURI(path);
+                //window.open("/dataReprocess/down?dataUrl="+path);
+                var storageId = $(this).attr("data-id");
+                var url = DATA_STORAGE.download_url + "?storageId="+storageId + "&AccessToken=" + commons.getAccessToken();
+                commons.createIframe(url, triggerDelay, removeDelay);
+            });
+
+
+            $("#batchDownloadBtn").on("click",function(){//批量下载
+                if(!$(this).hasClass("btn_grey")){
+                    batchDownloadFun();
+                }
+            });
+        };
+
+
+
+
+
+        /**
+         * Description: 批量下载
+         * @version <1> 2018/5/24 zhangshen: Created.
+         */
+
+        var batchDownloadFun = function(){
+            var ids = $("#dataStorageGrid").jqGrid("getGridParam", "selarrrow");//获取被选中的
+
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#dataStorageGrid").jqGrid('getRowData', id);
+                var suffix = DATA_STORAGE.download_suffix;
+                window.open(suffix + row.storageUrl);
+            });
+        };
+
+        /**
+         * 查询数据字典数据
+         * @param selectClass ： 类选择器
+         * @paran dictId : 上级节点ID
+         * 数据集下拉框查询参数： "dsSelect","1"
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+
+        var satelliteCache = [];
+        var getDataDictOption = function(selectClass, dictId, defaultValue) {
+
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DICT_COFING.queryDictByParentId_url;
+            baseAjax.opts.data = JSON.stringify({'parentId': dictId});
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    if(selectClass == "satNameSelect"){
+                        satelliteCache = resultData.data;
+                    }
+
+                    $('.' + selectClass).html("");
+                    var dataStatusArray = resultData.data;
+                    var optionHtml = "";
+                    if(defaultValue == undefined || defaultValue == null || defaultValue == ""){
+                        optionHtml += "<option value=''>--请选择--</option>";
+                    }
+
+
+                    for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                        var dataStatus = dataStatusArray[i];
+                        if(dataStatus.dictId == defaultValue){
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" name="'+ dataStatus.dataName +'" data-id="' + dataStatus.dictId + '" selected>' + dataStatus.dataName + '</option>';
+                            if(selectClass == "satNameSelect"){
+                                getDataDictOption("sensNameSelect",dataStatus.dictId );
+                            }
+                        }else{
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" name="'+ dataStatus.dataName +'" data-id="' + dataStatus.dictId + '">' + dataStatus.dataName + '</option>';
+                        }
+                    }
+                    $('.' + selectClass).append(optionHtml);
+                } else {
+
+                }
+            }
+            baseAjax.run();
+        };
+
+
+
+        var dateFun = function(idName){
+            $("#"+idName).jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 zhangshen： Created.
+         */
+        var searchFun = function(_satellite) {
+            var storageParam = {};
+
+            var searchDate = $("#search_Date").val().trim()
+            var searchDateArr=searchDate.split('至');
+            storageParam.beginTime = searchDateArr[0];//开始时间
+            storageParam.endTime = searchDateArr[1]; //  结束时间
+
+
+            var searchCreateDate = $("#search_create_date").val().trim()
+            var searchCreateDateArr=searchCreateDate.split('至');
+            storageParam.beginCreateTime = searchCreateDateArr[0];//开始创建时间
+            storageParam.endCreateTime = searchCreateDateArr[1]; //  结束创建时间
+
+            if(_satellite  == 'GF1' || _satellite == 'GF2'  || _satellite == 'GF3'  || _satellite == 'GF4'){
+
+                storageParam.satellite = _satellite;
+            }else{
+                storageParam.satellite = null;
+
+            }
+
+
+            loaderGFStatistics(storageParam)
+
+            $("#dataStorageGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:storageParam,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+
+
+
+
+        init();
+    });
+</script>

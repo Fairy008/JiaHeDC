@@ -1,0 +1,590 @@
+<style type="text/css">
+    #errorInfo{color:red;font-size:12px;}
+    h3{font-weight:normal;padding-top:10px;}
+    .span_ellipsis {
+        display:block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 300px;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">模板名称：</span>
+                    <span>
+                        <input type="text" id="searchTemplateName" class="input"/>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " value="重置" id="resetBtn" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="templateModuleGrid"></table>
+        <div id="pager2"></div>
+    </div>
+    <!-- 表单数据对话框 -->
+    <div  class="form" id="templateModuleDialog" style="display: none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>模板名称:</td>
+                <td class="two_td2">
+                    <input name="templateName" id="templateName" class="inputType" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>模板文件:</td>
+                <td class="two_td2">
+                    <input name="templateFilePosition" id="templateFilePosition" class="inputType" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>手机版模板文件:</td>
+                <td class="two_td2">
+                    <input name="templateMobileFilePosition" id="templateMobileFilePosition" class="inputType" type="text"/>
+                </td>
+            </tr>
+
+
+        </table>
+        <div id="errorInfo"></div>
+    </div>
+    <!-- 查看详情对话框 -->
+    <div  class="form" id="seeTemplateModuleDialog" style="display: none;">
+        <table style="width: 100%;">
+            <tr>
+                <td class="two_td1" style="width: 30%">模板名称:</td>
+                <td class="two_td2" style="width: 70%">
+                    <span id="templateNameV" class="span_ellipsis"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="width: 30%">模板文件:</td>
+                <td class="two_td2" style="width: 70%">
+                    <span id="templateFilePositionV" class="span_ellipsis"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="width: 30%">手机版模板文件:</td>
+                <td class="two_td2" style="width: 70%">
+                    <span id="templateMobileFilePositionV" class="span_ellipsis"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1" style="width: 30%">创建时间:</td>
+                <td class="two_td2" style="width: 70%">
+                    <span id="createTimeV" class="span_ellipsis"></span>
+                </td>
+            </tr>
+            <!--<tr>
+                <td class="two_td1" style="width: 50%">修改时间:</td>
+                <td class="two_td2" style="width: 70%">
+                    <span id="modifyTimeV" class="span_ellipsis"></span>
+                </td>
+            </tr>-->
+        </table>
+    </div>
+    <!-- 确认对话框 -->
+    <div id="delDialog" class="dialogStyle" style="display:none">
+    </div>
+    <!--END ADD-->
+</div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","dateUtil","RegionModule","commons"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,dateUtil,RegionModule,commons) {
+
+
+
+            //日期控件
+            var dateFun = function(idName){
+                $("#"+idName).jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+            /**
+             * 下载任务记录的渲染
+             *
+             * @version <1> 2018-02-28 xzg： Created.
+             */
+            var templateModuleGrid = function () {
+                $("#templateModuleGrid").jqGrid({
+                    url: TEMPLATE_MODULE_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: 0,
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['templateId','模板名称','模板文件','手机版模板文件','创建时间','操作'],
+                    colModel: [
+                        {name: 'templateId', index: 'templateId',width:'0%',hidden:true,sortable: false},
+                        {name: 'templateName', index: 'templateName',align: 'center',width:'20%',sortable: false},
+                        {name: 'templateFilePosition', index: 'templateFilePosition',align: 'left',width:'20%',sortable: false},
+                        {name: 'templateMobileFilePosition', index: 'templateMobileFilePosition',align: 'left',width:'20%',sortable: false},
+                        {name: 'createTime', index: 'createTime',align: 'center',width:'20%',sortable: false},
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '20%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str= "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.templateId +"' title='编辑' >"+
+                                        "<img src='images/public/Twatch.png' class='seeBtn' data-id='"+ rowObject.templateId +"' title='查看明细' >"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='"+rowObject.templateId+"' title='删除'>";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+//                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        tableEvent();//绑定表格操作中相关事件
+                        commons.isNextDisable();
+                    }
+                });
+            };
+
+            /**
+             * 绑定table表格操作事件
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var tableEvent = function(){
+                $(".editBtn,.delBtn,.seeBtn").off("click");
+                $(".editBtn").on("click",editTemplateModule);//编辑
+                $(".delBtn").on("click",deleteTemplateModule);//删除
+                $(".seeBtn").on("click",seeTemplateModule);//查看
+            };
+
+            /**
+             * 编辑
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var editTemplateModule = function () {
+                clearData();//初始化数据
+                var templateId = $(this).attr("data-id");//模板编号
+                var templateModuleData = initTemplateModuleData(templateId);//加载对应的报表信息
+                fillEditData(templateModuleData);//填充表单数据
+                var templateModuleDialog = $("#templateModuleDialog");//模板修改对话框
+                var dialogParent = templateModuleDialog.parent();
+                var dialogOwn = templateModuleDialog.clone();
+                templateModuleDialog.dialog({
+                    autoOpen: false,
+                    title: '模板配置信息',
+//                    height: 600,
+                    width: 530,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"保存",
+                            click:function(){
+                                updateTemplateModule(templateId,templateModuleDialog);//更新模板内容
+                            }
+                        },
+                        {
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+
+                    ]
+                });
+                templateModuleDialog.dialog("open");
+            };
+
+            /**
+             * 删除模板
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var deleteTemplateModule = function(){
+                var templateId = $(this).attr("data-id");
+                var delDialog = $("#delDialog");//操作确认对话框
+                var dialogParent = delDialog.parent();
+                var dialogOwn = delDialog.clone();
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = TEMPLATE_MODULE_CONFIG.del_url+"?templateId="+templateId;
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#templateModuleGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 查看模板详情
+             * @version <1> 2018-04-18 lxy : Created.
+             */
+            var seeTemplateModule = function () {
+                var templateId = $(this).attr("data-id");
+                var templateModuleData = initTemplateModuleData(templateId);//加载对应的报表信息
+                fillSeeDetailData(templateModuleData);//将数据填入到模板详情对话框中
+                var seeTemplateModuleDialog = $("#seeTemplateModuleDialog");//模板修改对话框
+                var dialogParent = seeTemplateModuleDialog.parent();
+                var dialogOwn = seeTemplateModuleDialog.clone();
+                seeTemplateModuleDialog.dialog({
+                    autoOpen: false,
+                    title: '模板配置详情',
+                    height: 270,
+                    width: 500,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                seeTemplateModuleDialog.dialog("open");
+            };
+
+            /**
+             * 清理数据
+             */
+            var clearData = function(){
+                $("#templateModuleDialog :input").val("");
+            };
+
+            /**
+             * 填充更新数据
+             */
+            var fillEditData = function(templateModuleData){
+                $("#templateName").val(templateModuleData.templateName);
+                $("#templateName").attr("origin_name",templateModuleData.templateName);
+                $("#templateFilePosition").val(templateModuleData.templateFilePosition);
+                $("#templateMobileFilePosition").val(templateModuleData.templateMobileFilePosition);
+            };
+
+            /**
+             * 将数据填入到模板详情对话框中
+             */
+            var fillSeeDetailData = function(templateModuleData){
+                $("#templateNameV").html(templateModuleData.templateName);
+                $("#templateNameV").attr("title",templateModuleData.templateName);
+                $("#templateFilePositionV").html(templateModuleData.templateFilePosition);
+                $("#templateFilePositionV").attr("title",templateModuleData.templateFilePosition);
+                $("#templateMobileFilePositionV").html(templateModuleData.templateMobileFilePosition);
+                $("#templateMobileFilePositionV").attr("title",templateModuleData.templateMobileFilePosition);
+                $("#createTimeV").html(templateModuleData.createTime);
+                $("#modifyTimeV").html(templateModuleData.modifyTime);
+            };
+
+            /**
+             * 根据模板编号（templateId）查询对应的模板信息
+             */
+            var initTemplateModuleData = function(templateId){
+                var templateModuleData = {};
+                var ajax = new BaseAjax();
+                ajax.opts.url = TEMPLATE_MODULE_CONFIG.findById_url+"?templateId="+templateId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求，false：表示非异步，有线程阻塞
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        templateModuleData = result.data;
+                    }else{
+                        PopWin.showMessageWin("系统错误!");
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("系统错误!");
+                    return false;
+                };
+                ajax.run();
+                return templateModuleData;
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             *
+             * @version <1> 2018-02-06 djh： Created.
+             */
+            var searchFun = function () {
+                $("#templateModuleGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData:{
+                        'templateName':$.trim($("#searchTemplateName").val())
+                    },
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-07-04 zhangshen :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+            };
+
+            /**
+             *
+             *  提交后台的数据
+             * @version <1> 2018-03-02 xzg： Created.
+             */
+            var getParam = function() {
+                var templateName = $.trim($("#templateName").val());
+                var templateFilePosition = $.trim($("#templateFilePosition").val());
+                var templateMobileFilePosition = $.trim($("#templateMobileFilePosition").val());
+                var postObject = {
+                    'templateName': templateName,
+                    'templateFilePosition':templateFilePosition,
+                    'templateMobileFilePosition':templateMobileFilePosition
+                };
+                return postObject;
+            };
+
+            //初始化
+            var init = function(){
+                templateModuleGrid();//加载模板列表
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+                $(window).resize(function(){
+                    $("#templateModuleGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#templateModuleGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            }
+
+
+            /**
+             * 新增
+             * @version <1> 2018-4-13 lxy： Created.
+             */
+            var addFun = function() {
+                clearData();//初始化数据
+                $("#errorInfo").html("");//清空错误消息
+                var templateModuleDialog =  $("#templateModuleDialog");
+                var dialogParent = templateModuleDialog.parent();
+                var dialogOwn = templateModuleDialog.clone();
+                templateModuleDialog.dialog({
+                    autoOpen: false,
+                    title:'模板配置信息',
+//                    height: 350,
+                    width: 530,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [
+                        {
+                            text:'保存',
+                            click: function () {
+                                $(this).attr('disabled', true);
+                                saveTemplateModule(templateModuleDialog);
+                            }
+                        },
+                        {
+                            text:'取消',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                templateModuleDialog.dialog("open");
+            };
+
+            //生成模板表单验证
+            var formVerf = function () {
+                var downloadInfo  =  $('#templateModuleDialog');
+                if (formVerfication.checkInputIsEmpty($('#templateName'),downloadInfo,'模板名称不能为空')){
+                    return false;
+                }
+                //检查模板名称是否重复
+               var originName = $('#templateName').attr("origin_name");
+                if(!originName){
+                    var exists = checkModuleNameExists($('#templateName').val());
+                    if(exists){
+                        $(downloadInfo).append(getHtml("模板名称不能重复"));
+                        return false;
+                    }
+                }
+
+                if (formVerfication.checkInputLength(1,100,$('#templateName'),downloadInfo,'模板名称不能超过100位字符')){
+                    return false;
+                }
+
+                if (formVerfication.checkInputIsEmpty($('#templateFilePosition'),downloadInfo,'模板文件不能为空')){
+                    return false;
+                }
+                if (formVerfication.checkInputLength(1,100,$('#templateFilePosition'),downloadInfo,'模板文件不能超过100位字符')){
+                    return false;
+                }
+
+                if (formVerfication.checkInputIsEmpty($('#templateMobileFilePosition'),downloadInfo,'手机版模板文件不能为空')){
+                    return false;
+                }
+                if (formVerfication.checkInputLength(1,100,$('#templateMobileFilePosition'),downloadInfo,'手机版模板文件不能超过100位字符')){
+                    return false;
+                }
+                return true;
+            };
+            //显示提示内容
+            var getHtml = function(msg){
+                return '<div class="formErrorInfo"><span>' + msg + '</span></div>';
+            };
+
+            /**
+             * 检查是否重名
+             * @version <1> 2018-4-13 lxy： Created.
+             */
+            var checkModuleNameExists = function(moduleName){
+                var flag = false;
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.type="get";
+                baseAjax.opts.url = TEMPLATE_MODULE_CONFIG.checkModuleExists+"?moduleName="+moduleName;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        flag = true;//表示重名
+                    } else {
+                        flag = false;
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    flag = true;//表示重名
+                };
+                baseAjax.run();
+                return flag;
+            };
+
+            /**
+             * 新增模板模板
+             * @version <1> 2018-4-13 lxy： Created.
+             */
+            var saveTemplateModule = function(templateModuleDialog) {
+                if (!formVerf()){
+                    return false;
+                }
+                //获取模板内容
+                var addParam = getParam();
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = TEMPLATE_MODULE_CONFIG.save_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(addParam);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#templateModuleGrid").trigger("reloadGrid");
+                        templateModuleDialog.dialog("close");
+                        PopWin.showMessageWin("新增模板成功");
+                    } else {
+                        $("#errorInfo").html(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("新增模板失败");
+                };
+                baseAjax.run();
+            };
+            /**
+             * 更新模板内容
+             * @version <1> 2018-4-13 lxy： Created.
+             */
+            var updateTemplateModule = function(templateId,templateModuleDialog) {
+                //验证
+                if (!formVerf()){
+                    return false;
+                }
+                //修改数据
+                var updateParam = getParam();
+                updateParam.templateId=templateId;
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = TEMPLATE_MODULE_CONFIG.update_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(updateParam);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#templateModuleGrid").trigger("reloadGrid");
+                        templateModuleDialog.dialog("close");
+                        PopWin.showMessageWin("更新模板成功");
+                    } else {
+                        PopWin.showMessageWin("更新模板失败");
+                        $("#errorInfo").html(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("更新模板失败");
+                };
+                baseAjax.run();
+            };
+            init();
+        });
+    </script>
+
+

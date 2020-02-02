@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.data.mapping.IDsWeatherMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.data.entity.DsWeather" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="ymd" property="ymd" jdbcType="DATE" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="b_wendu" property="bWendu" jdbcType="VARCHAR" />
+    <result column="y_wendu" property="yWendu" jdbcType="VARCHAR" />
+    <result column="tianqi" property="tianQi" jdbcType="VARCHAR" />
+    <result column="fengxiang" property="fengXiang" jdbcType="VARCHAR" />
+    <result column="fengli" property="fengLi" jdbcType="VARCHAR" />
+    <result column="aqi" property="aqi" jdbcType="VARCHAR" />
+    <result column="aqi_info" property="aqiInfo" jdbcType="VARCHAR" />
+    <result column="aqi_level" property="aqiLevel" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="BIGINT" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="is_history" property="isHistory" jdbcType="INTEGER" />
+    <result column="area_id" property="areaId" jdbcType="INTEGER" />
+    <result column="publish_status" property="publishStatus" jdbcType="INTEGER" />
+    <result column="publish_time" property="publishTime" jdbcType="DATE" />
+    <result column="publisher_name" property="publisherName" jdbcType="VARCHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="publisher" property="publisher" jdbcType="INTEGER" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR"/>
+    <result column="region_code" property="regionCode" jdbcType="VARCHAR"/>
+    <!--<result column="publish_status_name" property="publishStatusName" jdbcType="VARCHAR" />-->
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+      id,region_id,ymd,area_name,b_wendu,y_wendu,tianqi,fengxiang,fengli,aqi,aqi_info,aqi_level,
+      region_id,parent_id,is_history,area_id,publish_status,publish_time,publisher_name,del_flag,publisher
+  </sql>
+
+  <!--根据主键id查询 -->
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from ds_weather
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!--查询数据-->
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.data.model.DsWeatherParam" fetchSize="200">
+    SELECT
+    ds.ID,
+    /*ds.region_id,*/
+    ds.ymd,
+    ds.area_name,
+    ds.b_wendu,
+    ds.y_wendu,
+    ds.tianqi,
+    ds.fengxiang,
+    ds.fengli,
+    ds.aqi,
+    ds.aqi_info,
+    ds.aqi_level,
+    ds.region_id,
+    ds.parent_id,
+    ds.is_history,
+    ds.area_id,
+    ds.publish_status,
+    ds.publish_time,
+    ds.publisher_name,
+    ds.del_flag,
+    ds.publisher,
+    r.china_name AS region_name,
+    r.region_code as region_code,
+    (select dp.data_name from init_dict dp where ds.publish_status = dp.dict_id AND dp.del_flag = '1' AND dp.data_status = '1') AS publish_status_name
+    FROM
+    ds_weather ds
+    LEFT JOIN init_region r ON ds.region_id = r.region_id
+    AND r.del_flag = '1'
+    AND r.data_status = '1'
+    WHERE
+    ds.del_flag = '1'
+   /* AND ds.data_status = '1'*/
+    <if test="id!=null and id!=''">
+      AND  ds.id = #{id,jdbcType=INTEGER}
+    </if>
+    <!--<if test="regionId!=null and regionId!=''">
+      AND  ds.region_id = #{regionId,jdbcType=INTEGER}
+    </if>-->
+    <if test="publishStatus!=null and publishStatus!=''">
+      AND  ds.publish_status = #{publishStatus,jdbcType=INTEGER}
+    </if>
+    <if test="publisherName!=null and publisherName!=''">
+      AND  ds.publisher_name like CONCAT('%', #{publisherName}, '%')
+    </if>
+    <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+      and ds.ymd BETWEEN CAST((#{startTime} || ' 00:00:00') AS  TIMESTAMP)AND CAST((#{endTime} || ' 23:59:59') AS TIMESTAMP)
+    </if>
+    <if test="regionCode!=null and regionCode!=''">
+      AND r.region_code like #{regionCode,jdbcType=VARCHAR} || '%'
+    </if>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        ds.publish_status DESC, ds.ymd desc
+      </otherwise>
+    </choose>
+  </select>
+
+
+  <!--根据id删除单条数据-->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+      delete from  ds_weather where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <!--根据主键查询单条天气信息-->
+  <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+   SELECT
+    ds.ID,
+    /*ds.region_id,*/
+    ds.ymd,
+    ds.area_name,
+    ds.b_wendu,
+    ds.y_wendu,
+    ds.tianqi,
+    ds.fengxiang,
+    ds.fengli,
+    ds.aqi,
+    ds.aqi_info,
+    ds.aqi_level,
+    ds.region_id,
+    ds.parent_id,
+    ds.is_history,
+    ds.area_id,
+    ds.publish_status,
+    ds.publish_time,
+    ds.publisher_name,
+    ds.del_flag,
+    ds.publisher,
+    r.china_name AS region_name,
+    r.region_code as region_code,
+    (select dp.data_name from init_dict dp where ds.publish_status = dp.dict_id AND dp.del_flag = '1' AND dp.data_status = '1') AS publish_status_name
+    FROM
+    ds_weather ds
+    LEFT JOIN init_region r ON ds.region_id = r.region_id
+    AND r.del_flag = '1'
+    AND r.data_status = '1'
+    /*LEFT JOIN init_dict dp ON ds.publish_status = dp.dict_id
+    AND dp.del_flag = '1'
+    AND dp.data_status = '1'*/
+    WHERE
+    ds.del_flag = '1'
+    AND id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <!--更新天气数据-->
+  <update id="updateDsWeather" parameterType="com.jh.data.model.DsWeatherParam">
+    update ds_weather
+    <set>
+      <if test="tianQi != null">tianqi = #{tianQi},</if>
+      <if test="bWendu != null">b_wendu = #{bWendu},</if>
+      <if test="yWendu != null">y_wendu = #{yWendu},</if>
+      <if test="fengXiang != null">fengxiang = #{fengXiang},</if>
+      <if test="fengLi != null">fengli = #{fengLi},</if>
+      <if test="aqi != null">aqi = #{aqi},</if>
+      <if test="aqiInfo != null">aqi_info = #{aqiInfo},</if>
+      <if test="aqiLevel != null">aqi_level = #{aqiLevel},</if>
+      <if test="delFlag != null">del_flag = #{delFlag},</if>
+      <if test="publishTime != null">publish_time = #{publish_time},</if>
+      <if test="publisherName != null">publisher_name = #{publisherName},</if>
+      <if test="publisher != null">publisher = #{publisher},</if>
+      <if test="publishStatus != null">publish_status = #{publishStatus},</if>
+        modify_time = now(),
+      <if test="modifierName != null" > modifier_name = #{modifierName},</if>
+      <if test="modifier != null" > modifier = #{modifier}</if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--发布天气数据-->
+  <update id="publish" parameterType="com.jh.data.model.DsWeatherParam">
+    update ds_weather
+    <set>
+      <if test="publishStatus != null" > publish_status = #{publishStatus}, </if>
+      publish_time  = now(),
+      <if test="publisherName != null" > publisher_name = #{publisherName}, </if>
+      <if test="publisher != null" > publisher = #{publisher}, </if>
+    </set>
+    where id in
+    <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </update>
+
+
+</mapper>

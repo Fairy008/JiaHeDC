@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title></title>
+        <link type="text/css" rel="stylesheet" href="css/common.css"/>
+        <link type="text/css" rel="stylesheet" href="css/main/main.css"/>
+        <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    </head>
+    <body>
+        <div class="top" style="background-image: url('images/public/leftBG.jpg');">
+            <div class="logo">
+                <img src="images/public/logo4.png" width="170px" height="45px">
+                <span class="sysInfo">珈和遥感私有云平台</span>
+                <a data-url="index.html" class="dataManage">数据管理</a>
+            </div>
+            <div class="user">
+                <a href="javascript:void(0);" class="userCenter"><img src="images/public/userImage.png" align="absmiddle"><span class="user user_color"></span></a>
+                <span id="noticeId" class="tips" ></span>
+                &nbsp;&nbsp;&nbsp;
+                <a href="javascript:void(0)" id="quitBtn" class="user_color">退出</a>
+                <ul class="userContent" style="display: none;" >
+                    <!--<li><a href="javascript:void(0)" data-url="index.html" page-type="1">后台管理</a></li>-->
+                    <li class="out_user" style="display:none"><a href="javascript:void(0)" data-url="index.html" page-type="1">我的订单</a></li>
+                    <li class="inner_user" style="display:none"><a href="javascript:void(0)" data-url="index.html" page-type="1">数据管理</a></li>
+                    <li class="solid">&nbsp;</li>
+                    <li ><a href="javascript:void(0)" data-url="user_edit.html" page-type="2">完善资料</a></li>
+                    <li ><a href="javascript:void(0)" data-url="pwd_update.html" page-type="3">修改密码</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="content"></div>
+
+        <!--个人中心菜单内容显示-->
+        <div id="menuInfo" style="display:none;"></div>
+
+        <script type="text/javascript" src="js/lib/require/require.js"></script>
+        <script type="text/javascript" src="js/lib/module/config.js"></script>
+        <script type="text/javascript" src="js/main/main.js"></script>
+        <script type="text/javascript">
+            require(["jquery","BaseAjax"],function($,BaseAjax){
+                var quitBtn = document.getElementById("quitBtn");
+                var noticeId = document.getElementById("noticeId");
+                var init = function(){
+                    loadIndexFun();
+                };
+                /**
+                 * 默认加载当前选中的页面
+                 * @version<1>2018-2-2 lcw : created.
+                 */
+                var loadIndexFun = function() {
+                    $('#content').load("module/map/map.html");
+                };
+                init();
+            });
+        </script>
+
+
+    </body>
+</html>

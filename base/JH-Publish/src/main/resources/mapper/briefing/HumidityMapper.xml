@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.IHumidityMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.Humidity">
+    <result column="hum_id" jdbcType="INTEGER" property="humId" />
+    <result column="hum_name" jdbcType="VARCHAR" property="humName" />
+    <result column="range_start" jdbcType="INTEGER" property="rangeStart" />
+    <result column="range_end" jdbcType="INTEGER" property="rangeEnd" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    hum_id, hum_name, range_start, range_end
+  </sql>
+  <insert id="insert" parameterType="com.jh.briefing.entity.Humidity">
+    insert into briefing_humidity (hum_id, hum_name, range_start, 
+      range_end)
+    values (#{humId,jdbcType=INTEGER}, #{humName,jdbcType=VARCHAR}, #{rangeStart,jdbcType=INTEGER}, 
+      #{rangeEnd,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jh.briefing.entity.Humidity">
+    insert into briefing_humidity
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="humId != null">
+        hum_id,
+      </if>
+      <if test="humName != null">
+        hum_name,
+      </if>
+      <if test="rangeStart != null">
+        range_start,
+      </if>
+      <if test="rangeEnd != null">
+        range_end,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="humId != null">
+        #{humId,jdbcType=INTEGER},
+      </if>
+      <if test="humName != null">
+        #{humName,jdbcType=VARCHAR},
+      </if>
+      <if test="rangeStart != null">
+        #{rangeStart,jdbcType=INTEGER},
+      </if>
+      <if test="rangeEnd != null">
+        #{rangeEnd,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+</mapper>

@@ -1,0 +1,467 @@
+<style type="text/css">
+    #divData #divChart{
+        float: left;
+        width: 100%;
+        height: 95%;
+        overflow-scrolling:auto;
+    }
+    #divTable {/*float: right;width: 45%;height:100%;*/
+        float: left;
+        width: 100%;
+        height: 95% !important;
+    }
+    #divTable table tr td{
+        text-align: center;
+    }
+</style>
+<div class="content">
+    <link rel="stylesheet" type="text/css" href="js/lib/jsgrid-1.5.3/jsgrid.css">
+    <link rel="stylesheet" type="text/css" href="js/lib/jsgrid-1.5.3/jsgrid-theme.css">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input id = "regionId"  type="text" class="input" placeholder="请选择区域" readonly/></span>
+                </div>
+                <div style="width: 220px">
+                    <span class="label2">时间：</span>
+                    <span> <input type = "text" id="startyyyy"  class="input" placeholder="开始日期" readonly style="width: 120px ! important"/>
+                </span>
+                </div>
+                <div>
+                    <span> -  <input type = "text" id="endyyyy" class="input"  placeholder="结束日期" readonly style="width: 120px ! important"/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" id="searchBtn" class="btn" value="查询" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" id="downReport" class="btn" value="导出" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="divGrid"></table>
+        <div id="pager"></div>
+    </div>
+    <div id="divTable" style="display: none">
+        <div id="dsGrid" ></div>
+    </div>
+
+    <script>
+        require(["jquery","dateUtil","RegionModule","jqueryUi","jqGrid","jsGrid","tableExporter","BaseAjax","PopWin","commons","custom_settings"],function($,dateUtil,RegionModule,jqueryUi,jqGrid,jsGrid,tableExporter,BaseAjax,PopWin,commons,custom_settings){
+
+            /**
+             * 初始化
+             * @version <1> 2018-06-22 cxw : created.
+             */
+            var init = function(){
+                initDateFun();//初始化日期控件
+                changeRegionFun();
+                $('#downReport').bind('click',downDataReportFun);//导出数据
+                $('#searchBtn').bind('click',searchdata);//查询数据
+                //重置参数
+                $("#resetBtn").on("click",resetFun);
+                //初始化JsGrid
+                initJsGrid();
+                //初始化JqGrid
+                initGridByInner();
+                $(window).resize(function(){
+                    $("#divGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+
+                /**
+                 * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+                 * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+                 * @version<1> 2018-07-20 lcw: Created.
+                 */
+                $("#startyyyy, #endyyyy").on("click",function(){
+                    if($("#divArea").css("display")== "block"){
+                        $("#divArea").css("display","none")
+                    }
+                })
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-07-24 cxw :created.
+             */
+            var resetFun = function(){
+                $(".searchItems .input").val("");
+                $("#regionId").val(custom_settings.main_search_region_name).attr("regionid", custom_settings.main_search_region_id).attr("regioncode", custom_settings.main_search_region_code).attr("chinaname", custom_settings.main_search_region_name);
+                initDateFun();
+            }
+
+            /*
+             * 初始化隐藏表格,用于导出excel数据，用于指定列名
+             * @param startYear 开始时间,endYear 结束时间
+             * @version <1> 2018-3-23 lxy : created.
+             */
+            var initJsGrid = function(data){
+                var fields = getHeaderForDs();
+                $("#dsGrid").jsGrid({fields:fields,data:[],width: "100%",height:"100%"});
+            }
+
+            /*
+             * 初始化隐藏表格列名（提供导出数据作用）
+             * @param startYear 开始时间,endYear 结束时间
+             * @version <1> 2018-3-23 lxy : created.
+             */
+            var getHeaderForDs = function(){
+                var trmmFields = [
+                    { name: "regionName",title:"区域", type: "text" },
+                    { name: "regionId",title:"区域编号", type: "text" },
+                    { name: "level",title:"区域级别", type: "text" },
+                    { name: "dateFlag",title:"月旬序列", type: "text" },
+                    { name: "trmm",title:"雨量", type: "number" },
+                    { name: "trmmYeasAvg",title:"历年雨量均值", type: "number" },
+                    { name: "distance",title:"距平值", type: "number"},
+                    { name: "percent",title:"距平比率%",type: "text"},
+                ];
+                return trmmFields;
+            }
+
+            /*
+             * 选择区域事件
+             * 1. 初始化区域选择器控件
+             * @version <1> 2018-06-28 cxw : created.
+             */
+            var changeRegionFun = function(){
+                var txtArea = document.getElementById('regionId');
+                txtArea.value = custom_settings.main_search_region_name;
+                txtArea.setAttribute("regionid", custom_settings.main_search_region_id);
+                txtArea.setAttribute("chinaname", custom_settings.main_search_region_name);
+                txtArea.setAttribute("regioncode", custom_settings.main_search_region_code);
+                $('#regionId').on('click',function(){
+                    var opts = {colNum:3,width:400};
+                    opts.url = REGION_CONFIG.findRegion_url;
+                    var regionSelector = new RegionModule.RegionSelector("regionId",opts);
+                    regionSelector.show();
+                });
+                return true;
+            };
+
+
+            /**
+             * 初始化时间选择事件
+             * @version <1> 2018-3-21 lxy : created.
+             */
+            var initDateFun = function(){
+                dateUtil.timeEvent_yyyymm("startyyyy","endyyyy",function(){});
+                //设置默认数据
+                var begin = new Date();
+                var end = new Date();
+                new Date(begin.setMonth((new Date().getMonth()-1)));
+                var begintime = begin.Format("yyyy-MM");
+                var endtime = end.Format("yyyy-MM");
+                $("#startyyyy").val(begintime);
+                $("#endyyyy").val(endtime);
+             /*   dateUtil.timeEvent_yyyymm("inpstart","inpend",function(){
+                    if(!timeJudge())
+                    {
+                        return;
+                    }
+                });*/
+            };
+
+            /**
+             * 初始化加载表格数据
+             * @version <1> 2018-6-28 cxw : created.
+             */
+            var initGridByInner = function () {
+                //区域编号
+                var regionId = $('#regionId').attr('regionid');
+                var regionName = $('#regionId').attr("chinaname");
+
+                //开始时间和结束时间
+                var startDate = $('#startyyyy').val();
+                var endDate = $('#endyyyy').val();
+                var dataJson = {};
+                dataJson.regionId = regionId;
+                dataJson.startDate = startDate+"-01";
+                dataJson.endDate =  endDate+"-01";
+
+                $("#divGrid").jqGrid({
+                    url: TrmmData_CONFIG.TrmmDataDown_url,
+                    datatype: "json",
+                    postData:dataJson,
+                    mtype:'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames:['区域','区域编号','区域级别','月旬序列','雨量','历年雨量均值', '距平值', '距平比率%'],
+                    colModel:[
+                        {name:'regionName',index:'regionName',align:'center', width:'20%', sortable:true},
+                        {name:'regionId',index:'regionId',align:'center', width:'15%', sortable:true},
+                        {name:'level',index:'level',align:'center', width:'10%', sortable:true},
+                        {name:'dateFlag',index:'dateFlag', width:'15%',align:'center', sortable:true},
+                        {name:'trmm',index:'trmm',align:'center', width:'10%', sortable:true,formatter:function (cellvalue,options,rowObject) {
+                            var str = "";
+                            if (rowObject.trmm != null) {
+                                str = rowObject.trmm;
+                            }
+                            return str;
+                        }},
+                        {name:'trmmYeasAvg',index:'trmmYeasAvg',align:'center', width:'10%', sortable:true,formatter:function (cellvalue,options,rowObject) {
+                            var str = "";
+                            if (rowObject.trmmYeasAvg != null) {
+                                str = rowObject.trmmYeasAvg;
+                            }
+                            return str;
+                        }},
+                        {name:'distance',index:'distance',align:'center', width:'10%', sortable:true,formatter:function (cellvalue,options,rowObject) {
+                            var str = "";
+                            if (rowObject.distance != null) {
+                                str = rowObject.distance;
+                            }
+                            return str;
+                        }},
+                        {name:'percent',index:'percent', width:'10%',align:'center', sortable:true}
+                    ],
+                    width:'100%',
+                    autowidth:true,
+                    height:'100%',
+                    rowNum:15,
+                    rowList:[15,30],
+                    pager: '#pager',
+                    //rowNum:-1,
+                    //rowList:[10,20,30],
+                    //pager: '#stinfoPage',
+                    sortname: 'regionId',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete:function(){
+                        $("#divGrid").setGridWidth($(".rightMain").width() - 30);
+                        $('.ui-pg-input').attr("readonly","readonly");
+                        searchDataForJsGrid();
+                    }
+                });
+            }
+
+            /*
+             * 表单验证
+             * @version <1> 2018-06-28 cxw : created.
+             */
+            var verficationFormFun = function(){
+                //区域名称为空判断
+                var regionName = $('#regionId').val().trim();
+                if(regionName == "" || regionName == null){
+                    PopWin.showMessageWin('区域名称不能为空');
+                    return false;
+                }
+                //开始时间和结束时间
+                var startDate = $('#startyyyy').val();
+                if(startDate == "" || startDate == null){
+                    PopWin.showMessageWin('开始时间不能为空');
+                    return false;
+                }
+                var endDate = $('#endyyyy').val();
+                if(endDate == "" || endDate==null){
+                    PopWin.showMessageWin('结束时间不能为空');
+                    return false;
+                }
+                if(endDate<startDate){
+                    PopWin.showMessageWin('结束时间大于开始时间');
+                    return false;
+                }
+
+                return true;
+            };
+
+            /**
+             * 下载隐藏表格数据
+             * @version <1> 2018-3-23 lxy : created.
+             */
+            var exportData = function(regionName,startDate,endDate,data){
+                var title = regionName ;
+                title += startDate + "/" + endDate ;
+                title +="度气象对比";
+                $('#dsGrid').tableExport({
+                    filename: title,
+                    data:data,
+                    format: 'xls',
+                    cols: 'regionName,regionId,level,dateFlag,trmm,trmmYeasAvg,distance,percent' //导出列
+                });
+            };
+
+            /**
+             * 导出数据
+             * @version <1> 2018-3-21 lxy : created.
+             */
+            var downDataReportFun = function(obj){
+                //区域编号
+                var regionId = $('#regionId').attr('regionid');
+                var regionName = $('#regionId').attr("chinaname");
+                //开始时间和结束时间
+                var startDate = $('#startyyyy').val();
+                var endDate = $('#endyyyy').val();
+                //获得JqGrid表格，并获取相应的数据
+                var re = $("#dsGrid").jsGrid();
+                var data = re.data().JSGrid.data;
+                if(data.length>0){
+                    //导出excel
+                    exportData(regionName,startDate,endDate,data);
+                }else{
+                    PopWin.showMessageWin('请先确认表格是否已查询出数据！');
+                }
+                /*         var dataJson = {};
+                 dataJson.regionId = regionId;
+                 dataJson.regionName = regionName;
+                 dataJson.startDate = startDate+"-01";
+                 dataJson.endDate =  endDate+"-01";
+                 if(!verficationFormFun()){
+                 return ;
+                 }
+                 downData(dataJson);*/
+            };
+
+
+            /**
+             * 查询数据
+             * @param obj
+             * @version <1> 2018-3-26 lxy : created.
+             */
+            var searchdata=function(obj){
+                if(!verficationFormFun()){
+                    return ;
+                }
+                //区域编号
+                var regionId = $('#regionId').attr('regionid');
+                var regionName = $('#regionId').attr("chinaname");
+
+                //开始时间和结束时间
+                var startDate = $('#startyyyy').val();
+                var endDate = $('#endyyyy').val();
+                var dataJson = {};
+                dataJson.regionId = regionId;
+                dataJson.startDate = startDate+"-01";
+                dataJson.endDate =  endDate+"-01";
+                //刷新表格
+                $("#divGrid").jqGrid('setGridParam',{
+                    // datatype:'json',
+                    datatype: "json",
+                    postData:dataJson,
+                    page:1
+                }).trigger("reloadGrid");
+                //加载待下载数据
+                if(regionName!=null&&regionName!=''&&startDate!=null&&startDate!=''&&endDate!=null&&endDate!='')
+                {
+                    searchDataForJsGrid();
+                }
+
+                //查询指定时间内上中下旬的雨量总量和地温的均值以及十年的均值
+                /*    var url =  HANDLE_DATA.TtnDataDown_url;
+
+                 $('.errorInfo').text('查询数据中,请稍候...');
+                 $('#searchBtn').attr('disabled',true);
+
+                 var ajax = new BaseAjax();
+                 ajax.opts.url = url;
+                 ajax.opts.data = JSON.stringify(dataJson);
+                 ajax.opts.contentType = "application/json";
+                 ajax.opts.successFun = function(data){
+                 if(!data.flag){
+                 $('.errorInfo').text('无所需数据');
+                 $("#divGrid").jsGrid({data:[]});
+                 $('#searchBtn').attr('disabled',false);
+                 }else{
+                 //渲染数据
+                 $("#divGrid").jsGrid({data:data.data});
+                 $('.errorInfo').text('查询数据成功！');
+                 $('#searchBtn').attr('disabled',false);
+                 }
+                 };
+                 ajax.opts.errorFun = function(){
+                 $('.errorInfo').text('查询数据失败！');
+                 $('#searchBtn').attr('disabled',false);
+                 };
+                 ajax.run();*/
+            };
+
+
+            /**
+             * 查询数据以jsgrid表格加载并隐藏，导出数据时使用
+             * @param obj
+             * @version <1> 2018-3-26 lxy : created.
+             */
+            var searchDataForJsGrid=function(){
+                //区域编号
+                var regionId = $('#regionId').attr('regionid');
+                var regionName = $('#regionId').attr("chinaname");
+
+                //开始时间和结束时间
+                var startDate = $('#startyyyy').val();
+                var endDate = $('#endyyyy').val();
+                var dataJson = {};
+                dataJson.regionId = regionId;
+                dataJson.startDate = startDate+"-01";
+                dataJson.endDate =  endDate+"-01";
+
+                //查询指定时间内上中下旬的雨量总量和地温的均值以及十年的均值
+                var url =  TrmmData_CONFIG.DsTrmmDataDown_url;
+                var ajax = new BaseAjax();
+                ajax.opts.url = url;
+                ajax.opts.data = JSON.stringify(dataJson);
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function(data){
+                    if(!data.flag){
+                        $("#dsGrid").jsGrid({data:[]});
+                    }
+                    else{
+                        //渲染数据
+                        $("#dsGrid").jsGrid({data:data.data});
+                    }
+                };
+
+                ajax.run();
+            };
+
+
+            /**
+             * 根据条件查询数据返回流导出数据
+             * @param param
+             * @version <1> 2018-06-28 cxw : created.
+             */
+            var downData =  function (param) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = TrmmData_CONFIG.TrmmIsExistData_url+"?regionId="+param.regionId+"&startDate="+param.startDate+"&endDate="+param.endDate;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.type='GET';
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        window.location.href=TrmmData_CONFIG.TrmmExportData_url+"?regionId="+param.regionId+"&regionName="+param.regionName+"&startDate="+param.startDate+"&endDate="+param.endDate;
+                    }
+                    else{
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("导出数据失败");
+                    return false;
+                };
+                ajax.run();
+
+            }
+
+            /**
+             * 初始化table显示样式
+             * @version <1> 2018-06-28  cxw: created.
+             */
+            var chanageTableCss = function(){
+                var divObj = $('#divGrid').parent('div');
+                divObj.addClass('tableStyle');
+                //divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-50+"px"});
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager").height()-50+"px"});
+            };
+            init();
+        });
+    </script>
+</div>

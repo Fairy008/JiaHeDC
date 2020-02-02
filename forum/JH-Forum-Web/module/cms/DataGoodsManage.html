@@ -1,0 +1,327 @@
+<style type="text/css">
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    #addDownloadData{
+        overflow-x:hidden;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">订单编号：</span>
+                    <span><input class="input inputWidth_100" id="searchOrderNo" /></span>
+                </div>
+                <div>
+                    <span class="label2">交易时间：</span>
+                    <span><input type="text" class="input" id="searchTradeTime" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">支付状态：</span>
+                    <span><select class="input inputWidth_100" id="searchPayStatus"/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dataGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+
+
+<!-- 查看订单数据详情 -->
+<div id="downloadDataInfo" style="display: none;overflow-x:hidden">
+</div>
+
+<!-- 查看订单数据详情 -->
+<div id="addDownloadData" style="display: none;">
+
+</div>
+
+<input type="text" id="data_path_hidden" style="height:1px ;width:1px ;border:0 !important;color:#FAFAFA;">
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","ztree"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,ztree){
+
+        var init = function(){
+            loaderGrid();//加载表格
+
+            loadCrops(500);//加载农作物
+            commons.findDictList(4000, "searchAccuracy");//初始化精度下拉框
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);
+
+            $(window).resize(function(){
+                $("#dataGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+
+            chanageTableCss();
+
+            initPushStatusSelect();
+
+            dateFun();
+
+        };
+
+
+        var initPushStatusSelect = function(){
+            var str = "<option value=''>--请选择--</option>";
+            str += "<option value='0'>待支付</option>";
+            str += "<option value='1'>已支付</option>";
+
+            $("#searchPayStatus" ).html("");//清空
+            $("#searchPayStatus" ).append(str);
+            /*var ajax = new BaseAjax();
+            ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId=19100";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+
+            ajax.opts.successFun = function (result) {
+                var defautText="--请选择--";
+                var str = "<option value=''>"+defautText+"</option>";
+                if (result.flag) {
+                    $.each(result.data, function (index, element) {
+                        if(element.dictId == forum_advertStatus.allStatus || element.dictId == forum_advertStatus.draftStatus || element.dictId == forum_advertStatus.publishedStatus||forum_advertStatus.offShelf){
+                            str += "<option value='" + element.dictId + "'>" + element.dataName + "</option>";
+                        }
+                    })
+
+                }
+            }
+            ajax.run();*/
+
+        }
+
+
+
+
+        var cropsJson = {};
+        var loadCrops = function (dictId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    var optList = "<option value=''>--请选择--</option>";
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        cropsJson[status.dictId] = status.dataName;
+                        optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                    }
+                    $("#cropSearch").html(optList);
+                }
+            };
+            ajax.run();
+        };
+
+
+
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $("#searchOrderNo").val("");
+            $("#searchPayStatus").val("");
+            $("#searchTradeTime").val("");
+
+            loadCrops(500);//加载农作物
+            commons.findDictList(17001, "classifySearch");
+
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#dataGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+        var colmodel = [
+            {name: 'id', index:'id', hidden:true},
+            {name: 'orderNo', index: 'order_no', align: 'center', width: '20%' },
+            {name: 'tradeTime', index: 'trade_time', align: 'center', width: '20%',formatter:function (cellvalue,options,rowObject) {
+                    return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                }},
+            {name: 'totalPrice', index: 'total_price', align: 'center', width: '20%'},
+            {name: 'payStatus', index:'pay_status', align: 'center', width: '20%',formatter:function (cellvalue,options,rowObject){
+                   switch(cellvalue){
+                       case 0:
+                           return "待支付";
+                           break;
+                       case 1:
+                           return "已支付";
+                           break;
+                   }
+                }},
+            {name: 'goodsNum', index:'goods_num', align: 'center', width: '20%'}
+
+        ];
+
+
+
+        var loaderGrid = function() {
+            var tradeTime = ($("#searchTradeTime").val().trim()).split('至');
+            $("#dataGrid").jqGrid(
+                {
+                    url: ORDERS_CONFIG.queryDataGoods_url,
+                    width: '100%',
+                    height: '100%',
+                    datatype: "json",
+                    colNames: ['id', '订单编号', '交易时间', '订单总额', '支付状态', '商品数量'],
+                    colModel: [
+                        {name: 'id', index:'id', hidden:true},
+                        {name: 'orderNo', index: 'order_no', align: 'center', width: '20%' },
+                        {name: 'tradeTime', index: 'trade_time', align: 'center', width: '20%',formatter:function (cellvalue,options,rowObject) {
+                                return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");
+                            }},
+                        {name: 'totalPrice', index: 'total_price', align: 'center', width: '20%'},
+                        {name: 'payStatus', index:'pay_status', align: 'center', width: '20%',formatter:function (cellvalue,options,rowObject){
+                                switch(cellvalue){
+                                    case 0:
+                                        return "待支付";
+                                        break;
+                                    case 1:
+                                        return "已支付";
+                                        break;
+                                }
+                            }},
+                        {name: 'goodsNum', index:'goods_num', align: 'center', width: '20%'}
+
+                    ],
+                    rowNum: 15,
+                    rowList: [10, 20, 30],
+                    pager: '#pager2',
+                    sortname: 'name',
+                    sortorder: "asc",
+                    contentType: 'application/json',
+                    autowidth: true,
+                    height: '100%',
+                    postData: {
+                        orderNo : $("#searchOrderNo").val(),
+                        payStatus : $("#searchPayStatus").val(),
+                        startDate: tradeTime[0] || '',
+                        endDate: tradeTime[1] || ''
+                    },
+                    mtype: "POST",
+                    viewrecords: true,
+                    jsonReader: {
+                        root: "list",
+                        page: "page",
+                        total: "pages",
+                        records: "total",
+                        repeatitems: false,
+                        id: "id"
+                    },
+
+                    caption: "",
+                    subGrid: true,
+                    subGridRowExpanded: function (subgrid_id, row_id) {
+                        var rowData = $("#dataGrid").jqGrid("getRowData",row_id);//根据上面的id获得本行的所有数据
+                        var orderNo= rowData.orderNo; //获得制定列的值 （auditStatus 为colModel的name）
+                        bindSubGrid(subgrid_id, orderNo);
+                    }
+                });
+        }
+
+            var bindSubGrid = function (subgrid_id,orderNo) {
+                var subgrid_table_id;
+                subgrid_table_id = subgrid_id + "_t";
+                var subgrid_pager_id;
+                subgrid_pager_id = subgrid_id + "_pgr"
+
+                $("#" + subgrid_id).html("<table id = '" + subgrid_table_id +"' class='scroll'></table><div id='"+subgrid_pager_id+"'class='scroll'></div>");
+                    $('#' + subgrid_table_id).jqGrid({
+                        url : ORDER_DETAILS_CONFIG.queryOrderDetails_url,
+                        width: '100%',
+                        height: '100%',
+                        autowidth: true,
+                        height: '100%',
+                        datatype : "json",
+                        colNames : ['数据分类', '区域名称', '精度名称', '单价', '数量', '金额', '作物'],
+                        colModel : [{name : "classifyName",index : "classify_name" ,align: 'center',width : '20%' },
+                                    {name : "regionName",index : "region_name" ,align: 'center',width : '20%' },
+                                    {name : "accuracyName",index : "accuracy_name" ,align: 'center',width : '20%'},
+                                    {name : "unitPrice",index : "unit_price" ,align: 'center',width : '10%' },
+                                    {name : "num",index : "num" ,align: 'center',width :  '10%' },
+                                    {name : "price",index : "price" ,align: 'center',width :  '10%' },
+                                    {name : "cropName",index : "crop_name" ,align: 'center',width :  '10%' },
+                                    ],
+                        rowNum :10,
+                        rowList : [10,20,30],
+                        pager : subgrid_pager_id,
+                        mtype : "post",
+                        viewrecords : true,
+                        postData: {
+                            orderNo : orderNo
+                        },
+                        jsonReader: {
+                            root: "list",
+                            page: "page",
+                            total: "pages",
+                            records: "total",
+                            repeatitems: false,
+                            id: "id"
+                        },
+                    });
+
+            }
+
+        var dateFun = function () {
+            $("#searchTradeTime").jeDate({
+                range: "至",
+                multiPane: false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         * @version <1> 2018-08-15 sxj： Created.
+         */
+        var searchFun = function() {
+            var data = {};
+            data.payStatus = $("#searchPayStatus").val();//状态
+            data.orderNo = $("#searchOrderNo").val();
+
+            if($("#searchTradeTime").val().trim()!=undefined){
+                var tradeTime = ($("#searchTradeTime").val().trim()).split('至');
+                data.startDate = tradeTime[0] || '';
+                data.endDate = tradeTime[1] || '';
+            }
+
+            $("#dataGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:data,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        init();
+
+    });
+
+
+</script>

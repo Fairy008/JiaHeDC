@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumLabelMapper" >
+
+
+  <resultMap id="BaseResultMap" type="com.jh.forum.bbs.entity.ForumLabel" >
+    <id column="label_id" property="labelId" jdbcType="INTEGER" />
+    <result column="label_name" property="labelName" jdbcType="VARCHAR" />
+    <result column="label_color" property="labelColor" jdbcType="VARCHAR" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="DATE" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    label_id, label_name, label_color, data_status, del_flag, create_time, creator_name,
+    creator, modify_time, modifier_name, modifier, remark
+  </sql>
+
+  <!--新增标签-->
+  <insert id="save" parameterType="com.jh.forum.bbs.entity.ForumLabel" >
+    insert into forum_label
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="labelName != null" >
+        label_name,
+      </if>
+      <if test="labelColor != null" >
+        label_color,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+        create_time,
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="labelName != null" >
+        #{labelName,jdbcType=VARCHAR},
+      </if>
+      <if test="labelColor != null" >
+        #{labelColor,jdbcType=VARCHAR},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+        now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <!--删除标签-->
+  <delete id="delete" parameterType="com.jh.forum.bbs.entity.ForumLabel" >
+    delete from forum_label
+    where 1 = 1
+    <if test="labelId!=null">
+      label_id = #{labelId,jdbcType=INTEGER}
+    </if>
+    <if test="labelIds!=null">
+      and label_id in
+      <foreach collection="labelIds" item="id" separator="," open="(" close=")">
+        #{id}
+      </foreach>
+    </if>
+  </delete>
+
+
+  <!--根据主键查询单个标签-->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_label
+    where label_id = #{labelId,jdbcType=INTEGER}
+  </select>
+
+  <!--更新单个标签-->
+  <update id="update" parameterType="com.jh.forum.bbs.entity.ForumLabel" >
+    update forum_label
+    <set >
+      <if test="labelName != null" >
+        label_name = #{labelName,jdbcType=VARCHAR},
+      </if>
+      <if test="labelColor != null" >
+        label_color = #{labelColor,jdbcType=VARCHAR},
+      </if>
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where label_id = #{labelId,jdbcType=INTEGER}
+  </update>
+
+  <!--分页查询标签信息-->
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.forum.bbs.entity.ForumLabel" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_label
+    where 1=1
+    <if test="labelName != null" >
+      and label_name = #{labelName,jdbcType=VARCHAR}
+    </if>
+    <if test="labelColor != null" >
+      and label_color = #{labelColor,jdbcType=VARCHAR}
+    </if>
+    <if test="dataStatus != null" >
+      and data_status = #{dataStatus,jdbcType=CHAR}
+    </if>
+    <if test="delFlag != null" >
+      and del_flag = #{delFlag,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=DATE}
+    </if>
+    <if test="creatorName != null" >
+      and creator_name = #{creatorName,jdbcType=VARCHAR}
+    </if>
+    <if test="creator != null" >
+      and creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="modifyTime != null" >
+      and modify_time = #{modifyTime,jdbcType=DATE}
+    </if>
+    <if test="modifierName != null" >
+      and modifier_name = #{modifierName,jdbcType=VARCHAR}
+    </if>
+    <if test="modifier != null" >
+      and modifier = #{modifier,jdbcType=INTEGER}
+    </if>
+    <if test="remark != null" >
+      and remark = #{remark,jdbcType=VARCHAR}
+    </if>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="findLabelByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from forum_label
+    where label_name = #{labelName,jdbcType=VARCHAR}
+  </select>
+  <select id="findAllLabel" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_label
+    where data_status = '1' and del_flag = '1'
+  </select>
+
+  <!--后台分页查询标签信息-->
+  <select id="findByPageCms" resultMap="BaseResultMap" parameterType="com.jh.forum.bbs.entity.ForumLabel" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_label
+    where 1=1
+    <if test="labelName != null and labelName != ''" >
+      AND label_name like CONCAT('%',#{labelName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="labelColor != null" >
+      and label_color = #{labelColor,jdbcType=VARCHAR}
+    </if>
+    <if test="dataStatus != null" >
+      and data_status = #{dataStatus,jdbcType=CHAR}
+    </if>
+    <if test="delFlag != null" >
+      and del_flag = #{delFlag,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null" >
+      and create_time = #{createTime,jdbcType=DATE}
+    </if>
+    <if test="creatorName != null and creatorName != '' ">
+      AND creator_name like CONCAT('%',#{creatorName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="creator != null" >
+      and creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="modifyTime != null" >
+      and modify_time = #{modifyTime,jdbcType=DATE}
+    </if>
+    <if test="modifierName != null" >
+      and modifier_name = #{modifierName,jdbcType=VARCHAR}
+    </if>
+    <if test="modifier != null" >
+      and modifier = #{modifier,jdbcType=INTEGER}
+    </if>
+    <if test="remark != null" >
+      and remark = #{remark,jdbcType=VARCHAR}
+    </if>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+</mapper>

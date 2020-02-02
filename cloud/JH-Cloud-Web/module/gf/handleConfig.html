@@ -1,0 +1,1181 @@
+<style>
+    .ms-container-self{
+        padding: 30px;
+        height:80%;
+    }
+    .custom-header{
+        text-line:30px;
+        text-align:center;
+        padding:5px;
+    }
+
+    table.dataintable {
+        margin-top:15px;
+        border-collapse:collapse;
+        border:1px solid #aaa;
+        width:100%;
+        margin-left: 5%;
+    }
+    table.dataintable th {
+        vertical-align:baseline;
+        background-color:#1f4350;
+        border:1px solid #1f4350;
+        text-align:left;
+        color:#fff;
+        font-style: normal;
+    }
+    table.dataintable td {
+        vertical-align:text-top;
+    }
+    table.dataintable tr:nth-child(odd) {
+        background-color:#F5F5F5;
+    }
+    table.dataintable tr:nth-child(even) {
+        background-color:#fff;
+    }
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">算法名称：</span>
+                    <span>
+                        <input id="search_handleName" type="text" class="input" />
+                    </span>
+                </div>
+                <div>
+                    <span class="label">算法状态：</span>
+                    <span>
+                        <select id="search_handleStatus" class="input" style="width:120px;" >
+                            <option value="">--请选择--</option>
+                            <option value="0">禁用</option>
+                            <option value="1">正常</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">关联卫星：</span>
+                    <span>
+                     <select id="search_satId" class="input inputWidth_100" >
+                    </select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="handleConfigGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="dataTypeInfo" class="form" style="display: none;">
+        <table>
+            <tr>
+                <td class="four_td1 td6"><span class="txtRequired">*</span>算法名称:</td>
+                <td class="four_td3" colspan="3">
+                    <input name="handleMetaName" id="handleMetaName" class="inputType2" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1 td6"><span class="txtRequired">*</span>算法类名:</td>
+                <td class="four_td3" colspan="3">
+                    <input name="handleMetaClass" id="handleMetaClass" class="inputType2" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1"><span class="txtRequired">*</span>执行方法:</td>
+                <td class="four_td2">
+                    <input name="handleMethodName" id="handleMethodName" class="inputType" type="text" />
+                </td>
+                <td class="four_td1"><span class="txtRequired">*</span>接收参数:</td>
+                <td class="four_td2">
+                    <input name="handleFileParamname" id="handleFileParamname" class="inputType" type="text" />
+                </td>
+            </tr>
+
+            <!--<tr>
+                <td class="two_td1">算法参数:</td>
+                <td class="two_td2">
+                    <input name="handleMetaParams" id="handleMetaParams" class="inputType" type="text" />
+                </td>
+            </tr>-->
+            <tr>
+                <td class="four_td1">输入类型:</td>
+                <td class="four_td2">
+                    <select id="ioType" class="selectType two_selectType"></select>
+                </td>
+                <td class="four_td1">算法状态:</td>
+                <td class="four_td2">
+                    &nbsp;<input name="dataStatus" class="dataStatus" type="radio" checked="checked" value="1"/>正常&nbsp;&nbsp;
+                    <input name="dataStatus" class="dataStatus" type="radio"  value="0"/>禁用
+                </td>
+            </tr>
+
+            <tr>
+                <td class="four_td1 td6">算法参数:</td>
+                <td class="four_td3" colspan="3" >
+                    <span class="red">类型为“下拉框”时数据字典的ID为必填</span>
+                    <!--    <tr class="paramsTr"><td ><input name="title" class="inputType" type="text" /></td>
+                            <td ><input name="code"  class="inputType" type="text" /></td>
+                            <td ><select name="type"  class="inputType">
+                                <option value="input">输入框</option>
+                                <option value="select">下拉框</option>
+                            </select></td>
+                            <td><input name="placeholder" class="inputType" type="text" /></td>
+
+                        </tr>
+                        <tr class="paramsTr"><td><input name="title"  class="inputType" type="text" /></td>
+                            <td ><input name="code"  class="inputType" type="text" /></td>
+                            <td ><select name="type"  class="inputType">
+                                <option value="input">输入框</option>
+                                <option value="select">下拉框</option>
+                            </select></td>
+                            <td ><input name="placeholder"  class="inputType" type="text" /></td>
+                        </tr>-->
+
+
+                </td>
+            </tr>
+            <tr>
+                <table class="dataintable" style="margin-top: 2px;width: 92%">
+                    <tr><th style="width: 20%">标题</th><th style="width: 20%">编码</th><th style="width: 20%">类型</th><th style="width: 30%">占位符/数据字典ID</th><th style="width: 10%"> </th></tr>
+                    <tbody id="paramsList">
+                    <tr class="paramsTr"><td ><input id="title" name="title" class="inputType" type="text" /></td>
+                        <td ><input id="code" name="code" class="inputType" type="text" /></td>
+                        <td ><select id="type" name="type" class="inputType">
+                            <option value="input">输入框</option>
+                            <option value="select">下拉框</option>
+                        </select></td>
+                        <td ><input id="placeholder" name="placeholder"class="inputType" type="text" /></td>
+                        <td style="width: 10%"><img src="images/public/addrow.png"  id="addTr" style='margin-top: 2px;'></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </tr>
+            <tr>
+
+            </tr>
+        </table>
+    </div>
+
+    <div id="showStars" class="form" style="display: none;">
+        <div id="starsPanel">
+        </div>
+    </div>
+
+    <div id="delDialog" class="dialogStyle" style="display:none">
+    </div>
+
+    <div id="roleDialog" class="dialogStyle" style="display:none"></div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","commons","multiselect"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,commons,multiselect) {
+
+            /*
+             * 初始化加载卫星的多选框
+             */
+            var selectedArray = [];
+            var initStarsMulti = function(){
+                var selectHtml = "<select id='starsSelect' multiple='multiple'></select>";
+                $("#starsPanel").append(selectHtml);
+                //每次弹出对话框，都要重新初始化多选复选框，选中的数组也要清空，才能保证数据正确
+                selectedArray = [];
+                $("#starsSelect").multiSelect({
+                    cssClass:"ms-container-self",
+                    selectableHeader: "<div class='custom-header'>卫星</div>",
+                    selectionHeader: "<div class='custom-header'>选中卫星</div>",
+                    //选中
+                    afterSelect: function(values){
+                       for(var i in values){
+                          selectedArray.push(values[i]);
+                       }
+                    },//非选中
+                    afterDeselect: function(values){
+                       for(var i in values){
+                          var index = $.inArray(values[i],selectedArray);
+                          selectedArray.splice(index,1);
+                       }
+                    }
+                });
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $('#search_handleStatus').html('<option value="">--请选择--</option><option value="1">正常</option><option value="0">禁用</option>');
+                initSatIdFun(400);
+            }
+
+            /**
+             * 展示数据字典中卫星数据
+             *
+             * @version <1> 2018-04-02 lxy： Created.
+             */
+            var showLinkStarDict = function(handleMetaId) {
+                //先清空内容
+                $("#starsPanel").html("");
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.searchTypeUrl;
+                ajax.opts.data = JSON.stringify({'dictId': 400});
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        //每次弹出对话框，都要重新初始化多选复选框
+                        initStarsMulti();
+                        var dictArr = result.data;
+                        for (var i in dictArr) {
+                            var dict = dictArr[i];
+                            //添加多选框的选项
+                            $("#starsSelect").multiSelect("addOption",{value:dict.dictId,text:dict.dataName});
+                        }
+                        //加载已经勾选的卫星
+                        loadRalateStatByHandleMataId(handleMetaId);
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+
+            /**
+             * 加载用户已经勾选的卫星
+             * */
+            var loadRalateStatByHandleMataId = function(handleMetaId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = HANDLE_CONFIG.loadRelateStatByHandleMataId;
+                ajax.opts.data = JSON.stringify({'handleMetaId': handleMetaId});
+                ajax.opts.async = true;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var arr = result.data;
+                        var selectValues = [];
+                        $.each(arr,function(i,e){
+                            //选中卫星编号
+                            selectValues.push(e.satid+"");
+                        });
+                        //加载已经选中的卫星
+                        $("#starsSelect").multiSelect("select",selectValues);
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+
+            /**
+             * 算法类型
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var fileSearchHandleType = function() {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.searchTypeUrl;
+                ajax.opts.data = JSON.stringify({'dictId': 600});
+                ajax.opts.async = true;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var dictArr = result.data;
+                        for (var i in dictArr) {
+                            var dict = dictArr[i];
+                            var op = "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                            $("#search_handleType").append(op);
+                            $("#handleMetaType").append(op);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+            fileSearchHandleType();
+
+            /**
+             * 算法状态
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var fileSearchHandleStatus = function() {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.searchTypeUrl;
+                ajax.opts.data = JSON.stringify({'dictId': 600});
+                ajax.opts.async = true;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        var dictArr = result.data;
+                        for (var i in dictArr) {
+                            var dict = dictArr[i];
+                            var op = "<option value='" + dict.dictId + "'>" + dict.dataName + "</option>";
+                            $("#ioType").append(op);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            };
+            fileSearchHandleStatus();
+
+            /**
+             * 算法配置记录的渲染
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-09 djh： 修改列的展示顺序，修改状态栏的逻辑.
+             */
+            var handleConfigGrid = function () {
+                $("#handleConfigGrid").jqGrid({
+                    url: HANDLE_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        'handleConfigParam': {}
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['handleMetaId', '算法名称', '算法类名', '执行方法','接收参数', '输入类型', '算法状态', '操作'],
+                    colModel: [
+                        {name: 'handleMetaId', index: 'handleMetaId', hidden: true},
+                        {name: 'handleMetaName', index: 'handleMetaName', align: 'left', width: '15%'},
+                        {name: 'handleMetaClass', index: 'handleMetaClass', align: 'left', width: '35%'},
+                        {name: 'handleMethodName', index: 'handleMethodName', align: 'center', width: '8%'},
+                        {name: 'handleFileParamname', index: 'handleFileParamname', align: 'center', width: '10%'},
+                        {name: 'ioTypeName', index: 'ioTypeName', align: 'center', width: '10%'},
+                        {name: 'dataStatusName', index: 'dataStatusName', align: 'center', width: '8%',sortable:false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "";
+                                if (rowObject.dataStatus == '1') {
+                                    str += "<span class='statusStyle'>正常</span><img src='images/public/Ton.png' class='statusBtn' data-id='" + rowObject.handleMetaId + "' data-status='0' title='禁用' >";
+                                } else {
+                                    str += "<span class='statusStyle'>禁用</span><img src='images/public/Toff.png' class='statusBtn' data-id='" + rowObject.handleMetaId + "' data-status='1' title='正常' >";
+                                }
+                                return str;
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '14%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.handleMetaId + "' title='编辑' style='margin-right: 3px;'>"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.handleMetaId + "' title='删除'>"+
+                                        "<img src='images/public/Trelevance.png' class='linkStarBtn' data-id='" + rowObject.handleMetaId + "' title='关联卫星' style='margin-right: 3px;'>";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $(".editBtn,.delBtn,.statusBtn").off("click");
+                        $(".editBtn").on("click", function () {
+                            editFun($(this).attr("data-id"));
+                        });
+                        $(".delBtn").on("click", function () {
+                            deleteFun($(this).attr("data-id"));
+                        });
+                        $(".statusBtn").on("click", function () {
+                            statusFun($(this).attr("data-id"), $(this).attr("data-status"));
+                        });
+                        $(".linkStarBtn").on("click", function () {
+                            linkStar($(this).attr("data-id"));
+                        });
+
+                    }
+                });
+            };
+
+            //弹出关联卫星的对话框
+            var linkStar = function (handleMetaId) {
+                //加载卫星数据
+                showLinkStarDict(handleMetaId);
+
+                var starsDialog =  $("#showStars");
+                var dialogParent = starsDialog.parent();
+                var dialogOwn = starsDialog.clone();
+                starsDialog.dialog({
+                    autoOpen: false,
+                    title:'关联卫星',
+                    height: 390,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons:[
+                        {
+                            text:"保存关联",
+                            click:function(){
+                                saveStars(handleMetaId,this);
+                            }
+                        },{
+                            text:"取消",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+                starsDialog.dialog("open");
+            };
+
+            /*
+            * 保存关联卫星
+            * */
+            var saveStars = function(handleMetaId,dialog){
+                var checkedLength = selectedArray.length;
+                if(checkedLength == 0){
+                    PopWin.showMessageWin("请勾选卫星");
+                    return false;
+                }
+                var dicIds = "";
+                $.each(selectedArray,function (i,obj) {
+                    if(i == 0){
+                        dicIds =  obj;
+                    }else{
+                        dicIds += ","+obj;
+                    }
+                });
+                var param = {"handleMetaId":handleMetaId,"dicIds":dicIds};
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = HANDLE_CONFIG.saveRalateStat;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(param);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $(dialog).dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("关联卫星出错！");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 更新启用或禁用状态
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             * @version <1> 2018-02-09 djh： 修正算法开启和禁用的提示语句.
+             */
+            var statusFun = function(handleMetaId, dataStatus) {
+                var tip = "是否确认启用该算法？";
+                if (dataStatus == "0") {
+                    tip = "是否确认禁用该算法？";
+                }
+                var delDialog = $("#delDialog");
+                delDialog.html(tip);
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = HANDLE_CONFIG.updateHandleConfigUrl;
+                            ajax.opts.data = JSON.stringify({'handleMetaId':handleMetaId, 'dataStatus':dataStatus});
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#handleConfigGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    if (dataStatus == "0") {
+                                        PopWin.showMessageWin("算法已禁用");
+                                    } else {
+                                        PopWin.showMessageWin("算法已启用");
+                                    }
+                                } else {
+                                    if (dataStatus == "0") {
+                                        PopWin.showMessageWin("算法禁用失败");
+                                    } else {
+                                        PopWin.showMessageWin("算法启用失败");
+                                    }
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                if (dataStatus == "0") {
+                                    PopWin.showMessageWin("算法禁用失败");
+                                } else {
+                                    PopWin.showMessageWin("算法启用失败");
+                                }
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-09 djh： 修改查询逻辑.
+             */
+            var searchFun = function () {
+                var handleMetaName = $.trim($("#search_handleName").val());
+                var handleMetaType = $.trim($("#search_handleType").val());
+                var dataStatus = $.trim($("#search_handleStatus").val());
+                var satId = $("#search_satId").val();
+                $("#handleConfigGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {'handleMetaName': handleMetaName, 'handleMetaType': handleMetaType, 'dataStatus': dataStatus,'satId':satId},
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 获取更新或添加的算法配置的数据参数
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var getParam = function() {
+                var handleMetaName = $.trim($("#handleMetaName").val());
+                var handleMetaClass = $.trim($("#handleMetaClass").val());
+               // var handleMetaParams = $.trim($("#handleMetaParams").val());
+                var handleMetaParams=getTrValue();
+
+                var ioType = $.trim($("#ioType").val());
+                var dataStatus = $.trim($(":radio[checked='checked']").val());
+                var handleMethodName = $.trim($("#handleMethodName").val());
+                var handleFileParamname = $.trim($("#handleFileParamname").val());
+
+                var paramConfig = {
+                    handleMetaName: handleMetaName,
+                    handleMetaClass: handleMetaClass,
+                    handleMetaParams: handleMetaParams,
+                    ioType: ioType,
+                    dataStatus:dataStatus,
+                    handleMethodName: handleMethodName,
+                    handleFileParamname: handleFileParamname
+                };
+
+                return paramConfig;
+            };
+
+            var init = function(){
+
+                handleConfigGrid();
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+                initSatIdFun(400);
+                $(window).resize(function(){
+                    $("#handleConfigGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#handleConfigGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+
+            /**
+             * 新增算法配置记录时，算法配置模板的初始化
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var initAddHandleConfig = function() {
+                $(".inputType").val("");
+                $("#handleMetaType").find("option").first().attr("selected", "selected");
+                $("#ioType").find("option").first().attr("selected", "selected");
+                $(".dataStatus").first().attr("checked", "checked");
+            };
+
+            /**
+             * 算法配置新增
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var addFun = function() {
+                showTr();//初始化算法参数的table
+                //cleanTr();
+                initAddHandleConfig();
+                initFormValidateFun();
+                var handleConfigDialog =  $("#dataTypeInfo");
+                var dialogParent = handleConfigDialog.parent();
+                var dialogOwn = handleConfigDialog.clone();
+                handleConfigDialog.dialog({
+                    autoOpen: false,
+                    title:'算法配置信息',
+                    height: 440,
+                    width: 660,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            addSaveFun(handleConfigDialog);
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                handleConfigDialog.dialog("open");
+            };
+
+            /**
+             * 校验字段的焦点失去事件
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-08 djh： 添加非空校验.
+             */
+            var initFormValidateFun = function () {
+                var dataTypeInfo = $('#dataTypeInfo');
+                //算法名称失去焦点事件
+                $('#handleMetaName').on('change', function () {
+                    formVerfication.checkInputLengthAndIsNull(1, 200, $('#handleMetaName'), dataTypeInfo, '算法名称字数为40个以内', '算法名称不能为空');
+                });
+
+                //算法类名失去焦点事件
+                $("#handleMetaClass").on("blur", function () {
+                    var flag = formVerfication.checkInputLengthAndIsNull(1, 200, $('#handleMetaClass'), dataTypeInfo, '算法类名字数为100个以内', '算法类名不能为空');
+                    if(!flag){
+                        formVerfication.checkInputIsCharDigitalUnderlineaAndDot($('#handleMetaClass'), dataTypeInfo, '算法类名为字母、数字、下划线和.组成');
+
+                    }
+                });
+
+                //执行方法不能为空
+                $("#handleMethodName").on("blur", function () {
+                    var flag = formVerfication.checkInputLengthAndIsNull(1,30,$('#handleMethodName'), dataTypeInfo, '执行方法字数为30个以内','执行方法不能为空');
+                    if(!flag){
+                        formVerfication.checkInputIsCharDigitalUnderline($('#handleMethodName'), dataTypeInfo, '执行方法为字母、数字和下划线组成');
+
+                    }
+                });
+
+                //接收参数不能为空
+                $("#handleFileParamname").on("blur", function () {
+                    var flag = formVerfication.checkInputLengthAndIsNull(1,100,$('#handleFileParamname'), dataTypeInfo, '接收参数字数为30个以内','接收参数不能为空');
+                    if(!flag){
+                        formVerfication.checkInputIsCharDigitalUnderline($('#handleFileParamname'), dataTypeInfo, '接收参数为字母、数字和下划线组成');
+
+                    }
+                });
+
+               /* //算法参数失去焦点事件
+                $("#handleMetaParams").on("blur", function () {
+                    formVerfication.checkInputLength(0, 200, $('#handleMetaParams'), dataTypeInfo, '算法参数字数为200个以内');
+                });*/
+            };
+
+            /**
+             * 校验填写信息
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             * @version <2> 2018-02-08 djh： 添加非空校验.
+             */
+            var formVerf = function () {
+                var dataTypeInfo = $('#dataTypeInfo');
+                if (formVerfication.checkInputLengthAndIsNull(1, 200, $('#handleMetaName'), dataTypeInfo, '算法名称字数为40个以内', '算法名称不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputLengthAndIsNull(1, 200, $('#handleMetaClass'), dataTypeInfo, '算法类名字数为100个以内', '算法类名不能为空')) {
+                    return false;
+                }
+
+                if (formVerfication.checkInputIsCharDigitalUnderlineaAndDot($('#handleMetaClass'), dataTypeInfo, '算法类名为字母、数字、下划线和.组成')) {
+                    return false;
+                }
+
+                //执行方法不能为空
+                if(formVerfication.checkInputLengthAndIsNull(1,30,$('#handleMethodName'), dataTypeInfo, '执行方法字数为30个以内','执行方法不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsCharDigitalUnderline($('#handleMethodName'), dataTypeInfo, '执行方法为字母、数字和下划线组成')){
+                    return false;
+                }
+
+                //接收参数不能为空
+                if(formVerfication.checkInputLengthAndIsNull(1,100,$('#handleFileParamname'), dataTypeInfo, '接收参数字数为30个以内','接收参数不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsCharDigitalUnderline($('#handleFileParamname'), dataTypeInfo, '接收参数为字母、数字和下划线组成')){
+                    return false;
+                }
+
+               /* if (formVerfication.checkInputLength(0, 200, $('#handleMetaParams'), dataTypeInfo, '算法参数字数为200个以内')) {
+                    return false;
+                }*/
+                return true;
+            };
+
+            /**
+             * 保存算法配置信息
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var addSaveFun = function(handleConfigDialog) {
+
+                if (!formVerf()) {
+                    return;
+                }
+                if(!checkTr()){//算法参数规范性验证
+                    return;
+                }
+
+                var handleConfig = getParam();
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = HANDLE_CONFIG.saveHandleConfigUrl;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(getParam());
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#handleConfigGrid").trigger("reloadGrid");
+                        handleConfigDialog.dialog("close");
+                        PopWin.showMessageWin("算法配置新增成功");
+                    } else {
+                        PopWin.showMessageWin("算法配置新增失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("算法配置新增失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 根据主键id删除指定的算法配置记录
+             *
+             * @version <1> 2018-02-07 djh： Created.
+             */
+            var deleteFun = function (handleMetaId) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = HANDLE_CONFIG.del_url;
+                            ajax.opts.data = JSON.stringify({'handleConfig':{'handleMetaId':handleMetaId}});
+                            ajax.opts.contentType = "application/json";
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#handleConfigGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin("记录行删除成功");
+                                } else {
+                                    PopWin.showMessageWin("记录行删除失败");
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("记录行删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             * 更新算法配置记录
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var editFun = function (id) {
+                showTr();//初始化算法参数的table
+                //cleanTr();
+                var ajax = new BaseAjax();
+                ajax.opts.url = HANDLE_CONFIG.findById_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify({'handleMetaId':id});
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result) {
+                    if (result.flag) {
+                        initHandleConfig(result.data);
+                        initFormValidateFun();
+                        var configDialog =  $("#dataTypeInfo");
+                        var dialogParent = configDialog.parent();
+                        var dialogOwn = configDialog.clone();
+                        configDialog.dialog({
+                            autoOpen: false,
+                            title:'算法配置信息',
+                            height: 440,
+                            width: 660,
+                            modal: true,
+                            close:function(){
+                                dialogOwn.appendTo(dialogParent);
+                                $(this).dialog("destroy").remove();
+                            },
+                            buttons:[
+                                {
+                                    text:"保存",
+                                    click:function(){
+                                        if (!formVerf()) {
+                                            return;
+                                        }
+                                        if(!checkTr()){
+                                            return;
+                                        }
+                                        var param = getParam();
+                                        param.handleMetaId = id;
+                                        updateHandleConfig(configDialog, param);
+                                    }},{
+                                    text:"取消",
+                                    click:function(){
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+                        configDialog.dialog("open");
+                    }
+                };
+                ajax.run();
+            };
+            /**
+             * 点击编辑或者新增按钮时  先清空原本的弹出框算法参数信息  并移除除了第一行之外的
+             *
+             * @version <1> 2018-04-11 wl： Created.
+             */
+            var showTr=function(){
+                //除了算法参数的第一行其余的清除 并清除第一行数据
+                $("#paramsList tr:not(:first)").remove();
+                $('#title').val("");
+                $('#code').val("");
+                $('#type').val("");
+                $('#placeholder').val("");
+                //绑定增加行事件
+                $("#addTr").bind("click",addrow);
+            }
+
+            var cleanTr=function(){
+                $("#paramsList").find("tr").each(function () {
+                    var tdArr = $(this).children();
+                    tdArr.eq(0).find("input").val("");
+                    tdArr.eq(1).find("input").val("");
+                    tdArr.eq(2).find("select").val("");
+                    tdArr.eq(3).find("select").val("");
+                    });
+            }
+
+            /**
+             * 填充要更新的算法配置记录
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var initHandleConfig = function(data) {
+                $("#handleMetaName").val(data.handleMetaName);
+                $("#handleMetaClass").val(data.handleMetaClass);
+                //$("#handleMetaParams").val(data.handleMetaParams);
+                $("#ioType").find("option[value = '"+data.ioType+"']").attr("selected","selected");
+                $('#handleMethodName').val(data.handleMethodName);
+                $('#handleFileParamname').val(data.handleFileParamname);
+                $(".dataStatus[value='"+ data.dataStatus +"']").attr("checked", "checked");
+                //循环填充算法参数的值
+                //initMetaParam(data.handleMetaParams);
+                initMetaParams(data.handleMetaParams); //需要动态添加行时调用的填充方法
+            };
+            var initMetaParam=function(params){
+                var array= JSON.parse(params);//多条转换成array对象
+                $(array).each(function (i,d) {
+                    $("#paramsList").find("tr").each(function(j){
+                        var tdArr = $(this).children();
+                        if(i==j){
+                            tdArr.eq(0).find("input").val(d.title);
+                            tdArr.eq(1).find("input").val(d.code)
+                            tdArr.eq(2).find("select").val(d.type)
+                            if(d.type=="select"){
+                                tdArr.eq(3).find("input").val(d.parentId);
+                            }else {
+                                tdArr.eq(3).find("input").val(d.placeholder);
+                            }
+
+                        }
+                    });
+                });
+            }
+
+            /**
+             * 编辑配置前循环填充算法参数的值
+             *
+             * @version <1> 2018-04-11 wl： Created.
+             */
+            var initMetaParams=function(params){
+                var array= JSON.parse(params);//多条转换成array对象
+                var tables = $('#paramsList');
+                $(array).each(function (i,d) {
+                    var addtr="";
+                    if(i==0){//第一行默认存在 只用赋值即可  需要判断第一条数据的类型是input 还是 select
+                        $('#title').val(d.title);
+                        $('#code').val(d.code);
+                        $('#type').val(d.type);
+                        if(d.type=="select"){
+                            $('#placeholder').val(d.parentId);
+                        }else {
+                            if(d.hasOwnProperty('placeholder')){
+                                $('#placeholder').val(d.placeholder);
+                            }
+                        }
+                    }else{
+                        addtr = "<tr>"+
+                                "<td><input type='text' name='title' class='inputType' value='"+d.title+"'  /></td>"+
+                                "<td><input type='text' name='code' class='inputType'value='"+d.code+"'/></td>";
+
+                        if(d.type=="select") {
+                            addtr += "<td><select name='type' class='inputType' ><option value='input'>输入框</option><option value='select' selected>下拉框</option></select></td>" +
+                                    "<td><input type='text' class='inputType' name='parentId' value='" + d.parentId + "'/></td>";
+                        }else{//type为input时  需要判断 原始参数数据中是否有占位符
+                            addtr += "<td><select name='type' class='inputType' ><option value='input'>输入框</option><option value='select'>下拉框</option></select></td>" ;
+                            if(d.hasOwnProperty('placeholder')){//判断原始数据中是否有占位符这项参数
+                                addtr+="<td><input type='text' class='inputType' name='placeholder' value='"+d.placeholder+"'/></td>";
+                            }else{
+                                addtr+="<td><input type='text' class='inputType' name='placeholder' /></td>";
+
+                            }
+                        }
+                            addtr+= "<td><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;' ></td>"+
+                                    "</tr>";
+                        }
+                        $(addtr).appendTo(tables);
+                        $(".removeTr").click(function() {
+                            $(this).parent().parent().remove();
+                        });
+
+                });
+            }
+            /**
+             * 保存算法参数之前 对参数规范做验证
+             *
+             * @version <1> 2018-04-12 wl： Created.
+             */
+            var checkTr=function () {
+                var dataTypeInfo = $('#dataTypeInfo');
+                var boolean=true;
+                $("#paramsList").find("tr").each(function(){
+                    var tdArr = $(this).children();
+                    var params_title = tdArr.eq(0).find("input").val();//title
+                    var params_code = tdArr.eq(1).find("input").val();//code
+                    var params_type = tdArr.eq(2).find("select").val();//  type
+                    var params_placeholder = tdArr.eq(3).find("input").val();//  placeholder /parentId
+                    if (params_title=="" && params_code!=""){//两项中有一项输入另外一项不可为空
+                         //提示输入标题
+                        if (formVerfication.checkInputIsEmpty(tdArr.eq(0).find("input"), dataTypeInfo, '标题不能为空')) {
+                            boolean=false;
+                            return false;
+                        }
+                    }else if(params_title!="" && params_code==""){
+                        //提示输入编码
+                        if (formVerfication.checkInputIsEmpty(tdArr.eq(1).find("input"), dataTypeInfo, '编码不能为空')) {
+                            boolean=false;
+                            return false;
+                        }
+                    }
+
+                    if(params_type=="select"){//type 为select时 数据字典id不能为空 且必须为数字
+                        if(formVerfication.checkInputIsEmpty(tdArr.eq(3).find("input"), dataTypeInfo, '数据字典ID不能为空')){
+                            boolean=false;
+                            return false;
+                        }
+                        if (formVerfication.checkInputIsPositiveInteger(tdArr.eq(3).find("input"), dataTypeInfo, '数据字典ID必须为正整数')) {
+                            boolean=false;
+                            return false;
+                        }
+                    }
+                });
+                //return true;
+                return boolean;
+            }
+
+            /**
+             * 获取算法参数的数据值 组装成json
+             *
+             * @version <1> 2018-04-11 wl： Created.
+             */
+            var  getTrValue=function(){
+               var array = [];
+                $("#paramsList").find("tr").each(function(){
+                    var trValue="";
+                    var tdArr = $(this).children();
+                    var params_title = tdArr.eq(0).find("input").val();//title
+                    var params_code = tdArr.eq(1).find("input").val();//code
+                    var params_type = tdArr.eq(2).find("select").val();//  type
+                    var params_placeholder = tdArr.eq(3).find("input").val();//  placeholder /parentId
+                    if(params_title!="" && params_code!=""){
+                        if(params_type=="select"){//下拉框类型的
+                            trValue = {
+                                'title': params_title,
+                                'code': params_code,
+                                'type': params_type,
+                                'parentId': params_placeholder
+                            };
+                        }else if(params_type=="input"){//输入框类型的根据实际情况拼接 占位符可以为空
+                            if(params_placeholder==undefined || params_placeholder==""){
+                                trValue = {
+                                    'title': params_title,
+                                    'code': params_code,
+                                    'type': params_type
+                                };
+                            }else {
+                                trValue = {
+                                    'title': params_title,
+                                    'code': params_code,
+                                    'type': params_type,
+                                    'placeholder': params_placeholder
+                                };
+                            }
+                        }
+                        array.push(trValue);
+                    }
+                });
+                return JSON.stringify(array);
+            }
+            /**
+             * 点击按钮 动态增加一行  暂时先屏蔽 后期需要时可使用
+             *
+             * @version <1> 2018-04-10 wl： Created.
+             */
+            var addrow=function(){
+                var len=6;//控制最多显示几行
+
+                var tables = $('#paramsList');
+                var addtr = $("<tr class='paramsTr'>"+
+                        "<td style='width: 20%'><input type='text' id='title' name='title' class='inputType'  /></td>"+
+                        "<td style='width: 20%'><input type='text'id='code' name='code' class='inputType'/></td>"+
+                        "<td style='width: 20%'><select name='type' id='type' class='inputType' ><option value='input'>输入框</option><option value='select'>下拉框</option></select></td>"+
+                        "<td style='width: 30%'><input type='text' id='placeholder' class='inputType' name='placeholder' /></td>"+
+                        "<td style='width: 10%'><img src='images/public/reduce.png' class='removeTr' style='margin-top: 2px;' ></td>"+
+                        "</tr>");
+                addtr.appendTo(tables);
+
+                //var trLen=$('#paramsList').find("tr").length;//获取当前行数
+                //判断 如果已经有六行 则增加按钮置灰
+                if($('#paramsList').find("tr").length==len){
+                    //增加按钮置灰 并移除增加行事件
+                    $("#addTr").attr("src","images/public/addGRAY.png");
+                    $("#addTr").unbind("click",addrow);
+                }
+
+                $(".removeTr").click(function() {//点击动态移除一行
+                    //判断 如果当前为6行 则增加按钮置蓝色 并移除一行
+                    if($('#paramsList').find("tr").length==len){
+                        //增加按钮变蓝 并绑定增加行事件
+                        $("#addTr").attr("src","images/public/addrow.png");
+                        $("#addTr").bind("click",addrow);
+                    }
+                    $(this).parent().parent().remove();
+                });
+            }
+
+            /**
+             * 更新算法配置
+             *
+             * @version <1> 2018-02-08 djh： Created.
+             */
+            var updateHandleConfig = function(configDialog, param) {
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = HANDLE_CONFIG.updateHandleConfigUrl;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(param);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        $("#handleConfigGrid").trigger("reloadGrid");
+                        configDialog.dialog("close");
+                        PopWin.showMessageWin("算法配置更新成功");
+                    } else {
+                        PopWin.showMessageWin("算法配置更新失败");
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("算法配置更新失败");
+                };
+                baseAjax.run();
+            };
+
+            //数据分类缓存
+            var satIdCache = [];
+
+            /**
+             * 获取卫星下拉框数据
+             * @param parentId = 400
+             * @version <1> 2018-04-20 wl: created.
+             */
+            var initSatIdFun = function(parentId){
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>--请选择--</option>";
+                    if(result.flag){
+                        satIdCache = result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        $("#search_satId").html("").append(str);
+                    }
+                }
+                ajax.run();
+            }
+
+            init();
+        });
+    </script>
+
+</div>

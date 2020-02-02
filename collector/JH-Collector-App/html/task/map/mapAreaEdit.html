@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<meta name="HandheldFriendly" content="true" />
+		<meta name="MobileOptimized" content="320" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../../css/list.css" rel="stylesheet" />
+		<title></title>
+		<style type="text/css">
+			html,
+			body {
+				overflow: hidden;
+				background-color: transparent;
+			}
+
+			.jh-area-div {
+				width: auto;
+				padding: 15px;
+				height: 100px;
+				background-color: #FFFFFF;
+				-moz-border-radius: 1rem;
+				/* Gecko browsers */
+				-webkit-border-radius: 1rem;
+				/* Webkit browsers */
+				border-radius: 1rem;
+				/* W3C syntax */
+			}
+
+			.jh-area-title {
+				margin-left: 0.5rem;
+				margin-top: 0.5rem;
+				display: inline-block;
+				width: 90%;
+				font-size: 1.5rem;
+				color: #47d600;
+			}
+
+			.jh-phone-button {
+				position: absolute;
+				padding: 0;
+				font-size: 0.9rem;
+				margin-top: 0.6rem;
+				right: 10%;
+				width: 7rem;
+				height: 1.5rem;
+				border-radius: 1rem
+			}
+		</style>
+		<script type="text/javascript">
+
+		</script>
+
+		<link rel="stylesheet" href="../../../css/app.css" type="text/css" charset="utf-8" />
+	</head>
+	<body>
+		<div class="jh-area-div">
+			<p>
+				<span id="insuraceId" class="jh-area-title mui-ellipsis">保单号</span>
+				<button id="phone" type="button" class="jh-phone-button mui-btn mui-btn-blue mui-btn-outlined mui-icon mui-icon-phone"></button>
+			</p>
+			<p>
+				<span id="famer" style="margin-left: 0.5rem;margin-right: 1rem;" class="jh-font-size3 jh-subtitle">投保人:</span>
+				<span id="insureArea" class="jh-font-size3 jh-subtitle">投保面积:0亩</span>
+				<span id="targetArea" class="jh-font-size3 jh-subtitle">定标面积:0亩</span>
+				<span id="crop" class="jh-font-size3 jh-subtitle">作物:</span>
+			</p>
+		</div>
+		<script src="../../../js/mui.js"></script>
+		<script src="../../../js/app.js"></script>
+		<script src="../../../js/areaData.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+
+			})
+
+			function checkPhone(phone) {
+				if (!(/^1[3456789]\d{9}$/.test(phone))) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+			document.getElementById("phone").addEventListener('tap', phoneFunc)
+
+			function phoneFunc() {
+				var phone = this.innerHTML;
+				// if (checkPhone(phone)) {
+				if (true) {
+					var btnArray = ['拨打', '取消'];
+					mui.confirm('是否拨打' + phone + '?', '提示', btnArray, function(e) {
+						if (e.index == 0) {
+							plus.device.dial(phone, false);
+						}
+					});
+				} else {
+					mToastSet("手机号码格式不正确！")
+				}
+			}
+
+			document.addEventListener("DataChange", dataChangeFunc)
+			var subtaskId
+			function dataChangeFunc() {
+				// console.log("data change!")
+				setTimeout(function() {
+					subtaskId = localStorage.getItem("currentSubTaskId")
+					
+					var policyId = areaInfo.getCurrentPolicy();
+					var currentData = areaInfo.getPolicyList(subtaskId)
+					// console.log(policyId)
+					// console.log(JSON.stringify(currentData))
+					var currenInsurance =areaInfo.getItemById(currentData,policyId)
+					// console.log(JSON.stringify(currenInsurance))
+
+					// console.log(JSON.stringify(currenInsurance))
+					document.getElementById("insuraceId").innerHTML = currenInsurance.policyNo
+					if (currenInsurance.isEdit == false) {
+						document.getElementById("insuraceId").style.color = "#C0C0C0"
+					}
+					document.getElementById("phone").innerHTML = currenInsurance.telphone?currenInsurance.telphone:""
+					document.getElementById("famer").innerHTML = "投保人:" + currenInsurance.farmersName?currenInsurance.farmersName:""
+					document.getElementById("insureArea").innerHTML = "投保面积:" + 0 + "亩"
+					document.getElementById("targetArea").innerHTML = "定标面积:" + 0 + "亩"
+					document.getElementById("crop").innerHTML = "作物:" + currenInsurance.cropType?currenInsurance.cropType:""
+				}, 100);
+			}
+		</script>
+		<!-- <div class="button" style="margin:.2em auto;width:50%" onclick="resetMap()">重　置</div> -->
+		<!-- <div class="button" style="margin: 2.8em auto;width:50%" onclick="searchMap()">查　找</div> -->
+	</body>
+</html>

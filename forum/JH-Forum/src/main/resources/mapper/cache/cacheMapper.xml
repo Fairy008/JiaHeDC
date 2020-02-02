@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.cache.mapping.ICacheMapper">
+
+  <select id="findFollowCommentNum" resultType="com.jh.forum.cache.vo.ForumCacheVO">
+    select
+      a.article_id as "articleId",
+      COALESCE((select count(1) from forum_follow f where f.data_status = '1' and f.del_flag = '1' and f.follow_type = 13002 and f.article_id = a.article_id group by f.article_id), 0) as "followNum",
+      COALESCE((select count(1) from forum_comment c where c.data_status = '1' and c.del_flag = '1' and c.first_comment_id is null and c.level = '1' and c.article_id = a.article_id group by c.article_id), 0) as "commentNum"
+    from forum_article a
+    where a.data_status = '1' and a.del_flag = '1'
+    /*and a.article_status = 12004*/
+    order by a.article_id
+  </select>
+    
+  <select id="findSecondCommentNum" resultType="com.jh.forum.cache.vo.CommentCacheVO">
+    select
+      first_comment_id as "commentId",
+      article_id as "articleId",
+      count(1) as "commentNum"
+    from forum_comment c
+    where c.data_status = '1' and c.del_flag = '1' and c.first_comment_id is not null and c.level = '2'
+    group by article_id, first_comment_id
+    order by first_comment_id
+   </select>
+
+  <select id="queryFollowCommentNumByArticleId" resultType="com.jh.forum.cache.vo.ForumCacheVO" parameterType="java.lang.Integer">
+    select
+      a.article_id as "articleId",
+      COALESCE((select count(1) from forum_follow f where f.data_status = '1' and f.del_flag = '1' and f.follow_type = 13002 and f.article_id = a.article_id group by f.article_id), 0) as "followNum",
+      COALESCE((select count(1) from forum_comment c where c.data_status = '1' and c.del_flag = '1' and c.first_comment_id is null and c.level = '1' and c.article_id = a.article_id group by c.article_id), 0) as "commentNum"
+    from forum_article a
+    where a.data_status = '1' and a.del_flag = '1'
+    /*and a.article_status = 12004*/
+    and a.article_id = #{articleId, jdbcType=INTEGER}
+    order by article_id
+  </select>
+  
+  <select id="querySecondCommentNumByCommentId" resultType="com.jh.forum.cache.vo.CommentCacheVO" parameterType="java.lang.Integer">
+    select
+      c.first_comment_id as "commentId",
+      c.article_id as "articleId",
+      count(1) as "commentNum"
+    from forum_comment c
+    where c.data_status = '1' and c.del_flag = '1' and c.first_comment_id is not null and c.level = '2' and c.first_comment_id = #{commentId, jdbcType=INTEGER}
+    group by article_id, first_comment_id
+    order by first_comment_id
+  </select>
+  
+  <select id="findSecondCommentNumByArticleId" resultType="com.jh.forum.cache.vo.CommentCacheVO">
+    select
+      first_comment_id as "commentId",
+      article_id as "articleId",
+      count(1) as "commentNum"
+    from forum_comment c
+    where c.data_status = '1' and c.del_flag = '1' and c.first_comment_id is not null and c.level = '2' and c.article_id = #{articleId, jdbcType=INTEGER}
+    group by article_id, first_comment_id
+    order by first_comment_id
+  </select>
+
+</mapper>

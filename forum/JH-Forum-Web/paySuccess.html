@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <!--支付成功,三秒后页面自动消失-->
+</div>
+<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/ueditor/ueditor.all.js"></script>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script>
+    require(["jquery","Marquee","moment","jqueryUi","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings","RegionModule","formVerfication","daterangepicker"],function($,Marquee,moment,jqueryUi,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings,RegionModule,formVerfication,daterangepicker){
+        //支付
+        var payMoney = function(orderNo){
+            var ajax = new BaseAjax();
+//           var orderNo = orderNo;
+//            var formData ={
+//               "orderNo": orderNo
+//            }
+            ajax.opts.url = CMS_MANAGE.updateByPay_url+"?orderNo="+orderNo;
+//            ajax.opts.data = JSON.stringify(formData);
+            ajax.opts.successFun = function(data){
+
+                    window.location.href="./index.html";
+                $(document).ready(function(){
+                    console.log("8888888ready")
+                    $("#myHomeBtn").trigger("click");
+                })
+                window.onload(function(){
+                    console.log("88888load")
+                })
+
+
+            };
+            ajax.run();
+        }
+        var init = function(){
+            console.log("9999999999999999999999999999999")
+            // var payOrder_1 =JSON.parse(document.cookie.match('creatOrder').input.split('creatOrder=')[1]);
+            // console.log("取值cookie",payOrder_1)
+            var payOrder = JSON.parse(window.localStorage.getItem('creatOrder'));
+            payMoney(payOrder.orderNo)
+//            window.location.href="./index.html";
+        }
+        init();
+
+
+    })
+</script>
+
+</body>
+</html>

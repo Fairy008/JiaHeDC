@@ -1,0 +1,231 @@
+/*
+ *这是单独为hello mui准备的个性化css，可以覆盖标准mui的css定义；
+ * 在实际项目开发时，建议为App单独写一个css文件，从而实现项目的自定义皮肤功能；
+ * 
+ * */
+/* .mui-plus header.mui-bar{
+	display: none;
+}
+.mui-plus .mui-bar-nav~.mui-content{
+	padding: 0;
+} */
+
+/*hm开头的表示仅为 Hello MUI示例定义*/
+.hm-description {
+	margin: .5em 0;
+}
+
+.hm-description>li {
+	font-size: 14px;
+	color: #8f8f94;
+}
+
+/*input输入框尺寸边框*/
+.jh-input-size {
+	background-color: #FFFFFF !important;
+	height: 3rem;
+	padding: 0.25rem;
+	border: 1px solid #CCCCCC !important;
+}
+
+.jh-content-top-bottom {
+	padding: 0.625rem;
+	top: 3.125rem;
+	bottom: 3.125rem
+}
+
+.jh-btn-blue {
+	color: #fff;
+	border: 1px solid #00575C;
+	background-color: #00575C;
+}
+
+.jh-btn-orange {
+	color: #fff;
+	border: 1px solid #e69200;
+	background-color: #e69200;
+}
+
+.jh-btn-green {
+	color: #fff;
+	border: 1px solid #14c13b;
+	background-color: #14c13b;
+}
+
+.jh-btn-link {
+	padding-top: 6px;
+	padding-bottom: 6px;
+
+	color: #2da3d5;
+	border: 0;
+	background-color: transparent;
+}
+
+.button {
+	font-size: 18px;
+	font-weight: normal;
+	text-decoration: none;
+	display: block;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #FFF;
+	background-color: #FFCC33;
+	border: 1px solid #ECB100;
+	padding: .5em 0em;
+	margin: .5em .7em;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.button:active {
+	outline: 0;
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+}
+
+/*toast信息提示*/
+.mui-toast-container {
+	bottom: 50% !important;
+}
+
+.mui-toast-message {
+	opacity: 1;
+	color: #fff;
+}
+
+/*toast信息提示*/
+
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar-nav {
+	background-image: url(images/img-icon/topBG.png);
+	height: 4rem;
+	padding-top: 1.25rem;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar-nav~.mui-content {
+	padding-top: 4rem;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar-nav~.mui-content .mui-pull-top-pocket {
+	top: 4rem;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar-header-secondary {
+	top: 4rem;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar-header-secondary~.mui-content {
+	padding-top: 5.875rem;
+}
+
+.mui-icon.mui-icon-back {
+	font-size: 24px;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.mui-icon.mui-action-back {
+	font-size: 24px;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+.mui-icon-plusempty {
+	color: #FFFFFF;
+}
+
+.jh-white {
+	color: white;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-content {
+	top: 4rem;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-bar.mui-bar-nav {
+	background-image: url(../images/img-icon/topBG.png) !important;
+}
+
+.mui-plus.mui-statusbar.mui-statusbar-offset .mui-content {
+	top: 4rem;
+}
+
+.mui-segmented-control.mui-segmented-control-inverted~.mui-slider-progress-bar {
+	background-color: #00575C
+}
+
+.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+	color: #00575C;
+	border-bottom: 2px solid #00575C;
+	background: 0 0
+}
+
+.mui-icon.jh-tab-icon {
+	font-size: 24px;
+}
+
+.mui-title {
+	font-size: 24px;
+	color: #FFFFFF;
+}
+
+.mui-control-item {
+	font-size: 16px;
+}
+
+.jh-task-info {
+	border-width: 0;
+	background-image: url(../images/img-icon/topBG.png);
+	height: 6rem;
+	padding: 0.75rem;
+}
+
+.mui-btn.mui-btn-blue {
+	background-color: #00575C;
+}
+.mui-slider-right .mui-btn.mui-btn-blue{
+	background-color: #2da3d5;
+}
+
+.mui-btn.mui-btn-primary {
+	background-color: #00575C;
+}
+
+.mui-btn.mui-btn-primary.mui-btn-outlined {
+	background-color: transparent;
+	color: #00575C;
+	border-color: #00575C;
+}
+.mui-btn.mui-btn-blue.mui-btn-outlined {
+	background-color: transparent;
+	color: #00575C;
+	border-color: #00575C;
+}
+
+
+.mui-pull-left .mui-icon.mui-icon-left-nav {
+	color: white;
+}
+
+.mui-bar.mui-bar-tab.jh-nav-bottom {
+	-webkit-box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+	border: 0rem solid;
+	background-color: rgba(0, 0, 0, 0);
+	height: 3.5rem;
+	padding: 0rem;
+}
+
+.jh-text-position {
+	position: absolute;
+	left: 50%;
+	top: 60%;
+	margin-top: 6.5rem;
+	width: 8rem;
+	margin-left: -4rem;
+	white-space:nowrap;
+	color: #00575C;
+	text-align: center;
+	font-size: 24px;
+}

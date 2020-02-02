@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.manage.order.mapping.IDataOrderMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.manage.order.entity.DataOrder" >
+    <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <id column="order_code" property="orderCode" jdbcType="VARCHAR" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="order_attribute" property="orderAttribute" jdbcType="INTEGER" />
+    <result column="order_description" property="orderDescription" jdbcType="VARCHAR" />
+    <result column="data_path" property="dataPath" jdbcType="VARCHAR" />
+    <result column="order_auditor" property="orderAuditor" jdbcType="INTEGER" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="audit_status" property="auditStatus" jdbcType="INTEGER" />
+    <result column="handler_person" property="handlerPerson" jdbcType="INTEGER" />
+    <result column="handle_time" property="handleTime" jdbcType="TIMESTAMP" />
+    <result column="handle_status" property="handleStatus" jdbcType="INTEGER" />
+    <result column="data_access_time" property="dataAccessTime" jdbcType="TIMESTAMP" />
+    <result column="person_type" property="personType" jdbcType="INTEGER" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="orderAuditorName" property="orderAuditorName" jdbcType="VARCHAR" />
+    <result column="handlerPersonName" property="handlerPersonName" jdbcType="VARCHAR" />
+    <result column="audit_suggestion" property="auditSuggestion" jdbcType="VARCHAR" />
+    <result column="handle_suggestion" property="handleSuggestion" jdbcType="VARCHAR" />
+    <result column="word_path" property="wordPath" jdbcType="VARCHAR" />
+    <result column="word_name" property="wordName" jdbcType="VARCHAR" />
+    
+    <collection property="orderPathList" ofType="DataOrderPath">
+      <result column="pathOrderId" property="orderId" jdbcType="INTEGER" />
+      <result column="data_path" property="dataPath" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    order_id,data_path,order_code, data_status, del_flag, create_time, creator_name, creator, modify_time,
+    modifier_name, modifier, remark, order_type, order_attribute, order_description,audit_suggestion,handle_suggestion,
+    order_auditor, audit_time, audit_status, handler_person, handle_time, handle_status, word_path,word_name,
+     data_access_time
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from man_order_task
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+
+  <!--
+    * 订单分发分页查询
+    * @param orderParam
+    * @return PageInfo
+    * @version <1> 2018-03-07 cxw： Created.
+    *-->
+  <select id="findOrderHandleByPage" parameterType="com.jh.manage.order.model.OrderParam" resultMap="BaseResultMap" >
+    select distinct a.order_id,a.order_code, a.data_status, a.del_flag, a.create_time, a.creator_name, a.creator, a.modify_time,  a.modifier_name, a.modifier,
+    a.remark, a.order_type,a.order_attribute, a.order_description, a.order_auditor, a.audit_time, a.audit_status, a.handler_person, a.handle_time, a.handle_status,
+    a.data_access_time,case b.nick_name when null then  b.account_name else b.nick_name end as orderAuditorName,a.data_path,
+    case d.nick_name when null then  d.account_name else d.nick_name end as handlerPersonName from
+    (select <include refid="Base_Column_List"/>  from man_order_task  where del_flag = '1' and data_status = '1' and audit_status in(1103,1105) and order_type = 1302
+
+    <if test="orderCode != null  and orderCode != ''">
+      and order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="handleStatus != null">
+      and handle_status = #{handleStatus,jdbcType=INTEGER}
+    </if>
+    <if test="auditStatus != null">
+      and audit_status = #{auditStatus,jdbcType=INTEGER}
+    </if>
+
+    <if test="createTime != null and createTime != ''">
+      and create_time =#{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="creatorName != null and creatorName != ''">
+      and creator_name like '%' ||#{creatorName,jdbcType=VARCHAR} || '%'
+    </if>
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+      BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>) a
+      left join sys_perm_account b on a.order_auditor = b.account_id
+      left join sys_perm_account d on a.handler_person = d.account_id
+      ORDER BY
+      <choose>
+        <when test="sidx != null and sidx != ''">
+          ${sidx} ${sord}
+        </when>
+        <otherwise>
+          a.audit_status asc,a.create_time desc
+        </otherwise>
+      </choose>
+  </select>
+
+  <!--
+  * 订单审核分页查询
+  * @param orderParam
+  * @return PageInfo
+  * @version <1> 2018-03-07 cxw： Created.
+  *-->
+  <select id="findOrderAuditByPage" parameterType="com.jh.manage.order.model.OrderParam" resultMap="BaseResultMap" >
+    select distinct a.order_id,a.order_code, a.data_status, a.del_flag, a.create_time, a.creator_name, a.creator, a.modify_time,  a.modifier_name, a.modifier,
+    a.remark, a.order_type,a.order_attribute, a.order_description, a.order_auditor, a.audit_time, a.audit_status, a.handler_person, a.handle_time, a.handle_status,
+    a.data_access_time,case b.nick_name when null then  b.account_name else b.nick_name end as orderAuditorName from
+    (select <include refid="Base_Column_List"/>  from man_order_task  where del_flag = '1' and data_status = '1' and  audit_status in(1101,1102)
+    <if test="orderCode != null  and orderCode != ''">
+      and order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="auditStatus != null">
+      and audit_status = #{auditStatus,jdbcType=INTEGER}
+    </if>
+    <if test="createTime != null and createTime != ''">
+      and create_time =#{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="creatorName != null and creatorName != ''">
+      and creator_name like '%' ||#{creatorName,jdbcType=VARCHAR} || '%'
+    </if>
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+      BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>) a
+    left join sys_perm_account b on a.order_auditor = b.account_id
+      ORDER BY
+      <choose>
+          <when test="sidx != null and sidx != ''">
+              ${sidx} ${sord}
+          </when>
+          <otherwise>
+              a.audit_status asc,a.create_time desc
+          </otherwise>
+      </choose>
+  </select>
+
+  <!--
+  * 订单列表分页查询
+  * @param orderParam
+  * @return PageInfo
+  * @version <1> 2018-03-07 cxw： Created.
+  *-->
+  <select id="findOrderListByPage" parameterType="com.jh.manage.order.model.OrderParam" resultMap="BaseResultMap" >
+    select distinct a.order_id,a.order_code, a.data_status, a.del_flag, a.create_time,
+    a.creator_name,
+    a.creator, a.modify_time,  a.modifier_name, a.modifier,a.data_path,
+    a.remark, a.order_type,a.order_attribute, a.order_description, a.order_auditor, a.audit_time, a.audit_status, a.handler_person, a.handle_time, a.handle_status,
+    a.data_access_time,case b.nick_name when null then  b.account_name else b.nick_name end as orderAuditorName,a.data_path,c.person_type as personType,
+    case d.nick_name when null then  d.account_name else d.nick_name end as handlerPersonName from
+    (select <include refid="Base_Column_List"/>  from man_order_task  where del_flag = '1' and data_status = '1'
+
+    <if test="orderCode != null and orderCode != ''">
+      and order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="handleStatus != null">
+      and handle_status = #{handleStatus,jdbcType=INTEGER}
+    </if>
+    <if test="auditStatus != null">
+      and audit_status = #{auditStatus,jdbcType=INTEGER}
+    </if>
+    <if test="createTime != null and createTime != ''">
+      and create_time =#{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="creatorName != null and creatorName != ''">
+      and creator_name like '%' ||#{creatorName,jdbcType=VARCHAR} || '%'
+    </if>
+    <if test="creator != null">
+      and creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+      BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>) a
+    left join sys_perm_account b on a.order_auditor = b.account_id
+    left join sys_perm_person c on a.creator = c.account_id
+    left join sys_perm_account d on a.handler_person = d.account_id
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        a.create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--
+   * 订单详情查询
+   * @param orderId 订单ID
+   * @return
+   * @version <1> 2018-03-07 cxw： Created.
+   *-->
+  <select id="findOrderById" parameterType="java.lang.Integer" resultMap="BaseResultMap" >
+    select distinct a.order_id, a.order_code,a.data_status, a.del_flag, a.create_time,
+    case f.nick_name when '' then  f.account_name else f.nick_name end  as creator_name,f.account_name as mobile,
+    a.creator, a.modify_time,  a.modifier_name, a.modifier,a.data_path,a.audit_suggestion,a.handle_suggestion,
+    a.remark, a.order_type,a.order_attribute, a.order_description, a.order_auditor, a.audit_time, a.audit_status, a.handler_person, a.handle_time, a.handle_status,
+    a.data_access_time,case b.nick_name when null then  b.account_name else b.nick_name end as orderAuditorName,a.data_path,c.person_type as personType,a.word_path,a.word_name,
+    case d.nick_name when null then  d.account_name else d.nick_name end as handlerPersonName from
+    (select <include refid="Base_Column_List"/>  from man_order_task  where del_flag = '1' and data_status = '1' and order_id = #{orderId}) a
+    left join sys_perm_account b on a.order_auditor = b.account_id
+    left join sys_perm_person c on a.creator = c.account_id
+    left join sys_perm_account f on a.creator = f.account_id
+    left join sys_perm_account d on a.handler_person = d.account_id
+    order by a.create_time DESC
+
+  </select>
+
+
+
+  <!--
+     * 删除订单：根据订单主键删除订单
+     * @param orderId 订单ID
+     * @return
+     * @version <1> 2018-03-09 cxw： Created.
+     *-->
+  <update id="delOrderById" parameterType="java.lang.Integer" >
+    update  man_order_task set del_flag = '0'   where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+
+  <!--
+   * 查询所有过期订单
+   * @param DataOrder 订单对象
+   * @return
+   * @version <1> 2018-04-09 cxw： Created.
+  *-->
+  <select id="findOverdueOrder" parameterType="String" resultMap="BaseResultMap">
+    select a.order_id, a.data_path,a.data_access_time,b.person_type
+    from man_order_task a left join sys_perm_person b on a.creator = b.person_id
+    where a.del_flag = '1'
+    <![CDATA[
+      and a.data_access_time <cast((#{dataAccessTime} || ' 23:59:59') as timestamp )
+    ]]>
+  </select>
+  <!-- 统计系统中需求订单和数据订单总数-->
+  <select id="queryOrderCount" parameterType="com.jh.manage.order.model.OrderParam" resultType="map">
+    select a.order_type as id,b.data_name as name,count(0) as value  from man_order_task a
+    left join init_dict b on a.order_type=b.dict_id and b.parent_id=1300
+    where a.del_flag = '1' and a.data_status = '1'
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+    and to_char(to_date(cast(a.create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+    BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>
+    group by a.order_type,b.data_name
+  </select>
+  <!-- 统计需求订单或者数据订单 不同状态的订单数量-->
+  <select id="queryOrderDetailCount" parameterType="com.jh.manage.order.model.OrderParam" resultType="map">
+    select audit_status as id,b.data_name as name,count(0) as value from man_order_task a
+    left join init_dict b on a.audit_status=b.dict_id and b.parent_id=1100
+    where a.del_flag = '1' and a.data_status = '1'
+    <if test="orderType != null and orderType != ''">
+      and a.order_type=#{orderType}
+    </if>
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(a.create_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+      BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>
+    group by a.audit_status,b.data_name
+  </select>
+  <!-- 统计数据订单不同卫星类型的已分发数量-->
+  <select id="queryDataOrderBySatellite" parameterType="com.jh.manage.order.model.OrderParam" resultType="map">
+    select  count(a.storage_id) as value,b.satellite as name  from man_order_detail a
+    left join data_storage b on a.storage_id=b.storage_id  where exists (
+    select order_id from man_order_task where audit_status=1104 and order_type=1301
+    and del_flag = '1' and data_status = '1'  and order_id=a.order_id
+    <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+      and to_char(to_date(cast(handle_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd')
+      BETWEEN cast(#{beginTime} as VARCHAR ) and cast(#{endTime} as VARCHAR)
+    </if>
+    )
+    group by b.satellite
+  </select>
+
+  <select id="queryDataOrderByTopFive" parameterType="com.jh.manage.order.model.OrderParam" resultType="map">
+    select  count(a.storage_id) as value,b.satellite as name  from man_order_detail a
+    left join data_storage b on a.storage_id=b.storage_id  where exists (
+    select order_id from man_order_task where audit_status=1104 and order_type=1301
+    and del_flag = '1' and data_status = '1'  and order_id=a.order_id
+    )
+    group by b.satellite order by value desc limit 5
+  </select>
+  <select id="queryDataOrderSum"  resultType="map">
+  select  COALESCE(count(a.storage_id), 0) as sum  from man_order_detail a
+  left join data_storage b on a.storage_id=b.storage_id  where exists (
+  select order_id from man_order_task where audit_status=1104 and order_type=1301
+  and del_flag = '1' and data_status = '1'  and order_id=a.order_id  )
+</select>
+
+
+  <!--
+     * 创建订单
+     * @param DataOrder 订单对象
+     * @return
+     * @version <1> 2018-07-23 lcw： Created.
+    *-->
+  <insert id="save" parameterType="DataOrder" useGeneratedKeys="true" keyProperty="orderId">
+    insert into man_order_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      create_Time,
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="orderAttribute != null" >
+        order_attribute,
+      </if>
+      <if test="orderDescription != null" >
+        order_description,
+      </if>
+      <if test="orderAuditor != null" >
+        order_auditor,
+      </if>
+      <if test="auditStatus != null" >
+        audit_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=CHAR},
+      </if>
+      <if test="orderAttribute != null" >
+        #{orderAttribute,jdbcType=INTEGER},
+      </if>
+      <if test="orderDescription != null" >
+        #{orderDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAuditor != null" >
+        #{orderAuditor,jdbcType=INTEGER},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+
+  <!--
+   * 更新订单
+   * @param DataOrder 订单对象
+   * @return
+   * @version <1> 2018-03-09 cxw： Created.
+  *-->
+  <update id="updateOrder" parameterType="DataOrder" >
+
+    update man_order_task
+    <set >
+      <if test="dataStatus != null and dataStatus != '' " >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="orderCode != null and orderCode != '' " >
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null and delFlag != ''" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+        modify_time = now(),
+      <if test="modifierName != null and modifierName != ''" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null and remark != ''" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null and orderType != ''" >
+        order_type = #{orderType,jdbcType=INTEGER},
+      </if>
+      <if test="orderDescription != null and orderDescription != ''" >
+        order_description = #{orderDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAuditor != null" >
+        order_auditor = #{orderAuditor,jdbcType=INTEGER},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIME},
+      </if>
+      <if test="auditStatus != null and auditStatus != ''" >
+        audit_status = #{auditStatus,jdbcType=INTEGER},
+      </if>
+      <if test="handlerPerson != null" >
+        handler_person = #{handlerPerson,jdbcType=INTEGER},
+      </if>
+      <if test="handleTime != null" >
+        handle_time = #{handleTime,jdbcType=TIME},
+      </if>
+      <if test="auditSuggestion != null and auditSuggestion != ''" >
+        audit_suggestion = #{auditSuggestion,jdbcType=INTEGER},
+      </if>
+      <if test="handleSuggestion != null and handleSuggestion != ''" >
+        handle_suggestion = #{handleSuggestion,jdbcType=INTEGER},
+      </if>
+      <if test="dataAccessTime != null" >
+        data_access_time = #{dataAccessTime,jdbcType=TIME},
+      </if>
+      <if test="dataPath != null" >
+        data_path = #{dataPath,jdbcType=TIME},
+      </if>
+      <if test="wordPath != null" >
+        word_path = #{wordPath,jdbcType=VARCHAR},
+      </if>
+      <if test="wordName != null" >
+        word_name = #{wordName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+  <!--
+     * 创建订单
+     * @param DataOrder 订单对象
+     * @return
+     * @version <1> 2018-03-09 cxw： Created.
+    *-->
+  <insert id="insertDataOrder" parameterType="DataOrder" useGeneratedKeys="true" keyProperty="orderId">
+    insert into man_order_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      create_Time,
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="orderType != null" >
+        order_type,
+      </if>
+      <if test="orderAttribute != null" >
+        order_attribute,
+      </if>
+      <if test="orderDescription != null" >
+        order_description,
+      </if>
+      <if test="orderAuditor != null" >
+        order_auditor,
+      </if>
+      <if test="auditStatus != null" >
+        audit_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null" >
+        #{orderType,jdbcType=CHAR},
+      </if>
+      <if test="orderAttribute != null" >
+        #{orderAttribute,jdbcType=INTEGER},
+      </if>
+      <if test="orderDescription != null" >
+        #{orderDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="orderAuditor != null" >
+        #{orderAuditor,jdbcType=INTEGER},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="queryOrderFileNumByDay" parameterType="OrderParam" resultType="Integer">
+    select count(order_detail_id) from man_order_detail where order_id in
+    (select order_id from man_order_task where del_flag = '1' and data_status = '1' and
+
+
+      <![CDATA[create_time >= cast( (#{beginTime} || ' 00:00:00') as TIMESTAMP) ]]>
+      and
+      <![CDATA[create_time <= cast((#{beginTime} || ' 23:59:59') as TIMESTAMP )]]>
+       and creator = #{operator}  )
+  </select>
+
+
+
+  <select id="queryOrderStatistics" parameterType="OrderParam" resultType="map">
+
+    SELECT
+        c.dict_id AS id,
+        c.data_name AS NAME,
+        COALESCE ( d.VALUE, 0 ) AS VALUE
+        FROM
+        init_dict c
+        LEFT JOIN (
+        select  a.audit_status  , count(1) as VALUE from man_order_task a where a.del_flag = '1' and a.data_status = '1'
+          <if test="beginTime != null and beginTime != '' and endTime != null and endTime != ''">
+            and create_time
+            BETWEEN cast((#{beginTime} || ' 00:00:00') as TIMESTAMP ) and cast((#{endTime} || ' 23:59:59') as TIMESTAMP)
+          </if>
+
+         group by a.audit_status ) d ON c.dict_id = d.audit_status
+        WHERE
+        c.del_flag = '1'
+        AND c.data_status = '1'
+        AND c.parent_id = 1100
+        ORDER BY
+        c.order_no
+  </select>
+
+  <!--待审核订单列表，按照创建时间排序（降序）-->
+  <select id="queryNotAuditList" parameterType="OrderParam" resultType="map">
+    select order_id ,
+          create_time ,
+          order_code ,
+          a.audit_status ,
+          (select data_name from init_dict b where a.audit_status = b.dict_id  and  b.parent_id = 1100 ) as audit_name,
+                a.order_type,
+                (select data_name from init_dict c where a.order_type = c.dict_id and c.parent_id = 1300) as order_type_name,
+          creator_name as creator_name
+    from  man_order_task a
+    where data_status = '1' and del_flag = '1' and audit_status = 1101
+    <if test="orderCode != null and orderCode != ''">
+      and order_code = #{orderCode,jdbcType=VARCHAR}
+
+    </if>
+
+    <if test="orderId != null and orderId != '' and refreshFlag == 1">
+      <![CDATA[ and order_id > #{orderId} ]]>
+
+    </if>
+
+    <if test="orderId != null and orderId != '' and refreshFlag == 2">
+      <![CDATA[ and order_id < #{orderId} ]]>
+
+    </if>
+
+     order by order_id desc
+     limit 10
+
+  </select>
+
+
+
+  <!--已审核订单列表， 按照审核时间排序（降序）-->
+  <select id="queryAuditList" parameterType="OrderParam" resultType="map">
+    select order_id ,
+    create_time ,
+    order_code ,
+    a.audit_status ,
+    audit_time,
+    (select data_name from init_dict b where a.audit_status = b.dict_id  and  b.parent_id = 1100 ) as audit_name,
+    a.order_type,
+    (select data_name from init_dict c where a.order_type = c.dict_id and c.parent_id = 1300) as order_type_name,
+    creator_name as creator_name
+    from  man_order_task a
+    where data_status = '1' and del_flag = '1' and audit_status in(1102,1103,1104)
+    <if test="orderCode != null and orderCode != ''">
+      and order_code = #{orderCode,jdbcType=VARCHAR}
+    </if>
+
+
+    <if test="auditTime != null and auditTime != '' and refreshFlag == 1">
+      <![CDATA[ and audit_time > to_timestamp(#{auditTime}, 'yyyy-MM-dd HH24:MI:ss') ]]>
+
+    </if>
+
+    <if test="auditTime != null and auditTime != '' and refreshFlag == 2">
+      <![CDATA[ and audit_time < to_timestamp(#{auditTime}, 'yyyy-MM-dd HH24:MI:ss') ]]>
+
+    </if>
+
+
+    order by  audit_time desc
+    limit 10
+
+  </select>
+
+
+  <select id="queryOrderForApp" parameterType="Integer" resultType="map">
+     select order_id ,
+    a.create_time ,
+    order_code ,
+    a.audit_status ,
+    (select data_name from init_dict b where a.audit_status = b.dict_id  and  b.parent_id = 1100 ) as audit_name,
+    a.order_type,
+    (select data_name from init_dict c where a.order_type = c.dict_id and c.parent_id = 1300) as order_type_name,
+			a.order_attribute ,
+			(select data_name from init_dict d where a.order_attribute = d.dict_id and d.parent_id = 2100) as  order_attribute_name,
+			a.order_description,
+    a.creator_name as creator_name,
+		word_name,
+		word_path,
+		handler_person,
+		 (case  when (sys.nick_name is null  or sys.nick_name = '') then  sys.account_name else sys.nick_name end) as handler_person_name,
+		audit_time,
+		data_access_time,
+		audit_suggestion
+
+    from  man_order_task a left join sys_perm_account sys on a.handler_person = sys.account_id
+    where a.data_status = '1' and a.del_flag = '1'  and order_id = #{orderId}
+
+
+  </select>
+
+
+  <select id="queryIfAuditStatistics" parameterType="OrderParam" resultType="map">
+    select 'total' as audit_status, count(1) as VALUE from man_order_task a where a.del_flag = '1' and a.data_status = '1'
+    <if test="createTime != null and createTime != ''">
+      and create_time >= cast((#{createTime} || ' 00:00:00') as TIMESTAMP)
+    </if>
+    union all
+    select 'wsh' as audit_status, count(1) as VALUE from man_order_task a where a.del_flag = '1' and a.data_status = '1' and audit_status = 1101
+    <if test="createTime != null and createTime != ''">
+      and create_time >= cast((#{createTime} || ' 00:00:00') as TIMESTAMP)
+    </if>
+    union all
+    select 'ysh'  as audit_status, count(1) as VALUE from man_order_task a where a.del_flag = '1' and a.data_status = '1' and audit_status in(1102,1103,1104)
+    <if test="createTime != null and createTime != ''">
+      and create_time >= cast((#{createTime} || ' 00:00:00') as TIMESTAMP)
+    </if>
+  </select>
+
+  <select id="queryIfAuditByPerson" parameterType="OrderParam" resultType="map">
+    select a.creator, (case when (b.nick_name is not null and b.nick_name != '') then b.nick_name else (case when b.account_name is null then '' else b.account_name end) end ) as creator_name, count(1),
+        sum(case when audit_status = 1101 then 1 else 0 end) as wsh ,
+        sum(case when audit_status in (1102,1103,1104) then 1 else 0 end) as ysh
+        from man_order_task a  left join sys_perm_account  b on a.creator = b.account_id
+        where a.del_flag = '1' and a.data_status = '1'
+        <if test="createTime != null and createTime != ''">
+          and a.create_time >= cast((#{createTime} || ' 00:00:00') as TIMESTAMP)
+        </if>
+
+        group by a.creator ,b.nick_name, b.account_name
+  </select>
+
+
+  <select id="queryDataForReport" parameterType="orderParam" resultType="map">
+
+    SELECT
+    c.dict_id AS id,
+    c.data_name AS NAME,
+    COALESCE ( d.VALUE, 0 ) AS total_value,
+    COALESCE ( d.weekValue , 0 ) as week_value
+
+    FROM
+    init_dict c
+    LEFT JOIN (
+    select  a.audit_status  , count(1) as VALUE,
+     sum(case when  create_time BETWEEN cast((#{beginTime} || ' 00:00:00') as TIMESTAMP ) and cast((#{endTime} || ' 23:59:59') as TIMESTAMP) then 1 else 0 end) as weekValue
+     from man_order_task a where a.del_flag = '1' and a.data_status = '1'
+
+    group by a.audit_status ) d ON c.dict_id = d.audit_status
+    WHERE
+    c.del_flag = '1'
+    AND c.data_status = '1'
+    AND c.parent_id = 1100
+    ORDER BY
+    c.order_no
+
+
+  </select>
+
+</mapper>

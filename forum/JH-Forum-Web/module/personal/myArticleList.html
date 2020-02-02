@@ -1,0 +1,317 @@
+    <style>
+        .content{ width: 993px;margin:0 auto}
+        /*左侧轮播*/
+        .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 593px;*/}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+        .list h2 a{color: #000;font-weight: bold;}
+        .list h2 a:hover{ cursor: pointer;color:#00a4da !important;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: right; margin-top:10px;}
+        .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ /*height: 54px;*/ margin-top:16.5px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px; width:672px;line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+        .loadMore:hover{ cursor: pointer;color:#00a4da;}
+
+        #listTitle{font-size: 30px;margin-bottom: 20px;}
+        #articleType{float: right; height: 40px; width: 110px; background-color: #13c33a; border-radius: 20px; color: white; text-align: center; line-height: 40px; position: relative; top: -15px; cursor: pointer;}
+        #articleType .write{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Write.png') center no-repeat;}
+        #articleType .ask{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Ask.png') center no-repeat;}
+        #articleType .share{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Share.png') center no-repeat;}
+
+        #noData{height: 100px;width: 100%;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noData img{width: 33px;height: 33px;border-radius: 50%;}
+        #noData p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+    </style>
+
+
+    <div class="list">
+        <div>
+            <p id="listTitle"></p>
+            <div id="articleType"><!--<i class="write"></i>写报告--></div>
+            <h1>
+                <a class="on">全部</a><a articleStatus="12004">已发布</a><a articleStatus="12002">待审核</a><a articleStatus="12001,12003,12005">未提交</a>
+            </h1>
+            <div id="articleList">
+
+            </div>
+            <div id="noData" >
+                <img src="images/public/forum/POKERFACE.png"><p>暂无数据</p>
+            </div>
+            <p class="loadMore" style="display: none;">加载更多>></p>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons", "enums"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,enums){
+
+        //初始化方法
+        var init = function(){
+            tabFun();
+            loadMore();
+            initArticlePage(1, initFirstRows, true);
+            clickAddFun();
+        };
+
+        /**
+         * 个人中心加载我的报告
+         * @param
+         * @return 
+         * @version <1> 2019/3/11 18:47 zhangshen:Created.
+         */
+        var initFirstRows = 8;//第一次夹加载条数
+        var initRows = 4;//之后每次加载条数
+        var initArticlePage = function (page, rows, flag) {
+            var forumArticle = {page:page, rows:rows};
+            var articleStatus = $(".list h1 a.on").attr("articleStatus");
+            if (articleStatus) {
+                //forumArticle.articleStatus = articleStatus;
+                forumArticle.articleStatusList = articleStatus.split(",");
+            }
+            var articleType = $('.menuDiv dl dt p.on').attr("articleType");
+            $("#listTitle").text($('.menuDiv dl dt p.on').text());
+            $("#articleType").attr("articleType", articleType);
+            if (articleType == forum_articleType.follow_paper) {
+                $("#articleType").html('<i class="write"></i>写报告');
+                forumArticle.articleType = forum_articleType.follow_paper;
+            } else if (articleType == forum_articleType.follow_faq) {
+                $("#articleType").html('<i class="ask"></i>我要提问');
+                forumArticle.articleType = forum_articleType.follow_faq;
+            } else if (articleType == forum_articleType.follow_survey) {
+                $("#articleType").html('约调研');
+                forumArticle.articleType = forum_articleType.follow_survey;
+            } else if (articleType == forum_articleType.follow_share) {
+                $("#articleType").html('<i class="share"></i>我要分享');
+                forumArticle.articleType = forum_articleType.follow_share;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumArticle);
+            ajax.opts.url = FORUM_ARTICLE.findCombinationPage_url;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data) {
+                    $('#noData').hide();
+                    var list = data.list;
+                    $.each(list,function(i,o){
+                        var articleLabelListStr = "";
+                        $.each(o.articleLabelList,function(ii,oo){
+                            if (ii < 3) {
+                                for (var k in oo) {
+                                    if (oo[k]) {
+                                        articleLabelListStr += '<span class="lab" style="background-color: '+ oo[k] +';">' + k + '</span>';
+                                    } else {
+                                        articleLabelListStr += '<span class="lab">' + k + '</span>';
+                                    }
+                                }
+                            }
+                        });
+
+
+
+                        var strFormat = '<dl style="{style2}">' +
+                                    '{key1}' +
+                                    '<dt>' +
+                                        '<h2 style="{style1}">' +
+                                            '<i class="type" style="{key2}">{key3}</i>' +
+                                            '<a href="javascript:void(0)" articleId="{key4}">{key5}</a>{key6}' +
+                                        '</h2>' +
+                                    '</dt>' +
+                                    '<dd>' +
+                                        '<p class="brief">{key7}</p>' +
+                                        '<p class="info"><b>{key8}</b>{key9}<i class="time">{key10}</i></p>' +
+                                    '</dd>' +
+                               '</dl>';
+
+
+                        var _articleTitle = o.articleTitle;
+                        if(o.articleTitle != null && o.articleTitle.length > 50){
+                            _articleTitle = o.articleTitle.substring(0,50);
+                        }
+
+                        var key1 = "", key2 = "color: #aaa; border: 1px solid #aaa;", key3 = "", key4 = o.articleId, key5 = _articleTitle,
+                            key6 = articleLabelListStr, key7 = (o.articleSummary == null ? '' : o.articleSummary),
+                            key8 = (o.creator == null ? null : commons.queryAccountName(o.creator)), key9 = "创建于",
+                            key10 = (o.createTime == null ? null : strSubstring(o.createTime, 0, 10)),
+                            style1 = "",style2="";
+                        if (o.articleType == forum_articleType.follow_paper) {
+                            var imgUrl =  "images/public/forum/list_img.png";
+
+                            if(null != o.imageUrl && "" != o.imageUrl){
+                                imgUrl =   o.imageUrl;
+                            }
+                            console.log(imgUrl)
+                            key1 = '<dt class="report"><img src="'+ imgUrl +'" /></dt>';
+
+                            if(o.articleSummary == null || o.articleSummary == ""){
+                                style1 = "margin-top:25px";
+                            }
+                            style2="min-height:120px;"
+
+                        }
+
+                        if (o.articleStatus == forum_articleStatus.WAIT_SUBMIT) {//待提交
+                            key3 = '未提交';
+                        } else if (o.articleStatus == forum_articleStatus.WAIT_AUDIT) {//待审核
+                            key3 = '待审核';
+                        } else if (o.articleStatus == forum_articleStatus.REJECTED) {//已驳回
+                            key2 = 'color: red; border: 1px solid red;';
+                            key3 = '已驳回';
+                        } else if (o.articleStatus == forum_articleStatus.PUBLISHED) {//已发布
+                            key2 = '';
+                            key3 = '已发布';
+                            key8 = (o.publisher == null ? null : commons.queryAccountName(o.publisher));
+                            key9 = '发布于';
+                            key10 = strSubstring(o.publishTime, 0, 10);
+                        } else if (o.articleStatus == forum_articleStatus.RECALLED) {//已撤回
+                            key3 = '已撤回';
+                        }
+
+                        var obj = {'key1': key1, 'key2': key2, 'key3': key3, "key4": key4, 'key5': key5, 'key6': key6,
+                            'key7': key7, "key8": key8, 'key9': key9, "key10": key10,"style1": style1,"style2": style2};
+                        str += strFormat.format(obj);
+                    });
+
+                    if (data.hasNextPage) {
+                        if (flag) {
+                            $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                        } else {
+                            $(".loadMore").attr("nextPage", data.nextPage).html("加载更多>>");
+                        }
+                    } else {
+                        $(".loadMore").attr("nextPage", data.nextPage).html("没有更多了");
+                    }
+
+                    $(".loadMore").show();
+
+                    if (null == data || data.size == 0) {
+                        $('.loadMore').hide();
+                        $('#noData').show();
+                    }
+                }
+                $("#articleList").append(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        /**
+         * 
+         * @param 
+         * @return 
+         * @version <1> 2019/3/11 18:48 zhangshen:Created.
+         */
+        var tabFun = function(){
+            //(已发布、待发布、未发布 tab切换查询)
+            $('.list h1 a').on('click',function(){
+                $(".loadMore").hide();
+                $(this).addClass('on').siblings('a').removeClass('on');
+
+                $("#articleList").html("");
+                initArticlePage(1, initFirstRows, true);
+            });
+
+            //点击详情
+            $(document).unbind('click');
+            $(document).off('click', '.list #articleList dl dt h2 a').on('click', '.list  #articleList dl dt h2 a', function(){
+                var articleId = $(this).attr("articleId");
+                $('.conMain2').load("articleInfo.html", function(){
+                    $("#articleId").val(articleId);
+                    $("#isMyArticle").val("1");//我的
+                    $(this).find(".sidebar").hide();
+                    $(this).find(".rightTop").hide();
+                    // $(this).find(".userInfo").hide();
+                    $(this).find(".content").css({"padding-left": "38px", "width": "712px"});
+                });
+            });
+        };
+
+        /**
+         * 点击帖子更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    initArticlePage(nextPage, initRows, false);
+                }
+            });
+        };
+
+        /**
+         * 截取
+         * @param str要截取的字符串, start开始小标, end结束下标
+         * @return
+         * @version <1> 2019/3/8 10:48 zhangshen:Created.
+         */
+        var strSubstring = function (str, start, end) {
+            if (str) {
+                str = str != null ? str.substring(start,end) : str;
+            }
+            return str;
+        };
+
+        /**
+         * 点击写报告、我要提问、约调研跳转
+         * 跳转至index.html页面，使用“#”分隔需要load的页面
+         * 比如写报告： index.html#writeReport
+         * @param
+         * @return 
+         * @version <1> 2019/3/12 14:17 zhangshen:Created.
+         */
+        var clickAddFun = function () {
+            $("#articleType").on("click", function(){
+                var articleType = $(this).attr("articleType");
+
+                if (articleType == forum_articleType.follow_paper) {//报告
+                     // window.location.href = "writeReport.html";
+                   window.open("writeReport.html")
+                } else if (articleType == forum_articleType.follow_faq) {
+                    window.open("index.html?articleType="+ articleType+"#invitedSurvey")
+                } else if (articleType == forum_articleType.follow_survey) {
+                    // $('.conMain').load("invitedSurvey.html");
+                    window.open("index.html?articleType="+ articleType+"#invitedSurvey")
+                } else if (articleType == forum_articleType.follow_share) {
+
+                }
+            });
+        };
+
+        //字符串模板生成
+        String.prototype.format = function() {
+            if (arguments.length == 0) return this;
+            var param = arguments[0];
+            var s = this;
+            if (typeof(param) == 'object') {
+                for (var key in param)
+                    s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+                return s;
+            } else {
+                for (var i = 0; i < arguments.length; i++)
+                    s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+                return s;
+            }
+        };
+
+        init();
+
+    })
+</script>
+

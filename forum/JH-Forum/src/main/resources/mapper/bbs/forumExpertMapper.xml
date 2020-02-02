@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumExpertMapper" >
+
+
+  <resultMap id="BaseResultMap" type="com.jh.forum.bbs.vo.ExpertVO" >
+    <id column="expert_id" property="expertId" jdbcType="INTEGER" />
+    <result column="account_id" property="accountId" jdbcType="INTEGER" />
+    <result column="expert_name" property="expertName" jdbcType="VARCHAR" />
+    <result column="industry" property="industry" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="photo_url" property="photoUrl" jdbcType="VARCHAR" />
+    <result column="auth_status" property="authStatus" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+  <sql id="Base_Column_List" >
+    expert_id, account_id, expert_name, industry, sex, company, phone, introduction,
+    photo_url, auth_status, grade, data_status, del_flag, create_time, creator_name, 
+    creator, modify_time, modifier_name, modifier, remark
+  </sql>
+
+  <!--新增专家-->
+  <insert id="save" parameterType="com.jh.forum.bbs.vo.ExpertVO" >
+    insert into forum_expert
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="expertId != null" >
+        expert_id,
+      </if>
+      <if test="accountId != null" >
+        account_id,
+      </if>
+      <if test="expertName != null" >
+        expert_name,
+      </if>
+      <if test="industry != null" >
+        industry,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="company != null" >
+        company,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="photoUrl != null" >
+        photo_url,
+      </if>
+      <if test="authStatus != null" >
+        auth_status,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+        create_time,
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="expertId != null" >
+        #{expertId,jdbcType=INTEGER},
+      </if>
+      <if test="accountId != null" >
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="expertName != null" >
+        #{expertName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null" >
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="photoUrl != null" >
+        #{photoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="authStatus != null" >
+        #{authStatus,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+        now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <!--删除专家-->
+  <delete id="delete" parameterType="com.jh.forum.bbs.vo.ExpertVO" >
+    delete from forum_expert
+    where 1=1
+    <if test="expertId!=null">
+      expert_id = #{expertId,jdbcType=INTEGER}
+    </if>
+    <if test="expertIds!=null">
+      and expert_id in
+      <foreach collection="expertIds" item="id" separator="," open="(" close=")">
+        #{id}
+      </foreach>
+    </if>
+    -- 防止不传参数删除全部
+    <if test="expertId==null and expertIds==null">
+      and 1 != 1
+    </if>
+  </delete>
+
+  <!--根据专家id查询专家详情-->
+  <select id="getById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_expert
+    where expert_id = #{expertId,jdbcType=INTEGER}
+  </select>
+
+  <!--更新专家信息-->
+  <update id="update" parameterType="com.jh.forum.bbs.vo.ExpertVO" >
+    update forum_expert
+    <set >
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="expertName != null" >
+        expert_name = #{expertName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null" >
+        industry = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="photoUrl != null" >
+        photo_url = #{photoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="authStatus != null" >
+        auth_status = #{authStatus,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where expert_id = #{expertId,jdbcType=INTEGER}
+  </update>
+
+    <!--更新专家信息-->
+    <update id="updateByAccount" parameterType="com.jh.forum.bbs.vo.ExpertVO" >
+        update forum_expert
+        <set >
+            <if test="accountId != null" >
+                account_id = #{accountId,jdbcType=INTEGER},
+            </if>
+            <if test="expertName != null" >
+                expert_name = #{expertName,jdbcType=VARCHAR},
+            </if>
+            <if test="industry != null" >
+                industry = #{industry,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                sex = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="company != null and company !=''" >
+                company = #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null" >
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null and introduction !=''" >
+                introduction = #{introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="photoUrl != null" >
+                photo_url = #{photoUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="authStatus != null" >
+                auth_status = #{authStatus,jdbcType=INTEGER},
+            </if>
+            <if test="grade != null" >
+                grade = #{grade,jdbcType=INTEGER},
+            </if>
+            <if test="dataStatus != null" >
+                data_status = #{dataStatus,jdbcType=CHAR},
+            </if>
+            <if test="delFlag != null" >
+                del_flag = #{delFlag,jdbcType=CHAR},
+            </if>
+            <if test="modifyTime != null" >
+                modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="modifierName != null" >
+                modifier_name = #{modifierName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null" >
+                modifier = #{modifier,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where account_id = #{accountId,jdbcType=INTEGER}
+    </update>
+
+  <!--分页查询专家信息-->
+  <select id="findByPage" parameterType="com.jh.forum.bbs.vo.ExpertVO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM forum_expert
+    WHERE 1=1
+    <if test="accountId != null" >
+      AND account_id = #{accountId,jdbcType=INTEGER}
+    </if>
+    <if test="expertName != null and expertName != '' " >
+      AND expert_name like CONCAT('%',#{expertName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="industry != null and industry != '' " >
+      AND industry like CONCAT('%',#{industry,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="sex != null" >
+      AND sex = #{sex,jdbcType=INTEGER}
+    </if>
+    <if test="company != null and company != '' " >
+      AND company like CONCAT('%',#{company,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="phone != null" >
+      AND phone like CONCAT('%',#{phone,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="introduction != null" >
+      AND introduction = #{introduction,jdbcType=VARCHAR}
+    </if>
+    <if test="photoUrl != null" >
+      AND photo_url = #{photoUrl,jdbcType=VARCHAR}
+    </if>
+    <if test="authStatus != null" >
+      AND auth_status = #{authStatus,jdbcType=INTEGER}
+    </if>
+    <if test="grade != null" >
+      AND grade = #{grade,jdbcType=INTEGER}
+    </if>
+    <if test="dataStatus != null" >
+      AND data_status = #{dataStatus,jdbcType=CHAR}
+    </if>
+    <if test="delFlag != null" >
+      AND del_flag = #{delFlag,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null" >
+      AND create_time = #{createTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="creatorName != null" >
+      AND creator_name = #{creatorName,jdbcType=VARCHAR}
+    </if>
+    <if test="creator != null" >
+      AND creator = #{creator,jdbcType=INTEGER}
+    </if>
+    <if test="modifyTime != null" >
+      AND modify_time = #{modifyTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="modifierName != null" >
+      AND modifier_name = #{modifierName,jdbcType=VARCHAR}
+    </if>
+    <if test="modifier != null" >
+      AND modifier = #{modifier,jdbcType=INTEGER}
+    </if>
+    <if test="remark != null" >
+      AND remark = #{remark,jdbcType=VARCHAR}
+    </if>
+    <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+      AND create_time BETWEEN CAST((#{startTime} || ' 00:00:00') AS  TIMESTAMP)AND CAST((#{endTime} || ' 23:59:59') AS TIMESTAMP)
+    </if>
+    <if test="followerId != null">
+      AND account_id IN (SELECT article_id FROM forum_follow WHERE follow_type = 13003 AND creator = #{followerId,jdbcType=INTEGER})
+    </if>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        create_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--根据专家accountId查询专家详情-->
+  <select id="getByAccountId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_expert
+    where account_id = #{accountId,jdbcType=INTEGER}
+  </select>
+
+</mapper>

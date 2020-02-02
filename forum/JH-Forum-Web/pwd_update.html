@@ -1,0 +1,124 @@
+<style>
+    .mytr{height:40px;padding:5px;margin:5px}
+    .mylabel{width:60%;text-align:right;line-height:30px;float:right;}
+    .myinputStyle{height:30px;line-height:30px;width:80%;border:1px solid #ccc;border-radius:3px;text-indent:3px;font-size:14px}
+    /*遮罩层样式*/
+    #errorInfo{padding-left:28%; color:#f20101;height:24px;line-height:24px;}
+</style>
+
+
+<div id="mainFrame">
+    <div class="register" id="registerDiv">
+        <div style="margin-top:20px;"></div>
+        <table cellpadding="0" cellspacing="0" border="0" width="100%" hegiht="100%" valign="middle"  >
+            <tr class="mytr">
+                <td class="mylabel"><span class="txtRequired">*</span>原密码：</td>
+                <td>
+                    <input type="password" id="oldpwd" name="oldpwd" class="myinputStyle" value="" placeholder="6-20位字母/数字/符号组合" tabindex="1"/>
+                </td>
+            </tr>
+            <tr class="mytr">
+                <td class="mylabel"><span class="txtRequired">*</span>新密码：</td>
+                <td>
+                    <input type="password" id="pwd" name="pwd" class="myinputStyle" value="" placeholder="6-20位字母/数字/符号组合" tabindex="2"/>
+                </td>
+            </tr>
+            <tr class="mytr">
+                <td class="mylabel"><span class="txtRequired">*</span>确认新密码：</td>
+                <td><input type="password" id="qpwd" name="qpwd" class="myinputStyle" value="" placeholder="6-20位字母/数字/符号组合" tabindex="3"/></td>
+            </tr>
+        </table>
+        <div id="errorInfo"></div>
+    </div>
+</div>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery", "BaseAjax", "formVerfication", "Base64","commons"], function ($, BaseAjax, formVerfication, Base64,commons) {
+
+        /**
+         * 设置旧密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+         var checkOldPwd = function() {
+            var obj = $("#oldpwd");
+            $("#oldpwd").removeClass('formInputHighlight');
+            if (formVerfication.isEmpty(obj.val())) {
+                $("#errorInfo").text("请输入原密码");
+                $("#errorInfo").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                $("#errorInfo").text("原密码为6-20位字母/数字/符号组合");
+                $("#errorInfo").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+            return true;
+        };
+        $("#oldpwd").blur(checkOldPwd);
+
+        /**
+         * 校验设置的密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var checkPwd = function() {
+            var obj = $("#pwd");
+            $("#pwd").removeClass('formInputHighlight');
+            if (formVerfication.isEmpty(obj.val())) {
+                $("#errorInfo").text("请输入新密码");
+                $("#errorInfo").addClass('red');
+                obj.addClass('formInputHighlight');
+                return false;
+            } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                $("#errorInfo").text("新密码为6-20位字母/数字/符号组合");
+                obj.addClass('formInputHighlight');
+                $("#errorInfo").addClass('red');
+                return false;
+            }
+            $("#errorInfo").text("");
+            $("#errorInfo").removeClass('red');
+            return true;
+        };
+        $("#pwd").blur(checkPwd);
+
+
+        /**
+         * 确认密码
+         *
+         * @version <1>  2018/1/23 djh: Create
+         */
+        var confirmPwd = function () {
+            $("#qpwd").removeClass('formInputHighlight');
+            var qpwd = $.trim($("#qpwd").val());
+            if (qpwd == "") {
+                $("#errorInfo").text("请输入确认密码");
+                $("#errorInfo").addClass('red');
+                $("#qpwd").addClass('formInputHighlight');
+                return false;
+            }else if (!formVerfication.isScopeLength($("#qpwd").val(), 6, 20)) {
+                $("#errorInfo").text("确认密码为6-20位字母/数字/符号组合");
+                $("#qpwd").addClass('formInputHighlight');
+                $("#errorInfo").addClass('red');
+                return false;
+                $("#errorInfo").removeClass('red');
+                return true;
+            }
+            var pwd = $.trim($("#pwd").val());
+            if (pwd != qpwd) {
+                $("#errorInfo").text("密码不一致");
+                $("#errorInfo").addClass('red');
+                $("#qpwd").addClass('formInputHighlight');
+                return false;
+            }
+        }
+        $("#qpwd").blur(confirmPwd);
+    });
+</script>
+
+

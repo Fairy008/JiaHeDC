@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数据下载</title>
+    <link rel="stylesheet" href="css/datepicker.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="css/daterangepicker-bs3.css" />
+    <link type="text/css" rel="stylesheet" href="css/jquery.ui.css">
+    <style type="text/css">
+        #carousel{height:520px;width:100%;}
+
+        .orderData{
+            padding: 30px 20px 20px 20px;
+            margin: 0 auto;
+            overflow: auto;
+            font-size: 14px;
+            background: url(./img/DATAcustomize.jpg) no-repeat 0 100px;
+            background-size: 100% 93%;
+            width: calc(100% - 110px);
+        }
+
+        .orderData h2{text-align:center;font-size:20px;height:62px;line-height:62px;font-weight:bold;margin-top: 320px}
+        .orderData .form{width:630px;margin:0 auto;width: 70%;margin-left: 15%;}
+        .orderData .form .row {padding:10px 0px;border-bottom:1px solid #f1f1f1;overflow:auto;}
+        .orderData .form .row > label{display:block;float:left;width:60px;height:30px;line-height:30px;}
+        .orderData .form .row > div{float:left;width:566px;position:relative;line-height:30px;width: 88%}
+
+        .inputBox input{width:320px; height: 30px;border-radius: 5px;line-height: 30px;border: 1px solid #b9b7b7;padding-left:5px;margin-left: 8px}
+        .inputBox2{margin-left: 10px}
+        .inputBox2 input{width:70px; height: 26px;border-radius: 5px;line-height: 26px;border: 1px solid #b9b7b7;padding-left:5px;}
+        .orderData .form .row div > label{padding:0 .6em;cursor:pointer;display: inline-block;margin-right: 15px;min-width: 95px}
+        .orderData .form .row #classifys > label,.orderData .form .row #crops > label,.orderData .form .row #crops > label{
+            width: 20%;
+            display: inline-block;
+            margin-right: 0;
+            padding: 0;
+        }
+        .orderData .form .row #accuracy > label{
+            width: 20%;
+            display: inline-block;
+            margin-right: 0;
+            padding: 0;
+        }
+        .orderData .form .row #dataTime > label{
+            width: 20%;
+            display: inline-block;
+            margin-right: 0;
+            padding: 0;
+        }
+        .orderData .form .row #dataShow > label{
+            width: 20%;
+            display: inline-block;
+            margin-right: 0;
+            padding: 0;
+        }
+        .orderData .form .row #dataTime > label:last-child{
+            width: 40%;
+        }
+
+        .orderData .form .row #classifys,.orderData .form .row #crops{
+            margin-left: 8px;
+        }
+
+        input[type="checkbox"]{height:16px;width:16px;vertical-align:middle;margin-right:2px;}
+        input[type="radio"]{vertical-align:middle;margin-right:2px;}
+
+        /*#crops,#classifys{line-height:30px;}*/
+
+        .orderData .form .row2{padding-top:15px;}
+        .orderData .form .row dl dt{width:180px ;float:left;margin:0 auto; text-align:left;margin-left: 8px}
+        .orderData .form .row dl dt{width:18%}
+        .orderData .form .row dl dt img,.orderData .form .row dl dt span{display:block;}
+        .orderData .form .row dl dt span{height:24px;line-height:24px;}
+
+        .timeInput{width:80px;}
+        #msgInfo{margin-top:10px;color:#ff0000;}
+
+        .formClass{border:1px solid #ff0000 !important;}
+
+
+        .orderData .form  .btn{   margin: 30px auto;height: 36px;width: 110px; background-color: #2085F1;color: white; text-align: center;line-height: 40px;display: flex; justify-content: center;align-items: Center;cursor:pointer;margin-bottom: 50px}
+
+        .classifys label{
+            display: inline-block;
+            width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .liA li:last-child{
+            display: none;
+        }
+        .classifys label{
+            display: inline-block;
+            width: 100px;
+            height: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+        }
+        .searchBoxContent{
+            display:block;
+        }
+        .phoneContent input{
+            margin-left: 8px;
+            display: inline-block;
+            width: 300px;
+            height: 25px;
+        }
+    </style>
+
+</head>
+<body>
+<div style="height:100%;margin-top:-80px;background-color: white">
+    <div id="carousel" style="display: none"></div>
+    <div class="orderData">
+        <h2>数据定制</h2>
+        <div class="form">
+            <div class="row">
+                <label>区域</label>
+                <div class="inputBox"><input level="2" parentid="3100000000" chinaName ="湖北省" regionid="3102000006" regionCode = "CHN-HU" value="湖北省"  type="text" id="txtRegion" readonly="readonly"></div>
+            </div>
+
+            <div class="row">
+                <label>分类</label>
+                <div id="classifys">
+                  <!--  <label><input type="checkbox" name="classify" value="1">地块分割</label>
+                    <label><input type="checkbox" name="classify" value="2">作物长势</label>
+                    <label><input type="checkbox" name="classify" value="3">玉米</label>-->
+                </div>
+            </div>
+
+            <div class="row">
+                <label>作物</label>
+                <div id="crops">
+                </div>
+            </div>
+
+            <div class="row">
+                <label>精度</label>
+                <div id="accuracy">
+                    <!--<label><input type="radio" name="accuracy" value="1"><1m</label>-->
+                    <label><input type="radio" name="accuracy" value="2" style="margin-left: 8px">1m-10m</label>
+                    <label><input type="radio" name="accuracy" value="3"  style="margin-left:4px">10m-100m</label>
+                    <label><input type="radio" name="accuracy" value="4">100m-1000m</label>
+                    <label><input type="radio" name="accuracy" value="5" style="margin-left:-4px">1000m以上</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <label>时间</label>
+                <div id="dataTime">
+                    <label><input type="radio" name="dataTime" value="1" style="margin-left: 8px">近一月</label>
+                    <label><input type="radio" name="dataTime"  value="2" style="margin-left:4px">近三月</label>
+                    <label><input type="radio" name="dataTime"  value="3">近六月</label>
+                    <label><input type="radio" name="dataTime"  value="4" style="margin-left:-4px">近一年</label>
+                    <label><input type="radio" name="dataTime"  value="5" style="margin-left: 8px">
+                        其他
+                        <span class="inputBox2"><input type="text" readonly  id="startDate" class="dataInput" placeholder="时间区间起"/>-<input type="text" readonly  id="endDate" class="dataInput" placeholder="时间区间止"/>
+                    </label>
+                </div>
+            </div>
+
+
+            <div class="row row2">
+                <label>形式</label>
+                <div id="dataShow">
+                    <label><span><input type="radio" name="type" value="1" checked style="margin-left: 8px">专题图层</span></label>
+                    <label><span><input type="radio" name="type" value="2" style="margin-left: -4px">统计图表</span></label>
+                    <label><span><input type="radio" name="type" value="3">专题报告</span></label>
+                </div>
+<!--                <dl id="dataShow">-->
+<!--                    <dt>-->
+<!--                        &lt;!&ndash;<label><img src="images/public/dataimg/1.jpg" width="100px" height="100px">&ndash;&gt;-->
+<!--                        <span><input type="radio" name="type" value="1" checked>专题图层</span></label>-->
+<!--                    </dt>-->
+
+<!--                    <dt>-->
+<!--                        &lt;!&ndash;<label> <img src="images/public/dataimg/2.jpg" width="100px" height="100px">&ndash;&gt;-->
+<!--                        <span><input type="radio" name="type" value="2">统计图表</span></label>-->
+<!--                    </dt>-->
+
+<!--                    <dt>-->
+<!--                       &lt;!&ndash;<label> <img src="images/public/dataimg/3.jpg" width="100px" height="100px">&ndash;&gt;-->
+<!--                        <span><input type="radio" name="type" value="3">专题报告</span></label>-->
+<!--                    </dt>-->
+<!--                </dl>-->
+            </div>
+            <div class="row" style="display:none">
+            <label>电话号码</label>
+            <div class="phoneContent">
+                <input id="orderPhone" placeholder="请输入手机号码"/>
+            </div>
+        </div>
+
+            <div >
+
+                <div id="msgInfo"></div>
+                <span class="btn" id="orderDataBtn">提交定制</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="clear:both;"></div>
+    <div id="footer"></div>
+
+
+</div>
+<script type="text/javascript">
+
+require(["jquery","Marquee","moment","jqueryUi","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings","RegionModule","formVerfication","daterangepicker"],function($,Marquee,moment,jqueryUi,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings,RegionModule,formVerfication,daterangepicker){
+    var init = function(){
+        checkCookies();
+
+
+        //加载轮播框
+        $("#carousel").load("carousel.html");
+
+        loadDateRangePicker();//加载双日历插件
+
+        bindEvent();
+        $("#footer").load("footer.html")
+    }
+
+
+    //检查用户cookies是否过期
+    var checkCookies = function () {
+        var accessToken = commons.getAccessToken();
+        if(accessToken) {
+        }
+        else{
+            // window.location.href = LOGIN_CONFIG.index_page_url;//刷新页面;
+        }
+    }
+
+
+    var bindEvent = function(){
+
+        getClassifys(17001);
+
+        getCrops(500)
+
+        //隐藏搜索框并修改样式
+        $("#indexRightTop").css({"height":"115px"});
+        $("#headRightTop").css({"height":"85px"});
+        // $(".liA li:last-child").css({"display":"none"})
+        $(".searchContentBox").css({"display":"none"})
+
+        $("#orderDataBtn").bind("click", function(){
+            saveOrderData();
+        })
+        // 给区域下拉框绑定点击事件
+        $('#txtRegion').off("click").on('click',function () {
+            changeRegionEvent();
+        })
+    }
+
+
+    /**
+     * 保存定制数据
+     */
+    var saveOrderData  = function(){
+        $("#classifys,#crops,#accuracy,#dataTime,#startDate").removeClass("formClass")
+        $("#msgInfo").html("")
+
+        var txtRegion =document.getElementById("txtRegion");
+        var regionId = txtRegion.getAttribute("regionid")
+        var regionCode =txtRegion.getAttribute("regioncode");
+
+        var classifyNodes = $("input[name='classify']:checked")
+
+        var classify_arr = [];
+        var crop_arr = [];
+        var order_tel = "";
+        var phoneCodeVerification = /^[1][0,1,2,3,4,5,6,7,8,9,0][0-9]{9}$/;
+        var phoneNum = $("#orderPhone").val();
+
+
+        $("input[name='classify']:checked").each(function(){
+            classify_arr.push($(this).val())
+        })
+
+        if(classify_arr.length == 0){
+            $("#classifys").addClass("formClass")
+
+            $("#msgInfo").html("请选择[分类]")
+            return;
+        }
+
+        $("input[name='crop']:checked").each(function(){
+            crop_arr.push($(this).val())
+        })
+
+        if(crop_arr.length == 0){
+            $("#crops").addClass("formClass")
+            $("#msgInfo").html("请选择[作物]")
+            return;
+        }
+
+        var accuracy = $("input[name='accuracy']:checked").val();
+
+        if(accuracy == undefined || accuracy == null){
+            $("#accuracy").addClass("formClass")
+            $("#msgInfo").html("请选择[精度]")
+            return;
+        }
+
+        var timeFlag =$("input[name='dataTime']:checked").val();
+
+        if(timeFlag == undefined || timeFlag == null){
+            $("#dataTime").addClass("formClass")
+            $("#msgInfo").html("请选择[时间]")
+            return;
+        }
+
+        //选择其他时，需要输入时间起止
+        var startDate = "";
+        var endDate = "";
+
+        if(parseInt(timeFlag) == 5){
+            startDate = $("#startDate").val();
+            endDate = $("#endDate").val();
+            console.log(startDate)
+            if(startDate == null || startDate == ""){
+                $("#startDate").addClass("formClass");
+                $("#msgInfo").html("请选择[时间区间]")
+                return ;
+            }
+
+            if(endDate == "" || endDate == null){
+                $("#endDate").addClass("formClass");
+                $("#msgInfo").html("请选择[时间区间]")
+                return ;
+            }
+
+        }
+        // if(phoneCodeVerification.test(phoneNum)){
+        //     order_tel = phoneNum
+        // }else{
+        //     $("#orderPhone").addClass("formClass");
+        //     $("#msgInfo").html("请输入重新输入正确的电话号码");
+        //     return;
+        // }
+
+
+        var type = $("input[name='type']:checked").val();
+
+        var data = {
+            regionId : regionId,
+            regionCode:regionCode,
+            dataClassify : classify_arr.join(","),
+            crop : crop_arr.join(","),
+            accuracyRange: accuracy,
+            timeFlag : timeFlag,
+            startDate: startDate,
+            endDate: endDate,
+            dataShow: type,
+            order_tel:order_tel
+        }
+
+        var ajax = new BaseAjax();
+        ajax.opts.url = ORDERDATA_CONFIG.save_url;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.data = JSON.stringify(data)
+        ajax.opts.successFun = function (result) {
+
+            if(result.flag){
+                commons.tipMessageShow("数据定制成功，请前往【我的主页】查看详情", 1500, true);
+                setTimeout(function(){
+                    $(".loadContent").load("orderData.html");
+                },1500)
+            }else{
+                commons.tipMessageShow("数据定制失败", 1500, true);
+            }
+        }
+        ajax.run();
+    }
+
+
+    /**
+     * 查询该节点下所有的子集叶子节点集合
+     * @version<1> 2019-07-02
+     */
+    var getClassifys = function(parentId){
+
+
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findAllLeaf_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        var node = document.getElementById("classifys");
+        node.innerHTML = ""
+
+        ajax.opts.successFun = function (result) {
+
+            if(result.flag){
+                $.each(result.data, function(index, element){
+                    var dataName = element.dataName;
+                    var label = document.createElement("label");
+                    label.innerHTML = "<input type=\"checkbox\" name=\"classify\" value=\""+ dataName +"\">" + dataName;
+                    node.appendChild(label);
+                })
+            }
+        }
+        ajax.run();
+
+    }
+
+
+
+    var getCrops = function(parentId){
+
+        var ajax = new BaseAjax();
+        ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId="+parentId;
+        ajax.opts.contentType = "application/json";
+        ajax.opts.async = false;
+
+        var node = document.getElementById("crops");
+        node.innerHTML = ""
+
+        ajax.opts.successFun = function (result) {
+            if(result.flag){
+                var data = result.data;
+                $.each(data,function(index, element){
+
+                // <label><input type="checkbox" name="crop" value="1">油菜</label>
+
+                    var dataName = element.dataName;
+                    var label = document.createElement("label");
+                    label.innerHTML = "<input type=\"checkbox\" name=\"crop\" value=\""+ dataName +"\">" + dataName;
+                    node.appendChild(label);
+                })
+            }
+        }
+        ajax.run();
+    }
+
+
+    /**
+     * 区域点击：下拉控件
+     */
+    var changeRegionEvent = function(){
+        // var param = getParam();
+        var opts = {url:REGION_CONFIG.findRegionsByPid_URL,closeFun:function(){
+
+            }};
+        var regionSelector = new RegionModule.RegionSelector("txtRegion",opts);
+        regionSelector.show();
+
+    };
+
+
+
+    /**
+     * 双日历插件
+     * @param select对象
+     * @version<1> 2018-9-27 limeiling:created
+     */
+    var loadDateRangePicker = function(){
+        // dateRangePicker.selDaterangepicker($('#reservation'));
+        stay.init();
+    };
+
+
+    /**
+     * 双日历控件
+     * @version<1> 2018-9-28 limeiling:created
+     */
+    var stay = {
+        start:$('#startDate'),
+        end:$('#endDate'),
+        today:(new Date()),
+        init:function(){
+            stay.inputVal();
+            stay.endFun();
+            stay.startFun();
+        },
+        startFun:function(){
+            stay.start.datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat : 'yy-mm-dd',
+                dayNamesMin : ['日','一','二','三','四','五','六'],
+                monthNames : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                altFormat : 'yy-mm-dd',
+                yearSuffix:'年',
+                showMonthAfterYear:true,
+                // appendText : '明天',
+                firstDay : 1,
+                showOtherMonths:true,
+                // minDate : 0,
+                // maxDate:'+0D',
+                onSelect:function(dateText,inst){
+                    stay.end.datepicker('option', 'minDate', new Date(moment(stay.start.val()).add('days', 0)));
+                }
+
+            });
+        },
+        endFun:function(){
+            stay.end.datepicker('refresh');
+            stay.end.datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat : 'yy-mm-dd',
+                dayNamesMin : ['日','一','二','三','四','五','六'],
+                monthNames : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                monthNamesShort: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+                altFormat : 'yy-mm-dd',
+                yearSuffix:'年',
+                showMonthAfterYear:true,
+                // appendText : '后天',
+                firstDay : 1,
+                showOtherMonths:true,
+                // minDate : new Date(moment(stay.start.val()).add('days', 1)),
+                // maxDate:'+0D',
+                onSelect:function(dateText,inst){
+
+                }
+            });
+        },
+        transformStr:function(day,strDay){
+            switch (day){
+                case 1: strDay  = '星期一'; break;
+                case 2: strDay  = '星期二'; break;
+                case 3: strDay  = '星期三'; break;
+                case 4: strDay  = '星期四'; break;
+                case 5: strDay  = '星期五'; break;
+                case 6: strDay  = '星期六'; break;
+                case 0: strDay  = '星期日'; break;
+            }
+            return strDay;
+        },
+        compare:function(obj){
+            var strDay = '今天';
+            var myDate = new Date(stay.today.getFullYear(),stay.today.getMonth(),stay.today.getDate());
+            var day = (obj.datepicker('getDate') - myDate)/(24*60*60*1000);
+            strDay = stay.transformStr(obj.datepicker('getDate').getDay(),30)
+            return strDay;
+        },
+        inputVal:function(){
+        },
+        inputTimes:function(obj,day){
+            var m = new Date(moment(stay.today).add('days', day));
+            obj.val(m.getFullYear() + "-" + stay.addZero((m.getMonth()+1)) + "-" + stay.addZero(m.getDate()));
+        },
+        addZero:function(num){
+            num < 10 ? num = "0" + num : num ;
+            return num;
+        }
+    }
+
+
+    /**
+     *日期时间处理
+     *@param
+     *@version<1> 2018-10-24 limeiling:created
+     * */
+
+    //获取当前日期
+    function getToday(){
+        var nowdate = new Date();
+        var y = nowdate.getFullYear();
+        var m = nowdate.getMonth()+1;
+        var d = nowdate.getDate();
+        if(m<10) {
+
+
+
+            m="0"+m;
+        }
+        if(d<10) {
+            d="0"+d;
+        }
+        return y+'-'+m+'-'+d;
+    };
+
+    //月份处理
+    function p(s) {
+        return s < 10 ? '0' + s: s;
+    }
+
+    //获取两个时间段的所有日期
+    Date.prototype.format = function() {
+        var s = '';
+        // s += this.getFullYear() + '-'; // 获取年份。
+        if((this.getMonth() + 1) >= 10) {// 获取月份。
+            s += (this.getMonth() + 1) + "-";
+        } else {
+            s += "0" + (this.getMonth() + 1) + "-";
+        }
+        if(this.getDate() >= 10) {// 获取日。
+            s += this.getDate();
+        } else {
+            s += "0" + this.getDate();
+        }
+        return(s); // 返回日期。
+    };
+
+    function getAll(begin, end) {
+        var ab = begin.split("-");
+        var ae = end.split("-");
+        var db = new Date();
+        db.setUTCFullYear(ab[0], ab[1] - 1, ab[2]);
+        var de = new Date();
+        de.setUTCFullYear(ae[0], ae[1] - 1, ae[2]);
+        var unixDb = db.getTime();
+        var unixDe = de.getTime();
+        var arry = [];
+        for(var k = unixDb; k <= unixDe;) {
+            arry.push((new Date(parseInt(k))).format());
+            k = k + 24 * 60 * 60 * 1000;
+        }
+        return arry;
+    }
+
+
+    init();
+})
+
+</script>
+</body>
+</html>

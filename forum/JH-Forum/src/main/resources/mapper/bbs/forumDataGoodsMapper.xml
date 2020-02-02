@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumDataGoodsMapper">
+
+    <resultMap id="BaseResultMap" type="com.jh.forum.bbs.vo.DataGoodsVo">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="data_status" property="dataStatus" jdbcType="VARCHAR"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="creator_name" property="creatorName" jdbcType="VARCHAR"/>
+        <result column="creator" property="creator" jdbcType="INTEGER"/>
+        <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP"/>
+        <result column="modifier_name" property="modifierName" jdbcType="VARCHAR"/>
+        <result column="modifier" property="modifier" jdbcType="INTEGER"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="data_id" property="dataId" jdbcType="INTEGER"/>
+        <result column="order_money" property="orderMoney" jdbcType="DOUBLE"/>
+        <result column="phone" property="phone" jdbcType="VARCHAR"/>
+        <result column="order_status" property="orderStatus" jdbcType="INTEGER"/>
+        <result column="invoice_id" property="invoiceId" jdbcType="INTEGER"/>
+        <result column="order_oprator" property="orderOprator" jdbcType="INTEGER"/>
+        <result column="order_checkdate" property="orderCheckdate" jdbcType="TIMESTAMP"/>
+        <result column="pay_type" property="payType" jdbcType="INTEGER"/>
+        <result column="pay_time" property="payTime" jdbcType="TIMESTAMP"/>
+        <result column="send_time" property="sendTime" jdbcType="TIMESTAMP"/>
+        <result column="order_num" property="orderNum" jdbcType="INTEGER"/>
+        <result column="evaluated_id" property="evaluatedId" jdbcType="INTEGER"/>
+        <result column="order_type" property="orderType" jdbcType="INTEGER"/>
+        <result column="crop_id" property="cropId" jdbcType="INTEGER"/>
+        <result column="data_classify" property="dataClassify" jdbcType="INTEGER"/>
+    </resultMap>
+
+
+    <!--BaseResultVoMap-->
+    <resultMap id="BaseResultVoMap" type="com.jh.forum.bbs.vo.DataGoodsVo" extends="BaseResultMap">
+        <result column="id" property="id" jdbcType="INTEGER" />
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id,data_status,del_flag,create_time,creator_name,creator,modify_time,modifier_name,modifier,remark,data_id,order_money,phone,order_status,invoice_id,order_oprator,order_checkdate,pay_type,pay_time,send_time,order_num,evaluated_id,order_type
+    </sql>
+
+
+    <insert id="saveDataGoods" parameterType="com.jh.forum.bbs.vo.DataGoodsVo">
+        insert into forum_order
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="dataStatus != null" >
+                data_status,
+            </if>
+            <if test="delFlag != null" >
+                del_flag,
+            </if>
+            <if test="createTime != null" >
+                create_time,
+            </if>
+            <if test="creatorName != null" >
+                creator_name,
+            </if>
+            <if test="creator != null">
+                creator,
+            </if>
+            <if test="modifyTime != null" >
+                modify_time,
+            </if>
+            <if test="modifierName != null" >
+                modifier_name,
+            </if>
+            <if test="modifier != null" >
+                modifier,
+            </if>
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="dataId != null">
+                data_id,
+            </if>
+            <if test="orderMoney != null">
+                order_money,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="orderStatus != null">
+                order_status,
+            </if>
+            <if test="invoiceId != null">
+                invoice_id,
+            </if>
+            <if test="orderOprator != null">
+                order_oprator,
+            </if>
+            <if test="orderCheckdate != null">
+                order_checkdate,
+            </if>
+            <if test="payType != null">
+                pay_type,
+            </if>
+            <if test="payTime != null">
+                pay_time,
+            </if>
+            <if test="sendTime !=null">
+                send_time,
+            </if>
+            <if test="orderNum !=null">
+                order_num,
+            </if>
+            <if test="evaluatedId !=null">
+                evaluated_id,
+            </if>
+            <if test="orderType !=null">
+                order_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="dataStatus != null" >
+                #{dataStatus,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null" >
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+
+            <if test="createTime != null" >
+                #{createTime,jdbcType=DATE},
+            </if>
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null">
+                #{creator,jdbcType=INTEGER},
+            </if>
+            <if test="modifyTime != null" >
+                #{modifyTime,jdbcType=DATE},
+            </if>
+            <if test="modifierName != null" >
+                #{modifierName,jdbcType=VARCHAR},
+            </if>
+            <if test="modifier != null" >
+                #{modifier,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dataId != null">
+                #{dataId,jdbcType=INTEGER},
+            </if>
+            <if test="orderMoney != null">
+                #{orderMoney,jdbcType=DOUBLE},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="orderStatus != null">
+                #{orderStatus,jdbcType=INTEGER},
+            </if>
+            <if test="invoiceId != null">
+                #{invoiceId,jdbcType=INTEGER},
+            </if>
+            <if test="orderOprator != null">
+                #{orderOprator,jdbcType=INTEGER},
+            </if>
+            <if test="orderCheckdate != null">
+                #{orderCheckdate,jdbcType=DATE},
+            </if>
+            <if test="payType != null">
+                #{payType,jdbcType=INTEGER},
+            </if>
+            <if test="payTime != null">
+                #{payTime,jdbcType=DATE},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=DATE},
+            </if>
+            <if test="orderNum != null">
+                #{orderNum,jdbcType=INTEGER},
+            </if>
+            <if test="evaluatedId != null">
+                #{evaluatedId,jdbcType=INTEGER},
+            </if>
+            <if test="orderType != null">
+                #{orderType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteDataGoods" parameterType="com.jh.forum.bbs.vo.DataGoodsVo">
+        update forum_order set del_flag ='0' where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="queryDataDoodsList" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from forum_order where del_flag = '1' and data_status = '1'
+        and id = #{id,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="getListByOrderGoods" resultMap="BaseResultVoMap">
+        select forOrder.id,forOrder.data_status,forOrder.del_flag,forOrder.create_time,forOrder.creator_name,forOrder.creator,forOrder.modify_time,forOrder.modifier_name,forOrder.modifier,forOrder.remark,forOrder.data_id,forOrder.order_money,forOrder.phone,forOrder.order_status,forOrder.invoice_id,forOrder.order_oprator,forOrder.order_checkdate,forOrder.pay_type,forOrder.pay_time,forOrder.send_time,forOrder.order_num,forOrder.evaluated_id,forOrder.order_type,forDownData.data_classify,forDownData.crop_id
+        from forum_order as forOrder left join forum_download_data as forDownData on forOrder.data_id = forDownData.data_id
+        where forOrder.del_flag = '1'
+        <!--<if test="regionCode != null">
+            and forDownData.region_code like #{regionCode,jdbcType=VARCHAR}  ||'%'
+        </if>-->
+        <if test="cropId != null">
+            and forDownData.crop_id = #{cropId,jdbcType=INTEGER}
+        </if>
+        <!--<if test="accuracy!=null">
+            and forDownData.accuracy=#{accuracy,jdbcType=INTEGER}
+        </if>-->
+        <if test="dataClassify != null and dataClassify != ''">
+            and forDownData.data_classify = #{dataClassify,jdbcType=INTEGER}
+        </if>
+        <if test="orderStatus != null">
+            and order_status = #{orderStatus,jdbcType=INTEGER}
+        </if>
+        <if test="creatorName != null and creatorName != ''" >
+            and forOrder.creator_name like '%' || #{creatorName,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="dataId != null">
+            and forOrder.data_id = #{dataId,jdbcType=INTEGER}
+        </if>
+        order by forOrder.create_time desc
+    </select>
+
+
+</mapper>

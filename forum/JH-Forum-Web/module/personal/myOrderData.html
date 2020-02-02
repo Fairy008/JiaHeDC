@@ -1,0 +1,211 @@
+    <style>
+        .content{ width: 993px;margin:0 auto}
+        /*左侧轮播*/
+        .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 593px;*/}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+        .list h2 a{color: #000;font-weight: bold;}
+        .list h2 a:hover{ cursor: pointer;color:#00a4da !important;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: right; margin-top:10px;}
+        .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ /*height: 54px;*/ margin-top:16.5px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px; width:672px;line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+        .loadMore:hover{ cursor: pointer;color:#00a4da;}
+
+        #listTitle{font-size: 30px;margin-bottom: 20px;}
+
+
+        #noData{height: 100px;width: 100%;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noData img{width: 33px;height: 33px;border-radius: 50%;}
+        #noData p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+
+        #orderDatas{padding-top:10px;}
+
+        #orderDatas > div{border:1px solid #d3d3d3;border-radius:6px;margin:8px 0px 20px 0px;padding:5px;}
+
+        #orderDatas > div:hover{border:1px solid #48c446;cursor:pointer;}
+
+        #orderDatas > div ul .row1{display:inline-block;width:215px;height:26px;line-height:26px;margin-bottom:3px;}
+        #orderDatas > div ul .row2{display:inline-block;width:430px;height:26px;line-height:26px;margin-bottom:3px;}
+
+        #orderDatas > div ul li label{background-color:#f1f1f1;width:70px;display: block;float:left;text-align:right;padding-right:5px;}
+        #orderDatas > div ul li span{display: inline-block;text-align:left;padding-left:4px;color:#080808;overflow: hidden;
+            text-overflow:ellipsis; white-space: nowrap;height:26px;line-height:26px;}
+        #orderDatas > div ul .row1 span{width:135px;}
+        #orderDatas > div ul .row2 span{width:340px;}
+
+        .wait_deal{color:#0000ff !important;}
+        .not_deal{color:#ff0000 !important;}
+        .ok_deal{color:#48c446 !important;}
+    </style>
+
+    <div class="list">
+        <div>
+            <p id="listTitle"></p>
+            <h1>
+                <a class="on">全部</a>
+            </h1>
+            <div id="orderDatas">
+
+            </div>
+            <div id="noData" style="display:none;">
+                <img src="images/public/forum/POKERFACE.png"><p>暂无数据</p>
+            </div>
+            <p class="loadMore" style="display: none;">加载更多>></p>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons", "enums"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,enums){
+
+        //初始化方法
+        var init = function(){
+            $("#listTitle").text($('.menuDiv dl dt p.on').text());
+            loadData();
+            //加载更多
+            loadMore();
+        };
+
+
+        /**
+         * 加载列表数据
+         * page：当前页码
+         * rows: 一页几条数据
+         * flag:是否首次加载
+         */
+        var initFirstRows =12;//第一次夹加载条数
+        var initRows = 6;//之后每次加载条数
+        var loadData =function(page, rows, flag){
+
+            var orderNode = document.getElementById("orderDatas");
+
+            if(page == undefined){
+                page = 1;
+            }
+            if(rows == undefined){
+                rows = initFirstRows;
+                flag = true;
+                $("#dataList").html("");
+
+            }
+
+            var data = {
+                page : page,
+                rows: rows
+            }
+            var dataList = document.getElementById("dataList");
+            var ajax = new BaseAjax();
+            ajax.opts.url = ORDERDATA_CONFIG.findByPage_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify(data);
+            ajax.opts.successFun = function (result) {
+                if(result){
+                    var list = result.list;
+                    $.each(list, function(index, element){
+
+                        var data_show = "";
+                        if(element.dataShow == 1){
+                            data_show = "专题图层"
+                        }else if(element.dataShow == 2){
+                            data_show = "统计图表"
+                        }else if(element.dataShow == 3){
+                            data_show = "专题报告"
+                        }
+
+                        var order_status = "待处理";
+                        var statusClass = "wait_deal";
+                        if(element.orderStatus == 2){
+                            order_status = "已处理";
+                            statusClass = "ok_deal"
+                        }else if(element.orderStatus == 3){
+                            order_status = "不处理";
+                            statusClass = "not_deal"
+                        }
+
+                        var div = document.createElement("div")
+
+                        var _str = "<ul><li class='row1'><label>区域</label><span title='"+ element.regionName +"'>"+ element.regionName +"</span></li><li class='row2'><label>作物</label><span title='"+ element.crop +"'>"+ element.crop +"</span></li></ul>"
+
+                        _str += "<ul><li class='row1'><label>精度</label><span>"+ element.accuracyRange +"</span></li><li class='row2'><label>分类</label><span title='"+ element.dataClassify +"'>"+ element.dataClassify +"</span></li></ul>"
+
+                        _str += "<ul><li class='row1'><label>时间起</label><span>"+ element.startDate +"</span></li><li class='row1'><label>时间止</label><span>"+ element.endDate +"</span></li></ul>"
+
+                        _str += "<ul><li class='row1'><label>定制时间</label><span>"+ element.createTime.substring(0,10) +"</span></li><li class='row2'><label>展现形式</label><span>"+ data_show +"</span></li></ul>"
+
+                        _str += "<ul><li class='row1'><label>定制状态</label><span class=\""+ statusClass +"\">"+ order_status +"</span></li>"
+
+                        if(element.remark){
+                            _str += "<li class='row2'><label>处理备注</label><span title='"+ element.remark +"'>"+ element.remark +"</span></li>";
+                        }
+                        _str +="</ul>";
+
+                        div.innerHTML = _str;
+
+                        orderNode.appendChild(div);
+
+
+                    })
+
+                    if (result.hasNextPage) {
+                        if (flag) {
+                            $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                        } else {
+                            $(".loadMore").attr("nextPage", result.nextPage).html("加载更多>>");
+                        }
+                    } else {
+                        $(".loadMore").attr("nextPage", result.nextPage).html("没有更多了");
+                    }
+
+                    if (list.length > 0) {
+                        $(".loadMore").show();
+                        $("#noComment").hide();
+                    } else {
+                        $(".loadMore").hide();
+                        $("#noComment").show();
+                    }
+                }
+            }
+            ajax.opts.failureFun = function(){
+
+            }
+            ajax.run();
+
+        }
+
+        /**
+         * 点击帖子更多
+         * @param
+         * @return
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    loadData(nextPage, initRows, false);
+                }
+            });
+        };
+
+
+        init();
+
+    })
+</script>
+

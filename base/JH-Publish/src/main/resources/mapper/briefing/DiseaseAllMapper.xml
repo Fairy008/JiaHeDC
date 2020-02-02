@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.IDiseaseAllMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.DiseaseControl">
+      <result column="disease_id" jdbcType="INTEGER" property="diseaseId" />
+      <result column="growth_id" jdbcType="INTEGER" property="growthId" />
+      <result column="disease_name" jdbcType="VARCHAR" property="diseaseName" />
+      <result column="disease_measure" jdbcType="VARCHAR" property="diseaseMeasure" />
+      <result column="disease_remark" jdbcType="VARCHAR" property="diseaseRemark" />
+      <result column="crops_id" jdbcType="INTEGER" property="cropsId" />
+      <result column="region_id" jdbcType="BIGINT" property="regionId" />
+      <result column="disease_type" jdbcType="INTEGER" property="diseaseType" />
+      <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    disease_id, growth_id, disease_name, disease_measure, disease_remark,crops_id,region_id,disease_type,create_time,modify_time
+  </sql>
+
+  <!-- 根据物候期编号查询作物病情和病情防治信息 -->
+  <select id="queryCropsDiseaseByGrowthId" resultType="com.jh.briefing.model.DiseaseControlParam" parameterType="java.util.Map">
+    select
+      dis.disease_id diseaseId,
+      dis.growth_id growthId,
+      prd.growth_name growthName,
+      dis.disease_name diseaseName,
+      dis.disease_measure diseaseMeasure,
+      dis.disease_remark diseaseRemark
+    from briefing_disease_all dis
+    left join briefing_crops_growth_period prd
+    on dis.growth_id = prd.growth_id
+    <where>
+        <if test="growthId != null and growthId != ''" >
+            dis.growth_id = #{growthId}
+        </if>
+        <if test="diseaseType != null and diseaseType != ''" >
+            and dis.disease_type = #{diseaseType}
+        </if>
+    </where>
+    order by dis.create_time desc
+  </select>
+
+  <!--
+    * 农作物农病情防治信息记录删除
+     * @param ArrayList 农作物农病情防治信息ID集合
+     * @return
+     * @version <1> 2018-05-22 lxy： Created.
+  -->
+  <delete id="deleteBatchDiseaseControl" parameterType="java.lang.Integer">
+    delete from briefing_disease_all
+    where growth_id = #{growthId}
+  </delete>
+
+  <!--
+     * 农作物病情防治信息记录新增
+     * @param List  农作物农病情防治信息集合
+     * @return
+     * @version <1> 2018-05-22 lxy： Created.
+  -->
+  <insert id="addBatchDiseaseControl" parameterType="java.util.List">
+    insert into briefing_disease_all
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        growth_id,
+        disease_name,
+        disease_measure,
+        disease_type,
+        create_time,
+        modify_time,
+    </trim>
+    values
+    <foreach collection="diseases" item="disease" separator=",">
+      (
+        #{disease.growthId},
+        #{disease.diseaseName},
+        #{disease.diseaseMeasure},
+        #{disease.diseaseType},
+        now(),
+        now()
+      )
+    </foreach>
+  </insert>
+
+  <!--
+    * 农作物病情防治信息记录修改
+     * @param DiseaseControlParam
+     * @return 修改记录结果
+     * @version <1> 2018-05-22 lxy： Created.
+  -->
+  <update id="updateDiseaseControl" parameterType="com.jh.briefing.model.DiseaseControlParam">
+    update briefing_disease_all
+    <set>
+        <if test="growthId != null">
+          growth_id = #{growthId,jdbcType=INTEGER},
+        </if>
+        <if test="cropsId != null">
+          crops_id = #{cropsId,jdbcType=INTEGER},
+        </if>
+        <if test="regionId != null">
+            region_id = #{regionId,jdbcType=BIGINT},
+        </if>
+        <if test="diseaseName != null">
+          disease_name = #{diseaseName,jdbcType=VARCHAR},
+        </if>
+        <if test="diseaseMeasure != null">
+          disease_measure = #{diseaseMeasure,jdbcType=VARCHAR},
+        </if>
+        <if test="diseaseRemark != null">
+          disease_remark = #{diseaseRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="diseaseType != null">
+            disease_type = #{disease.diseaseType},
+        </if>
+        modify_time = now()
+    </set>
+    where disease_id = #{diseaseId,jdbcType=INTEGER}
+  </update>
+</mapper>

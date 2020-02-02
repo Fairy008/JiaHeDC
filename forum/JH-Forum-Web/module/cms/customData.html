@@ -1,0 +1,538 @@
+<!--定制数据 @version 2019-07-05 xs: Created.-->
+<style>
+    .viewType{
+        white-space: normal;
+    }
+    .formErrorInfo{padding-left: 0px;}
+    .form table tr td{line-height:inherit;}
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft">
+                <div>
+                    <span class="label2">区域：</span>
+                    <span>
+                        <input level="1" parentid="null" chinaName ="中国" regionid="3100000000" regionCode = "CHN" value="中国"  type="text" id="txtRegion" readonly="readonly">
+                    </span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id="cropSearch" class="input inputWidth_100" style="text-align:center;"/></span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span>
+                        <select id="accuracyRangeId" name="accuracyRange" class="input inputWidth_100" style="text-align:center;">
+                           <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                            <option value="1m">&lt;1m</option>
+                            <option value="1m-10m">1m-10m</option>
+                            <option value="10m-100m">10m-100m</option>
+                            <option value="100m-1000m">100m-1000m</option>
+                            <option value="1000m以上">1000m以上</option>
+                        </select>
+                    </span>
+                </div>
+<!--                <div>-->
+<!--                    <span class="label2">展现形式：</span>-->
+<!--                    <span>-->
+<!--                        <select id="dataShowId" name="dataShow" class="input inputWidth_100" style="text-align:center;">-->
+<!--                            <option value="">&#45;&#45;请选择&#45;&#45;</option>-->
+<!--                            <option value="1">专题图层</option>-->
+<!--                            <option value="2">统计图表</option>-->
+<!--                            <option value="3">专题报告</option>-->
+<!--                        </select>-->
+<!--                    </span>-->
+<!--                </div>-->
+                <div>
+                    <span class="label2">处理状态：</span>
+                    <span>
+                        <select id="orderStatusId" name="orderStatus" class="input inputWidth_100" style="text-align:center;">
+                            <option value="">&#45;&#45;请选择&#45;&#45;</option>
+                            <option value="1">待处理</option>
+                            <option value="2">已处理</option>
+                            <option value="3">不处理</option>
+                        </select>
+                    </span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询  " id="queryBtn" style="padding-right:0em !important"/>&nbsp;&nbsp;
+                <input type="button" class="btn " value="重置  " id="resetBtn" style="padding-right:0em !important"/>
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft">
+                <div>
+                    <span class="label2">定制时间：</span>
+                    <span><input type="text" class="input" id="createTimeId" readonly/></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid" id="grid">
+        <table id="dataTables"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+
+<!-- 查看专家详情 -->
+<div id="orderInfo" class="form" style="display: none;">
+        <table>
+            <tr>
+                <input type="hidden" id="orderId" >
+                <td class="four_td1">区域:</td>
+                <td class="four_td2">
+                    <span id="view_regionName" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">作物:</td>
+                <td class="four_td2" colspan="3">
+                    <span id="view_crop" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">数据分类:</td>
+                <td class="four_td2" colspan="3">
+                    <span id="view_dataClassify" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">精度:</td>
+                <td class="four_td2">
+                    <span id="view_accuracyRange" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">展现形式:</td>
+                <td class="four_td2">
+                    <span id="view_dataShow" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1 td5">开始时间:</td>
+                <td class="four_td2">
+                    <span id="view_startDate" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">结束时间:</td>
+                <td class="four_td2">
+                    <span id="view_endDate" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1 td5">定制人:</td>
+                <td class="four_td2">
+                    <span id="view_creatorName" class="viewType"></span>
+                </td>
+                <td class="four_td1">手机号:</td>
+                <td class="four_td2" >
+                    <span id="view_orderTel" class="viewType"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1">定制时间:</td>
+                <td class="four_td2">
+                    <span id="view_createTime" class="viewType"></span>
+                </td>
+                <td class="four_td1 td5">处理状态:</td>
+                <td class="four_td2">
+                    <span id="view_orderStatus" class="viewType"></span>
+                </td>
+            </tr>
+            <tr id="remarkTr">
+                <td class="four_td1">备注:</td>
+                <td class="four_td2" colspan="3">
+<!--                    <span id="view_remark" class="viewType"></span>-->
+                    <textarea id="view_remark" width="400" style="resize:none;width: 90%;padding: 8px;height: 70px" disabled="disabled"></textarea>
+                </td>
+            </tr>
+        </table>
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none;">
+    <textarea id="mark" style="width: 98%;height: 70px;"></textarea>
+    <div id="msgInfo"></div>
+</div>
+
+<script type="text/javascript">
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums){
+        var processDialog = $("#process");
+        var init=function () {
+            dateFun();
+            $('#txtRegion').off("click").on('click',function () {
+                changeRegionEvent();
+            });
+            initRegionFun();
+            loadCrops(500);//加载农作物
+            loaderGrid();//初始化grid
+            $("#queryBtn").bind("click",searchFun);
+            $("#resetBtn").bind("click", resetFun);//点击重置
+
+            $(window).resize(function(){
+                $("#dataTables").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+        };
+
+        var chanageTableCss = function(){
+            var divObj = $('#dataTables').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var searchFun = function () {
+            $("#grid").html('<table id="dataTables"></table><div id="pager2"></div>');
+            loaderGrid();//加载gird
+        };
+        var dateFun = function () {
+            $("#createTimeId").jeDate({
+                range: "至",
+                multiPane: false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+        var resetFun=function () {
+            $("#txtRegion").val("中国").attr("level",1).attr("parentid","null").attr("chinaName","中国").attr("regionid","3100000000").attr("regionCode","CHN");
+            $("#cropSearch option:first").prop("selected", "selected");
+            $("#accuracyRangeId option:first").prop("selected", "selected");
+            $("#dataShowId option:first").prop("selected", "selected");
+            $("#orderStatusId option:first").prop("selected", "selected");
+            $("#createTimeId").val("");
+        }
+
+        var loaderGrid = function(){
+            var createTime = ($("#createTimeId").val().trim()).split('至');
+            $("#dataTables").jqGrid({
+                url : CMS_MANAGE.findCustomDataOrder_url,
+                datatype : "json",
+                postData : {
+                    regionId : $("#txtRegion").attr("regionid"),
+                    regionCode : $("#txtRegion").attr("regioncode"),
+                    crop: $("#cropSearch").val(),
+                    accuracyRange: $("#accuracyRangeId").val(),
+                    dataShow: $("#dataShowId").val(),
+                    orderStatus:$("#orderStatusId").val(),
+                    startDate: createTime[0] || '',
+                    endDate: createTime[1] || ''
+                },
+                mtype : 'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames: ['id', '区域', '作物', '精度', '分类', '开始时间', '结束时间', '展现形式', '定制人','手机号', '定制时间', '处理状态','操作'],
+                colModel:[
+                    {name: 'orderId', index:'order_id', hidden:true},
+                    {name: 'regionId', index: 'region_id', align: 'center', width: '20%' ,formatter:function(cellvalue,options,rowObject){
+                            var len = regionCache.length;
+                            for(i = 0;i < len;i++){
+                                if(regionCache[i].regionId == cellvalue){
+                                    return regionCache[i].chinaName;
+                                }
+                            }
+                            return "";
+                        }},
+                    {name: 'crop', index: 'crop', align: 'center', width: '20%' },
+                    {name: 'accuracyRange', index: 'accuracy_range', align: 'center', width: '20%' ,formatter:function (cellvalue, options, rowObject) {
+                            return cellvalue=='1m'?'<1m':cellvalue;
+                     }},
+                    {name: 'dataClassify', index: 'data_classify', align: 'center', width: '20%' },
+                    {name: 'startDate', index: 'start_date', align: 'center', width: '20%',formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");} },
+                    {name: 'endDate', index: 'end_date', align: 'center', width: '20%',formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");} },
+                    {name: 'dataShow', index: 'data_show', align: 'center', width: '20%',formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue==null?"":cellvalue==1?"专题图层":cellvalue==2?"统计图表":"专题报告";
+                        }},
+                    {name: 'creatorName', index:'creator_name',align: 'center', width: '20%'},
+                    {name: 'orderTel', index:'order_tel',align: 'center', width: '20%'},
+                    {name: 'createTime', index:'create_time',align: 'center', width: '20%',formatter: function (cellvalue, options, rowObject) {
+                            return cellvalue == null ? "" : new Date(cellvalue).Format("yyyy-MM-dd");} },
+                    {name: 'orderStatus', index: 'order_status', align: 'center', width: '20%',formatter: function (cellvalue, options, rowObject) {
+                            if(cellvalue == forum_dataOrderStatus.HANDLER){
+                                return "<span class='green'>已处理</span>";
+                            }else if(cellvalue == forum_dataOrderStatus.REJECTED){
+                                return "<span class='red'>不处理</span>";
+                            }else{
+                                return "<span style='color: blue'>待处理</span>";
+                            }
+                        }},
+                    {name: 'cz',
+                        index: 'cz',
+                        width: '20%',
+                        align: "left",
+                        sortable: false,
+                        formatter: function (cellvalue, options, rowObject) {
+                            var str = "";
+                            str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.orderId + "' title='查看详情'>&nbsp;";
+                            if(rowObject.orderStatus==1){
+                                str += "<img src='images/public/icon-pass.png' class='editBtn' data-id='" + rowObject.orderId + "' title='处理'>&nbsp;";
+                            }else{
+                                str += "<img src='images/public/TeditG.png''title='处理'>&nbsp;";
+                            }
+                            return str;
+                        }
+                    }
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function () {
+                    chanageTableCss();
+                    tableEvent();//绑定table表格操作事件
+                }
+            });
+        };
+
+        var loadCrops = function (dictId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    var optList = "<option value=''>--请选择--</option>";
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        optList += "<option value='" + status.dataName + "'>" + status.dataName + "</option>";
+                    }
+                    $("#cropSearch").html(optList);
+                }
+            };
+            ajax.run();
+        };
+        
+        var tableEvent=function () {
+            $(".detailBtn,.editBtn").off("click");
+            //详情
+            $(".detailBtn").bind("click", function () {
+                detailOrderFun($(this).data("id"), 0);
+            });
+
+            //编辑
+            $(".editBtn").bind("click", function () {
+                detailOrderFun($(this).data("id"), 1);
+            });
+        };
+
+        var detailOrderFun=function (orderId, type) {
+            var buttons = [];
+            var close = {
+                text: "关闭",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            };
+            var handler = {
+                text: "处理",
+                click: function () {
+                    handlerFun(orderId,forum_dataOrderStatus.HANDLER);
+                }
+            };
+            var reject = {
+                text: "不处理",
+                click: function () {
+                    handlerFun(orderId,forum_dataOrderStatus.REJECTED);
+                }
+            }
+
+            if(type==0){
+                setOrderInfo(orderId);
+                buttons.push(close);
+            }else if(type==1){
+                setOrderInfo(orderId);
+                buttons.push(handler);
+                buttons.push(reject);
+                buttons.push(close);
+            }
+
+            var userDialog = $("#orderInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title: '定制数据信息',
+                height: 470,
+                width: 800,
+                modal: true,
+                close: function () {
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: buttons
+            });
+            userDialog.dialog("open");
+        }
+
+        var handlerFun=function (orderId,status) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_dataOrderStatus.HANDLER){//审核通过
+                msg="通过";
+            }else if(status== forum_dataOrderStatus.REJECTED){//审核驳回
+                msg="驳回";
+            }
+
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: msg+'并备注',
+                height: 210,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        var msgInfo = $('#msgInfo');
+                        if(formVerfication.checkInputIsEmpty($('#mark'),msgInfo,'备注不能为空')){
+                            return false;
+                        }
+                        var mark=$('#mark').val();
+
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.findCustomDataOrderHandler_url;
+                        ajax.opts.data = JSON.stringify({'orderId':orderId,'orderStatus':status,'remark':mark});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#dataTables").trigger("reloadGrid");
+                                $("#orderInfo").dialog("close");
+                                PopWin.showMessageWin("定制数据订单处理成功");
+                            } else {
+                                PopWin.showMessageWin("定制数据订单处理失败：" + result.msg);
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误："+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+
+        var setOrderInfo=function (orderId) {
+            var order = orderDetail(orderId);
+
+            $.each(regionCache,function (i,cache) {
+                if(cache.regionId==order.regionId){
+                    $("#view_regionName").text(cache.chinaName);
+                }
+            });
+            $("#view_accuracyRange").text(order.accuracyRange);
+            $("#view_crop").text(order.crop);
+            $("#view_dataClassify").text(order.dataClassify);
+            $("#view_dataShow").text(order.dataShow==1?"专题图层":order.dataShow==2?"统计图表":"专题报告");
+            $("#view_startDate").text(order.startDate);
+            $("#view_endDate").text(order.endDate);
+            $("#view_creatorName").text(order.creatorName);
+            $("#view_orderTel").text(order.orderTel);
+            $("#view_createTime").text(order.createTime);
+            $("#view_orderStatus").text(order.orderStatus==forum_dataOrderStatus.HANDLER?"已处理":
+                order.orderStatus==forum_dataOrderStatus.REJECTED?"不处理":"待处理");
+            if(order.orderStatus==forum_dataOrderStatus.WAIT_AUDIT){
+                $("#remarkTr").hide();
+                return;
+            }
+            $("#remarkTr").show();
+            $("#view_remark").text(order.remark||'');
+        };
+
+        /**
+         * 根据专家ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var orderDetail = function(orderId){
+            var order= {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findCustomDataOrderInfo_url+ "?orderId="+ orderId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type= "GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    order= result.data;
+                }
+            }
+            ajax.run();
+            return order;
+        };
+
+        //区域缓存
+        var regionCache=[];
+        /**
+         * 获取区域缓存数据
+         * @param
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var initRegionFun=function () {
+            var ajax = new BaseAjax();
+            ajax.opts.url = REGION_CONFIG.findAll_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    regionCache = result.data;
+                }
+            }
+            ajax.run();
+        };
+        init();
+
+        /**
+         * 区域点击：下拉控件
+         */
+        var changeRegionEvent = function(){
+            // var param = getParam();
+            var opts = {url:REGION_CONFIG.findRegionsByPid_URL,closeFun:function(){ }};
+            var regionSelector = new RegionModule.RegionSelector("txtRegion",opts);
+            regionSelector.show();
+        };
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width:460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+    });
+
+</script>

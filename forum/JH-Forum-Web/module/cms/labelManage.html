@@ -1,0 +1,619 @@
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    .errorInfo{color:#f00;}
+    .isSuccess{color: #34b40e;}
+    .isFail{color: #ff0000;}
+    .num{color: #45AEDF;}
+    .lyName{display: block; margin: 0 5px;}
+    .blue{color:blue}
+    .detail_style{
+        text-align: center;
+    }
+    .tab_btn{
+        background:#00FA9A!important;text-align: center;color:#8B0000;
+    }
+    .inputWidth_250{width:250px;}
+    .button_style{
+        background-color: #1caf9a;
+        color: #fff;
+        width: 100px;
+        height: 30px;
+        font-size: 14px;
+        border-radius: 3px;
+        border: 0px;
+        margin-left: 50px;
+    }
+    .four_td1,.four_td2{
+        line-height: 55px!important;
+    }
+    #preview{
+        float:left;
+    }
+    span.lab {
+        height: 18px;
+        font-weight: normal;
+        margin-right: 4px;
+        vertical-align: middle;
+        display: inline-block;
+        line-height: 18px;
+        font-size: 12px;
+        color: #fff;
+        padding: 0 5px;
+        background: #ccc;
+    }
+    #labelColor{
+        cursor: pointer;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">标签名称：</span>
+                    <span><input class="input inputWidth_100" id="search_name" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input class="input inputWidth_100" id="search_creatorName" /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="labelGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看标签详情 -->
+<div id="labelInfo" class="form" style="display: none;">
+    <table>
+        <tr>
+            <input type="hidden" id="labelId" class="editType" >
+            <td class="four_td1"><font color="red">*</font>标签名称:</td>
+            <td class="four_td2">
+                <input id="labelName"  class="inputType editType" type="text" />
+                <span id="view_labelName" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>标签颜色:</td>
+            <td class="four_td2">
+                <input class="jscolor editType inputType" id="labelColor" value="faba17">
+                <span id="view_labelColor" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>标签显示:</td>
+            <td class="four_td2">
+                <span class="lab" style="background-color:#faba17" id="labelColorShow"></span>
+            </td>
+        </tr>
+    </table>
+    <div style="position: absolute;bottom: 10px" class="editType"><font color="#0e8afa">说明：点击【标签颜色】文本框，选取颜色或手动输入RGB色值</font></div>
+</div>
+<div id="labelInfoHide" style="display: none"></div>
+<script>
+
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums){
+        var processDialog = $("#process");
+
+        var init = function(){
+            loaderGrid();//加载表格
+
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);//重置
+            $("#addBtn").on("click",addFun);//新增
+
+            $(window).resize(function(){
+                $("#labelGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#labelGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var colmodel = [
+            {name: 'labelId', index:'label_id', hidden:true},
+            {name: 'labelName', index:'label_name',align: 'center', width: '20%'},
+            {name: 'labelColor', index:'label_color',align: 'center', width: '20%'},
+            {name: 'labelColorShow', index:'label_color',align: 'center', width: '20%',formatter:function(cellvalue, options, rowObject){
+                var str ='<span class="lab" style="background-color:'+rowObject.labelColor+'">'+rowObject.labelName+'</span>';
+                return str;
+                }
+            },
+            {name: 'creatorName', index: 'creator_name', align: 'center', width: '20%' },
+            {name: 'createTime', index: 'create_time', align: 'center', width: '20%' },
+            {name: 'cz', index:'cz', width:'20%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                var str="";
+                str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='"+ rowObject.labelId +"' title='查看详情'>&nbsp;";
+
+                str += "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.labelId +"' title='编辑'>&nbsp;";
+
+                str += "<img src='images/public/Tdelete.png' class='deleteBtn' data-id='"+ rowObject.labelId +"' title='删除'>&nbsp;";
+
+                return str;
+            }}
+        ];
+
+
+
+
+
+        var permissionFlag = true;
+
+        var loaderGrid = function(){
+            $("#labelGrid").jqGrid({
+                url: CMS_MANAGE.findLabelList_url,
+                datatype: "json",
+                postData:{
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['labelId','标签名称','标签颜色','标签显示','创建人','创建时间','操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#labelGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#labelGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#labelGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据批量删除按钮处理
+            if(ids.length == 0){
+                $("#batchDeleteBtn").addClass("btn_grey");
+            }else{
+                $("#batchDeleteBtn").removeClass("btn_grey");
+            }
+
+            var records = $("#labelGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchDeleteBtn").hide("btn_grey");
+            }else{
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function(){
+            $(".detailBtn, .editBtn,.deteleBtn,#batchDeleteBtn").off("click");
+
+            //详情
+            $(".detailBtn").bind("click",function () {
+                var labelId = $(this).attr("data-id");
+                detailLabelFun(labelId,0);
+            });
+
+            //编辑
+            $(".editBtn").bind("click",function () {
+                var labelId = $(this).attr("data-id");
+                detailLabelFun(labelId,2);
+            });
+
+            //删除
+            $(".deleteBtn").bind("click",function () {
+                var labelId = $(this).attr("data-id");
+                deleteLabelFun([labelId]);
+            });
+
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    deleteLabelFun(getValidData());
+                }
+            });
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(){
+            var ids=[];
+            var rowIds = $("#labelGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#labelGrid").jqGrid('getRowData', id);
+                var labelId=row.labelId;
+                ids.push(labelId)
+            });
+            return ids;
+        }
+
+        /**
+         * 显示view，显示信息查看
+         */
+        var viewTypeShow = function(){
+            $(".editType").val('');
+            $(".editType").hide();
+            $(".viewType").show();
+        }
+
+        /**
+         * 显示input，显示信息查看
+         */
+        var viewTypeHide = function(){
+            $(".editType").val('');
+            $("#labelColor").val("faba17");//默认颜色
+            $("#labelColorShow").text("");
+            $("#labelColorShow").css("background-color","#faba17");//默认颜色
+            $(".editType").show();
+            $(".viewType").hide();
+            $.getScript("js/lib/jscolor/jscolor.js");
+            $("#labelName,#labelColor").keyup(function(){
+                $("#labelColorShow").text($("#labelName").val());
+                $("#labelColorShow").css("background-color","#"+$("#labelColor").val());
+            });
+            $("#labelColor").change(function(){
+                $("#labelColorShow").text($("#labelName").val());
+                $("#labelColorShow").css("background-color","#"+$("#labelColor").val());
+            });
+        }
+
+        /**
+         * 新增标签
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var addFun = function() {
+            detailLabelFun(null,1);
+        }
+
+        /**
+         * 删除标签
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteLabelFun = function(ids) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("若帖子中已使用该标签，标签颜色将会置灰！是否确认删除标签？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.deleteLabel_url;
+                        ajax.opts.data = JSON.stringify({'labelIds':ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#labelGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除标签成功");
+                            } else {
+                                PopWin.showMessageWin("删除标签失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除标签失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 查看标签详情
+         * type 0:详情 1新增 2编辑
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailLabelFun = function(labelId,type) {
+            var buttons=[];
+            var close ={
+                text:"关闭",
+                click:function(){
+                    $(this).dialog("close");
+                }
+            };
+
+            var save= {
+                text: "保存",
+                click: function () {
+                    addSaveFun(labelId);
+                }
+            }
+            if(type == 0 ){
+                viewTypeShow();
+                setLabelInfo(labelId);
+                buttons.push(close);
+            }else if(type == 1){
+                viewTypeHide();
+                buttons.push(save);
+                buttons.push(close);
+            }else if(type == 2){
+                viewTypeHide();
+                setLabelInfo(labelId);
+                buttons.push(save);
+                buttons.push(close);
+            }
+
+            var userDialog =  $("#labelInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:'标签信息',
+                height:300,
+                width: 600,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+        };
+
+
+        /**
+         * 详情赋值
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setLabelInfo=function(labelId){
+            var labelInfo=labelDetail(labelId);
+            $("#labelId").val(labelInfo.labelId);
+            $("#labelName").val(labelInfo.labelName);
+            $("#view_labelName").text(labelInfo.labelName);
+            var labelColor =labelInfo.labelColor;
+            $("#labelColor").css("background-color",labelColor);
+            labelColor=labelColor.replace("#","");
+            $("#labelColor").val(labelInfo.labelColor);
+            $("#view_labelColor").text(labelInfo.labelColor);
+            $("#labelColorShow").text(labelInfo.labelName);
+            $("#labelColorShow").css("background-color",labelInfo.labelColor);
+        }
+
+
+        /**
+         *新增/编辑保存
+         */
+        var addSaveFun = function(labelId){
+            if(!formVerf()){
+                return ;
+            }
+            showProcess();
+            var url=CMS_MANAGE.addLabel_url;
+            var msg="新增";
+            if(labelId!=null&&labelId!=''){
+                url=CMS_MANAGE.editLabel_url;
+                msg="修改"
+            }
+            var labelInfo={};
+            labelInfo.labelId=$("#labelId").val()
+            labelInfo.labelName=$("#labelName").val()
+            labelInfo.labelColor="#"+$("#labelColor").val()
+            var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(labelInfo);
+            ajax.opts.successFun = function(result){
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                if(result.flag){
+                    $("#labelGrid").trigger("reloadGrid");
+                    $("#labelInfo").dialog("close");
+                    PopWin.showMessageWin("标签"+msg+"成功");
+                }else{
+                    PopWin.showMessageWin("标签"+msg+"失败");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                PopWin.showMessageWin("标签"+msg+"失败");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        var searchFun = function() {
+            var label = {};
+            label.labelName = $("#search_name").val(); //名称
+            label.creatorName= $("#search_creatorName").val();//创建人
+
+            $("#labelGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:label,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 根据标签ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var labelDetail = function(labelId){
+            var label={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findLabelInfo_url+"?labelId="+labelId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    label=result.data;
+                }
+            }
+            ajax.run();
+            return label;
+        };
+
+        /**
+         * 检查标签名称
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var findLabelNameFun = function(labelName){
+            var label={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findLabelName_url+"?labelName="+labelName;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    label=result.data;
+                }
+            }
+            ajax.run();
+            return label;
+        };
+
+        var formVerf = function(){
+            var userInfo = $('#labelInfo');
+
+            if(formVerfication.checkInputIsEmpty($('#labelName'),userInfo,'标签名称不能为空')){
+                return false;
+            }
+            var list=findLabelNameFun($('#labelName').val());
+            if((list.length == 1 && list[0].labelId != $("#labelId").val())||list.length > 1){
+                formVerfication.showErroInfo($('#labelName'),userInfo,'标签名称已存在，请重新输入');
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,5,$('#labelName'),userInfo,'标签名称字数不能超过5位')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#labelColor'),userInfo,'标签颜色不能为空')){
+                return false;
+            }
+            if(formVerfication.checkInputisRgbColor($('#labelColor'),userInfo,'标签颜色格式不正确')){
+                return false;
+            }
+
+            return true;
+        };
+
+        init();
+    });
+
+
+</script>

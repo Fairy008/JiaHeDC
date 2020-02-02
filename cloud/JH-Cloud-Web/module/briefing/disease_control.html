@@ -1,0 +1,633 @@
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label">区域：</span>
+                    <span>
+                        <input type="text" id="txtArea" class="input"  placeholder="请选择区域" readonly/>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">作物：</span>
+                    <span>
+                        <select id = "cropId" class="input" style="width:120px;text-align:center;">
+                           <option value="">请选择作物</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">生育期名称：</span>
+                    <span>
+                        <select id="search_growthId" class="input" style="width:120px;text-align:center;" >
+                            <option value="">请选择生育期</option>
+                        </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label">病情名称：</span>
+                    <span>
+                        <input id="search_diseaseName" type="text" class="input" />
+                    </span>
+                </div>
+               <!-- <div>
+                    <span class="label">防治措施：</span>
+                    <span>
+                        <input id="search_diseaseMeasure" type="text" class="input" />
+                    </span>
+                </div>-->
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input name="Input" type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="cropsGrowthPriodGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div id="dataTypeInfo" class="form" style="display: none;">
+        <table>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>区域:</td>
+                <td class="two_td2">
+                    <input type="text" id="region" class="input selectType two_selectType"  placeholder="请选择区域" readonly/>
+                    <!-- <select id="regionId" name="regionId" class="selectType two_selectType">
+                         <option value="3102000006">湖北</option>
+                     </select>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>作物:</td>
+                <td class="two_td2">
+                    <select id="cropsId" name="cropsId" class="selectType two_selectType">
+                        <option value="">请选择作物</option>
+                    </select>
+                 <!--   <select id="cropsId" name="cropsId" class="selectType two_selectType">
+                        <option value="514">小麦</option>
+                        <option value="511">油菜</option>
+                    </select>-->
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>生育期名称:</td>
+                <td class="two_td2">
+                    <select id="growthId" class="selectType two_selectType">
+                        <option value="">请选择生育期</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>病情名称:</td>
+                <td class="two_td2">
+                    <input name="diseaseName" id="diseaseName" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1"><span class="txtRequired">*</span>防治措施:</td>
+                <td class="two_td2">
+                    <input name="diseaseMeasure" id="diseaseMeasure" class="inputType" type="text" />
+                </td>
+            </tr>
+            <tr>
+                <td class="two_td1">备注:</td>
+                <td class="two_td2">
+                    <input name="diseaseRemark" id="diseaseRemark" class="inputType" type="text" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="showStars" class="form" style="display: none;">
+        <div id="starsPanel">
+        </div>
+    </div>
+
+    <div id="delDialog" class="dialogStyle" style="display:none">
+    </div>
+
+    <div id="roleDialog" class="dialogStyle" style="display:none"></div>
+    <script>
+        require(["jquery", "jqGrid", "BaseAjax", "formVerfication","PopWin","commons","multiselect","RegionModule"], function ($, jqGrid, BaseAjax, formVerfication,PopWin,commons,multiselect,RegionModule) {
+
+            var obj = "search_growthId";
+            var regionIdObj = document.getElementById("txtArea");
+            var cropsIdObj = $("#cropId");
+            /*
+             * 初始化
+             */
+            var init = function(){
+                RegionSelectFun("txtArea","cropId");
+                cropsGrowthPriodGrid();
+                $("#addBtn").bind("click",addFun);
+                $("#queryBtn").bind("click",searchFun);
+                document.getElementById("cropId").onchange=growthPeriod;
+
+                $(window).resize(function(){
+                    $("#cropsGrowthPriodGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+            };
+
+            /**
+             * 初始化查询框区域，作物，生育期对象
+             * @version <1> 2018-4-19 cxw : created.
+             */
+            var initSearchParam = function () {
+                obj = "search_growthId";
+                regionIdObj = document.getElementById("txtArea");
+                cropsIdObj = $("#cropId");
+            }
+
+            /**
+             * 初始化新增，修改弹出框区域，作物，生育期对象
+             * @version <1> 2018-4-19 cxw : created.
+             */
+            var initDialogParam = function () {
+                obj = "growthId";
+                regionIdObj = document.getElementById("region");
+                cropsIdObj = $("#cropsId");
+            }
+
+            /**
+             * 区域选择控件
+             * @param regionIdName 区域ID
+             * *@param cropIdName 作物ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var RegionSelectFun = function(regionIdName,cropIdName){
+                var txtArea = document.getElementById(regionIdName);
+                txtArea.onclick = function(){
+                    var opts = {colNum:3,width:400};
+                    opts = {url:REGION_CONFIG.findRegionForReport_url,closeFun:function(){
+                        var regionId = txtArea.getAttribute("regionId");
+                        if(regionId!=null)
+                        {
+                            queryCropFun(regionId,cropIdName)
+                        }
+                        else{
+                            $('#'+cropIdName).html('<option value="">请选择作物</option>');
+                        }
+                    }};
+                    var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                    regionSelector.show();
+                }
+                return true;
+            }
+
+            /**
+             * 点击区域时查询作物列表
+             * @param regionId 区域ID
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var queryCropFun = function(regionId,cropIdName){
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            };
+
+            /**
+             * 初始化作物下拉框
+             * @param crop 查询出的作物对象集合
+             * @version <1> 2018-4-17 cxw : created.
+             */
+            var initCropFun = function(crop,cropIdName){
+                var result;
+                result = '<option value="">请选择作物</option>';
+                if(crop!=null)
+                {
+                    $.each(crop,function(i,o){
+                        result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                    });
+                }
+                    $('#'+cropIdName).html(result);
+            };
+
+            /**
+             * 初始化生育期下拉框
+             * @param obj 生育期select对象
+             * @version <1> 2018-4-18 cxw : created.
+             */
+            var growthPeriod = function(){
+                    var param = {};
+                    var cropsId = $.trim(cropsIdObj.val())
+                    var regionId =regionIdObj.getAttribute("regionId")
+                    if(cropsId!=null&&regionId!=null&&regionId!=''&&cropsId!='')
+                    {
+                        param.regionId = regionId;
+                        param.cropsId = cropsId;
+                        var ajax = new BaseAjax();
+                        ajax.opts.url =  CROPS_GROWTH_PERIOD_CONFIG.queryGrowthPeriodList_url;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.data = JSON.stringify(param);
+                        ajax.opts.successFun = function (data) {
+                            var growthPeriod = data.data;
+                            initgrowthPeriod(growthPeriod,obj);
+                        };
+                        ajax.run();
+                    }
+                    else{
+
+                    }
+            }
+
+            /**
+             * 初始化生育期下拉框
+             * @param growthPeriod 查询出的生育期对象集合
+             * @param obj 生育期select对象
+             * @version <1> 2018-4-18 cxw : created.
+             */
+            var initgrowthPeriod = function(growthPeriod,obj){
+                var result;
+                result = '<option value="">请选择生育期</option>';
+                if(growthPeriod!=null)
+                {
+                    $.each(growthPeriod,function(i,o){
+                        result += '<option value = "' + o.growthId + '">' + o.growthName + '</option>';
+                    });
+                }
+                $('#'+obj).html(result);
+            };
+
+            /**
+             * 农作物病情防治的渲染
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:增加区域和作物
+             */
+            var cropsGrowthPriodGrid = function () {
+                $("#cropsGrowthPriodGrid").jqGrid({
+                    url: DISEASE_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        "diseaseControlParam":{}
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['diseaseId','区域名称','作物名称','生育期名称','作物病情名称','作物病情防治措施','操作'],
+                    colModel: [
+                        {name: 'diseaseId', index: 'diseaseId', hidden: true},
+                        {name: 'regionName', index: 'regionName', align: 'center', width: '8%'},
+                        {name: 'cropsName', index: 'cropsName', align: 'center', width: '8%'},
+                        {name: 'growthName', index: 'growthName', align: 'center', width: '10%'},
+                        {name: 'diseaseName', index: 'diseaseName', align: 'center', width: '10%'},
+                        {name: 'diseaseMeasure', index: 'diseaseMeasure', align: 'left', width: '54%'},
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            width: '10%',
+                            align: "center",
+                            sortable: false,
+                            formatter: function (cellvalue, options, rowObject) {
+                                var str = "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.diseaseId + "' title='编辑' style='margin-right: 3px;'>"+
+                                        "<img src='images/public/Tdelete.png' class='delBtn' data-id='" + rowObject.diseaseId + "' title='删除' >";
+                                return str;
+                            }
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        $(".editBtn,.delBtn,.statusBtn").off("click");
+                        $(".editBtn").on("click", function () {
+                            editFun($(this).attr("data-id"));
+                        });
+                        $(".delBtn").on("click", function () {
+                            deleteFun($(this).attr("data-id"));
+                        });
+                    }
+                });
+            };
+
+            /**
+             * 根据指定的查询条件，查询对应的记录并重新渲染
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:增加区域，作物和生育期查询条件.
+             */
+            var searchFun = function () {
+                var growthId = $.trim($("#search_growthId").val());
+                var diseaseName = $.trim($("#search_diseaseName").val());
+                var cropsId = $.trim($("#cropId").val());
+                var regionId = document.getElementById("txtArea").getAttribute("regionId");
+                //var diseaseMeasure = $.trim($("#search_diseaseMeasure").val());
+                $("#cropsGrowthPriodGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData: {'growthId': growthId, 'diseaseName': diseaseName, 'cropsId':cropsId,'regionId':regionId},
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 获取表单新增或者修改的数据
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var getParam = function() {
+                var growthId = $.trim($("#growthId").val());
+                var diseaseName = $.trim($("#diseaseName").val());
+                var diseaseMeasure = $.trim($("#diseaseMeasure").val());
+                var diseaseRemark = $.trim($("#diseaseRemark").val());
+                var cropsId = $.trim($("#cropsId").val());
+                var regionId = document.getElementById("region").getAttribute("regionId");
+
+                var paramConfig = {
+                    growthId: growthId,
+                    regionId:regionId,
+                    cropsId:cropsId,
+                    diseaseName: diseaseName,
+                    diseaseMeasure: diseaseMeasure,
+                    diseaseRemark: diseaseRemark
+                };
+                return paramConfig;
+            };
+
+            /**
+             * 新增作物病情防治配置页
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.加载初始化区域控件；2.完善注释；3.加载生育期；4.初始化新增，修改弹出框区域，作物，生育期对象
+             */
+            var addFun = function() {
+                RegionSelectFun("region","cropsId");//加载区域
+                initDialogParam();
+                document.getElementById("cropsId").onchange = growthPeriod;//加载生育期
+                //growthPeriod("cropsId","growthId");
+                clearInput();//清空数据
+                var cropsGrowthPeriodDialog =  $("#dataTypeInfo");
+                var dialogParent = cropsGrowthPeriodDialog.parent();
+                var dialogOwn = cropsGrowthPeriodDialog.clone();
+                cropsGrowthPeriodDialog.dialog({
+                    autoOpen: false,
+                    title:'作物病情防治新增',
+                    height: 390,
+                    width: 460,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                    },
+                    buttons: [{
+                        text:"保存",
+                        click:function(){
+                            addSaveFun(cropsGrowthPeriodDialog);
+                        }},{
+                        text:"取消",
+                        click:function(){
+                            initSearchParam();
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                cropsGrowthPeriodDialog.dialog("open");
+            };
+
+            /**
+             * 保存作物病情防治配置信息
+             * @param cropsGrowthPeriodDialog弹框对象
+             * @version <1> 2018-04-12 lxy： Created.
+             * *@version <2> 2018-04-18 cxw： update:完善注释及更改提示信息
+             */
+            var addSaveFun = function(cropsGrowthPeriodDialog) {
+                //校验输入框信息
+                if (!formVerf()) {
+                    return;
+                }
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = DISEASE_CONFIG.save_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(getParam());
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        initSearchParam();
+                        $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                        cropsGrowthPeriodDialog.dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("作物病情配置添加失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 删除作物病情配置信息
+             * @param id 作物病情配置主键
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.原参数传递为作物病情配置对象，现改为传递作物病情配置主键.;2.完善注释及更改提示信息
+             */
+            var deleteFun = function (id) {
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认删除所选记录？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DISEASE_CONFIG.del_url+"?diseaseId="+id;
+                          /*  ajax.opts.data = JSON.stringify({'diseaseId':id});
+                            ajax.opts.contentType = "application/json";*/
+                            ajax.opts.successFun = function (result) {
+                                if (result.flag) {
+                                    $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                                    delDialog.dialog("close");
+                                    PopWin.showMessageWin(result.msg);
+                                } else {
+                                    PopWin.showMessageWin(result.msg);
+                                }
+                            };
+                            ajax.opts.errorFun = function () {
+                                PopWin.showMessageWin("作物病情删除失败");
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            };
+
+            /**
+             *作物病情防治配置修改页
+             * @param id 作物病情防治配置主键
+             * @version <1> 2018-04-12 lxy： Created.
+             * @version <2> 2018-04-18 cxw： update:1.加载初始化区域控件；2.完善注释；3.加载生育期；4.初始化新增，修改弹出框区域，作物，生育期对象
+             */
+            var editFun = function (id) {
+                RegionSelectFun("region","cropsId");//加载区域
+                initDialogParam();
+                document.getElementById("cropsId").onchange = growthPeriod;//加载生育期
+               // growthPeriod("cropsId","growthId");
+                var ajax = new BaseAjax();
+                ajax.opts.url = DISEASE_CONFIG.findById_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.data = JSON.stringify({'diseaseId':id});
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result) {
+                    if (result.flag) {
+                        initData(result.data);
+                        var configDialog =  $("#dataTypeInfo");
+                        var dialogParent = configDialog.parent();
+                        var dialogOwn = configDialog.clone();
+                        configDialog.dialog({
+                            autoOpen: false,
+                            title:'作物病情防治配置修改',
+                            height: 390,
+                            width: 460,
+                            modal: true,
+                            close:function(){
+                                dialogOwn.appendTo(dialogParent);
+                                $(this).dialog("destroy").remove();
+                            },
+                            buttons:[
+                                {
+                                    text:"保存",
+                                    click:function(){
+                                        if (!formVerf()) {
+                                            return;
+                                        }
+                                        var param = getParam();
+                                        param.diseaseId = id;
+                                        update(configDialog, param);
+                                    }},{
+                                    text:"取消",
+                                    click:function(){
+                                        initSearchParam();
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+                        configDialog.dialog("open");
+                    }
+                };
+                ajax.run();
+            };
+
+            /**
+             * 保存更新内容
+             * @param configDialog 弹框对象
+             * @param param 农作物病情防治配置更新参数对象
+             * @version <1> 2018-04-13 lxy： Created.
+             * @version <1> 2018-04-18 cxw： update:完善注释及更改提示信息
+             */
+            var update = function(configDialog, param) {
+                var baseAjax = new BaseAjax();
+                baseAjax.opts.url = DISEASE_CONFIG.update_url;
+                baseAjax.opts.async = false; //同步
+                baseAjax.opts.contentType = "application/json";
+                baseAjax.opts.data = JSON.stringify(param);
+                baseAjax.opts.successFun = function (result) {
+                    if (result.flag) {
+                        initSearchParam();
+                        $("#cropsGrowthPriodGrid").trigger("reloadGrid");
+                        configDialog.dialog("close");
+                        PopWin.showMessageWin(result.msg);
+                    } else {
+                        PopWin.showMessageWin(result.msg);
+                    }
+                };
+                baseAjax.opts.errorFun = function (result) {
+                    PopWin.showMessageWin("农作物病情防治配置更新失败");
+                };
+                baseAjax.run();
+            };
+
+            /**
+             * 弹出修改页面时初始化加载当前修改对象信息
+             * @param data 农作物病情防治配置对象
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var initData = function(data) {
+                $("#growthId").html("<option value = '"+data.growthId+"'>"+data.growthName+"</option>");
+                $("#cropsId").html("<option value = '"+data.cropsId+"'>"+data.cropsName+"</option>");
+                $("#region").val(data.regionName);
+                $("#region").attr("regionId",data.regionId);
+                $("#diseaseName").val(data.diseaseName);
+                $("#diseaseMeasure").val(data.diseaseMeasure);
+                $("#diseaseRemark").val(data.diseaseRemark);
+            };
+
+            /**
+             * 校验input框输入信息
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var formVerf = function () {
+                var errorDiv = $('#dataTypeInfo');
+                if(formVerfication.checkInputIsEmpty($('#region'),errorDiv,'区域不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#cropsId'),errorDiv,'作物不能为空')){
+                    return false;
+                }
+
+                if(formVerfication.checkInputIsEmpty($('#growthId'),errorDiv,'生育期名称不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#diseaseName'),errorDiv,'病情名称不能为空')){
+                    return false;
+                }
+                if(formVerfication.checkInputIsEmpty($('#diseaseMeasure'),errorDiv,'防治措施不能为空')){
+                    return false;
+                }
+                return true;
+            };
+
+            /**
+             * 加载新增页时清空文本输入内容
+             * @version <1> 2018-04-18 cxw： Created.
+             */
+            var clearInput = function() {
+                $(".inputType").val("");
+                $("#growthId").html("<option value = ''>请选择生育期</option>");
+                $("#cropsId").html("<option value = ''>请选择作物</option>");
+                $("#region").val('');
+                $("#region").attr("regionId",'');
+                $("#diseaseName").val('');
+                $("#diseaseMeasure").val('');
+                $("#diseaseRemark").val('');
+            };
+
+            var chanageTableCss = function(){
+                var divObj = $('#cropsGrowthPriodGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+
+            init();
+        });
+    </script>
+
+</div>

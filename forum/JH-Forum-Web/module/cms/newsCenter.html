@@ -1,0 +1,862 @@
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    #batchDownloadBtn,#batchPublishBtn{margin-right: 1em;}
+    .errorInfo{color:#f00;}
+    .isSuccess{color: #34b40e;}
+    .isFail{color: #ff0000;}
+    .num{color: #45AEDF;}
+    .lyName{display: block; margin: 0 5px;}
+    .blue{color:blue}
+    .detail_style{
+        text-align: center;
+    }
+    .tab_btn{
+        background:#00FA9A!important;text-align: center;color:#8B0000;
+    }
+    .img_c{
+        width: 18px!important;
+        height: 18px!important;
+        padding-top:4px
+    }
+    #addArticle{
+        overflow-x:hidden;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">文章类型：</span>
+                    <span><select class="input inputWidth_100" id="search_type"></select></span>
+                </div>
+                <div>
+                    <span class="label2">文章标题：</span>
+                    <span><input class="input inputWidth_100" id="search_title" /></span>
+                </div>
+                <div>
+                    <span class="label2">文章状态：</span>
+                    <span><select class="input inputWidth_100" id="search_status"></select></span>
+                </div>
+                <div>
+                    <span class="label2">发布日期：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_publishTime" readonly /></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " value="新增" id="addBtn" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="newsGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看帖子详情 -->
+<div id="newsInfo" style="display: none;overflow-x:hidden">
+    <!--<div id="detail_title" class="detail_style"></div>
+    <div id="detail_content" class="detail_style"></div>-->
+</div>
+
+<!-- 查看帖子详情 -->
+<div id="addArticle" style="display: none;">
+
+</div>
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums){
+        var processDialog = $("#process");
+
+
+        var init = function(){
+            commons.findDictList(11000, "search_type");//帖子类型
+            commons.findDictList(12000, "search_status");//帖子状态
+            loaderGrid();//加载表格
+            dateFun();//初始化创建时间控件
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);
+
+            $(window).resize(function(){
+                $("#newsGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            commons.findDictList(12000, "search_status");//帖子状态
+            commons.findDictList(11000, "search_type");//帖子类型
+
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#newsGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var colmodel = [
+            {name: 'newsId', index:'news_id', hidden:true},
+            {name: 'newsType', index:'news_type', hidden:true},
+            {name: 'newsHot', index:'news_hot', hidden:true},
+            {name: 'newsNew', index:'news_new', hidden:true},
+            {name: 'publisher', index:'publisher', hidden:true},
+            {name: 'auditor', index:'auditor', hidden:true},
+            {name: 'newsStatus', index: 'news_status', hidden:true},
+            {name: 'newsTitle', index:'news_title',align:'left',width:'30%',formatter:function(cellvalue, options, rowObject) {
+                var str="";
+                if(rowObject.newsHot=="1"){
+                    str="<img src='images/public/forum/hot.png' class='img_c' title='最火'> ";
+                }
+                if(rowObject.newsNew=="1"){
+                    str="<img src='images/public/new.png' title='最新'> ";
+                }
+                return str+rowObject.newsTitle;
+            }},
+            {name: 'newsTypeName', index:'news_type', width: '5%'},
+            {name: 'newsLabel', index:'news_label', width: '12%'},
+            {name: 'newsStatusName', index: 'news_status', align: 'center', width: '5%', formatter:function(cellvalue, options, rowObject){
+                if(rowObject.newsStatus == forum_newsStatus.PUBLISHED){
+                    return "<span class='green'>" + cellvalue + "</span>"
+                }else if(rowObject.newsStatus == forum_newsStatus.REJECTED){
+                    return "<span class='red'>" + cellvalue + "</span>";
+                }else if(rowObject.newsStatus == forum_newsStatus.WAIT_AUDIT){
+                    return "<span class='blue'>" + cellvalue + "</span>";
+                }else{
+                    return cellvalue == null ? "" : cellvalue;
+                }
+            }},
+
+            {name: 'auditName', index: 'auditor', align: 'center', width: '5%' },
+            {name: 'auditTime', index: 'audit_time', align: 'center', width: '10%' },
+            {name: 'publisherName', index: 'publisher', align: 'center', width: '5%' },
+            {name: 'publishTime', index: 'publish_time', align: 'center', width: '10%' },
+            {name: 'cz', index:'cz', width:'23%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                var str="";
+                str += "<img src='images/public/Twatch.png' class='detailBtn img_c' data-id='"+ rowObject.newsId +"' data-status='"+ rowObject.newsStatus +"' data-type='"+ rowObject.newsType +"' title='查看详情'> ";
+                //编辑 只有自己的才可以编辑
+                if(rowObject.creator ==$(".user").attr("accountId")){
+                    str += "<img src='images/public/Tedit.png' class='editBtn img_c' data-id='"+ rowObject.newsId +"' title='编辑'> ";
+                }else{
+                    str += "<img src='images/public/TeditG.png' class='img_c' data-id='"+ rowObject.newsId +"' title='编辑'> ";
+                }
+
+                //只有报告才有最热
+                if(rowObject.newsType == forum_newsType.follow_paper) {
+                    if(rowObject.newsHot == 0 && rowObject.newsStatus == forum_newsStatus.PUBLISHED) {
+                        str += "<img src='images/public/icon-Addhot.png' style='width:30px!important;' class='hotBtn img_c' data-id='" + rowObject.newsId + "' title='最热'> ";
+                    }else if(rowObject.newsHot == 1 && rowObject.newsStatus == forum_newsStatus.PUBLISHED){
+                        str += "<img src='images/public/icon-removehot.png' style='width:30px!important;' class='nohotBtn img_c' data-id='" + rowObject.newsId + "' title='取消最热'> ";
+                    }else{
+                        str += "<img src='images/public/icon-AddhotG.png' style='width:30px!important;' class='img_c' data-id='" + rowObject.newsId + "' title='最热'> ";
+                    }
+                }else if(rowObject.newsType == forum_newsType.follow_survey) {
+                    //只有调研才有最新
+                    if(rowObject.newsNew == 0 && rowObject.newsStatus == forum_newsStatus.PUBLISHED) {
+                        str += "<img src='images/public/icon-Addnew.png' style='width:30px!important;' class='newBtn img_c' data-id='" + rowObject.newsId + "' title='最新'> ";
+                    }else if(rowObject.newsNew == 1 && rowObject.newsStatus == forum_newsStatus.PUBLISHED){
+                        str += "<img src='images/public/icon-removenew.png' style='width:30px!important;' class='nonewBtn img_c' data-id='" + rowObject.newsId + "' title='取消最新'> ";
+                    }else{
+                        str += "<img src='images/public/icon-removenew.png' style='width:30px!important;' class='img_c' data-id='" + rowObject.newsId + "' title='最新'> ";
+                    }
+                }else{
+                    str += "<img src='images/public/icon-AddhotG.png' style='width:30px!important;' class='img_c' data-id='" + rowObject.newsId + "' title='不可操作'> ";
+                }
+                if(rowObject.newsStatus == forum_newsStatus.WAIT_AUDIT) {
+                    str += "<img src='images/public/icon-pass.png' class='passBtn img_c' data-id='" + rowObject.newsId + "' title='通过'> ";
+                }else{
+                    str += "<img src='images/public/icon-passG.png' class='img_c' data-id='" + rowObject.newsId + "' title='通过'> ";
+                }
+
+                if(rowObject.newsStatus == forum_newsStatus.WAIT_AUDIT) {
+                    str += "<img src='images/public/icon-refuse.png' class='failBtn img_c' data-id='" + rowObject.newsId + "' title='驳回'> ";
+                }else{
+                    str += "<img src='images/public/icon-refuseG.png' class='img_c' data-id='" + rowObject.newsId + "' title='驳回'> ";
+                }
+
+                str += "<img src='images/public/Tdelete.png' class='deleteBtn img_c' data-id='"+ rowObject.newsId +"' title='删除'> ";
+
+                return str;
+            }}
+        ];
+
+
+        var permissionFlag = true;
+
+        var loaderGrid = function(){
+            $("#newsGrid").jqGrid({
+                url: CMS_MANAGE.findPage_url,
+                datatype: "json",
+                postData:{
+                    //默认查询报告
+                    //newsType:11001
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['newsId','newsType','newsHot','newsNew','publisher','auditor','newsStatus','标题','类型','标签','状态','审核人','审核时间','发布人','发布时间','操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#newsGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量通过' id='batchPassBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量驳回' id='batchFailBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='标记最热' id='batchHotBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#newsGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#newsGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据撤回和发布下载按钮处理
+            if(ids.length == 0){
+                $("#batchPassBtn").addClass("btn_grey");
+                $("#batchFailBtn").addClass("btn_grey");
+                $("#batchHotBtn").addClass("btn_grey");
+                $("#batchDeleteBtn").addClass("btn_grey");
+            }else{
+                //只要有一条数据满足，则可批量通过
+                var isAllPass=false;
+                //只要有一条数据满足，则可批量驳回
+                var isAllFail=false;
+                //只要有一条数据满足，则可批量设置最热
+                var isAllHot=false;
+                //只要有一条数据满足，则可批量设置最新
+                var isAllNew=false;
+                //所有的帖子都可以删除
+                var isAllDelete=true;
+
+                $(ids).each(function (index, id){
+                    var row = $("#newsGrid").jqGrid('getRowData', id);
+                    //帖子状态
+                    var newsStatus=row.newsStatus;
+                    var newsType=row.newsType;
+                    var isHot=row.newsHot;
+                    var isNew=row.newsNew;
+                    //待审核的帖子，可以通过
+                    if(newsStatus == forum_newsStatus.WAIT_AUDIT){
+                        isAllPass=true;
+                        isAllFail=true;
+                    }
+                    //已发布的帖子，可以设置最新和最热
+                    if(newsStatus == forum_newsStatus.PUBLISHED){
+                        if(newsType== forum_newsType.follow_paper&&isHot!=1){
+                            isAllHot=true;
+                        }
+                        if(newsType == forum_newsType.follow_survey&&isNew!=1) {
+                            isAllNew = true;
+                        }
+                    }
+
+                });
+                if(isAllPass){
+                    $("#batchPassBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchPassBtn").addClass("btn_grey");
+                }
+                if(isAllFail){
+                    $("#batchFailBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchFailBtn").addClass("btn_grey");
+                }
+                if(isAllHot){
+                    $("#batchHotBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchHotBtn").addClass("btn_grey");
+                }
+                if(isAllDelete){
+                    $("#batchDeleteBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchDeleteBtn").addClass("btn_grey");
+                }
+
+            }
+
+            var records = $("#newsGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchPassBtn").hide("btn_grey");
+                $("#batchFailBtn").hide("btn_grey");
+                $("#batchHotBtn").hide("btn_grey");
+                $("#batchDeleteBtn").hide("btn_grey");
+            }else{
+                $("#batchPassBtn").show("btn_grey");
+                $("#batchFailBtn").show("btn_grey");
+                $("#batchHotBtn").show("btn_grey");
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function(){
+            $("#addBtn,.editBtn,.createBtn, .hotBtn,.newBtn,.nohotBtn,.nonewBtn,.passBtn,.failBtn,.deleteBtn, #batchHotBtn, #batchPassBtn,#batchFailBtn,#batchDeleteBtn").off("click");
+
+            //新增
+            $("#addBtn").bind("click",function () {
+                addArticleFun();
+            });
+
+            //编辑
+            $(".editBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                addArticleFun(newsId);
+            });
+
+
+            //审核通过
+            $(".passBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                auditArticleFun([newsId],forum_newsStatus.PUBLISHED);
+            });
+
+            //审核驳回
+            $(".failBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                auditArticleFun([newsId],forum_newsStatus.REJECTED);
+            });
+
+            //标记最热
+            $(".hotBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                signArticleFun([newsId],0,1);
+            });
+
+            //标记最新
+            $(".newBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                signArticleFun([newsId],1,1);
+            });
+
+            //取消最热
+            $(".nohotBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                signArticleFun([newsId],0,0);
+            });
+
+            //取消最新
+            $(".nonewBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                signArticleFun([newsId],1,0);
+            });
+
+            //删除
+            $(".deleteBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                deleteArticleFun([newsId]);
+            });
+
+            //查看详情
+            $(".detailBtn").bind("click",function () {
+                var newsId = $(this).attr("data-id");
+                var newsStatus = $(this).attr("data-status");
+                var newsType = $(this).attr("data-type");
+                detailArticleFun(newsId,newsStatus,newsType);
+            });
+
+
+            //批量通过
+            $("#batchPassBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    auditArticleFun(getValidData("0"),forum_newsStatus.PUBLISHED);
+                }
+            });
+            //批量驳回
+            $("#batchFailBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    auditArticleFun(getValidData("0"),forum_newsStatus.REJECTED);
+                }
+            });
+            //批量标记最热
+            $("#batchHotBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    signArticleFun(getValidData("1"),0,1);
+                }
+            });
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    deleteArticleFun(getValidData("2"));
+                }
+            });
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(batchType){
+            var ids=[];
+            var rowIds = $("#newsGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#newsGrid").jqGrid('getRowData', id);
+                var newsId=row.newsId;
+                var newsStatus=row.newsStatus;
+                if(batchType=="0"){//批量通过和驳回
+                    if(newsStatus==forum_newsStatus.WAIT_AUDIT){
+                        ids.push(newsId)
+                    }
+                }else if(batchType=="1"){//批量标记最新和最热
+                    if(newsStatus==forum_newsStatus.PUBLISHED){
+                        ids.push(newsId)
+                    }
+                }else if(batchType=="2"){//删除
+                    ids.push(newsId)
+                }
+            });
+            return ids;
+        }
+
+        /**
+         * 审核帖子
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var auditArticleFun = function(ids,status,flag) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_newsStatus.PUBLISHED){//审核通过
+                msg="通过";
+            }else if(status== forum_newsStatus.REJECTED){//审核驳回
+                msg="驳回";
+            }
+            confirmDialog.html("是否确认审核"+msg+"该帖子？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.auditArticleList_url;
+                        ajax.opts.data = JSON.stringify({'newsIds':ids,'newsStatus':status});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                if(flag){
+                                    $("#newsInfo").dialog("close");
+                                }
+                                $("#newsGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin(msg+"成功");
+                            } else {
+                                PopWin.showMessageWin(msg+"失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误："+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 标记最热和最新
+         * @version <1> 2019-03-11 lijie： Created
+         * ids：帖子ID
+         * type: 0 最热，1最新
+         * value :1 标记 0 取消
+         */
+        var signArticleFun = function(ids,type,value) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var paramData={};
+            var url="";
+            var msg="";
+            if(type== 0){//最热
+                msg="最热";
+                url=CMS_MANAGE.signHotArticle_url;
+                paramData.newsHot=value;
+            }else if(type== 1){//最新
+                msg="最新";
+                url=CMS_MANAGE.signNewArticle_url;
+                paramData.newsNew=value;
+            }
+            var flagMsg="";
+            if(value ==0){
+                flagMsg="取消"
+            }else if(value== 1){
+                flagMsg="标记"
+            }
+            paramData.newsIds=ids;
+
+            confirmDialog.html("是否确认"+flagMsg+"该帖子为"+msg+"？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = url;
+                        ajax.opts.data = JSON.stringify(paramData);
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#newsGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("标记"+msg+"成功");
+                            } else {
+                                PopWin.showMessageWin("标记"+msg+"失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：标记"+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 删除帖子
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteArticleFun = function(ids) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("是否确认删除该帖子？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.deleteArticle_url;
+                        ajax.opts.data = JSON.stringify({'newsIds':ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#newsGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 查看帖子详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailArticleFun = function(newsId,newsStatus,newsType) {
+
+            $("#newsInfo").load("cms_newsInfo.html",function(){
+                $("#newsId").val(newsId);
+            });
+
+            var msg=commons.queryDictName(newsType)
+            var title=msg+"详情";
+            var detailButtons=[
+                {
+                    text:"通过",
+                    click:function(){
+                        auditArticleFun([newsId],forum_newsStatus.PUBLISHED,true);
+                    }
+                },
+                {
+                    text:"驳回",
+                    click:function(){
+                        auditArticleFun([newsId],forum_newsStatus.REJECTED,true);
+                    }
+                },
+                {
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }];
+            if(newsStatus!=forum_newsStatus.WAIT_AUDIT){
+                detailButtons=[
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ];
+            }
+            var width = 800;//宽度
+            var height = $(document.body).height()*0.8;//高度
+
+            var dataProductInfoDialog =  $("#newsInfo");
+            var dialogParent = dataProductInfoDialog.parent();
+            var dialogOwn = dataProductInfoDialog.clone();
+            dataProductInfoDialog.dialog({
+                autoOpen: false,
+                title:title,
+                height: height,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:detailButtons
+            });
+            dataProductInfoDialog.dialog("open");
+
+        };
+
+        /**
+         * 新增、编辑帖子
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var addArticleFun = function(newsId) {
+            var msg="新增";
+            if(newsId!=null&&newsId!=''){
+                msg="编辑";
+            }
+            $("#addArticle").load("cms_newsAdd.html",function(){
+                $("#newsId").val(newsId);
+            });
+            var width = 900;//宽度
+            var height = $(document.body).height()- 10;//高度
+            var dataProductInfoDialog =  $("#addArticle");
+            var dialogParent = dataProductInfoDialog.parent();
+            var dialogOwn = dataProductInfoDialog.clone();
+            dataProductInfoDialog.dialog({
+                autoOpen: false,
+                title:msg+"帖子",
+                height: height-60,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:[]
+            });
+            dataProductInfoDialog.dialog("open");
+
+        };
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var dateFun = function(){
+            $("#search_publishTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+            $("#search_auditTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        var searchFun = function() {
+            var news = {};
+
+            news.newsTitle = $("#search_title").val(); //标题
+            var publishTime= $("#search_publishTime").val();//发布时间
+            news.newsStatus=$("#search_status").val();//帖子状态
+            var auditTime=$("#search_auditTime").val();//审核时间
+            news.newsType =　$("#search_type").val();//帖子类型
+
+            if(publishTime != null && publishTime != ''){
+                var arr = publishTime.trim().split('至');
+                news.publishStartTime = arr[0];
+                news.publishEndTime = arr[1];
+            }else{
+                news.publishStartTime = null;
+                news.publishEndTime = null;
+            }
+
+            if(auditTime != null && auditTime != ''){
+                var arr = auditTime.trim().split('至');
+                news.auditStartTime = arr[0];
+                news.auditEndTime = arr[1];
+            }else{
+                news.auditStartTime = null;
+                news.auditEndTime = null;
+            }
+
+            $("#newsGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:news,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 根据帖子ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var newsDetail = function(newsId){
+            var news={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findArticleInfo_url+"?newsId="+newsId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    news=result.data;
+                }
+            }
+            ajax.run();
+            return news;
+        };
+
+        init();
+    });
+</script>

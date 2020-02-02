@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .titalBox{
+            width: 100%;
+            font-size: 21px;
+            height: 40px;
+            padding-top: 20px;
+            padding-left: 20px;
+            font-weight: bold;
+        }
+        .shoppingTital{
+            width: calc(100% - 40px);
+            height: 30px;
+            border-bottom: 1px solid #cccccc;
+            margin-left: 20px;
+        }
+        .shoppingTital span{
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            line-height: 30px;
+            border-bottom: 2px solid black;
+            color: black;
+            font-weight: bold;
+        }
+        .tital_head{
+            height: 30px;
+            width: calc(100% - 32px);
+            margin-left: 15px;
+            line-height: 30px;
+            margin-top: 20px;
+            border-left: 1px solid #cccccc;
+            border-right: 1px solid #cccccc;
+            border-top: 1px solid #cccccc;
+            background-color: #FAFAFA;
+        }
+        .tital_head ul{
+            width: 100%;
+            height: 100%;
+        }
+        /*.tital_head ul li.left{*/
+            /*float: left;*/
+            /*margin-left: 9px;*/
+            /*font-size: 14px;*/
+            /*font-weight: bold;;*/
+        /*}*/
+        .tital_head ul li{
+            float: right;
+            width: 8%;
+            font-size: 14px;
+            font-weight: bold
+        }
+        .tital_head ul li.left{
+            float: left;
+            width: 200px;
+            margin-left: 30px;
+        }
+
+        .listContent{
+            width: calc(100% - 30px);
+            height: auto;
+            margin-left: 15px;
+            box-sizing: border-box;
+            border: 1px solid #cccccc;
+        }
+        .listContent ul{
+            width: 100%;
+            height: auto;
+        }
+        .listContent ul li{
+            position: relative;
+            width: 100%;
+            height: 120px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border-bottom: 1px solid #FAFAFA;
+        }
+        .productCheck{
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .productMessage{
+            position: absolute;
+            /* width: 36%; */
+            height: 100%;
+            width: calc(70% - 10px);
+            left: 20px;
+            cursor: pointer;
+        }
+
+        .introduceMessage{
+            width: 100%;
+            /*height: 100%;*/
+            height: 90px;
+        }
+        .introduceMessage ul{
+            width: 100%;
+            height: 100%;
+        }
+        .introduceMessage ul li{
+            width: 48%;
+            height: 18px;
+            float: left;
+            font-size: 14px;
+            margin-left: 1%;
+            border: none;
+        }
+        .introduceMessage ul li span{
+            padding-left:4px;
+        }
+        .introduceMessage_icon{
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            left: 12px
+        }
+        .introduceMessage_icon img{
+            width:100%;
+            height: 100%;
+        }
+        .introduceMessage_content{
+            position: absolute;
+            width: calc( 100% - 120px );
+            height: 120px;
+            left: 140px
+        }
+        .introduceMessage_tital{
+            width: 100%;
+            height: 30px;
+            line-height: 30px;
+            font-size: 13px;
+            font-weight: bold;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space:nowrap;
+        }
+        .productPrice{
+            position: absolute;
+            height: 100%;
+            width: 6%;
+            right: 20%;
+            line-height: 30px
+        }
+        .productNum{
+            position: absolute;
+            right: 10%;
+            width: 6%;
+            height:100%;
+            line-height: 30px;
+            text-align: center;
+        }
+        .productPriceTital{
+            position: absolute;
+            right: 0;
+            width: 10%;
+            height: 100%;
+            line-height: 30px;
+            color: #f5a836;
+        }
+        .shoppingCarFooter{
+            width: calc(100% - 30px);
+            height: 46px;
+            margin-left: 15px;
+            box-sizing: border-box;
+            line-height: 46px;
+            border-left: 1px solid #cccccc;
+            border-right: 1px solid #cccccc;
+            border-bottom: 1px solid #cccccc;
+            background-color: #FAFAFA;
+        }
+        .shoppingCarFooter ul {
+            width: 100%;
+            height: 100%;
+        }
+        .shoppingCarFooter ul li{
+            float:left;
+            font-size: 13px;
+            margin-left: 5px
+        }
+        .fontWeight{
+            font-weight: bold;
+        }
+        .jiesuan_button{
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            background-color: #36d300;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            margin-top: 6px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .payCancal{
+            display: inline-block;
+            width: 80px;
+            height: 30px;
+            border: 1px solid #f5a836;
+            color: #f5a836;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            margin-top: 6px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .link_down{
+            position: absolute;
+            right: 0;
+            bottom: 5px;
+            width: 80px;
+            height: 20px;
+            font-size: 14px;
+            color: #36d300;
+            cursor: pointer;
+        }
+        .link_down a{
+            color: #36d300;
+            cursor: pointer;
+        }
+        .nopay{
+            padding-left: 8px;
+            font-size: 12px;
+            color: #f5a836;
+        }
+        .haspay{
+            padding-left: 8px;
+            font-size: 12px;
+            color:#36d300;
+        }
+        .money_color{
+            color:#f5a836;
+        }
+        .money_color1{
+            color: #36d300;
+        }
+        .orderContent{
+            width: 100%;
+            height: auto;
+            margin-bottom: 50px;
+        }
+        .dataMessage{
+            width: 100%;
+            height: 150px;
+            line-height: 290px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .loadingData{
+            background: url("./img/loadding.gif") no-repeat center;
+        }
+        .noData{
+            background: url("./img/nodata.png") no-repeat center;
+        }
+        li.payAgain{
+            float: right !important;
+            margin-right: 20px;
+        }
+        .pr10{
+            padding-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="shoppingListBox">
+    <div class="titalBox">我的订单</div>
+    <div class="shoppingTital">
+        <span>全部订单</span>
+    </div>
+    <div class="orderContent">
+        <div class="dataMessage"></div>
+        <div id="nopayContent"></div>
+        <div id="payContent"></div>
+    </div>
+    <div class="payAli" style="display: none;width: 100%;height: 400px">
+<!--        <form name=alipayment action=jsp/alipay.trade.page.pay.jsp method=post target="_blank">-->
+<!--            <div id="body1" class="show" name="divcontent">-->
+<!--                <dl class="content">-->
+<!--                    <dt>商户订单号 ：</dt>-->
+<!--                    <dd>-->
+<!--                        <input id="out_trade_no" name="out_trade_no" />-->
+<!--                    </dd>-->
+<!--                    <hr class="one_line">-->
+<!--                    <dt>订单名称 ：</dt>-->
+<!--                    <dd>-->
+<!--                        <input id="subject" name="subject" />-->
+<!--                    </dd>-->
+<!--                    <hr class="one_line">-->
+<!--                    <dt>付款金额 ：</dt>-->
+<!--                    <dd>-->
+<!--                        <input id="total_amount" name="total_amount" />-->
+<!--                    </dd>-->
+<!--                    <hr class="one_line">-->
+<!--                    <dt>商品描述：</dt>-->
+<!--                    <dd>-->
+<!--                        <input id="one_line" name="body" />-->
+<!--                    </dd>-->
+<!--                    <hr class="one_line">-->
+<!--                    <dt></dt>-->
+<!--                    <dd id="btn-dd">-->
+<!--						<span class="new-btn-login-sp">-->
+<!--							<button  class="new-btn-login" type="submit" style="text-align: center;">付 款</button>-->
+<!--						</span>-->
+<!--                    </dd>-->
+<!--                </dl>-->
+<!--            </div>-->
+<!--        </form>-->
+    </div>
+    <!--<div class="list" id="listBox_nopayList" >-->
+        <!--<div class="tital_head">-->
+            <!--<ul>-->
+                <!--<li class="left">-->
+                    <!--&lt;!&ndash;<input class="allCheck" type="checkbox" />全部勾选&ndash;&gt;-->
+                    <!--<span>订单详情</span><span class="nopay">待付款</span>-->
+                <!--</li>-->
+                <!--<li class="rigth">金额</li>-->
+                <!--<li class="rigth">数量</li>-->
+                <!--<li class="rigth">单价</li>-->
+
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="listContent">-->
+            <!--<ul>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                <!--</li>-->
+
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="shoppingCarFooter">-->
+            <!--<ul>-->
+                <!--<li><span>订单号</span><span class="orderNumber fontWeight">171287313291829</span></li>-->
+                <!--<li><span class="timer">交易时间</span><span class="orderTime fontWeight">2018/12/3</span></li>-->
+                <!--<li><span>合计</span><span class="money_color">￥</span><span class="allMoney money_color">520</span></li>-->
+                <!--<li style="float: right;margin-right: 10px"><span class="jiesuan_button">继续支付</span></li>-->
+                <!--<li style="float: right"><span class="payCancal">去结算</span></li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+
+
+    <!--<div class="list" id="listBox_payList"  style="margin-bottom: 30px" >-->
+        <!--<div class="tital_head">-->
+            <!--<ul>-->
+                <!--<li class="left">-->
+                    <!--&lt;!&ndash;<input class="allCheck" type="checkbox" />全部勾选&ndash;&gt;-->
+                    <!--<span>订单详情</span><span class="haspay">已付款</span>-->
+                <!--</li>-->
+                <!--<li class="rigth">金额</li>-->
+                <!--<li class="rigth">数量</li>-->
+                <!--<li class="rigth">单价</li>-->
+
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="listContent">-->
+            <!--<ul>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                    <!--<div class="link_down">下载数据</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                    <!--<div class="link_down">下载数据</div>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<div class="productCheck" ></div>-->
+                    <!--<div class="productMessage">-->
+                        <!--<div>-->
+                            <!--<div class="introduceMessage_icon"></div>-->
+                            <!--<div class="introduceMessage_content">-->
+                                <!--<div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>-->
+                                <!--<div class="introduceMessage">-->
+                                    <!--<ul>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                        <!--<li><label>数据分类</label><span>农业灾害/低温冻害</span></li>-->
+                                    <!--</ul>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="productPrice">￥139</div>-->
+                    <!--<div class="productNum">1</div>-->
+                    <!--<div class="productPriceTital">￥139</div>-->
+                    <!--<div class="link_down">下载数据</div>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--<div class="shoppingCarFooter">-->
+            <!--<ul>-->
+                <!--<li><span>订单号</span><span class="orderNumber fontWeight">171287313291829</span></li>-->
+                <!--<li><span class="timer">交易时间</span><span class="orderTime fontWeight">2018/12/3</span></li>-->
+                <!--<li><span>合计</span><span class="money_color">￥</span><span class="allMoney money_color">520</span></li>-->
+            <!--</ul>-->
+        <!--</div>-->
+    <!--</div>-->
+
+</div>
+<script>
+    require(["jquery","Marquee","moment","jqueryUi","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings","RegionModule","formVerfication","daterangepicker"],function($,Marquee,moment,jqueryUi,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings,RegionModule,formVerfication,daterangepicker){
+
+
+        var init = function(){
+            initOrderData(initUserId());
+            bindEvent();
+        }
+
+
+        var bindEvent = function(){
+            //取消订单
+            $(document).on("click",".payCancal",function () {
+                var tradeNo = $(this)[0].attributes.tradeno.nodeValue;
+                detOrder(tradeNo);
+            })
+
+            //我的订单点击商品跳转到商品详情
+            $(document).off("click",".productMessage").on("click",".productMessage",function(){
+                var dataId = $(this).attr("dataId");
+                localStorage.setItem('home_downloadData',dataId);
+                $(".loadContent").load('downloadData.html',function () {
+                    $("#downloadData").addClass("on").parent().siblings().find("a").removeClass("on");
+                });
+            })
+
+            //继续支付订单
+            $(document).on("click",".jiesuan_button",function(){
+                var data = JSON.parse($(this)[0].attributes.ordermessage.nodeValue)
+                var orderNo = data.orderNo;
+                var subject = data.subject;
+                var totalPrice = data.totalPrice;
+                var goods_detail = "";
+
+                var str = JSON.stringify({
+                    "orderNo":orderNo,
+                    "subject":subject,
+                    "totalPrice":totalPrice,
+                    "goods_detail":goods_detail,
+                })
+                localStorage.setItem('creatOrder',str);
+
+                payAli(orderNo);
+            })
+
+            //下载商品链接
+            $(document).on("click",".link_down",function () {
+                var userId = initUserId();
+                var dataId = $(this)[0].attributes.dataId.nodeValue;
+                // downloadExample(dataId,userId)
+            })
+        }
+
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+        //继续支付
+        var payAli = function(orderNo){
+            var str = JSON.stringify({
+                "orderNo":orderNo
+            })
+            localStorage.setItem('creatOrder',str);
+            // alert(orderNo)
+            var ajax = new BaseAjax();
+            ajax.opts.url = PAY_CONFIG.pay_url+"?trade_no="+orderNo;
+            ajax.opts.successFun = function(data){
+                var flag = data.flag;
+                if(flag){
+                    var formMessage = data.msg.split("<script>")[0];
+                    $(".payAli").html(formMessage);
+                    document.forms["punchout_form"].submit()
+                }else{
+                    $(".maskBox").css({"display":"block"})
+                    $(".pay_repart").css({"display":"block"})
+                }
+
+
+            }
+            ajax.opts.type = "get";
+            ajax.run()
+        }
+
+        var initOrderData = function(userid){
+            $(".datamessage").css({"display":"block"})
+            $(".dataMessage").html("");
+            $(".dataMessage").addClass("loadingData")
+            $(".datamessage").removeClass("noData")
+            $("#nopayContent").html("");
+            var ajax = new BaseAjax();
+            var formData = {
+                "creator":userid
+            }
+            ajax.opts.url = ORDERS_CONFIG.findOrders_url;
+            ajax.opts.data = JSON.stringify(formData);
+            ajax.opts.successFun = function(data){
+                // console.log("88988989",data);
+                var noPayData = data.data.nopayList;
+                var payData = data.data.payList;
+                if(noPayData.length!=0){
+                    $(".dataMessage").css({"display":"none"})
+                    $(".datamessage").removeClass("loadingData")
+                    for(var i=0;i<noPayData.length;i++){
+                        var obj = noPayData[i];
+                        initNopayOrder(obj,"nopayContent")
+                    }
+                }
+                if(payData.length!=0){
+                    $(".dataMessage").css({"display":"none"})
+                    $(".datamessage").removeClass("loadingData")
+                    $(".datamessage").removeClass("noData")
+                    for(var i=0;i<payData.length;i++){
+                        var obj = payData[i];
+                       initPayOrder(obj,"payContent")
+                    }
+                }
+                if(noPayData.length == 0 && payData.length == 0){
+                    $(".dataMessage").css({"display":"block"});
+                    $(".dataMessage").addClass("noData");
+                    $(".dataMessage").html("对不起,Sorry! 没有找到符合条件的数据");
+                }
+
+            }
+            ajax.run();
+        }
+
+
+        var initNopayOrder = function(obj,noPayTag){
+            var noPayTagBox = document.getElementById(noPayTag);
+           var list = document.createElement("div");
+            // console.log("99999")
+            list.className="list";
+            var orderNum = obj.orderNo;   //交易订单
+            var tradeTime = obj.createTime;  //交易时间
+            var _totalPrice = obj.totalPrice;  //总价格
+            var subject = obj.subject;          //订单主题
+            var datalist = obj.detailsList;  //订单商品列表
+            var orderMessage = JSON.stringify({
+                "orderNo":orderNum,
+                "subject":subject,
+                "totalPrice":_totalPrice,
+                "goods_detail":"",
+            })
+            var datalistHtml = "";
+            for(var i=0;i<datalist.length;i++){
+                var data = datalist[i];
+
+                var titalName = data.dataName;   //产品名称
+                var imgUrl = data.dataPath;         //产品图片
+                var classifyName = data.classifyName;  //数据分类
+                var cropName = data.cropName;      //作物名称
+                var dataTime = data.dataTime.join("-");   //数据日期
+                var regionName = data.regionName; //数据区域
+                var accuracyName = data.accuracyName  //精确度
+                var price = data.price;   //商品单价
+                var shoppingNum = data.num; //商品数量
+                var totalPrice = data.unitPrice  //商品总价
+                var dataId = data.dataId
+                var taghtml = "";
+                if(classifyName!=null){
+                    taghtml += "<li><label>数据分类</label><span>"+classifyName+"</span></li>"
+                }
+                if(regionName!=null){
+                    taghtml += "<li><label>区域</label><span>"+regionName+"</span></li>"
+                }
+                if(dataTime!=null){
+                    taghtml += "<li><label>数据时间</label><span>"+dataTime+"</span></li>"
+                }
+                if(cropName != null){
+                    taghtml += "<li><label>作物</label><span>"+cropName+"</span></li>"
+                }
+                if(accuracyName!=null){
+                    taghtml += "<li><label>精确度</label><span> "+accuracyName+"</span></li>"
+                }
+
+                datalistHtml += "<li>"+
+                                    "<div class='productCheck'></div>"+
+                                    "<div class='productMessage' dataId='"+dataId+"'>" +
+                                         "<div>" +
+                                            "<div class='introduceMessage_icon'><img src='"+imgUrl+"' /></div>"+
+                                            "<div class='introduceMessage_content'>" +
+                                                 "<div class='introduceMessage_tital'>"+titalName+"</div>"+
+                                                  "<div class='introduceMessage'><ul>"+taghtml+"</ul></div>"+
+                                            "</div>"+
+                                         "</div>"+
+                                    "</div>"+
+                                     "<div class='productPrice'>￥"+ parseFloat(price).toFixed(2)+"</div>"+
+                                     "<div class='productNum'>"+shoppingNum+"</div>"+
+                                     "<div class='productPriceTital'>"+ parseFloat(totalPrice).toFixed(2)+"</div>"+
+                                "</li>"
+
+//                        <li>
+//                        <div class="productCheck" ></div>
+//                        <div class="productMessage">
+//                        <div>
+//                        <div class="introduceMessage_icon"></div>
+//                        <div class="introduceMessage_content">
+//                        <div class="introduceMessage_tital">河北阿士东啊是第几啊图</div>
+//                        <div class="introduceMessage">
+//                        <ul>
+//                        <li><label>数据分类</label><span>农业灾害/低温冻害</span></li>
+//                        <li><label>数据分类</label><span>农业灾害/低温冻害</span></li>
+//                        <li><label>数据分类</label><span>农业灾害/低温冻害</span></li>
+//                        <li><label>数据分类</label><span>农业灾害/低温冻害</span></li>
+//                        <li><label>数据分类</label><span>农业灾害/低温冻害</span></li>
+//                        </ul>
+//                        </div>
+//                        </div>
+//                        </div>
+//                        </div>
+//                        <div class="productPrice">￥139</div>
+//                        <div class="productNum">1</div>
+//                        <div class="productPriceTital">￥139</div>
+//                        </li>
+            }
+
+            list.innerHTML = "<div class='tital_head'>" +
+                                 "<ul><li class='left'><span>订单详情</span><span class='nopay'>待付款</span></li><li>金额</li><li >数量</li><li >单价</li></ul>" +
+                              "</div>"+
+                              "<div class='listContent'><ul>"+datalistHtml+"</ul></div>"+
+                              "<div class='shoppingCarFooter'>" +
+                                  "<ul>" +
+                                    "<li><span class='pr10'>订单号</span><span class='orderNumber fontWeight'>"+orderNum+"</span></li>"+
+                                     "<li><span class='timer pr10'>交易时间</span><span class='orderTime fontWeight'>"+tradeTime+"</span></li>"+
+                                    "<li><span>合计</span><span class='money_color'>￥</span><span class='allMoney money_color'>"+parseFloat(_totalPrice).toFixed(2)+"</span></li>"+
+                                    "<li style='float: right;margin-right: 5px'><span class='jiesuan_button' orderMessage='"+orderMessage+"'>继续支付</span></li>"+
+                                    "<li style='float: right'><span class='payCancal' tradeNo='"+orderNum+"'>取消订单</span></li>"+
+                                  "</ul>"+
+                              "</div>"
+
+            noPayTagBox.append(list)
+
+
+        }
+        var initPayOrder = function(obj,PayTag){
+            var payTagBox = document.getElementById(PayTag);
+            var list = document.createElement("div");
+            list.className="list";
+            var orderNum = obj.orderNo;   //交易订单
+            var tradeTime = obj.createTime;  //交易时间
+            var _totalPrice = obj.totalPrice;  //总价格
+            var datalist = obj.detailsList;  //订单商品列表
+            var datalistHtml = "";
+            for(var i=0;i<datalist.length;i++){
+                var data = datalist[i];
+
+                var titalName = data.dataName;   //产品名称
+                var imgUrl = data.dataPath;         //产品图片
+                var classifyName = data.classifyName;  //数据分类
+                var cropName = data.cropName;      //作物名称
+                var dataTime = data.dataTime.join("-");   //数据日期
+                var regionName = data.regionName; //数据区域
+                var accuracyName = data.accuracyName  //精确度
+                var price = data.price;   //商品单价
+                var shoppingNum = data.num; //商品数量
+                var totalPrice = data.unitPrice  //商品总价
+                var dataId = data.dataId
+                var taghtml = "";
+                var dataDownPath = data.dataPackagePath;
+                if(classifyName!=null){
+                    taghtml += "<li><label>数据分类</label><span>"+classifyName+"</span></li>"
+                }
+                if(regionName!=null){
+                    taghtml += "<li><label>区域</label><span>"+regionName+"</span></li>"
+                }
+                if(dataTime!=null){
+                    taghtml += "<li><label>数据时间</label><span>"+dataTime+"</span></li>"
+                }
+                if(cropName != null){
+                    taghtml += "<li><label>作物</label><span>"+cropName+"</span></li>"
+                }
+                if(accuracyName!=null){
+                    taghtml += "<li><label>精确度</label><span> "+accuracyName+"</span></li>"
+                }
+
+                datalistHtml += "<li>"+
+                        "<div class='productCheck'></div>"+
+                        "<div class='productMessage' dataId='"+dataId+"'>" +
+                        "<div>" +
+                        "<div class='introduceMessage_icon'><img src='"+imgUrl+"' /></div>"+
+                        "<div class='introduceMessage_content'>" +
+                        "<div class='introduceMessage_tital'>"+titalName+"</div>"+
+                        "<div class='introduceMessage'><ul>"+taghtml+"</ul></div>"+
+                        "</div>"+
+                        "</div>"+
+                        "</div>"+
+                        "<div class='productPrice'>￥"+ parseFloat(price).toFixed(2)+"</div>"+
+                        "<div class='productNum'>"+shoppingNum+"</div>"+
+                        "<div class='productPriceTital'>"+parseFloat(totalPrice).toFixed(2)+"</div>"+
+                        "<div class='link_down' dataId='"+dataId+"'><a href='"+dataDownPath+"' download='"+titalName+"'>下载数据</a></div>"+
+                        "</li>"
+            }
+
+            list.innerHTML = "<div class='tital_head'>" +
+                    "<ul><li class='left'><span>订单详情</span><span class='haspay'>已付款</span></li><li>金额</li><li >数量</li><li >单价</li></ul>" +
+                    "</div>"+
+                    "<div class='listContent'><ul>"+datalistHtml+"</ul></div>"+
+                    "<div class='shoppingCarFooter'>" +
+                    "<ul>" +
+                    "<li><span class='pr10'>订单号</span><span class='orderNumber fontWeight'>"+orderNum+"</span></li>"+
+                    "<li><span class='timer pr10'>交易时间</span><span class='orderTime fontWeight'>"+tradeTime+"</span></li>"+
+                    "<li class='payAgain'><span>合计</span><span class='money_color'>￥</span><span class='allMoney money_color'>"+parseFloat(_totalPrice).toFixed(2)+"</span></li>"+
+            "</ul>"+
+            "</div>"
+
+            payTagBox.append(list)
+
+        }
+
+        //获取userid
+        var initUserId = function(){
+            if($(".isLogin")[0].attributes.personid.nodeValue){
+                return  parseInt($(".isLogin")[0].attributes.personid.nodeValue);
+            }else{
+                return null;
+            }
+        }
+
+        //支付成功后下载商品链接
+        var downloadExample = function (dataId,userId) {
+            var ajax = new BaseAjax();
+            // var formData = {
+            //     "dataId":dataId,
+            //     "userId":userId
+            // }
+            ajax.opts.url = DOWNLOADDATA_CONFIG.downloadImage_url+"?dataId="+dataId+"&userId="+userId;;
+            ajax.opts.type = "get";
+            // ajax.opts.data = JSON.stringify(formData);
+            ajax.opts.successFun = function (result) {
+                // console.log("下载商品订单链接成功",result.msg)
+                var data = result.msg;
+
+            }
+            ajax.run()
+        }
+
+        //删除订单
+        var detOrder = function(tradeNo){
+            var ajax = new BaseAjax();
+            var formData = {
+                "tradeNo":tradeNo
+            }
+            ajax.opts.url = ORDERS_CONFIG.delete_url+"?tradeNo="+tradeNo;
+            ajax.opts.successFun = function (data) {
+                if(data.flag == true){
+                    //删除成功
+                    $(".datamessage").css({"display":"block"})
+                    $(".dataMessage").addClass("loadingData")
+                    $(".datamessage").removeClass("noData")
+                    initOrderData(initUserId())
+                }
+            }
+            ajax.run();
+        }
+
+        init()
+    })
+</script>
+</body>
+</html>

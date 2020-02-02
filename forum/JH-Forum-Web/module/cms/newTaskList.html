@@ -1,0 +1,2301 @@
+<style type="text/css">
+
+    #errorInfo,#show_error{color:red;}
+
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+
+    .inputWidth_250{width:250px;}
+
+    .addTr{margin-top: 2px;;text-align:center;cursor:pointer}
+
+    .datainDiv{
+        min-height:50px;
+        max-height:300px;
+        overflow-y:scroll;
+    }
+    table.dataintable {
+        margin-top:0px;
+        border-collapse:collapse;
+        border:1px solid #efefef;
+        width:100%;
+    }
+    table.dataintable th {
+        vertical-align:baseline;
+        background-color:#45AEDF;
+        border:1px solid #efefef;
+        text-align:left;
+        color:#fff;
+        font-style: normal;
+        line-height: 27px;
+    }
+    table.dataintable td {
+        vertical-align:text-top;
+    }
+    table.dataintable tr:nth-child(odd) {
+        background-color:#F5F5F5;
+    }
+    table.dataintable tr:nth-child(even) {
+        background-color:#fff;
+    }
+    .marginTop10{
+        margin-top: 10px;
+    }
+    #item_info{
+        height: 580px;
+    }
+    .itemLeft{
+        width: 410px;
+        height: 540px;
+        float: left;
+        border: solid 1px #f5f5f5;
+    }
+    .itemRight{
+        width: 490px;
+        height:540px;
+        margin-left: 20px;
+        float: left;
+        border: solid 1px #f5f5f5;
+    }
+    .item_info_scroll{
+        max-height:470px;overflow-y: auto
+    }
+
+    .grid{
+        margin-top: 0px!important;
+    }
+
+
+    ::-webkit-scrollbar {/*滚动条整体样式*/
+         width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+         height: 4px;
+         scrollbar-arrow-color:red;
+
+     }
+    ::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+        border-radius: 5px;
+        -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+        background: rgba(100,100,100,0.2);
+        scrollbar-arrow-color:red;
+    }
+    ::-webkit-scrollbar-track {/*滚动条里面轨道*/
+        -webkit-box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+        border-radius: 0;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .td1_broder{
+        font-weight: bold;
+    }
+    #templateList{
+        margin-top: 0px!important;
+    }
+    .btn_handle{
+        margin-top: 10px;
+        text-align: center;
+    }
+    .button_style{
+        background-color: #1caf9a;
+        color: #fff;
+        width: 100px;
+        height: 30px;
+        font-size: 14px;
+        border-radius: 3px;
+        border: 0px;
+        margin:10px 300px;
+    }
+    #preview{
+        text-align: center;
+    }
+    .ms-choice{
+        border: 0px solid #aaa!important;
+    }
+    .textareaType{
+        margin-top:6px;
+    }
+    .blue{
+         color: blue;
+     }
+    .yellow{
+        color: #FFAB00;
+    }
+
+    .deletePng {
+        position: absolute;
+        right: 0px;
+        width: 20px;
+        height: 20px;
+        z-index: 9999;
+    }
+    .lunbo_img{
+        width: 80px!important;
+        height: 60px!important;
+        cursor: pointer;
+    }
+
+    #taskItemInfo .ui-pg-table{
+        table-layout:auto!important;
+    }
+
+    #taskItemInfo .ui-jqgrid-view .ui-state-default{
+        /*color: #71a2bd!important;*/
+        color: #9591a5!important;
+        border-bottom: 1px solid #9591a5!important;
+    }
+
+    .detailInfoSpan{
+        text-align: left;background-color: #f5f5f5;color:#3a3d3f;width:calc(100% - 25px);height: 30px;line-height: 30px;display:inline-block;padding-left: 25px;font-weight: bold;
+    }
+
+    #taskItemGrid{
+        margin-top: 10px;
+
+    }
+    #taskItemGrid tbody {
+        display: block;
+         height: 280px;
+         overflow-y: auto;
+        overflow-x: hidden;
+    }
+    #taskItemGrid tr{
+        cursor: pointer;
+    }
+    .tdLeft{
+        width:80px;
+        text-align: right;
+        vertical-align:top;
+        color:black;
+        font-family: Microsoft YaHei;
+        font-size: 13px!important;
+    }
+    .tdRight{
+        width:calc(100% - 90px);
+        text-align: left;
+    }
+    .itemLeft .four_td1{
+        width:17%!important;
+    }
+    .inputTypeNew{
+        width: 90%;
+        height: 28px;
+        line-height: 28px;
+        color: #080808;
+        border-radius: 3px;
+        border: 1px solid #eaeaea;
+        outline: none;
+        margin-left: 10px;
+        padding-left: 3px;
+    }
+
+    .leftTdColor{
+        color:grey;
+    }
+    .rightdColor{
+        color:black;
+        font-family: Microsoft YaHei;
+    }
+    .rightdColor .viewType{
+        padding-left: 10px;
+    }
+    #taskItemGrid td{
+        color:black;
+        font-family: Microsoft YaHei;
+        font-size: 13px!important;
+    }
+    #taskItemInfo .ui-state-highlight{
+        background-color:#d9f4fe!important;
+    }
+    .form table{
+        margin-top:0px!important;
+    }
+    #taskItemInfo input[type=checkbox]{
+        display: none;
+    }
+
+</style>
+<link href="js/lib/multiple-select/multiple-select.css" rel="stylesheet"/>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">任务名称：</span>
+                    <span><input type="text" class="input" id="taskNameId"/></span>
+                </div>
+                <div>
+                    <span class="label2">任务类型：</span>
+                    <span>
+                        <select id="taskTypeSearch" class="input inputWidth_100" style="text-align:center;"></select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span>
+                    <select id="cropSearch" class="input inputWidth_100" style="text-align:center;">
+                    </select>
+                </span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input" id="createTimeId" readonly/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input type="text" id="search_regionId" class="styleInput input " placeholder="请选择区域" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">进行状态：</span>
+                    <span><select id="search_taskStatus" class="input inputWidth_100" style="text-align:center;"></select></span>
+                </div>
+                <div>
+                    <span class="label2">任务状态：</span>
+                    <span>
+                        <select id="search_isPublish" class="input inputWidth_100" style="text-align:center;"></select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_creator" /></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="taskGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看任务详情 -->
+<div id="taskInfo" class="form" style="display: none;">
+    <table>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>任务名称:</td>
+            <td class="four_td2">
+                <input type="hidden" id="taskId" >
+                <span id="view_taskName" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>任务类型:</td>
+            <td class="four_td2">
+                <span id="view_taskType" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>调研区域:</td>
+            <td class="four_td2">
+                <span id="view_regionId" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>调研作物:</td>
+            <td class="four_td2">
+                <span id="view_cropId" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>开始时间:</td>
+            <td class="four_td2">
+                <span id="view_startDate" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>结束时间:</td>
+            <td class="four_td2">
+                <span id="view_endDate" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>工作单位:</td>
+            <td class="four_td2">
+                <span id="view_companyName" class="viewType" style="width:300px;display: block"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>任务模板:</td>
+            <td class="four_td2">
+                <span id="view_templateId" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>参与人员:</td>
+            <td class="four_td2">
+                <span id="view_userId" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>备注:</td>
+            <td class="four_td2" colspan="3">
+                <span id="view_remark" class="viewType" style="width:300px;display: block"></span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- 编辑任务详情 -->
+<div id="updateTask" class="form" style="display: none;">
+    <table>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>任务名称:</td>
+            <td class="four_td2">
+                <input type="hidden" id="taskId" >
+                <input id="taskName"  class="inputType" type="text" />
+            </td>
+            <td class="four_td1"><font color="red">*</font>任务类型:</td>
+            <td class="four_td2">
+                <select class="inputType inputWidth_250" id="taskType"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>调研区域:</td>
+            <td class="four_td2">
+                <input name="regionId" id="edit_regionId" class="inputType" type="text" readonly placeholder="请选择区域"/>
+            </td>
+            <td class="four_td1"><font color="red">*</font>调研作物:</td>
+            <td class="four_td2">
+                <select class="inputType inputWidth_250" id="edit_cropId"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>开始时间:</td>
+            <td class="four_td2">
+                <input type="text" class="inputType" id="edit_startDate" readonly />
+            </td>
+            <td class="four_td1"><font color="red">*</font>结束时间:</td>
+            <td class="four_td2">
+                <input type="text" class="inputType" id="edit_endDate" readonly />
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>工作单位:</td>
+            <td class="four_td2">
+                <input id="edit_companyName" class="inputType" type="text" />
+            </td>
+            <td class="four_td1"><font color="red">*</font>任务模板:</td>
+            <td class="four_td2">
+                <select class="inputType inputWidth_250" id="edit_templateId"></select>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>参与人员:</td>
+            <td class="four_td2" class="multipleInputForm">
+                <select id="edit_userId" multiple="multiple" class="inputType inputWidth_250 userIdSelect" onfocus="this.style.color='#000000'">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red"></font>备注:</td>
+            <td class="four_td2" colspan="3">
+                <textarea id="edit_remark" class="textareaType" cols="84" rows="5"></textarea>
+            </td>
+        </tr>
+    </table>
+    <div id="show_error"></div>
+</div>
+<!-- 数据明细列表 -->
+<div id="taskItemInfo"  style="display: none;">
+   <div id="item_info">
+        <div class="itemLeft form">
+            <div class="detailInfoSpan">任务详情</div>
+            <table style="padding-left:10px;">
+                <tr>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>任务名称</td>
+                    <td class="four_td2 rightdColor"  colspan="3">
+                        <span id="item_taskName" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>调研区域</td>
+                    <td class="four_td2 rightdColor"  colspan="3">
+                        <span id="item_regionId" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>任务类型</td>
+                    <td class="four_td2 rightdColor">
+                        <span id="item_taskType" class="viewType"></span>
+                    </td>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>调研作物</td>
+                    <td class="four_td2 rightdColor">
+                        <span id="item_cropId" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>开始时间</td>
+                    <td class="four_td2 rightdColor">
+                        <span id="item_startDate" class="viewType"></span>
+                    </td>
+                    <td class="four_td1 leftTdColor"><font color="red"></font>结束时间</td>
+                    <td class="four_td2 rightdColor">
+                        <span id="item_endDate" class="viewType"></span>
+                    </td>
+                </tr>
+            </table>
+            <div class="grid">
+                <div class="detailInfoSpan">数据列表</div>
+                <table id="taskItemGrid"></table>
+                <div id="pager3" style="float: left"></div>
+            </div>
+        </div>
+        <div class="itemRight form" >
+            <div class="detailInfoSpan">数据详情</div>
+            <div  class = 'item_info_scroll' >
+            <table>
+                <tr>
+                    <td class="tdLeft"><font color="red">*</font>采集名称</td>
+                    <td class="tdRight">
+                        <input type="hidden" id="itemId" >
+                        <input id="itemName"  class="inputTypeNew" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdLeft"><font color="red">*</font>调查地址</td>
+                    <td class="tdRight">
+                        <input id="surveyAddress"  class="inputTypeNew" type="text" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdLeft"><font color="red">*</font>调查日期</td>
+                    <td class="tdRight">
+                        <input type="text" class="inputTypeNew" id="surveyTime" readonly />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdLeft"><font color="red">*</font>坐标信息</td>
+                    <td class="tdRight">
+                        <input id="position"  class="inputTypeNew" type="text" readonly style="background-color: #f2f2f2" />
+                    </td>
+                </tr>
+            </table>
+            <!-- 自定义属性值-->
+            <table id="templateList"></table>
+            <!-- 媒体资源 -->
+            <table id="mediaList"></table>
+            </div>
+            <div id="show_itemError" style="text-align: left"></div>
+        </div>
+    </div>
+</div>
+
+<!-- 上传轮播图 -->
+<div id="taskInfoshow" class="form" style="display: none;">
+    <table>
+        <tr>
+            <td class="four_td2">
+                <div id="preview" >
+                    <input type="hidden" value="images/public/forum/banner_img1.jpg" id="defaut_img" />
+                    <img id="imghead" src='' style="width:672px;height:297px;border: solid honeydew 1px">
+                </div>
+                <input type="text" size="20" name="upfile" id="upfile" style="display:none" disabled="true" />
+                <div></div>
+                <input type="button" class="button_style" value="切换图片" onclick="path.click()" >
+                <input type="file" name="path" id="path" style="display:none" accept="image/gif,image/jpeg,image/png">
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- 放大图片 -->
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:10000;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+</div>
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums){
+        var processDialog = $("#process");
+        var init = function(){
+            dateFun();
+            loaderGrid();//加载表格
+            RegionSelectFun("search_regionId");//区域点击事件
+
+            commons.findDictList(500, "cropSearch");//作物
+            commons.findDictList(1800, "taskTypeSearch");//任务类型
+            commons.findDictList(21000, "search_taskStatus");//进行状态
+            commons.findDictList(22000, "search_isPublish");//任务状态
+            //任务类型只展示分布、估产、长势
+            commons.showTaskType("taskTypeSearch");
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);//重置
+            $("#addBtn").on("click",addFun);//新增
+            $(window).resize(function(){
+                $("#taskGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+        /**
+         * 区域选择控件
+         * @version <1> 2018-05-30 lijie : Created.
+         */
+
+        var RegionSelectFun = function(regionIdName){
+            var search_regionId = document.getElementById(regionIdName);
+            search_regionId.value = custom_settings.main_search_region_name;
+            search_regionId.setAttribute("regionid", custom_settings.main_search_region_id);
+            search_regionId.setAttribute("regioncode", custom_settings.main_search_region_code);
+            search_regionId.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                    var regionId = search_regionId.getAttribute("regionId");
+                }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            };
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $(".input").val("");
+            $("#search_regionId").val(custom_settings.main_search_region_name).attr("regionid", custom_settings.main_search_region_id).attr("regioncode", custom_settings.main_search_region_code);
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#taskGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var colmodel = [
+            {name: 'taskId', index:'task_id', hidden:true},
+            {name: 'creator', index:'creator', hidden:true},
+            {name: 'cropId', index:'crop_id', hidden:true},
+            {name: 'indexShow', index:'index_show', hidden:true},
+            {name: 'isPublish', index:'is_publish', hidden:true},
+            {name: 'itemCount', index:'itemCount', hidden:true},
+            {name: 'taskName', index:'task_name',align: 'left', width: '15%'},
+            {name: 'taskTypeName', index:'task_type',align: 'center', width: '5%'},
+            {name: 'regionName', index: 'region_id',align: 'center', width: '5%'},
+            {name: 'cropName', index: 'crop_id',align: 'center', width: '5%'},
+            {name: 'startDate', index:'start_date',align: 'center', width: '10%'},
+            {name: 'endDate', index: 'end_date',align: 'center', width: '10%'},
+            {name: 'taskStatusName', index: 'task_status', align: 'center', width: '5%',formatter:function(cellvalue, options, rowObject){
+                if(rowObject.taskStatus == forum_goStatus.NO_START){
+                    return "<span class='yellow'>" + cellvalue + "</span>"
+                }else if(rowObject.taskStatus == forum_goStatus.DOING){
+                    return "<span class='blue'>" + cellvalue + "</span>";
+                }else if(rowObject.taskStatus == forum_goStatus.FINISHED){
+                    return "<span class='green'>" + cellvalue + "</span>";
+                }else{
+                    return cellvalue == null ? "" : cellvalue;
+                }
+            }},
+            {name: 'isPublishName', index: 'is_publish', align: 'center', width: '5%',formatter:function(cellvalue, options, rowObject){
+                if(rowObject.isPublish == forum_taskStatus.PUBLISHED){
+                    return "<span class='green'>" + cellvalue + "</span>"
+                }else if(rowObject.isPublish == forum_taskStatus.REJECTED || rowObject.isPublish == forum_taskStatus.RECALLED){
+                    return "<span class='red'>" + cellvalue + "</span>";
+                }else if(rowObject.isPublish == forum_taskStatus.WAIT_AUDIT){
+                    return "<span class='blue'>" + cellvalue + "</span>";
+                }else{
+                    return cellvalue == null ? "" : cellvalue;
+                }
+              }
+            },
+            {name: 'creatorName', index: 'creator', align: 'center', width: '5%'},
+            {name: 'createTime', index: 'create_time', align: 'center', width: '10%' },
+            {name: 'auditorName', index: 'auditor', align: 'center', width: '5%'},
+            {name: 'auditTime', index: 'audit_time', align: 'center', width: '10%' },
+            {name: 'cz', index:'cz', width:'20%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject) {
+                var str = "";
+                /*str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.taskId + "' data-publish='" + rowObject.isPublish + "' title='详情'>&nbsp;";*/
+
+                //if (rowObject.isPublish!=forum_taskStatus.WAIT_AUDIT && rowObject.isPublish!=forum_taskStatus.PUBLISHED) {//发布或待审核状态不可编辑
+                    str += "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.taskId + "' data-isPublish='" + rowObject.isPublish + "'  title='编辑'>&nbsp;";
+               /* }else{
+                    str += "<img src='images/public/TeditG.png' data-id='" + rowObject.taskId + "' title='编辑'>&nbsp;";
+                }*/
+                if (rowObject.itemCount > 0){//有数据才能查看明细
+                    str += "<img src='images/public/Twatch.png' class='itemBtn' data-id='" + rowObject.taskId + "' title='查看明细'>&nbsp;";
+                }else{
+                    str += "<img src='images/public/TwatchG.png' data-id='" + rowObject.taskId + "' title='查看明细'>&nbsp;";
+                }
+
+                if(rowObject.isPublish == forum_taskStatus.WAIT_AUDIT) {
+                    str += "<img src='images/public/icon-check.png' class='detailBtn' data-id='" + rowObject.taskId + "' data-publish='" + rowObject.isPublish + "' title='审核'>&nbsp;"
+                    /*str += "<img src='images/public/icon-pass.png' class='passBtn' data-id='" + rowObject.taskId + "' title='通过'> ";*/
+                }else{
+                    str += "<img src='images/public/icon-checkG.png' data-id='" + rowObject.taskId + "' title='审核'> ";
+                }
+/*
+                if(rowObject.isPublish == forum_taskStatus.WAIT_AUDIT) {
+                    str += "<img src='images/public/icon-refuse.png' class='failBtn' data-id='" + rowObject.taskId + "' title='驳回'> ";
+                }else{
+                    str += "<img src='images/public/icon-refuseG.png' data-id='" + rowObject.taskId + "' title='驳回'> ";
+                }*/
+                if(rowObject.isPublish == forum_taskStatus.PUBLISHED){//已发布的才能设置轮播
+                    if(rowObject.indexShow == 0) {
+                        str += "<img src='images/public/icon-Addlb.png' style='width:30px!important;' class='hotBtn' data-id='" + rowObject.taskId + "' title='首页轮播'> ";
+                    }else{
+                        str += "<img src='images/public/icon-removelb.png' style='width:30px!important;' class='nohotBtn' data-id='" + rowObject.taskId + "' title='取消首页轮播'> ";
+                    }
+                }else{
+                    str += "<img src='images/public/icon-AddlbG.png' style='width:30px!important;' data-id='" + rowObject.taskId + "' title='首页轮播'> ";
+                }
+
+                if (rowObject.itemCount > 0){
+                    str += "<img src='images/public/download.png' class='exportBtn' data-id='" + rowObject.taskId + "' title='导出'>";
+                } else {//如果没有子任务则无法下载数据
+                    str += "<img src='images/public/downloadG.png' class='exportBtnG' disabled='disabled' data-id='" + rowObject.taskId + "' title='无数据'>";
+                }
+               /* str += "<img src='images/public/Tdelete.png' class='deleteBtn' data-id='"+ rowObject.taskId +"' title='删除'>&nbsp;";*/
+                return str;
+            }}
+        ];
+
+        var item_colmodel = [
+            {name: 'itemId', index:'item_id', hidden:true},
+            {name: 'taskId', index:'task_id', hidden:true},
+            {name: 'surveyAddress', index:'survey_address',align: 'left', width: '100%'},
+//            {name: 'creatorName', index:'creator',align: 'left', width: '20%'},
+        ];
+
+        var permissionFlag = true;
+
+        var loaderGrid = function(){
+            $("#taskGrid").jqGrid({
+                url: COLLECTION_TASK_NEW.findTaskByPage_url,
+                datatype: "json",
+                postData:{},
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['taskId','创建人ID','作物Id','是否首页轮播','任务状态','明细数量','任务名称', '任务类型','区域','作物','开始时间','结束时间', '进行状态', '任务状态','创建人','创建时间', '审核人','审核时间', '操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#taskGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#taskGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#taskGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据删除按钮处理
+            if(ids.length == 0){
+                $("#batchDeleteBtn").addClass("btn_grey");
+            }else{
+                $("#batchDeleteBtn").removeClass("btn_grey");
+            }
+
+            var records = $("#taskGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchDeleteBtn").hide("btn_grey");
+            }else{
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function(){
+            $(".detailBtn,.itemBtn, .editBtn,.deteleBtn,#batchDeleteBtn,.hotBtn,.nohotBtn,.deleteBtn,.exportBtn,.passBtn,.failBtn").off("click");
+
+            //详情
+            $(".detailBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                var isPublish = $(this).attr("data-publish");
+                detailTaskFun(taskId,isPublish);
+            });
+
+            //查看数据明细
+            $(".itemBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                taskItemFun(taskId);
+            });
+
+            //编辑
+            $(".editBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                var isPublish = $(this).attr("data-isPublish");
+                updateTaskFun(taskId,isPublish);
+            });
+
+            //删除
+            $(".deleteBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                deleteTaskFun(taskId);
+            });
+
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function () {
+                if (!$(this).hasClass("btn_grey")) {
+                    deleteTasksFun(getValidData());
+                }
+            });
+
+            //首页轮播
+            $(".hotBtn").bind("click",function () {
+                var id = $(this).attr("data-id");
+                //signTaskFun(id,1);
+                indexShowFun(id);
+            });
+
+            //取消首页轮播
+            $(".nohotBtn").bind("click",function () {
+                var id = $(this).attr("data-id");
+                signTaskFun(id,0);
+            });
+
+            //审核通过
+            $(".passBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                auditTaskFun([taskId],forum_taskStatus.PUBLISHED);
+            });
+
+            //审核驳回
+            $(".failBtn").bind("click",function () {
+                var taskId = $(this).attr("data-id");
+                auditTaskFun([taskId],forum_taskStatus.REJECTED);
+            });
+
+            //下载
+            $(".exportBtn").on("click", function () {
+
+                $('#iframeExcel').remove();
+                $('#iframeZip').remove();
+
+                var id = $(this).attr("data-id")
+
+                var iframeExcel = document.createElement("iframe");
+                iframeExcel.style.display = "none";
+                iframeExcel.style.height = 0;
+                iframeExcel.id = 'iframeExcel';
+                iframeExcel.src = COLLECTION_TASK_NEW.exportTaskInfoById_url + "?taskId=" + id + "&AccessToken=" + commons.getAccessToken();
+                document.body.appendChild(iframeExcel);
+
+
+                var iframe = document.getElementById("iframeExcel");
+                if (iframe.attachEvent) {
+                    iframe.attachEvent("onload", function() {
+                        //iframe加载完成后你需要进行的操作
+                    });
+                } else {
+                    iframe.onload = function() {
+                        //iframe加载完成后你需要进行的操作
+                    };
+                }
+                var downloadMediaUrl = COLLECTION_TASK_NEW.downloadMediaById_url;
+                var iframeZip = document.createElement("iframe");
+                iframeZip.style.display = "none";
+                iframeZip.style.height = 0;
+                iframeZip.id = 'iframeZip';
+                iframeZip.src = downloadMediaUrl + "?taskId=" + id + "&AccessToken=" + commons.getAccessToken();
+                document.body.appendChild(iframeZip);
+
+            });
+
+        };
+
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData = function () {
+            var ids = [];
+            var rowIds = $("#taskGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index, id) {
+                var row = $("#taskGrid").jqGrid('getRowData', id);
+                var taskId = row.taskId;
+                ids.push(taskId)
+            });
+            return ids;
+        }
+
+
+        /**
+         * 审核任务
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var auditTaskFun = function(ids,status,flag) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_taskStatus.PUBLISHED){//审核通过
+                msg="通过";
+            }else if(status== forum_taskStatus.REJECTED){//审核驳回
+                msg="驳回";
+            }
+            confirmDialog.html("是否确认审核"+msg+"该任务？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = COLLECTION_TASK_NEW.auditTaskList_url;
+                        ajax.opts.data = JSON.stringify({'taskIds':ids,'isPublish':status});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                if(flag){
+                                    $("#taskInfo").dialog("close");
+                                }
+                                $("#taskGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin(msg+"成功");
+                            } else {
+                                PopWin.showMessageWin(msg+"失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误："+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(){
+            var ids=[];
+            var rowIds = $("#taskGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#taskGrid").jqGrid('getRowData', id);
+                var taskId=row.taskId;
+                var taskStatus=row.taskStatus;
+                ids.push(taskId)
+            });
+            return ids;
+        }
+
+        /**
+         * 新增任务
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var addFun = function() {
+            updateTaskFun();
+        }
+
+        /**
+         * 删除任务
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteTaskFun = function(taskId) {
+                    var confirmDialog = $("#confirmDialog");//操作确认对话框
+                    var dialogParent = confirmDialog.parent();
+                    var dialogOwn = confirmDialog.clone();
+
+                    confirmDialog.html("是否确认删除该任务？");
+                    confirmDialog.dialog({
+                        autoOpen: false,
+                        title: '提示',
+                        height: 161,
+                        width: 450,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons: [{
+                            text:"是",
+                            click:function(){
+                                //显示进度条 关闭提示框
+                                confirmDialog.dialog("close");
+                                showProcess();
+                                var ajax = new BaseAjax();
+                                ajax.opts.url = COLLECTION_TASK_NEW.delTaskById_url;
+                                ajax.opts.data = JSON.stringify({'taskId':taskId});
+                                ajax.opts.contentType = "application/json";
+                                ajax.opts.successFun = function (result) {
+                                    //关闭进度条
+                                    processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                    if (result.flag) {
+                                        $("#taskGrid").trigger("reloadGrid");//刷新列表
+                                        PopWin.showMessageWin("删除成功");
+                                    } else {
+                                        PopWin.showMessageWin("删除失败");
+                                    }
+                                };
+                                ajax.opts.errorFun = function () {
+                                    PopWin.showMessageWin("系统错误：删除失败");
+                                };
+                                ajax.run();
+                            }},{
+                            text:"否",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                    confirmDialog.dialog("open");
+                };
+
+        /**
+         * 编辑任务详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var updateTaskFun = function(taskId,isPublish) {
+            clearTaskInfo();
+            var buttons=[{
+                text: "保存",
+                click: function () {
+                    addSaveFun(taskId,22001);
+                }
+            },{
+                text:"关闭",
+                click:function(){
+                    $(this).dialog("close");
+                }
+            }];
+            if(isPublish == forum_taskStatus.WAIT_AUDIT || isPublish == forum_taskStatus.PUBLISHED){
+
+                buttons=[{text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            }
+            if(taskId!=null && taskId!=''){
+                var accountId = $(".user").attr("accountId");
+                var creator = setTaskInfo(taskId);
+                if(accountId != creator){
+                    buttons=[{text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                }
+            }
+            var userDialog =  $("#updateTask");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:'编辑任务信息',
+                height: 550,
+                width: 850,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+            //绑定新增事件
+            $(".addTr").click(function () {
+                addFieldModelTr();
+            });
+        };
+
+        /**
+         * 批量删除任务
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteTasksFun = function(taskIds) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("是否确认删除所有选中的任务？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = COLLECTION_TASK_NEW.delTaskByIds_url;
+                        ajax.opts.data = JSON.stringify({'taskIds':taskIds});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#taskGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 查看任务详情
+         * type 0:详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailTaskFun = function(taskId,isPublish) {
+            var buttons=[
+                {
+                    text:"通过",
+                    click:function(){
+                        auditTaskFun([taskId],forum_taskStatus.PUBLISHED,true);
+                    }
+                },
+                {
+                    text:"驳回",
+                    click:function(){
+                        auditTaskFun([taskId],forum_taskStatus.REJECTED,true);
+                    }
+                },
+                {
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }];
+            if(isPublish!=forum_taskStatus.WAIT_AUDIT){
+                buttons=[
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ];
+            }
+            setTaskInfo(taskId,0);
+            var userDialog =  $("#taskInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:'任务信息',
+                height: 400,
+                width: 700,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+        };
+
+        /**
+         * 查看任务明细
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var taskItemFun = function(taskId) {
+            //数据标题
+            var width = 958;//宽度
+            var height = 620;//高度
+            var taskInfoDialog =  $("#taskItemInfo");
+            var dialogParent = taskInfoDialog.parent();
+            var dialogOwn = taskInfoDialog.clone();
+            taskInfoDialog.dialog({
+                autoOpen: false,
+                title:"任务数据采集明细",
+                height: height,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:[{
+                    text:"保存",
+                    click:function(){
+                        saveTaskItem();
+                    }
+                },{
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            taskInfoDialog.dialog("open");
+            taskGrid(taskId);//加载数据表格
+            setTaskInfo(taskId,0);//加载任务信息
+            dateFun();
+
+
+        };
+
+        /**
+         * 查看数据明细列表
+         */
+        var taskGrid = function(taskId){
+            var taskParam={};
+            taskParam.taskId=taskId;
+            var detail_url=COLLECTION_TASK_NEW.findTaskItemPageInfo_url;
+            $("#taskItemGrid").jqGrid({
+                url: detail_url,
+                datatype: "json",
+                postData:taskParam,
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                multiselect: true,
+                multiboxonly: true,
+                beforeSelectRow: true,
+                beforeSelectRow:function(){
+                    $("#taskItemGrid").jqGrid('resetSelection');
+
+                    return true;
+                },
+                rownumbers: false,
+                colNames:['itemId','taskId','调查地址'],
+                colModel:item_colmodel,
+                rowNum:1000,
+                rowList:[5,10],
+                pager: '',
+                autowidth:true,
+                height:'100%',
+                width:'100%',
+                viewrecords: true,
+                sortorder: "desc",
+                gridComplete: function(){
+                    $("#taskItemInfo").css({ "overflow-x" : "hidden" });
+                    $("#taskItemInfo").css({ "overflow-y" : "hidden" });
+                    $( this ).closest(".ui-jqgrid-bdiv").css({ 'overflow-y' : 'auto' });
+                    $( this ).closest(".ui-jqgrid-bdiv").css({ 'overflow-x' : 'hidden' });
+                   /* $( this ).closest(".ui-jqgrid-bdiv").css({"maxHeight":$("#taskItemInfo").height()-$(".ui-jqgrid-hdiv").height()-$("#pager3").height()-50+"px"});*/
+                    //默认点击第一个
+                    if($("table#taskItemGrid tr").length>1){
+                        $("table#taskItemGrid tr").eq(1).click();
+                        $("#item_info").show();
+                    }else{
+                        $("#item_info").hide();
+                    }
+                    //隐藏表头
+                    $('.ui-jqgrid-hdiv').hide();
+
+                },
+                onSelectRow:function(rowid, e) {
+                    var row = $("#taskItemGrid").jqGrid('getRowData', rowid);
+                    var itemId = row.itemId;
+                    setTaskItem(itemId);
+                }
+            });
+            $("#taskItemGrid_cb").hide();//隐藏全选框
+
+        };
+
+        /**
+         * 详情赋值
+         * type 0详情 1编辑
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setTaskInfo=function(taskId,type){
+            var taskInfo = taskDetail(taskId);
+            if(type == 0){
+                $("#view_taskName").text(taskInfo.taskName);
+                $("#view_taskType").text(taskInfo.taskTypeName);
+                var regionName=commons.queryRegionName(taskInfo.regionId);
+                $("#view_regionId").text(regionName);
+                $("#view_cropId").text(taskInfo.cropName);
+                $("#view_startDate").text(taskInfo.startDate);
+                $("#view_endDate").text(taskInfo.endDate);
+                $("#view_companyName").text(taskInfo.companyName?taskInfo.companyName:"");
+                $("#view_remark").text(taskInfo.remark?taskInfo.remark:"");
+                $("#view_remark").attr("title",taskInfo.remark);
+                $("#view_templateId").text(taskInfo.templateName);
+                $("#view_companyName").attr("title",taskInfo.companyName);
+                //回显明细任务详情
+                $("#item_taskName").text(taskInfo.taskName);
+                $("#item_taskType").text(taskInfo.taskTypeName);
+                $("#item_regionId").text(regionName);
+                $("#item_cropId").text(taskInfo.cropName);
+                $("#item_startDate").text(taskInfo.startDate);
+                $("#item_endDate").text(taskInfo.endDate);
+                //回显参与人
+                var list = taskUserList(taskId);
+                var names = "";
+                $.each(list, function (i, element) {
+                    var name=commons.queryAccountName(element.accountId);
+                    names+=name+",";
+                })
+                var namesTitle = names;
+                if(names&& names.length>20){
+                    names=names.substring(0,20)+"...";
+                }
+                $("#view_userId").text(names);
+                $("#view_userId").attr("title",namesTitle);
+            }else{
+                $("#taskId").val(taskInfo.taskId);
+                $("#taskName").val(taskInfo.taskName);
+                commons.findDictList(1800, "taskType",taskInfo.taskType);
+                var regionName=commons.queryRegionName(taskInfo.regionId);
+                $("#edit_regionId").val(regionName).attr("regionId", taskInfo.regionId);//设置区域中文和id
+                $("#edit_regionId").attr("regionCode", taskInfo.regionCode);
+                commons.findDictList(500, "edit_cropId",taskInfo.cropId);
+                $("#edit_startDate").val(taskInfo.startDate)
+                $("#edit_endDate").val(taskInfo.endDate);
+                $("#edit_companyName").val(taskInfo.companyName);
+                $("#edit_remark").val(taskInfo.remark);
+                //回显模板
+                $("#edit_templateId option").each(function(){
+                    if($(this).val()== taskInfo.templateId){
+                        $(this).prop("selected",true)
+                    }
+                })
+                //回显参与人
+                var list = taskUserList(taskId);
+                var accountIds = [];
+                $.each(list, function (i, element) {
+                    accountIds.push(element.accountId);
+                })
+                $("#edit_userId").multipleSelect('setSelects',accountIds);//选中
+
+            }
+            return taskInfo.creator;
+        }
+
+        var clearTaskInfo=function(){
+            $("#updateTask input").val("");
+            $("#edit_remark").val("");
+            //获取模板
+            var list=myTemplateList();
+            $("#edit_templateId").empty();
+            var str = "<option value=''>--请选择--</option>";
+            $.each(list, function (index, element) {
+                str += "<option value='" + element.templateId + "'>" + element.typeName +"-"+ element.templateName + "</option>";
+            })
+            $("#edit_templateId").append(str);
+            //获取关注人
+            $("div.userIdSelect").remove();
+            getDataSensorOption("edit_userId");
+            RegionSelectFun("edit_regionId");//区域点击事件
+            commons.findDictList(1800, "taskType");
+            commons.findDictList(500, "edit_cropId");
+            //任务类型只展示分布、估产、长势
+            commons.showTaskType("taskType");
+            dateFun();
+
+        }
+
+        /**
+         * 数据明细赋值
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setTaskItem=function(itemId){
+            var ItemInfo = taskItemDetail(itemId);
+            $("#itemId").val(itemId);
+            $("#itemName").val(ItemInfo.itemName);
+            $("#surveyAddress").val(ItemInfo.surveyAddress);
+            $("#surveyTime").val(ItemInfo.surveyTime);
+            $("#position").val(ItemInfo.position);
+            //属性值
+            $("#templateList").empty();
+            var templateVO= ItemInfo.templateVO;
+            if(!templateVO){return false;}
+            var fieldModelVOList = templateVO.fieldModelVOList;
+            if(!fieldModelVOList){return false;}
+            var table_str ="";
+            var $table=$("#templateList");
+            var length=fieldModelVOList.length;
+            if(length>0){
+                for(var i=0;i<length;i++){
+                    var tr="<tr>";
+                    var fieldNameCh = fieldNameEn = value = '';
+                    if(fieldModelVOList[i] && fieldModelVOList[i].fieldNameCh ){
+                        fieldNameCh = fieldModelVOList[i].fieldNameCh;
+                        fieldNameEn = fieldModelVOList[i].fieldNameEn;
+                        value = fieldModelVOList[i].value;
+                    }
+                    var td_str = '<td class="tdLeft">'+fieldNameCh+'</td><td class="tdRight"><input class="inputTypeNew" type="hidden" value = '+fieldNameEn+' /><input class="inputTypeNew" type="text" value ='+value+' /> </td>';
+                    tr += td_str+"</tr>";
+                    table_str+=tr;
+                }
+                $table.append(table_str);
+
+            }
+            //回显图片和录音
+            var pngMediaList = [];
+            var awrMediaList = [];
+            var cltMediaSourceList = ItemInfo.cltMediaSourceList;
+            $.each(cltMediaSourceList,function(i,obj){
+                if(obj.mediaType == 1){
+                    pngMediaList.push(obj);
+                }
+                if(obj.mediaType == 2){
+                    awrMediaList.push(obj);
+                }
+            })
+            $("#mediaList").empty();
+            var mediaStr = "<tr>";
+            //录音功能隐藏
+            /*if (awrMediaList && awrMediaList.length > 0) {
+                mediaStr += '<td class="tdLeft">录音:</td>';
+                mediaStr += '<td class="tdRight"><ul>';
+                $.each(awrMediaList, function (i, e) {
+                    var amrMediaPath = download_config.DOWNLOD_URL+e.mediaPath;
+                    mediaStr +=  '<li><span><audio src="'+amrMediaPath+'" id="luyin" controls="controls" style="width:85%;"></span><a class="delAmr" data-id="' + e.mediaId + '" data-taskItemId="' + itemId + '" style="cursor:pointer;color:red;line-height:60px;vertical-align: top"> <img src="images/public/delete.png" style="margin-top: 20px;" /></a></li>'
+                });
+                mediaStr += '</ul></td>';
+            }else{
+                mediaStr +='<td></td><td></td>';
+            }*/
+            if (pngMediaList && pngMediaList.length > 0) {
+                mediaStr += '<td class="tdLeft">采集图片</td>';
+                mediaStr += '<td class="tdRight">'
+                $.each(pngMediaList, function (i, e) {
+                    var pngMediaPath = download_config.DOWNLOD_URL+e.mediaPath;
+                    mediaStr +='<span style="position: relative;padding-left: 10px">' +
+                            '<img src="' + pngMediaPath + '" class="lunbo_img" onclick="imgShow(\'#outerdiv\', \'#innerdiv\', \'#bigimg\', $(this))" >' +
+                            '<img src="images/public/delete.png" class="deletePng" data-id="' + e.mediaId + '" data-taskItemId="' + itemId + '"/>' +
+                            '</span>'
+                });
+            }else{
+                mediaStr +='<td></td><td></td>';
+            }
+            $("#mediaList").append(mediaStr);
+            //删除音频
+            $(".delAmr").click(function () {
+                var id = $(this).data("id");
+                var taskItemId = $(this).attr("data-taskItemId");
+                delMediaFun(id,taskItemId);
+            })
+            lunbo();
+
+          /*  $("#saveTaskItem").off("click");
+            $("#saveTaskItem").click(function(){
+                saveTaskItem();
+            });*/
+
+        }
+
+        /**
+         * 获取任务值
+         */
+        var getTaskParam = function (isPublish) {
+            var taskId = $("#taskId").val();
+            var taskName = $("#taskName").val();
+            var taskType = $("#taskType").val();
+            var regionId = $("#edit_regionId").attr("regionId");
+            var regionCode = $("#edit_regionId").attr("regionCode");
+            var cropId = $("#edit_cropId").val();
+            var startDate = $("#edit_startDate").val();
+            var endDate = $("#edit_endDate").val();
+            var companyName = $("#edit_companyName").val();
+            var templateId = $("#edit_templateId").val();
+            var remark = $("#edit_remark").val();
+            var userArr = $("#edit_userId").multipleSelect('getSelects');  // 获取选中
+            var cltTemplate ={
+                templateId: templateId,
+            };
+            var cltTaskInfo ={
+                taskId : taskId,
+                taskName: taskName,
+                taskType: taskType,
+                regionId: regionId,
+                regionCode:regionCode,
+                cropId: cropId,
+                companyName: companyName,
+                templateId: templateId,
+                remark: remark,
+                isPublish:isPublish
+            };
+            var taskParam = {
+                startDateStr: startDate,
+                endDateStr: endDate,
+                cltTaskInfo:cltTaskInfo,
+                cltTemplate:cltTemplate,
+                cltTaskInfo:cltTaskInfo,
+                userArr:userArr,
+            };
+            return taskParam;
+        }
+
+        /**
+         * 获取任务明细值
+         */
+        var getTaskItemParam = function () {
+            var itemId = $("#itemId").val();
+            var itemName = $("#itemName").val();
+            var surveyAddress = $("#surveyAddress").val();
+            var surveyTime = $("#surveyTime").val();
+            var position = $("#position").val();
+            //模板列表
+            var fieldModelVOList = [];
+            $("#templateList td.tdLeft").each(function(){
+                var vo = {};
+                vo.fieldNameCh=$(this).text();
+                vo.fieldNameEn=$(this).next("td").find("input:first").val();
+                vo.value=$(this).next("td").find("input:last").val()
+                if(vo.fieldNameCh!=''){
+                    fieldModelVOList.push(vo);
+                }
+
+            });
+            var templateVO ={
+                fieldModelVOList: fieldModelVOList,
+            };
+            var cltTaskItem ={
+                itemId : itemId,
+                itemName : itemName,
+                surveyAddress : surveyAddress,
+                surveyTime : surveyTime,
+                position : position,
+                templateVO : templateVO,
+            };
+
+            return cltTaskItem;
+        }
+
+
+        /**
+         *新增/编辑保存
+         */
+        var addSaveFun = function(taskId,isPublish){
+            if(!formTaskVerf()){
+                return ;
+            }
+            showProcess();
+            var url=COLLECTION_TASK_NEW.addTaskList_url;
+            var msg="新增";
+            if(taskId!=null&&taskId!=''){
+                url=COLLECTION_TASK_NEW.updateTaskList_url;
+                msg="修改"
+            }
+            var  taskInfo = getTaskParam(isPublish);
+            var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(taskInfo);
+            ajax.opts.successFun = function(result){
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                if(result.flag){
+
+                    $("#taskGrid").trigger("reloadGrid");
+                    $("#updateTask").dialog("close");
+                    PopWin.showMessageWin("任务"+msg+"成功");
+
+                }else{
+
+                    PopWin.showMessageWin("任务"+msg+"失败");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("任务"+msg+"失败");
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+            };
+            ajax.run();
+        };
+
+        /**
+         * 保存任务明细数据
+         */
+        var saveTaskItem = function(){
+            if(!formItemVerf()){
+                return ;
+            }
+            showProcess();
+            var url=COLLECTION_TASK_NEW.updateTaskItemByItemId_url;
+            var  taskInfo = getTaskItemParam();
+            var thisObj;
+            var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(taskInfo);
+            ajax.opts.successFun = function(result){
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                if(result.flag){
+                    //重新刷新
+                    var id = $("#taskItemGrid").jqGrid('getGridParam','selrow');
+                    $("#taskItemGrid").jqGrid( 'setRowData',id, {
+                        itemName : taskInfo.itemName,
+                        surveyAddress : taskInfo.surveyAddress,
+                        surveyTime : taskInfo.surveyTime,
+                        position : taskInfo.position,
+                    })
+
+                    PopWin.showMessageWin("保存成功");
+                }else{
+                    PopWin.showMessageWin("保存失败");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("保存失败");
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+            };
+            ajax.run();
+        };
+
+        //校验添加任务参数
+        var formTaskVerf = function () {
+            var userInfo = $('#show_error');
+            if (formVerfication.checkInputIsEmpty($('#taskName'), userInfo, '任务名称不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,15,$(' #taskName'),userInfo, '任务名称不能超过15位')){
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#taskType'), userInfo, '任务类型不能为空')) {
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#edit_regionId'), userInfo, '调研区域不能为空')) {
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#edit_cropId'), userInfo, '调研作物不能为空')) {
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#edit_startDate'), userInfo, '开始时间不能为空')) {
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#edit_endDate'), userInfo, '结束时间不能为空')) {
+                return false;
+            }
+            if($('#edit_startDate').val() > $('#edit_endDate').val()){
+                formVerfication.showErroInfo($('#edit_endDate'),userInfo,'开始时间不能大于结束时间');
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,30,$('#edit_companyName'),userInfo, '工作单位不能超过30位')){
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#edit_templateId'), userInfo, '任务模板不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,100,$('#edit_remark'),userInfo, '备注不能超过100位')){
+                return false;
+            }
+            return true;
+        }
+
+        //校验添加任务Ming西参数
+        var formItemVerf = function () {
+            var userInfo = $('#show_itemError');
+            if (formVerfication.checkInputIsEmpty($('#itemName'), userInfo, '采集名称不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,15,$(' #itemName'),userInfo, '采集名称不能超过15位')){
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#surveyAddress'), userInfo, '调查地址不能为空')) {
+                return false;
+            }
+            if(formVerfication.checkInputLength(0,50,$(' #surveyAddress'),userInfo, '调查地址不能超过50位')){
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#surveyTime'), userInfo, '调查日期不能为空')) {
+                return false;
+            }
+            if ($('#surveyTime').val().substring(0,15)< $("#item_startDate").text().substring(0,15) || $('#surveyTime').val().substring(0,15) > $("#item_endDate").text().substring(0,15)) {
+                formVerfication.showErroInfo($('#surveyTime'),userInfo,'调查时间必须大于任务开始时间，且小于任务结束时间');
+                return false;
+            }
+            if (formVerfication.checkInputIsEmpty($('#position'), userInfo, '坐标信息不能为空')) {
+                return false;
+            }
+
+            return true;
+        }
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var dateFun = function(){
+            $("#createTimeId").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+            $("#edit_startDate").jeDate({
+                range:"",
+                multiPane:true,
+                format: 'YYYY-MM-DD hh:mm'
+            });
+
+            $("#edit_endDate").jeDate({
+                range:"",
+                multiPane:true,
+                format: 'YYYY-MM-DD hh:mm'
+            });
+            $("#surveyTime").jeDate({
+                range:"",
+                multiPane:true,
+                format: 'YYYY-MM-DD hh:mm:ss'
+            });
+
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        /**
+         * Description: 根据指定的查询条件，查询对应的记录并重新渲染
+         */
+        var searchFun = function () {
+            var regionCode = document.getElementById("search_regionId").getAttribute("regionCode");//区域编码
+            var taskName = $("#taskNameId").val().trim();//任务名
+            var createTime = ($("#createTimeId").val().trim()).split('至');//创建时间
+            var cropId = $("#cropSearch").val().trim();
+            var taskType = $("#taskTypeSearch").val().trim();
+            var taskStatus = $("#search_taskStatus").val().trim();
+            var isPublish = $("#search_isPublish").val().trim();
+            var creatorName = $("#search_creator").val().trim();
+
+            var param = {};
+            param.taskName = taskName;
+            param.cropId = cropId;
+            param.regionCode = regionCode;
+            param.taskType = taskType;
+            param.taskStatus = taskStatus;
+            param.isPublish = isPublish;
+            param.creatorName = creatorName;
+            param.startCreateTime = createTime[0] || '';
+            param.endCreateTime = createTime[1] || '';
+            $("#taskGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData: param,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 根据任务ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var taskDetail = function(taskId){
+            var task={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.getTaskById_url;
+            ajax.opts.data = JSON.stringify({taskId:taskId})
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    task=result.data;
+                }
+            }
+            ajax.run();
+            return task;
+        };
+
+        /**
+         * 根据任务明细ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var taskItemDetail = function(itemId){
+            var taskItem={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.findTaskItemByItemId_url;
+            ajax.opts.data = JSON.stringify({itemId:itemId})
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    taskItem=result.data;
+                }
+            }
+            ajax.run();
+            return taskItem;
+        };
+
+        /**
+         * 获取我的模板列表
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var myTemplateList = function(){
+            var task =[]
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.findCltTemplateList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    task=result.data;
+                }
+            }
+            ajax.run();
+            return task;
+        };
+
+        /**
+         * 获取任务参与人列表
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var taskUserList = function(taskId){
+            var user =[]
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.findCltTaskUserList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify({taskId:taskId})
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    user=result.data;
+                }
+            }
+            ajax.run();
+            return user;
+        };
+
+        /**
+         * 获取我的关注列表
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var myFollowList = function(){
+            var user =[]
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.findMyFollowList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify({followType:13003})
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    user=result.data;
+                }
+            }
+            ajax.run();
+            return user;
+        };
+
+        /**
+         * 获取首页轮播数
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var getIndexShowNum = function(){
+            var num =[]
+            var ajax = new BaseAjax();
+            ajax.opts.url = COLLECTION_TASK_NEW.getIndexShowNum_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="POST";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    num=result.data;
+                }
+            }
+            ajax.run();
+            return num;
+        };
+
+
+
+
+
+        //本地图片在上传之前的预览效果
+        //图片上传预览
+        function previewImage(file){
+
+            if (file.files && file.files[0]){
+                var img = document.getElementById('imghead');
+                img.onload = function(){
+
+                }
+                var reader = new FileReader();
+                //读取file完成之后加载
+                reader.onload = function(evt){
+                    img.src = evt.target.result;
+                }
+                //开始读取file
+                reader.readAsDataURL(file.files[0]);
+            }else{
+                $("#imghead").attr("src",$("#defaut_img").val());
+            }
+
+        }
+
+        /**
+         *保存轮播
+         */
+        var addIndexFun = function(taskId){
+            if(!$('#path')[0].files[0]){
+                var taskInfo=taskDetail(taskId);
+                var defaut_img = $("#defaut_img").val();
+                if(!taskInfo.indexShowImg && defaut_img != 'images/public/forum/banner_img1.jpg'){
+                    PopWin.showMessageWin("请添加轮播图片");
+                    return ;
+                }
+
+            }
+            //验证轮播图是否超过五个
+            if(getIndexShowNum()>=5){
+                PopWin.showMessageWin("首页轮播图片不能超过5个！");
+                return ;
+            }
+            var url=COLLECTION_TASK_NEW.indexShowTaskInfoList_url;
+            var formData = new FormData();
+            formData.append('taskFile', $('#path')[0].files[0]);
+            formData.append('id', taskId);
+            formData.append('indexShow', "1");
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                data: formData,
+                processData: false,
+                contentType: false,
+                headers: {"AccessToken": commons.getAccessToken()},
+                success:function(result){
+                    if(result.flag){
+                        $("#taskGrid").trigger("reloadGrid");
+                        $("#taskInfoshow").dialog("close");
+                        PopWin.showMessageWin("设置首页轮播图成功");
+                    }else{
+                        PopWin.showMessageWin("设置首页轮播图失败："+result.msg);
+                    }
+                }
+            });
+        };
+
+
+        /**
+         * 上传首页轮播图
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var indexShowFun = function(taskId) {
+            //头像绑定change事件
+            $("#path").change(function(){
+                $("#upfile").val(this.value);
+                previewImage(this);
+            });
+            //查询是否有默认地址
+            var taskInfo=taskDetail(taskId);
+            if(taskInfo.indexShowImg){
+                var url=download_config.DOWNLOD_URL+taskInfo.indexShowImg;
+                $("#imghead").attr("src",url);
+                $("#defaut_img").val(url);
+            }else{
+                $("#imghead").attr("src","images/public/forum/banner_img1.jpg");
+                $("#defaut_img").val("images/public/forum/banner_img1.jpg");
+            }
+
+            var buttons=[];
+            var close ={
+                text:"关闭",
+                click:function(){
+                    $(this).dialog("close");
+                }
+            };
+
+            var save= {
+                text: "上传",
+                click: function () {
+                    addIndexFun(taskId);
+                }
+            }
+            buttons.push(save);
+            buttons.push(close);
+            var userDialog =  $("#taskInfoshow");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title:'上传首页轮播图',
+                height: 480,
+                width: 730,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:buttons
+            });
+            userDialog.dialog("open");
+        };
+
+
+        /**
+         * 标记最热和最新
+         * @version <1> 2019-03-11 lijie： Created
+         * ids：帖子ID
+         * value :1 标记 0 取消
+         */
+        var signTaskFun = function(id,value) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var paramData={};
+            paramData.taskId=id;
+            paramData.indexShow=value;
+            var url=COLLECTION_TASK_NEW.updateTaskStatusByTaskId_url;
+            var flagMsg="";
+            if(value ==0){
+                flagMsg="取消"
+            }else if(value== 1){
+                flagMsg="标记"
+            }
+            confirmDialog.html("是否"+flagMsg+"首页轮播？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = url;
+                        ajax.opts.data = JSON.stringify(paramData);
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            if (result.flag) {
+                                $("#taskGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin(flagMsg+"首页轮播成功");
+                            } else {
+                                PopWin.showMessageWin(flagMsg+"首页轮播失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：标记首页轮播失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * Description:多选框
+         * @return
+         * @version <1> 2018/8/21 15:47 zhangshen: Created.
+         */
+        var getDataSensorOption = function (selectId) {
+            var dataStatusArray = myFollowList()
+            $('#'+selectId).html("");
+            var optionHtml = "";
+            for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                var dataStatus = dataStatusArray[i];
+                var accountName = dataStatus.accountName?dataStatus.accountName:"";
+                optionHtml += '<option value="' + dataStatus.accountId + '" data-id="' + dataStatus.accountId + '">' + accountName + '</option>';
+            }
+            $('#' + selectId).append(optionHtml);
+            $('#' + selectId).multipleSelect({placeholder:"--请选择--", selectAllText:"全选"});
+
+        };
+
+        /**
+         * 删除任务
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var delMediaFun = function(mediaId,itemId) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            confirmDialog.html("是否确认删除该媒体文件？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = COLLECTION_TASK_NEW.deleteMediaSourceById_url+"?id="+mediaId;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");
+                            if (result.flag) {
+                                //重新刷新
+                                $("table#taskItemGrid tr").find("td input").each(function(){
+                                    if($(this).prop("checked")){
+                                        $(this).click();
+                                        $(this).prop("checked",true);
+                                    }
+                                });
+                                PopWin.showMessageWin("删除文件成功");
+                            } else {
+                                PopWin.showMessageWin("删除文件失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            processDialog.dialog("close");
+                            PopWin.showMessageWin("系统错误：删除文件失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        init();
+
+        //媒体资源图片轮播
+        var p;
+        var lunbo = function () {
+            var index = 0;
+            var imgnum = $('.banner ul li').length;
+            var nmun = '';
+            var imgwidth = $('.banner ul li').width();
+            var allimgwidth = imgwidth * imgnum;
+
+            $('.banner ul').css('width', allimgwidth);
+            $('.banner').hover(function () {
+                window.clearInterval(p);
+                p = null;
+                $('.banner .u').fadeIn();
+            }, function () {
+                //pic();
+                $('.banner .u').fadeOut();
+            });
+            //删除轮播图片
+            $(".deletePng").click(function () {
+                var meidiaId = $(this).data("id");
+                var taskItemId = $(this).attr("data-taskItemId");
+                delMediaFun(meidiaId, "delMedia", taskItemId);
+            })
+
+            function pic() {
+                window.clearInterval(p);
+                p = null;
+                if(imgnum>1) {
+                    p = setInterval(function () {
+                        index++;
+                        if (index >= imgnum) {
+                            index = 0;
+                        }
+                        selectimg(index);
+                    }, 5000);
+                }
+            }
+
+            function selectimg(index) {
+                $('.banner ul').animate({'margin-left': '-' + imgwidth * index + 'px'}, 100);
+                $('.con a').eq(index).addClass('active').siblings('a').removeClass('active');
+            }
+
+            $('.banner .left').click(function () {
+                index -= 1;
+                if (index < 0) {
+                    index = imgnum - 1;
+                }
+                selectimg(index);
+            });
+            $('.banner .right').click(function () {
+                index += 1;
+                if (index > imgnum - 1) {
+                    index = 0;
+                }
+                selectimg(index);
+            });
+            for (var ni = 0; ni < imgnum; ni++) {
+                nmun += "<a href='javascript:;'></a>";
+            }
+            $('.banner .con').html(nmun);
+            $('.banner .con a').eq(0).addClass('active');
+
+            $('.con a').each(function (i) {
+                $(this).click(function () {
+                    index = i;
+                    $('.banner ul').animate({'margin-left': '-' + imgwidth * i + 'px'}, 600);
+                    $('.con a').eq(index).addClass('active').siblings('a').removeClass('active');
+                });
+            });
+            //pic();
+        }
+    });
+
+
+    //字符串模板生成
+    String.prototype.format = function() {
+        if (arguments.length == 0) return this;
+        var param = arguments[0];
+        var s = this;
+        if (typeof(param) == 'object') {
+            for (var key in param)
+                s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+            return s;
+        } else {
+            for (var i = 0; i < arguments.length; i++)
+                s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+            return s;
+        }
+    }
+
+    var imgShow = function (outerdiv, innerdiv, bigimg, _this) {
+        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
+        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
+
+        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+        $("<img/>").attr("src", src).load(function () {
+            var windowW = $(window).width();//获取当前窗口宽度
+            var windowH = $(window).height();//获取当前窗口高度
+            var realWidth = this.width;//获取图片真实宽度
+            var realHeight = this.height;//获取图片真实高度
+            var imgWidth, imgHeight;
+            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+            if (realHeight > windowH * scale) {//判断图片高度
+                imgHeight = windowH * scale;//如大于窗口高度，图片高度进行缩放
+                imgWidth = imgHeight / realHeight * realWidth;//等比例缩放宽度
+                if (imgWidth > windowW * scale) {//如宽度扔大于窗口宽度
+                    imgWidth = windowW * scale;//再对宽度进行缩放
+                }
+            } else if (realWidth > windowW * scale) {//如图片高度合适，判断图片宽度
+                imgWidth = windowW * scale;//如大于窗口宽度，图片宽度进行缩放
+                imgHeight = imgWidth / realWidth * realHeight;//等比例缩放高度
+            } else {//如果图片真实高度和宽度都符合要求，高宽不变
+                imgWidth = realWidth;
+                imgHeight = realHeight;
+            }
+            $(bigimg).css("width", imgWidth);//以最终的宽度对图片缩放
+
+            var w = (windowW - imgWidth) / 2;//计算图片与窗口左边距
+            var h = (windowH - imgHeight) / 2;//计算图片与窗口上边距
+            $(innerdiv).css({"top": h, "left": w});//设置#innerdiv的top和left属性
+            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
+        });
+
+        $(outerdiv).click(function () {//再次点击淡出消失弹出层
+            $(this).fadeOut("fast");
+        });
+    }
+</script>
+<script type="text/javascript" src="js/lib/multiple-select/multiple-select.js"></script>

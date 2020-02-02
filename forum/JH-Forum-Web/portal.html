@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>产品与服务</title>
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <style>
+        *{
+            margin: 0 auto;
+        }
+        .contentBody{
+            width: 100%;
+            height: 100%;
+        }
+        .content_header{
+            width:100%;
+            height: 100px;
+        }
+        .content_header span{
+            display: inline-block;
+            float: left;
+        }
+        .header_icon{
+            background: url("./images/public/forum/logo.png") no-repeat center;
+            height: 50px;
+            margin-left: 50px;
+            width: 150px;
+            margin-top: 20px;
+        }
+        .header_name{
+            width: 200px;
+            height: 50px;
+            font-size: 25px;
+            font-weight: bold;
+            color: black;
+            margin-left: 20px;
+            line-height: 50px;
+            margin-top: 20px;
+        }
+        .content{
+            width: 100%;
+            height: 500px;
+            background: #ededed url("./img/bigBG.jpg") no-repeat top;
+            background-size: 100%;
+        }
+        .content ul {
+            width: 97%;
+            height: auto;
+            margin: 0 auto;
+            list-style: none;
+        }
+        .content ul li{
+            float: left;
+            width: 300px;
+            height: 320px;
+            margin-top: 90px;
+            background-color: white;
+            cursor: pointer;
+        }
+        .content ul li.first{
+            margin-left: calc(50% - 500px);
+        }
+        .content ul li .logo_icon{
+            width: 100%;
+            height: 150px;
+        }
+        .content ul li .logo_icon img{
+            width: 180px;
+            height: 180px;
+            margin-left: 60px;
+            box-sizing: border-box;
+        }
+
+        .content ul li .logo_name{
+            width: 100%;
+            height: 30px;
+            text-align: center;
+            font-size: 24px;
+            color: black;
+            font-weight: bold;
+            line-height: 30px;
+            margin-top: 30px;
+        }
+        .content ul li .content_name{
+            width: calc(100% - 40px);
+            height: 30px;
+            font-size: 16px;
+            color: #838383;
+            text-align: center;
+            line-height: 30px;
+            margin-left: 20px;
+            border-top: 1px dashed;
+            margin-top: 10px;
+            box-sizing: border-box;
+        }
+        .content_button{
+            width: calc(100% - 40px);
+            height: 40px;
+            margin-left: 20px;
+            background-color: #36d300;
+            color: white;
+            font-size: 14px;
+            text-align: center;
+            line-height: 30px;
+            margin-top: 10px;
+            line-height: 40px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .ml20{
+            margin-left: 50px;
+            box-sizing: border-box;
+        }
+        .footer{
+            width: 100%;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="contentBody">
+    <div class="content_header">
+        <span class="header_icon"></span>
+        <span class="header_name">产品与服务</span>
+    </div>
+    <div class="content">
+        <ul>
+            <li class="first bigData">
+                <div class="content_Logo_1 logo_icon">
+                    <img src="./img/login1.png" />
+                </div>
+                <div class="logo_name">珈和农情遥感云</div>
+                <div class="content_name">农情遥感大数据系统</div>
+                <div class="content_button">立即登录</div>
+            </li>
+            <li class="ml20 dealData">
+                <div class="content_Logo_2 logo_icon">
+                    <img src="./img/login2.png" />
+                </div>
+                <div class="logo_name">珈和遥感私有云</div>
+                <div class="content_name">专业遥感数据处理平台</div>
+                <div class="content_button">立即登录</div>
+            </li>
+            <li class="ml20 integrated_platform">
+                <div class="content_Logo_3 logo_icon">
+                    <img src="./img/login3.png" />
+                </div>
+
+                <div class="logo_name">珈和遥感社区</div>
+                <div class="content_name">农情数据综合平台</div>
+                <div class="content_button">立即登录</div>
+            </li>
+        </ul>
+    </div>
+    <div class="footer">copyright@珈和科技版权所有</div>
+</div>
+<script type="text/javascript" src="js/lib/jquery/jquery-1.8.3.min.js"></script>
+<script type="text/javascript">
+       var init = function(){
+           bindEvent()
+       }
+       var bindEvent = function(){
+           $(".header_icon").click(function () {
+               window.location.href = "./index.html"
+           })
+
+           $(".bigData").click(function(){
+               console.log("888888")
+               window.open("http://show.datall.cn/home.html")
+           })
+           $(".dealData").click(function(){
+               window.open("http://cloud.datall.cn/index.html")
+           })
+           $(".integrated_platform").click(function(){
+               window.open("http://www.datall.cn")
+           })
+       }
+       init()
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>辽宁省高分数据共享管理及自然生态系统监测评价业务平台</title>
+    <style type="text/css">
+        #bg{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            bottom: 0px;
+            right: 0px;
+            background-image: url('images/login/loginBG.jpg');
+            background-size: 100% 100%;
+            min-height:600px;
+        }
+        #login_username{
+            background-image: url('images/public/userImage.png');
+            background-repeat: no-repeat;
+            padding-left: 30px;
+            padding-right: 10px;
+            color: #FFFFFF;
+            display: none;
+        }
+        #login div,#sys_list>div div{
+            display: inline-block;
+            color: #ffffff;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        #login{
+            text-align: right;
+            padding: 10px 20px 0px 0px;
+        }
+        #login div{
+            background-color: #016bd4;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+        /*#context{margin-top: 60px;}*/
+        #context,#fotter{text-align: center;}
+        #sys_list{margin-top: 110px;}
+        #sys_list>div{letter-spacing: -999px;margin-bottom: 8px;}
+        .sys_title{position: absolute;left: 0px;right: 0px;bottom: 10px;}
+        #sys_list>div>div{
+            letter-spacing: 0px;
+            border-radius: 5px;
+            height: 140px;
+            position: relative;
+            margin-right: 8px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        #sys_1,#sys_2{width: 318px;}
+        #sys_3,#sys_4,#sys_5,#sys_6,#sys_7,#sys_8{width: 155px;}
+        #sys_1{background: #0073e7;background-image: url('images/login/loginICON1.png');}
+        #sys_2{background: #8829e2;background-image: url('images/login/loginICON2.png');}
+        #sys_3,#sys_6{background: #51c803;}
+        #sys_4,#sys_7{background: #0087db;}
+        #sys_5,#sys_8{background: #e8c51e;}
+        #sys_3{background-image: url('images/login/loginICON3.png');}
+        #sys_4{background-image: url('images/login/loginICON4.png');}
+        #sys_5{background-image: url('images/login/loginICON5.png');}
+        #sys_6{background-image: url('images/login/loginICON6.png');}
+        #sys_7{background-image: url('images/login/loginICON7.png');}
+        #sys_8{background-image: url('images/login/loginICON8.png');}
+        #fotter{
+            position: fixed;
+            bottom: 0px;
+            width: 100%;
+            height: 40px;
+            line-height:40px;
+            background: #ffffff;
+            opacity: 0.7;
+            font-size: 14px;
+            color:#000000 !important;
+        }
+
+        #fotter a{text-decoration: none;
+            color: #0000ff;}
+
+        #fotter a:hover{
+            color:#ff0000;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<div id="bg">
+    <div id="login">
+        <!--<span id="login_username"></span>-->
+        <!--<div id="loginBtn">登录</div>-->
+        <div id="report">报表统计</div>
+        <div id="show">成果展示</div>
+    </div>
+    <div id="context">
+        <div id="log_img">
+            <img id="log_imgurl"/>
+        </div>
+        <div id="sys_list">
+            <div>
+                <div id="sys_1">
+                    <div class="sys_title">高分数据共享管理系统</div>
+                </div>
+                <div id="sys_2">
+                    <div class="sys_title">数据解译处理系统</div>
+                </div>
+                <div id="sys_3" class="building">
+                    <div class="sys_title">农情遥感展示系统</div>
+                </div>
+            </div>
+            <div>
+                <div id="sys_4" class="building">
+                    <div class="sys_title">山地遥感监测系统</div>
+                </div>
+                <div id="sys_5" class="building">
+                    <div class="sys_title">水域遥感监测系统</div>
+                </div>
+                <div id="sys_6" class="building">
+                    <div class="sys_title">林地遥感监测系统</div>
+                </div>
+                <div id="sys_7" class="building">
+                    <div class="sys_title">湖泊遥感监测系统</div>
+                </div>
+                <div id="sys_8" class="building">
+                    <div class="sys_title">草地遥感监测系统</div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <!--  <div id="fotter" >
+        <span>推荐浏览器：</span>
+        <a href="javascript:void(0)" id="chromeBtn" data-path="data/system/chrome_32bit.exe"> chrome浏览器</a>
+
+    </div> -->
+</div>
+</body>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/lib/module/config.js"></script>
+
+<script type="text/javascript">
+
+    require(["jquery","commons","custom_settings"],function($,commons,custom_settings){
+
+        commons.setTitleFun();
+        /**
+         * 成果展示
+         * @version <1> 2018-04-20 xzg：Created.
+         */
+        document.getElementById('show').onclick = function () {
+            window.location.href = LOGIN_CONFIG.exhibition;
+        };
+
+        document.getElementById("report").onclick = function(){
+            window.open(DATA_REPORT.report_show);
+        }
+
+        $('.building').click(function () {
+            window.open(LOGIN_CONFIG.building);
+        });
+
+
+
+        /**
+         * 数据共享管理系统
+         * @version <1> 2018-04-20 xzg：Created.
+         */
+        document.getElementById('sys_1').onclick = function () {
+//            isLogin(LOGIN_CONFIG.main_page_url);
+            window.open(LOGIN_CONFIG.login_page_url);
+        };
+
+
+         document.getElementById('sys_3').onclick = function () {
+             window.open("http://10.86.22.12:8081/main.html");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+
+        /**
+         * 数据解译处理系统
+         *  @version <1> 2018-04-20 xzg：Created.
+         */
+        document.getElementById('sys_2').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+         document.getElementById('sys_4').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+         document.getElementById('sys_5').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+         document.getElementById('sys_6').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+         document.getElementById('sys_7').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+         document.getElementById('sys_8').onclick = function () {
+            window.open("JHGIS://JHGIS");
+//            window.open(custom_settings.jiaheshow_url);
+        };
+
+
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+        $("#chromeBtn").on("click",function(){
+            var url = LOGIN_CONFIG.file_download_url + "?path=" + $("#chromeBtn").attr("data-path");
+            _createIFrame(url, triggerDelay, removeDelay);
+        })
+
+        /**
+         * Description: 动态添加iframe
+         * @version <1> 2018/5/24 zhangshen: Created.
+         */
+        var _createIFrame = function(url, triggerDelay, removeDelay){
+            //动态添加iframe，设置src，然后删除
+            setTimeout(function() {
+                var frame = $('<iframe style="display: none;" class="multi-download"></iframe>');
+                frame.attr('src', url);
+                $(document.body).after(frame);
+                setTimeout(function() {
+                    frame.remove();
+                }, removeDelay);
+            }, triggerDelay);
+        };
+
+
+
+    });
+</script>
+</html>

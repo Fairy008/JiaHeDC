@@ -1,0 +1,962 @@
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    .errorInfo{color:#f00;}
+    .isSuccess{color: #34b40e;}
+    .isFail{color: #ff0000;}
+    .num{color: #45AEDF;}
+    .lyName{display: block; margin: 0 5px;}
+    .blue{color:blue}
+    .detail_style{
+        text-align: center;
+    }
+    .tab_btn{
+        background:#00FA9A!important;text-align: center;color:#8B0000;
+    }
+    .inputWidth_250{width:250px;}
+
+    .four_td1,.four_td2{
+        line-height: 55px!important;
+    }
+
+    #finalImg{
+        border-radius: 5px;
+        width: 130px;
+        height: 175px;
+        border: solid 1px #3EA1E7;
+        padding-right:0px!important;
+    }
+    .str{
+        margin-left:80px;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">专家姓名：</span>
+                    <span><input class="input inputWidth_100" id="search_name" /></span>
+                </div>
+                <div>
+                    <span class="label2">行业：</span>
+                    <span><input class="input inputWidth_100" id="search_industry" /></span>
+                </div>
+                <div>
+                    <span class="label2">手机号：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_phone"  /></span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input inputWidth_100" id="search_createTime" /></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="addBtn" value="新增" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="expertGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看专家详情 -->
+<div id="expertInfo" class="form" style="display: none;">
+    <form enctype="multipart/form-data">
+    <table>
+        <tr>
+            <input type="hidden" id="expertId" >
+            <input type="hidden" id="accountId" >
+            <td class="four_td1"><font color="red">*</font>专家姓名:</td>
+            <td class="four_td2">
+                <input id="expertName"  class="inputType" type="text" />
+                <span id="view_expertName" class="viewType"></span>
+            </td>
+            <td class="four_td2" rowspan="4" colspan="2">
+                <div class="str">
+                    <img id="finalImg" src="" width="100%">
+                </div>
+                <label title="修改头像" for="chooseImg" class="l-btn choose-btn" style="float: right;height:10px;margin-right: 80px;margin-top:5px;line-height: 10px;display: inline-block">
+                    <input type="file" accept="image/jpg,image/jpeg,image/png" name="file" id="chooseImg" class="hidden">
+                    修改头像
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1"><font color="red">*</font>手机号码:</td>
+            <td class="four_td2">
+                <input id="phone" class="inputType" type="text" />
+                <span id="view_phone" class="viewType"></span>
+            </td>
+
+        </tr>
+        <tr>
+
+            <td class="four_td1 td5"><font color="red">*</font>行<span class="spanSpace"></span>业:</td>
+            <td class="four_td2">
+                <input id="industry" class="inputType" type="text" />
+                <span id="view_industry" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+            <td class="four_td1 td5"><font color="red">*</font>认证状态:</td>
+            <td class="four_td2">
+                <select class="inputType inputWidth_250" id="authStatus"></select>
+                <span id="view_authStatus" class="viewType"></span>
+            </td>
+        </tr>
+        <tr>
+
+            <td class="four_td1 td5"><font color="red">*</font>单<span class="spanSpace"></span>位:</td>
+            <td class="four_td2">
+                <input id="company" class="inputType" type="text" />
+                <span id="view_company" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>评<span class="spanSpace"></span>级:</td>
+            <td class="four_td2" >
+                <select class="inputType inputWidth_250" id="grade"></select>
+                <span id="view_grade" class="viewType"></span>
+            </td>
+
+
+        </tr>
+        <tr>
+
+            <td class="four_td1"><font color="red">*</font>性<span class="spanSpace"></span>别:</td>
+            <td class="four_td2">
+                <label class="label" id="sex"></label>
+                <span id="view_sex" class="viewType"></span>
+            </td>
+            <td class="four_td1"><font color="red">*</font>个人头衔:</td>
+            <td class="four_td2" colspan="3">
+                <input id="introduction" class="inputType" type="text" />
+                <span id="view_introduction" class="viewType"></span>
+            </td>
+        </tr>
+    </table>
+    </form>
+</div>
+<!--图片裁剪框 start-->
+<div style="display: none" class="tailoring-container">
+    <div class="black-cloth"></div>
+    <div class="tailoring-content">
+        <div class="tailoring-content-one">
+
+            <div class="close-tailoring">×</div>
+        </div>
+
+        <div class="tailoring-content-two">
+            <div class="tailoring-box-parcel">
+                <img id="tailoringImg">
+            </div>
+            <div class="preview-box-parcel">
+                <p>图片预览:</p>
+                <div class="square previewImg"></div>
+            </div>
+        </div>
+
+        <div class="tailoring-content-three">
+            <button class="l-btn cropper-reset-btn">还原</button>
+            <button class="l-btn cropper-rotate-btn">旋转</button>
+            <button class="l-btn cropper-scaleX-btn">换向</button>
+            <button class="l-btn sureCut" id="sureCut">确定</button>
+        </div>
+    </div>
+</div>
+<!--图片裁剪框 end-->
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums","cropper"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums,cropper) {
+        var processDialog = $("#process");
+        var blob;
+        var init = function () {
+            loaderGrid();//加载表格
+            dateFun();//初始化创建时间控件
+            initSexFun(300);//用户性别
+            commons.findDictList(14000, "authStatus");
+            commons.findDictList(15000, "grade");
+
+
+            $("#queryBtn").bind("click", searchFun);//点击查询
+            $("#resetBtn").on("click", resetFun);//重置
+            $("#addBtn").on("click", addFun);//新增
+
+            $(window).resize(function () {
+                $("#expertGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function () {
+            $(".input").val("");
+        }
+
+        var chanageTableCss = function () {
+            var divObj = $('#expertGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight': ($(".rightMain").height() - $(".searchItems").height() - $(".ui-jqgrid-hdiv").height()) - $("#pager2").height() - 50 + "px"});
+        };
+
+        var colmodel = [
+            {name: 'expertId', index: 'expert_id', hidden: true},
+            {name: 'accountId', index: 'account_id', hidden: true},
+            {name: 'expertName', index: 'expert_name', align: 'center', width: '10%'},
+            {name: 'industry', index: 'industry', align: 'center', width: '10%'},
+            {name: 'company', index: 'company', align: 'center', width: '20%'},
+            {name: 'phone', index: 'phone', align: 'center', width: '10%'},
+            {name: 'sexName', index: 'sex', align: 'center', width: '10%'},
+            {name: 'authStatusName', index: 'auth_status', align: 'center', width: '10%'},
+            {name: 'gradeName', index: 'grade', align: 'center', width: '10%'},
+            {name: 'createTime', index: 'create_time', align: 'center', width: '10%'},
+            {
+                name: 'cz',
+                index: 'cz',
+                width: '20%',
+                align: "center",
+                sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    var str = "";
+                    str += "<img src='images/public/Twatch.png' class='detailBtn' data-id='" + rowObject.expertId + "' title='查看详情'>&nbsp;";
+
+                    str += "<img src='images/public/Tedit.png' class='editBtn' data-id='" + rowObject.expertId + "' title='编辑'>&nbsp;";
+
+                    str += "<img src='images/public/Tdelete.png' class='deleteBtn' data-id='" + rowObject.expertId + "' title='删除'>&nbsp;";
+
+                    return str;
+                }
+            }
+        ];
+
+        var permissionFlag = true;
+
+        var loaderGrid = function () {
+            $("#expertGrid").jqGrid({
+                url: CMS_MANAGE.findExpertList_url,
+                datatype: "json",
+                postData: {},
+                mtype: 'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames: ['expertId', 'accountId', '专家姓名', '行业', '单位', '手机号', '性别', '认证状态', '评级', '创建时间', '操作'],
+                colModel: colmodel,
+                width: '100%',
+                autowidth: true,
+                height: '100%',
+                rowNum: 15,
+                multiselect: true,//复选框
+                rowList: [15, 30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete: function () {
+                    commons.isNextDisable();
+                    $("#expertGrid").setGridWidth($(".rightMain").width() - 30);
+                    if (permissionFlag) {
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll: function (rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow: function (rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function () {
+            var ids = $("#expertGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#expertGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据撤回和发布下载按钮处理
+            if (ids.length == 0) {
+                $("#batchDeleteBtn").addClass("btn_grey");
+            } else {
+                $("#batchDeleteBtn").removeClass("btn_grey");
+            }
+
+            var records = $("#expertGrid").jqGrid('getGridParam', 'records');
+            if (records <= 0) {
+                $("#batchDeleteBtn").hide("btn_grey");
+            } else {
+                $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function () {
+            $(".detailBtn, .editBtn,.deteleBtn,#batchDeleteBtn").off("click");
+
+            //详情
+            $(".detailBtn").bind("click", function () {
+                var expertId = $(this).attr("data-id");
+                detailExpertFun(expertId, 0);
+            });
+
+            //编辑
+            $(".editBtn").bind("click", function () {
+                var expertId = $(this).attr("data-id");
+                detailExpertFun(expertId, 2);
+            });
+
+            //删除
+            $(".deleteBtn").bind("click", function () {
+                var expertId = $(this).attr("data-id");
+                deleteExpertFun([expertId]);
+            });
+
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function () {
+                if (!$(this).hasClass("btn_grey")) {
+                    deleteExpertFun(getValidData());
+                }
+            });
+
+        };
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量通过和驳回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData = function () {
+            var ids = [];
+            var rowIds = $("#expertGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index, id) {
+                var row = $("#expertGrid").jqGrid('getRowData', id);
+                var expertId = row.expertId;
+                var expertStatus = row.expertStatus;
+                ids.push(expertId)
+            });
+            return ids;
+        }
+
+        /**
+         * 隐藏input输入框，显示信息查看
+         */
+        var viewTypeShow = function () {
+            $(".txtRequired").hide();
+            $(".textareaType").hide();
+            $(".inputType,.label,.selectType").css("display", "none");
+            $(".viewType").css("display", "block");
+            $(".inputType").val("");
+            $(".viewType").text("");
+            $(".textareaType").val("");
+            $(".choose-btn").hide();
+            $(".four_td1 font").hide();
+        }
+
+        /**
+         * 隐藏input输入框，显示信息查看
+         */
+        var viewTypeHide = function () {
+            $(".txtRequired").show();
+            $(".textareaType").show();
+            $(".inputType,.label,.selectType").css("display", "block");
+            $(".viewType").css("display", "none");
+            $(".inputType").val("");
+            $(".textareaType").val("");
+
+            $(".viewType").text("");
+            $(".choose-btn").show();
+            $("#finalImg").attr("src", 'images/public/forum/userImg.png');
+            $(".four_td1 font").show();
+            blob = "";
+            initAllEvent();
+        }
+
+        /**
+         * 新增专家
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var addFun = function () {
+            detailExpertFun(null, 1);
+        }
+
+        /**
+         * 删除专家
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteExpertFun = function (ids) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("是否确认删除该专家？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 161,
+                width: 450,
+                modal: true,
+                close: function () {
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text: "是",
+                    click: function () {
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = CMS_MANAGE.deleteExpert_url;
+                        ajax.opts.data = JSON.stringify({'expertIds': ids});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#expertGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }
+                }, {
+                    text: "否",
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 查看专家详情
+         * type 0:详情 1新增 2编辑
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailExpertFun = function (expertId, type) {
+
+            var buttons = [];
+
+            var close = {
+                text: "关闭",
+                click: function () {
+                    $(this).dialog("close");
+                }
+            };
+
+            var save = {
+                text: "保存",
+                click: function () {
+                    addSaveFun(expertId);
+                }
+            }
+
+            if (type == 0) {
+                viewTypeShow();
+                setExpertInfo(expertId);
+                buttons.push(close);
+            } else if (type == 1) {
+                viewTypeHide();
+                $("#phone").attr("readonly", false)
+                $("#phone").css("background-color", "white");
+                buttons.push(save);
+                buttons.push(close);
+                $(".radio_value[value='301']").prop("checked", true);//默认：男
+            } else if (type == 2) {
+                viewTypeHide();
+                setExpertInfo(expertId);
+                //手机号不可编辑
+                $("#phone").attr("readonly", "readonly")
+                $("#phone").css("background-color", "#e4e4e4");
+                buttons.push(save);
+                buttons.push(close);
+            }
+
+            var userDialog = $("#expertInfo");
+            var dialogParent = userDialog.parent();
+            var dialogOwn = userDialog.clone();
+            userDialog.dialog({
+                autoOpen: false,
+                title: '专家信息',
+                height: 580,
+                width: 580,
+                modal: true,
+                close: function () {
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: buttons
+            });
+            userDialog.dialog("open");
+        };
+
+
+        /**
+         * 详情赋值
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var setExpertInfo = function (expertId) {
+            var expertInfo = expertDetail(expertId);
+            $("#expertName").val(expertInfo.expertName);
+            $("#accountId").val(expertInfo.accountId);
+            $("#view_expertName").text(expertInfo.expertName);
+            $("#industry").val(expertInfo.industry);
+            $("#view_industry").text(expertInfo.industry);
+            $("#phone").val(expertInfo.phone);
+            $("#view_phone").text(expertInfo.phone);
+            $("#company").val(expertInfo.company);
+            $("#view_company").text(expertInfo.company);
+            $(".radio_value[value='" + expertInfo.sex + "']").prop("checked", true);
+            $("#view_sex").text(commons.queryDictName(expertInfo.sex));
+            commons.findDictList(14000, "authStatus", expertInfo.authStatus);
+            $("#view_authStatus").text(commons.queryDictName(expertInfo.authStatus));
+            commons.findDictList(15000, "grade", expertInfo.grade);
+            $("#view_grade").text(commons.queryDictName(expertInfo.grade));
+            $("#introduction").val(expertInfo.introduction);
+            $("#view_introduction").text(expertInfo.introduction);
+
+            //头像
+            if (expertInfo.photoUrl != null && expertInfo.photoUrl != '') {
+                var date = new Date();
+                var path = CMS_MANAGE.findExpertPhoto_url + "?expertId=" + expertId + "&AccessToken=" + commons.getAccessToken() + "&t=" + Math.random();
+                $("#finalImg").attr("src", path);
+            } else {
+                $("#finalImg").attr("src", 'images/public/forum/userImg.png');
+            }
+
+
+        }
+
+        /**
+         * 保存获取值
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var getExpertInfo = function (formData) {
+            formData.append('accountId', $("#accountId").val());
+            formData.append('expertName', $("#expertName").val());
+            formData.append('industry', $("#industry").val());
+            formData.append('phone', $("#phone").val());
+            formData.append('company', $("#company").val());
+            formData.append('phone', $("#phone").val());
+            formData.append('sex', $(".radio_value:checked").val());
+            formData.append('authStatus', $("#authStatus").val());
+            formData.append('grade', $("#grade").val());
+            formData.append('introduction', $("#introduction").val());
+            return formData;
+        }
+
+        /**
+         *新增/编辑保存
+         */
+        var addSaveFun = function (expertId) {
+            if (!formVerf()) {
+                return;
+            }
+            showProcess();
+            var url = CMS_MANAGE.addExpert_url;
+            var msg = "新增";
+            if (expertId != null && expertId != '') {
+                url = CMS_MANAGE.editExpert_url;
+                msg = "修改"
+            }
+            var formData = new FormData();
+            formData.append('photoFile', blob);
+            if (expertId != null && expertId !== '') {
+                formData.append('expertId', expertId);
+            }
+            var formDatas = getExpertInfo(formData);
+            $.ajax({
+                url: url,
+                type: 'POST',
+                cache: false,
+                data: formDatas,
+                processData: false,
+                contentType: false,
+                headers: {"AccessToken": commons.getAccessToken()},
+                success: function (result) {
+                    //关闭进度条
+                    processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                    if (result.flag) {
+                        $("#expertGrid").trigger("reloadGrid");
+                        $("#expertInfo").dialog("close");
+                        PopWin.showMessageWin("用户" + msg + "成功");
+                    } else {
+                        PopWin.showMessageWin("用户" + msg + "失败：" + result.msg);
+                    }
+                },
+                complete:function () {
+                    processDialog.dialog("close");
+                }
+            });
+            /*var ajax = new BaseAjax();
+            ajax.opts.url = url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(expertInfo);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    $("#expertGrid").trigger("reloadGrid");
+                    $("#expertInfo").dialog("close");
+                    PopWin.showMessageWin("用户"+msg+"成功");
+                }else{
+                    PopWin.showMessageWin("用户"+msg+"失败");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("用户"+msg+"失败");
+            };
+            ajax.run();*/
+        };
+
+
+        /**
+         * 进度条
+         */
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width:460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 lijie : Created. */ var dateFun = function(){
+            $("#search_createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        var searchFun = function() {
+            var expert = {};
+
+            expert.expertName = $("#search_name").val(); //名称
+            expert.industry= $("#search_industry").val();//行业
+            expert.phone= $("#search_phone").val();//电话
+            var createTime= $("#search_createTime").val();//创建时间
+
+            if(createTime != null && createTime != ''){
+                var arr = createTime.trim().split('至');
+                expert.startTime = arr[0];
+                expert.endTime = arr[1];
+            } else{
+                expert.startTime = null;
+                expert.endTime = null;
+            }
+            $("#expertGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData: expert,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * 根据专家ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var expertDetail = function(expertId){
+            var expert= {};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findExpertInfo_url+ "?expertId="+ expertId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type= "GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    expert= result.data;
+                }
+            }
+            ajax.run();
+            return expert;
+        };
+
+        //用户性别
+        var sexCache = [];
+        /**
+         * 获取用户性别下拉框数据
+         * @param parentId = 300
+         * @version <1> 2018-03-15 wl : created.
+         */
+        var initSexFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = RESOURCE_CONFIG.queryDictsByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' :parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if(result.flag){
+                    sexCache = result.data;
+                    $.each(result.data, function(index, element){
+                        if(index==0){
+                            str+= '<input class="radio_value"  type="radio" name="sex" value="'+ element.dictId+ '" checked="checked"/><span class="radioText">'+ element.dataName+ '</span>';
+                        }else{
+                            str+= '<input class="radio_value"  type="radio" name="sex" value="'+element.dictId+ '"/><span class="radioText">'+element.dataName+ '</span>';
+                        }
+
+                    })
+                    $("#sex").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+        var formVerf = function(){
+            var userInfo = $('#expertInfo');
+
+            if(formVerfication.checkInputIsEmpty($('#expertName'),userInfo, '专家姓名不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,10,$(' #expertName'),userInfo, '专家姓名字数不能超过10位')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#phone'),userInfo, '手机号不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkPhoneInput($("#phone"),userInfo)){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#industry'),userInfo, '行业不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,10,$(' #industry'),userInfo, '行业字数不能超过10位')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#authStatus'),userInfo, '认证状态不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#grade'),userInfo, '评级不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#company'),userInfo, '单位不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,50,$(' #company'),userInfo, '单位字数不能超过50位')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#introduction'),userInfo, '个人头衔不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,15,$(' #introduction'),userInfo, '个人头衔不能超过15位')) {
+                return false;
+            }
+
+            return true;
+        };
+
+        init();
+
+        //弹出框水平垂直居中
+        var initAllEvent = function (){
+            (window.onresize = function() {
+                var win_height = $(window).height();
+                var win_width = $(window).width();
+                if (win_width <= 768) {
+                    $(".tailoring-content").css(
+                            {
+                                "top" : (win_height- $(".tailoring-content")
+                                        .outerHeight()) / 2,
+                                "left" : 0
+                            });
+                } else {
+                    $(".tailoring-content").css(
+                            {
+                                "top" : (win_height- $(".tailoring-content")
+                                        .outerHeight()) / 2,
+                                "left" : (win_width - $(".tailoring-content")
+                                        .outerWidth()) / 2
+                            });
+                }
+            })();
+
+            // 选择文件触发事件
+            $("#chooseImg").change(function() {
+                var file =this;
+                //文件为空，返回
+                if (!file.files || !file.files[0]) {
+                    return;
+                }
+                $(".tailoring-container").show();
+                var reader = new FileReader();
+                reader.onload = function(evt) {
+                    var replaceSrc = evt.target.result;
+                    // 更换cropper的图片
+                    $('#tailoringImg').cropper('replace', replaceSrc, false);// 默认false，适应高度，不失真
+                }
+                reader.readAsDataURL(file.files[0]);
+            });
+
+            // cropper图片裁剪
+            $('#tailoringImg').cropper({
+                aspectRatio : 130 / 175,// 默认比例
+                preview :'.previewImg',// 预览视图
+                guides : false,// 裁剪框的虚线(九宫格)
+                autoCropArea : 0.5,// 0-1之间的数值，定义自动剪裁区域的大小，默认0.8
+                movable : false,// 是否允许移动图片
+                dragCrop : true,// 是否允许移除当前的剪裁框，并通过拖动来新建一个剪裁框区域
+                movable : true,// 是否允许移动剪裁框
+                resizable : true,// 是否允许改变裁剪框的大小
+                zoomable : false,// 是否允许缩放图片大小
+                mouseWheelZoom : false,// 是否允许通过鼠标滚轮来缩放图片
+                touchDragZoom : true,// 是否允许通过触摸移动来缩放图片
+                rotatable : true,// 是否允许旋转图片
+                crop : function(e) {
+                    // 输出结果数据裁剪图像。
+                }
+            });
+
+            // 旋转
+            $(".cropper-rotate-btn").on("click", function() {
+                $('#tailoringImg').cropper("rotate", 45);
+            });
+
+            // 复位
+            $(".cropper-reset-btn").on("click", function() {
+                $('#tailoringImg').cropper("reset");
+            });
+
+            // 换向
+            var flagX = true;
+            $(".cropper-scaleX-btn").on("click", function() {
+                if (flagX) {
+                    $('#tailoringImg').cropper("scaleX", -1);
+                    flagX = false;
+                } else {
+                    $('#tailoringImg').cropper("scaleX", 1);
+                    flagX = true;
+                }
+                flagX != flagX;
+            });
+
+            // 确定按钮点击事件
+            $("#sureCut").on("click", function() {
+                if ($("#tailoringImg").attr("src") == null) {
+                    return false;
+                } else {
+                    var cas = $('#tailoringImg').cropper('getCroppedCanvas', {
+                        width: 130, // 裁剪后的长宽
+                        height: 175
+                    });// 获取被裁剪后的canvas
+                    var base64 = cas.toDataURL('image/jpeg'); // 转换为base64
+
+                    $("#finalImg").prop("src", base64);// 显示图片
+                    //赋值给文本框
+                    blob = processData(cas.toDataURL());
+                    $(".tailoring-container").hide();// 关闭裁剪框
+                    $("#chooseImg").val("")
+                }
+            });
+
+            var processData =function(dataUrl) {
+                var binaryString = window.atob(dataUrl.split(',')[1]);
+                var arrayBuffer = new ArrayBuffer(binaryString.length);
+                var intArray = new Uint8Array(arrayBuffer);
+                for (var i = 0, j = binaryString.length; i < j; i++) {
+                    intArray[i] = binaryString.charCodeAt(i);
+                }
+
+                var data = [intArray],
+                        blob;
+
+                try {
+                    blob = new Blob(data);
+                } catch (e) {
+                    window.BlobBuilder = window.BlobBuilder ||
+                            window.WebKitBlobBuilder ||
+                            window.MozBlobBuilder ||
+                            window.MSBlobBuilder;
+                    if (e.name === 'TypeError' && window.BlobBuilder) {
+                        var builder = new BlobBuilder();
+                        builder.append(arrayBuffer);
+                        blob = builder.getBlob(imgType); // imgType为上传文件类型，即 file.type
+                    } else {
+                        console.log('版本过低，不支持上传图片');
+                    }
+                }
+                return blob;
+            }
+
+            $(".close-tailoring").click(function(){
+                $(".tailoring-container").hide();
+                $("#chooseImg").val("")
+            });
+            $(".black-cloth").click(function(){
+                $(".tailoring-container").toggle();
+                $("#chooseImg").val("")
+            });
+         }
+    });
+</script>

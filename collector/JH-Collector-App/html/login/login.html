@@ -1,0 +1,343 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/app.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 25%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 75%;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+			.oauth-area {
+				position: absolute;
+				bottom: 20px;
+				left: 0px;
+				text-align: center;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.btnUnableClass{
+				background:#B9B9B9 !important;
+				border:1px solid #b9b9b9;
+			}
+			.mui-content .mui-input-group.jh-form{
+				border:0 solid #FFFFFF !important;
+			}
+			.jh-font-size{
+				font-size: 1.2rem;
+				color: #8C8C8C;
+			}
+			.jh-font-size2{
+				font-size: 0.9rem;
+				color: #8C8C8C;
+			}
+			.jh-line-cell{
+				left: 10%;
+				position: absolute;
+				width: 80%;
+				height: 3rem;
+			}
+			.jh-line-cell-input{
+				/* border: 0rem solid #FFFFFF !important; */
+				border-top-color: #FFFFFF !important;
+				border-left-color: #FFFFFF!important;
+				border-right-color: #FFFFFF!important;
+				border-bottom-color: #8C8C8C!important;
+				
+			}
+			.jh-login-button{
+				position: absolute;
+				width: 80%;
+				left: 10%;
+			}
+		</style>
+	</head>
+
+	<body class="mui-plus mui-statusbar mui-statusbar-offset" style="background-color: white;">
+
+		<div class="mui-content" style="background-color: white;padding: 1rem;">
+			<input type="image" style="position: absolute;left: 50%;width: 10rem;margin-left: -5rem;top:0%;margin-top: 3rem;"
+			 src="../../images/logo.png" />
+			<div class="jh-line-cell " style="margin-top: 15rem;">
+				<p class="mui-ellipsis">
+					<span class="jh-font-size">手机号:</span>
+					<input id="account" class="jh-line-cell-input jh-font-size" type="number" name="phoneNum" id="phoneNum" placeholder="请输入手机号码"
+					 value="" />
+				</p>
+			</div>
+			<div class="jh-line-cell " style="margin-top: 18rem;">
+				<p class="mui-ellipsis">
+					<span class="jh-font-size">密&nbsp;&nbsp;&nbsp;&nbsp;码:</span>
+					<input id="password" class="jh-line-cell-input jh-font-size" type="password" name="password" id="password" placeholder="请输入密码"
+					 value="" />
+				</p>
+			</div>
+			<div class="jh-line-cell" style="margin-top: 21.3rem;left: 28%">
+				<span class="jh-font-size2">保留密码</span>
+			</div>
+			<div id="autoLogin" class="mui-switch" style="left: 8%;position: absolute;margin-top: 21rem;">
+				<div class="mui-switch-handle"></div>
+			</div>
+			<button style="margin-top: 24rem;" id='login' type="button" class="mui-btn mui-btn-block mui-btn-primary jh-login-button">登录</button>
+			<div class="link-area" style="position: absolute;margin-top: 28rem;left: 50%;width: 12rem;margin-left: -6rem;">
+				<a id='reg'>注册账号</a>
+				<span class="spliter">|</span>
+				<a id='forgetPassword'>忘记密码</a>
+			</div>
+		</div>
+
+		<script src="../../js/jquery-1.8.3.min.js"></script>
+		<script src="../../js/mui.js"></script>
+		<script src="../../js/app.js"></script>
+		<script src="../../js/commons.js"></script>
+		<script src="../../js/url_config.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			var acInput = document.getElementById('account');
+			var pwdInput = document.getElementById('password');
+			var autoLoginSwich = document.getElementById('autoLogin');
+
+			var UserState = {
+				isSavePWD: false,
+				saveAC: "",
+				savePWD: "",
+				isLogin: false,
+			};
+			mui.plusReady(function() {
+				plus.navigator.setStatusBarStyle('wihte');
+			})
+			var init = function() {
+
+				$("#login").addClass("btnUnableClass");
+				$("#login").attr('disabled', true);
+				// console.log(localStorage.getItem('userState'));
+				if (localStorage.getItem('userState')) { //若不为空
+					UserState = JSON.parse(localStorage.getItem('userState'));
+					acInput.value = UserState.saveAC;
+					if (UserState.isSavePWD == true) {
+						pwdInput.value = UserState.savePWD;
+						autoLoginSwich.classList.add('mui-active');
+					}
+				}
+
+				if (acInput.value || pwdInput.value) {
+					$("#login").removeClass("btnUnableClass");
+					$("#login").attr('disabled', false);
+				}
+			}
+
+			// mui(".mui-switch").switch().toggle();
+
+			$("#account").on("keydown", function(e) {
+				$("#login").removeClass("btnUnableClass");
+				$("#login").attr('disabled', false);
+			});
+
+			$("#password").on("keydown", function(e) {
+				$("#login").removeClass("btnUnableClass");
+				$("#login").attr('disabled', false);
+			});
+
+			window.addEventListener('getDetail', function(event) {
+				var type = event.detail.type;
+				mui.toast('密码修改成功', {
+					duration: 'long',
+					type: 'div'
+				});
+			});
+			document.addEventListener('eventToastPwd', function() {
+				var self = plus.webview.currentWebview();
+				// console.log(self.content);
+				mui.toast('密码修改成功', {
+					duration: 'long',
+					type: 'div'
+				});
+			});
+			document.addEventListener('eventToastReg', function() {
+				var self = plus.webview.currentWebview();
+				// console.log(self.content);
+				mui.toast('注册成功', {
+					duration: 'long',
+					type: 'div'
+				});
+			});
+
+			//是否保留密码
+			autoLoginSwich.addEventListener('toggle', function() {
+				if (!UserState.isSavePWD) {
+					// swich.classList.remove('mui-active');
+					UserState.isSavePWD = true;
+
+				} else {
+					// swich.classList.add('mui-active');
+					UserState.isSavePWD = false;
+				}
+				localStorage.setItem('userState', JSON.stringify(UserState))
+				console.log(UserState.isSavePWD);
+			});
+
+			//注册账号
+			document.getElementById("reg").addEventListener('tap', function() {
+				mui.openWindow({
+					id: 'regist',
+					url: 'regist.html',
+					show: {
+						aniShow: 'pop-in'
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+
+			//忘记密码
+			document.getElementById("forgetPassword").addEventListener('tap', function() {
+				mui.openWindow({
+					id: 'pwdForget',
+					url: 'pwdForget.html',
+					show: {
+						aniShow: 'pop-in'
+					},
+					styles: {
+						popGesture: 'hide'
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+
+			//登录
+			document.getElementById("login").addEventListener('tap', function() {
+				// var userState = JSON.parse(localStorage.getItem("userState"))
+				// userState.isLogin = true;
+				// console.log(JSON.stringify(userState));
+				// localStorage.setItem("userState", JSON.stringify(userState))
+				// setMuiFire(mui, plus, 'loginUser');
+				// var self = plus.webview.currentWebview();
+				// self.close();
+
+				var accountNo = acInput.value;
+				var pwd = pwdInput.value;
+				if (accountNo == '') {
+					mui.toast('手机号码不能为空', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (!isPoneAvailable(accountNo)) {
+					mui.toast('手机号码格式不正确', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (pwd == '') {
+					mui.toast('密码不能为空', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else if (pwd.length < 6) {
+					mui.toast('密码最少为6位', {
+						duration: 'long',
+						type: 'div'
+					});
+				} else {
+					var encodepwd = commons.encode(pwd);
+					commons.askLogin(mui, SYS_LOGIN.nolog_loginForApp_url, accountNo, encodepwd, function() {
+						//返回结果
+						var isActive = autoLoginSwich.classList.contains("mui-active");
+						if (isActive) {}
+
+						var a = JSON.parse(localStorage.getItem('userBean'));
+						if (a.flag == true) {
+							mui.toast('登录成功', {
+								duration: 'short',
+								type: 'div'
+							});
+							//登录成功则保存账号密码
+							UserState.isLogin = true;
+							UserState.saveAC = accountNo;
+							UserState.savePWD = pwd;
+							UserState = JSON.stringify(UserState);
+							// console.log('259' + UserState);
+							localStorage.setItem('userState', UserState);
+							var self = plus.webview.currentWebview();
+							// self.opener().close()
+							self.close();
+
+							setMuiFire(mui, plus, 'loginUser');
+							// mui.openWindow({
+							// 	id: plus.webview.getLaunchWebview().id
+							// });
+							// var wvs = plus.webview.all();
+							// for (var i = 0; i < wvs.length; i++) {
+							// 	console.log('webview' + i + ': ' + wvs[i].id);
+							// }
+							mui.fire(plus.webview.getWebviewById("html/task/list.html"), 'loginUpData');
+							mui.fire(plus.webview.getLaunchWebview(), 'loginUpDataPage');
+						} else {
+							// plus.nativeUI.toast(a.msg, {'verticalAlign': 'center'});
+							mui.toast(a.msg, {
+								duration: 'long',
+								type: 'div'
+							});
+						}
+					});
+				}
+			});
+
+
+			function Back() {
+				setMuiFire(mui, plus, 'logoutUser');
+			}
+
+			init();
+		</script>
+	</body>
+</html>

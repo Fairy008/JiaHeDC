@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.ICropsGrowthManagerMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.CropsGrowthManager">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="growth_name" property="growthName" jdbcType="VARCHAR" />
+    <result column="crops_id" property="cropsId" jdbcType="INTEGER" />
+    <result column="crops_name" property="cropsName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="if_growth_start" property="ifGrowthStart" jdbcType="INTEGER" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, growth_name, crops_id, crops_name, creator, create_time, modifier, modify_time,remark,if_growth_start
+  </sql>
+
+  <sql id="tn_Column_List" >
+    period.id id, period.growth_name growthName, period.crops_id cropsId, period.creator, period.create_time createTime, period.modifier, period.modify_time modifyTime,period.remark,period.if_growth_start ifGrowthStart
+  </sql>
+
+  <!--
+   * 根据ID获取农作物生育周期配置对象
+   * @param cropsGrowthManager 农作物生育周期配置对象
+   * @return
+   * @version <1> 2018-04-12 lxy： Created.
+   * @version <2> 2018-04-17 cxw： update:重写方法
+  -->
+  <select id="getGrowthManagerByGrowthId" parameterType="java.lang.Integer" resultType="com.jh.briefing.model.CropsGrowthManagerParam">
+    select
+    dict.data_name cropsName,<include refid="tn_Column_List" />
+    from (select  <include refid="Base_Column_List" />  from briefing_crops_growth_manager where id = #{id,jdbcType=INTEGER})  period
+    left join init_dict dict on period.crops_id = dict.dict_id
+  </select>
+
+  <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.briefing.model.CropsGrowthManagerParam">
+    select
+    <include refid="Base_Column_List" />
+    from briefing_crops_growth_manager
+  </select>
+
+  <!--
+     * 作物生育周期分页查询
+     * @param cropsGrowthManagerParam 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-12 lxy： Created.
+     * @version <2> 2018-04-17 cxw： update:重写方法
+  -->
+  <select id="findCropsGrowthManagerByPage" resultType="com.jh.briefing.model.CropsGrowthManagerParam" parameterType="com.jh.briefing.model.CropsGrowthManagerParam">
+    select
+    dict.data_name cropsName,<include refid="tn_Column_List" />
+    from briefing_crops_growth_manager period
+    left join init_dict dict on period.crops_id = dict.dict_id
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+        period.crops_id=#{cropsId}
+      </if>
+      <if test="growthName != null and growthName != ''" >
+        and period.growth_name like '%' || #{growthName} || '%'
+      </if>
+    </where>
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+          ${sidx} ${sord}
+      </when>
+      <otherwise>
+          period.modify_time desc, period.create_time desc
+      </otherwise>
+    </choose>
+  </select>
+
+  <!--
+  新增/修改时查询生育期是否已存在
+   @param CropsGrowthManager 农作物生育周期配置配置对象
+   @return int
+   @version <1> 2018-04-18 cxw:Created
+-->
+  <select id="findGrowthManagerCount" resultType="java.lang.Integer" parameterType="com.jh.briefing.entity.CropsGrowthManager">
+    select  count(*) num
+    from briefing_crops_growth_manager period
+    <where>
+      <if test="cropsId != null and cropsId != ''" >
+        period.crops_id=#{cropsId}
+      </if>
+      <if test="growthName != null and growthName != ''" >
+        and period.growth_name  = #{growthName}
+      </if>
+      <if test="id != null and id != ''" >
+        and period.id != #{id}
+      </if>
+    </where>
+  </select>
+
+  <!--
+     * 生育期配置添加
+     * @param cropsGrowthManager 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-17 cxw: Created.
+  -->
+  <insert id="addGrowthManager" parameterType="com.jh.briefing.entity.CropsGrowthManager" useGeneratedKeys="true" keyProperty="id">
+    insert into briefing_crops_growth_manager
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="growthName != null">
+        growth_name,
+      </if>
+      <if test="cropsId != null">
+        crops_id,
+      </if>
+      <if test="cropsName != null">
+        crops_name,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="remark != null">
+      remark,
+      </if>
+      <if test="ifGrowthStart != null">
+        if_growth_start,
+      </if>
+      create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="growthName != null">
+        #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropsId != null">
+        #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="cropsName != null">
+        #{cropsName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=INTEGER},
+      </if>
+      <if test="ifGrowthStart != null">
+        #{ifGrowthStart,jdbcType=INTEGER},
+      </if>
+      now()
+    </trim>
+  </insert>
+
+  <!--
+     * 生育期配置修改
+     * @param cropsGrowthManager 农作物生育周期配置参数对象
+     * @return
+     * @version <1> 2018-04-17 cxw: Created.
+  -->
+  <update id="updateGrowthManager" parameterType="com.jh.briefing.entity.CropsGrowthManager">
+    update briefing_crops_growth_manager
+    <set>
+      <if test="growthName != null">
+        growth_name = #{growthName,jdbcType=VARCHAR},
+      </if>
+      <if test="cropsId != null">
+        crops_id = #{cropsId,jdbcType=INTEGER},
+      </if>
+      <if test="cropsName != null">
+        crops_name = #{cropsName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+      remark = #{remark,jdbcType=INTEGER},
+      </if>
+      <if test="ifGrowthStart != null">
+        if_growth_start = #{ifGrowthStart,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null">
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      modify_time = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!--
+     * 农作物生育周期配置记录删除
+     * @param id 农作物生育周期ID
+     * @return
+     * @version <1> 2018-04-18 cxw： Created.
+  -->
+  <delete id="deleteCropsGrowthManager" parameterType="java.lang.Integer">
+    delete from briefing_crops_growth_manager
+    where id = #{growthId,jdbcType=INTEGER}
+  </delete>
+
+</mapper>

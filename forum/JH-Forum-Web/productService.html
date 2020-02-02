@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>珈和农情遥感-卫星影像解译助力农业信息化</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <meta name="description" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <meta name="Keywords" content="多场景农业数据服务商，提供空间智能技术为核心的米级多源卫星影像解译、农情遥感可视化、农业大数据管理平台、智慧农业解决方案等产品和服务">
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <style type="text/css">
+        .clearfix:after {
+            content: ".";
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .padding25{
+            padding: 25px!important;
+        }
+
+        .main_wrap {
+            height: 100%;
+            margin-top: -40px;
+            background: #ffffff;
+        }
+
+        .product_frame .content .top_column {
+            padding-top: 110px;
+            padding-left: 260px;
+            padding-bottom: 120px;
+        }
+
+        .product_frame .top_column.bg1{
+            background: url("./images/product/banner1.png") no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .product_frame .top_column.bg2{
+            background: url("./images/product/banner2.png") no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .top_column p {
+            font-size: 50px;
+            color: #ffffff;
+            line-height: 1.8;
+        }
+
+        .top_column a {
+            display: block;
+            width: 135px;
+            height: 40px;
+            line-height: 40px;
+            margin-top: 30px;
+            font-size: 18px;
+            color: #ffffff;
+            text-align: center;
+            border: 1px solid #dadada;
+            border-radius: 10px;
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+        }
+
+        .main_container {
+            padding-top: 80px;
+            padding-bottom: 35px;
+            background: #ededed;
+        }
+
+        .main_container .tab_menu {
+            margin-bottom: 50px;
+            font-size: 0;
+        }
+
+        .tab_menu .tab_item {
+            display: inline-block;
+            width: calc(100%/4 - 15px);
+            height: 120px;
+            margin-right: 20px;
+            line-height: 120px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #000000;
+            background: #ffffff;
+            text-align: center;
+        }
+
+        .tab_menu .tab_item .icon{
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 2%;
+            width: 48px;
+            height: 48px;
+        }
+
+        .tab_menu .tab_item .icon_growth{
+            background: url("./images/product/listMenu/icon_growth.png") no-repeat;
+        }
+        .tab_menu .tab_item .icon_wdj{
+            background: url("./images/product/listMenu/icon_wdj.png") no-repeat;
+        }
+        .tab_menu .tab_item .icon_yj{
+            background: url("./images/product/listMenu/icon_yj.png") no-repeat;
+        }
+        .tab_menu .tab_item .icon_hj{
+            background: url("./images/product/listMenu/icon_hj.png") no-repeat;
+        }
+        .tab_menu .tab_item.active .icon_growth{
+            background: url("./images/product/listMenu/icon_growth_active.png") no-repeat;
+        }
+        .tab_menu .tab_item.active .icon_wdj{
+            background: url("./images/product/listMenu/icon_wdj_active.png") no-repeat;
+        }
+        .tab_menu .tab_item.active .icon_yj{
+            background: url("./images/product/listMenu/icon_yj_active.png") no-repeat;
+        }
+        .tab_menu .tab_item.active .icon_hj{
+            background: url("./images/product/listMenu/icon_hj_active.png") no-repeat;
+        }
+
+        .tab_menu .tab_item:last-child {
+            margin-right: 0;
+        }
+
+        .tab_menu .tab_item.active {
+            position: relative;
+            color: #ffffff;
+            background: #007dfe;
+        }
+
+        .tab_menu .tab_item.active::after {
+            content: "";
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            margin-left: -10px;
+            width: 0;
+            height: 0;
+            border-width: 10px;
+            border-style: solid;
+            border-color: #007dfe transparent transparent transparent;
+
+        }
+
+        .tab_item img {
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 30px;
+        }
+
+        .tab_content {
+            background: #ffffff;
+            overflow: hidden;
+        }
+
+        .tab_content img {
+            float: left;
+            width: 50%;
+        }
+
+        .fl {
+            float: left !important;
+        }
+
+        .fr {
+            float: right !important;
+        }
+
+        .noBor{
+            border: none!important;
+        }
+
+        .tab_content .content_info {
+            float: right;
+            width: 50%;
+            padding-top: 10%;
+            padding-left: 5%;
+            padding-right: 5%;
+            box-sizing: border-box;
+        }
+
+        .content_info h4 {
+            font-size: 35px;
+            color: #000000;
+        }
+
+        .content_info p {
+            font-size: 14px;
+            color: #000000;
+            line-height: 2;
+        }
+
+        .data_list {
+            padding: 0 3% 80px;
+            margin: 100px auto 0;
+            background: url("./images/product/bg.png") no-repeat;
+            background-size: cover;
+            color: #FFFFFF;
+            overflow: hidden;
+        }
+
+        .data_list h4 {
+            margin-top: 60px;
+            margin-bottom: 48px;
+            font-size: 28px;
+            color: #FFFFFF;
+            text-align: center;
+        }
+
+        .data_list .item{
+            width: 1180px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .data_list .item .item_classify {
+            float: left;
+            width: 235px;
+            font-size: 24px;
+            padding-top: 40px;
+        }
+
+        .data_list .item ul {
+            float: right;
+            width: calc(100% - 235px);
+            overflow: hidden;
+        }
+
+        .data_list .item ul li {
+            float: left;
+            width: 265px;
+            height: 160px;
+            margin-right: 44px;
+            padding: 40px 0;
+            line-height: 1.6;
+            border-bottom: 1px solid #4a92e9;
+            box-sizing: border-box;
+        }
+
+        .data_list .item ul li .icon {
+            display: inline-block;
+            vertical-align: top;
+            width: 39px;
+            height: 39px;
+            margin-right: 24px;
+        }
+
+        .data_list .item ul li .icon01{
+            background: url("./images/product/list/icon01.png") no-repeat;
+        }
+        .data_list .item ul li .icon02{
+            background: url("./images/product/list/icon02.png") no-repeat;
+        }
+        .data_list .item ul li .icon03{
+            background: url("./images/product/list/icon03.png") no-repeat;
+        }
+        .data_list .item ul li .icon04{
+            background: url("./images/product/list/icon04.png") no-repeat;
+        }
+        .data_list .item ul li .icon05{
+            background: url("./images/product/list/icon05.png") no-repeat;
+        }
+        .data_list .item ul li .icon06{
+            background: url("./images/product/list/icon06.png") no-repeat;
+        }
+        .data_list .item ul li .icon07{
+            background: url("./images/product/list/icon07.png") no-repeat;
+        }
+        .data_list .item ul li .icon08{
+            background: url("./images/product/list/icon08.png") no-repeat;
+        }
+        .data_list .item ul li .icon09{
+            background: url("./images/product/list/icon09.png") no-repeat;
+        }
+        .data_list .item ul li .icon10{
+            background: url("./images/product/list/icon10.png") no-repeat;
+        }
+        .data_list .item ul li .icon11{
+            background: url("./images/product/list/icon11.png") no-repeat;
+        }
+
+        .data_list .item ul li .info{
+            display: inline-block;
+            width: 155px;
+            padding-right: 28px;
+        }
+
+        .data_list .item ul li .info h5 {
+            font-size: 20px;
+            font-weight: normal;
+            line-height: 1;
+        }
+
+        .data_list .item ul li .info p{
+            font-size: 12px;
+            color: #FFFFFF;
+            margin-top: 22px;
+            line-height: 2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main_wrap">
+        <!--<div class="tab clearfix">
+            <div class="tab_panel" id="tan_f">
+                <img src="" alt="">
+                <div class="tab_panel_info">
+                    <p>数据服务</p>
+                    <p>覆盖种植、农业气象、农业关键<br />灾害监测等农情数据</p>
+                </div>
+            </div>
+            <div class="tab_panel">
+                <img src="" alt="">
+                <div class="tab_panel_info">
+                    <p>数据查询</p>
+                    <p>农情数据可视化,为农业、统计、金融<br />行业提供精准决策支持服务</p>
+                </div>
+            </div>
+        </div>-->
+        <div class="product_frame">
+            <!-- 数据服务 -->
+            <div class="content">
+                <div class="padding25">
+                    <div class="top_column bg1">
+                        <p>为农业、统计、金融<br>提供精准的农情遥感数据</p>
+                        <a href="#" id="checkData">查看数据</a>
+                    </div>
+                </div>
+                <div class="main_container">
+                    <div class="tab_menu">
+                        <div class="tab_item">
+                            <i class="icon icon_growth"></i>
+                            <span>农作物长势监测</span>
+                        </div>
+                        <div class="tab_item">
+                            <i class="icon icon_wdj"></i>
+                            <span>农作气象降雨、气温、地温</span>
+                        </div>
+                        <div class="tab_item">
+                            <i class="icon icon_yj"></i>
+                            <span>农业灾害监测、预警</span>
+                        </div>
+                        <div class="tab_item">
+                            <i class="icon icon_hj"></i>
+                            <span>农业土壤环境</span>
+                        </div>
+                    </div>
+                    <div class="main_content">
+                        <div class="tab_content clearfix">
+                            <img src="./images/product/ico01.png" alt="长势">
+                            <div class="content_info">
+                                <h4>农作物长势监测</h4>
+                                <p>
+                                    作物分布<br>
+                                    采用最先进的深度学习技术,在高分辨率遥感影像上，根据耕地的纹理、种类等特征,实时确定地块分界、测算
+                                    地块和种植面积,并在云端存储作物长势监测。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tab_content clearfix">
+                            <img src="./images/product/ico02.png" alt="降雨">
+                            <div class="content_info">
+                                <h4>农作气象降雨、气温、地温</h4>
+                                <p>
+                                    作物分布<br>
+                                    采用最先进的深度学习技术,在高分辨率遥感影像上，根据耕地的纹理、种类等特征,实时确定地块分界、测算
+                                    地块和种植面积,并在云端存储作物长势监测。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tab_content clearfix">
+                            <img src="./images/product/ico03.png" alt="监测">
+                            <div class="content_info">
+                                <h4>农业灾害监测、预警</h4>
+                                <p>
+                                    作物分布<br>
+                                    采用最先进的深度学习技术,在高分辨率遥感影像上，根据耕地的纹理、种类等特征,实时确定地块分界、测算
+                                    地块和种植面积,并在云端存储作物长势监测。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tab_content clearfix">
+                            <img src="./images/product/ico04.png" alt="土壤">
+                            <div class="content_info">
+                                <h4>农业土壤环境</h4>
+                                <p>
+                                    作物分布<br>
+                                    采用最先进的深度学习技术,在高分辨率遥感影像上，根据耕地的纹理、种类等特征,实时确定地块分界、测算
+                                    地块和种植面积,并在云端存储作物长势监测。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="data_list">
+                        <h4>数据清单</h4>
+                        <div class="item clearfix">
+                            <div class="item_classify">
+                                农作物监测类
+                            </div>
+                            <ul>
+                                <li>
+                                    <i class="icon icon01"></i>
+                                    <div class="info">
+                                        <h5>种植分布</h5>
+                                        <p>实时的确定地块位置、识别地块种类</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon02"></i>
+                                    <div class="info">
+                                        <h5>作物长势</h5>
+                                        <p>全天候、多波段、无死角监测作物长势信息</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon03"></i>
+                                    <div class="info">
+                                        <h5>作物估产</h5>
+                                        <p>结合作物模型、积温等预估每个地块的产量</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="item clearfix">
+                            <div class="item_classify">
+                                农业气象类
+                            </div>
+                            <ul>
+                                <li>
+                                    <i class="icon icon04"></i>
+                                    <div class="info">
+                                        <h5>降雨量</h5>
+                                        <p>支持城市查询，精确到区县3小时、日累计降雨量</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon05"></i>
+                                    <div class="info">
+                                        <h5>地温</h5>
+                                        <p>公里级地温数据、日均温</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon06"></i>
+                                    <div class="info">
+                                        <h5>气温</h5>
+                                        <p>日最高温度、日最低温度、日均温</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon07"></i>
+                                    <div class="info">
+                                        <h5>土壤墒情</h5>
+                                        <p>土壤湿度、土壤温度、土壤含水量</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon08"></i>
+                                    <div class="info">
+                                        <h5>灾害监测</h5>
+                                        <p>冰雹、大风、干旱、洪涝、病虫害低温、森林火灾、实时监测</p>
+                                    </div>
+                                </li>
+                                <li>
+                                    <i class="icon icon09"></i>
+                                    <div class="info">
+                                        <h5>湿度植被干旱指数</h5>
+                                        <p>公里级数据土壤湿度动态监测</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="item clearfix">
+                            <div class="item_classify">
+                                地块管理类
+                            </div>
+                            <ul>
+                                <li class="noBor">
+                                    <i class="icon icon10"></i>
+                                    <div class="info">
+                                        <h5>地块分割</h5>
+                                        <p>亚米级数据识别地块分界</p>
+                                    </div>
+                                </li>
+                                <li class="noBor">
+                                    <i class="icon icon11"></i>
+                                    <div class="info">
+                                        <h5>作物面积</h5>
+                                        <p>根据地块分割数据测算地块、种植面积</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer"></div>
+    </div>
+    <script type="text/javascript">
+        require(["jquery", "BaseAjax"], function ($, BaseAjax) {
+
+            // 初始化
+            var init = function () {
+                var _this = this;
+                $('#indexRightTop').css('height', '115px');
+                $('.loadContent').css('marginTop', '220px');
+                $('.tab_item').eq(0).addClass('active');
+                $('.tab_content').eq(0).show().siblings('.tab_content').hide();
+                $("#footer").load("footer.html");
+                bindEvent();
+            };
+
+            var bindEvent = function () {
+                //切换菜单选项卡
+                $(document).on('mouseover', '.tab_item', function () {
+                    var tab_index = $(this).index();
+                    $(this).addClass('active').siblings().removeClass('active');
+                    $(this).parent().next().find('.tab_content').eq(tab_index).show().siblings(
+                        '.tab_content').hide();
+                });
+
+                //点击查看数据跳转到数据中心
+                $('#checkData').on('click',function(e){
+                    e.preventDefault();
+                    $('#downloadData').trigger('click');
+                });
+            };
+            init();
+        })
+    </script>
+</body>
+
+</html>

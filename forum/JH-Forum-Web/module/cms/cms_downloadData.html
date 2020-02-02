@@ -1,0 +1,984 @@
+
+<style type="text/css">
+    .logtips{margin:10px 0 0 10px;color:red;}
+    #errorInfo{color:red;}
+    #pager2_left .btn{float:left;margin-right:7px;padding: 0.2em 0.5em;}
+    #batchDownloadBtn,#batchPublishBtn{margin-right: 1em;}
+    .errorInfo{color:#f00;}
+    .isSuccess{color: #34b40e;}
+    .isFail{color: #ff0000;}
+    .num{color: #45AEDF;}
+    .lyName{display: block; margin: 0 5px;}
+    .blue{color:blue}
+    .detail_style{
+        text-align: center;
+    }
+    .tab_btn{
+        background:#00FA9A!important;text-align: center;color:#8B0000;
+    }
+    .img_c{
+        width: 18px!important;
+        height: 18px!important;
+        padding-top:4px
+    }
+    #addDownloadData{
+        overflow-x:hidden;
+    }
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input level="1" parentid="null" chinaName ="中国" regionid="3100000000" regionCode = "CHN" value="中国" type="text" id="txtRegion" readonly="readonly"></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id="cropSearch" class="input inputWidth_100" style="text-align:center;"/></span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span><select class="input inputWidth_100" id="searchAccuracy"/></span>
+                </div>
+                <div>
+                    <span class="label2">数据分类：</span>
+                    <span><input type="text" class="input inputWidth_100" id="classifySearch" readonly="true"></span>
+                        <input type="hidden" id="seachDataClassify">
+                        <div id="treeContent" class="treeContent" style="display:none; position: absolute;z-index: 999;">
+                            <ul id="tree" class="ztree" style="margin-top:2px; width:200px;background-color: #fff;margin-left: 95px;,min-height:100px;max-height:200px;overflow-y:auto;border:1px solid #7B9DD4;"></ul>
+                        </div>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+                <input type="button" class="btn " id="calcBtn" value="计算价格" />
+                <!--<input type="button" class="btn " value="新增" id="addBtn" />-->
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft">
+                <div>
+                    <span class="label2">状态：</span>
+                    <span><select class="input inputWidth_100" id="searchPushStatus"/></span>
+                </div>
+
+
+                <div>
+                    <span class="label2">创建人：</span>
+                    <span><input class="input inputWidth_100" id="searchCreatorName" /></span>
+                </div>
+
+                <div>
+                    <span class="label2">标题：</span>
+                    <span><input class="input inputWidth_100" id="searchTitle" placeholder="输入关键词" /></span>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="dataGrid"></table>
+        <div id="pager2"></div>
+    </div>
+</div>
+<div id="reloadDialog" class="dialogStyle">
+    <span id="msg"></span>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<!-- 确认对话框 -->
+<div id="confirmDialog" class="dialogStyle" style="display:none">
+</div>
+
+<!-- 查看帖子详情 -->
+<div id="downloadDataInfo" style="display: none;overflow-x:hidden">
+    <!--<div id="detail_title" class="detail_style"></div>
+    <div id="detail_content" class="detail_style"></div>-->
+</div>
+
+<!-- 查看帖子详情 -->
+<div id="addDownloadData" style="display: none;">
+
+</div>
+
+<input type="text" id="data_path_hidden" style="height:1px ;width:1px ;border:0 !important;color:#FAFAFA;">
+
+<script>
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","PopWin","commons","RegionModule","custom_settings","enums","ztree"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,PopWin,commons,RegionModule,custom_settings,enums,ztree){
+        var processDialog = $("#process");
+
+        var init = function(){
+            loaderGrid();//加载表格
+            // dateFun();//初始化创建时间控件
+
+            $('#txtRegion').off("click").on('click',function () {
+                changeRegionEvent();
+            });
+            loadCrops(500);//加载农作物
+           // commons.findDictList(17001, "classifySearch");
+            commons.findDictList(4000, "searchAccuracy");//初始化精度下拉框
+           // loadClassify("classifySearch");
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").on("click",resetFun);
+            $("#calcBtn").bind("click",calcFun);//自动计算价格
+
+            $(window).resize(function(){
+                $("#dataGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+
+            chanageTableCss();
+
+
+            initPushStatusSelect();
+
+        };
+
+        var initPushStatusSelect = function(){
+            // str += "<option value='" + article + "'>" + element.dataName + "</option>";
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = REDIS_CONFIG.findSubListByDictId_url+"?parentId=12000";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+
+            ajax.opts.successFun = function (result) {
+                var defautText="--请选择--";
+                var str = "<option value=''>"+defautText+"</option>";
+                if (result.flag) {
+                    $.each(result.data, function (index, element) {
+
+                        if(element.dictId == forum_articleStatus.WAIT_AUDIT || element.dictId == forum_articleStatus.PUBLISHED || element.dictId == forum_articleStatus.RECALLED){
+                            str += "<option value='" + element.dictId + "'>" + element.dataName + "</option>";
+                        }
+                    })
+                    $("#searchPushStatus" ).html("");//清空
+                    $("#searchPushStatus" ).append(str);
+                }
+            }
+            ajax.run();
+
+        }
+
+
+
+        $("#classifySearch").click(function () {
+            var obj = $(this);
+            var objOffset = obj.offset();
+            $("#treeContent").slideDown("fast");
+            $("body").bind("mousedown", onBodyDown);
+            function getAsyncUrl(treeId, treeNode) {
+                return REDIS_CONFIG.findSubListByDictId_url+"?parentId="+(treeNode==undefined?"17000":treeNode.dictId);
+            };
+            $.fn.zTree.init($("#tree"), {
+                async:{
+                    enable: true,
+                    url:getAsyncUrl,
+                    dataFilter:function(treeId, parentNode, responseData){
+                        if(responseData){
+                            var datas=new Array();
+                            $.each(responseData.data,function (i,item) {
+                                item.leaf=!item.leaf;
+                                datas.push(item);
+                            })
+                            return datas;
+                        }
+                    }
+                },data: {
+                    key:{
+                      name:"dataName",
+                      isParent: "leaf"
+                    },
+                    simpleData: {
+                        enable: true,
+                        idKey:"dictId",
+                        pIdKey:"parentId",
+                        rootPId:"17000"
+                    }
+                },callback:{
+                    onClick:function (event, treeId, treeNode) {
+                        if(treeNode.leaf){
+                            return;
+                        }
+
+                        obj.val(treeNode.dataName);
+                        $("#seachDataClassify").val(treeNode.dictId);
+                    }
+                }
+            });
+        });
+
+        function onBodyDown(event) {
+            if (!( event.target.id == "treeContent" || $(event.target).parents("#treeContent").length>0)) {
+                hideMenu();
+            }
+        }
+        function hideMenu() {
+            $("#treeContent").fadeOut("fast");
+            $("body").unbind("mousedown", onBodyDown);
+        }
+
+        var cropsJson = {};
+        var loadCrops = function (dictId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId': dictId});
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+                    var statusArry = result.data;
+                    var optList = "<option value=''>--请选择--</option>";
+                    for (var i in statusArry) {
+                        var status = statusArry[i];
+                        cropsJson[status.dictId] = status.dataName;
+                        optList += "<option value='" + status.dictId + "'>" + status.dataName + "</option>";
+                    }
+                    $("#cropSearch").html(optList);
+                }
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 区域点击：下拉控件
+         */
+        var changeRegionEvent = function(){
+            // var param = getParam();
+            var opts = {url:REGION_CONFIG.findRegionsByPid_URL,closeFun:function(){ }};
+            var regionSelector = new RegionModule.RegionSelector("txtRegion",opts);
+            regionSelector.show();
+        };
+
+        /**
+         * 重置
+         * @version<1> 2018-06-21 cxw :created.
+         */
+        var resetFun = function(){
+            $("#txtRegion").val("中国").attr("level",1).attr("parentid","null").attr("chinaName","中国").attr("regionid","3100000000").attr("regionCode","CHN");
+            $("#searchAccuracy").val("");
+            $("#seachDataClassify").val("");
+            $("#classifySearch").val("");
+            $("#searchPushStatus").val("");
+
+            $("#searchCreatorName").val("");
+            $("#searchTitle").val("");
+
+            loadCrops(500);//加载农作物
+            commons.findDictList(17001, "classifySearch");
+
+        }
+
+        var chanageTableCss = function(){
+            var divObj = $('#dataGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        var colmodel = [
+            {name: 'dataId', index:'data_id', hidden:true},
+            {name: 'dataTitle', index: 'data_title', align: 'left', width: '12%' },
+            {name: 'regionId', index:'region_id', hidden:true},
+            {name: 'regionName', index:'region_name',align:'left',width:'8%'},
+            {name: 'cropId', index:'crop_id', hidden:true},
+            {name: 'cropName', index:'crop_name', width: '6%'},
+            {name: 'accuracy', index:'accuracy', width: '8%',formatter:function(cellvalue, options, rowObject){
+                return commons.queryDictName(rowObject.accuracy);
+            }},
+            {name: 'dataClassify', index: 'data_classify', hidden:true},
+            {name: 'classifyName', index: 'classify_name', align: 'center', width: '6%'},
+            {name: 'dataTime', index: 'data_time', align: 'center', width: '8%' },
+            {name: 'dataPath', index: 'data_path', align: 'center', width: '14%' },
+            {name: 'pushStatus', index: 'push_status', hidden:true },
+            {name: 'pushStatusName', index: 'push_status', align: 'center', width: '6%' , formatter:function(cellvalue, options, rowObject){
+                    if(rowObject.pushStatus == forum_articleStatus.PUBLISHED){
+                        return "<span class='green'>" + cellvalue + "</span>"
+                    }else if(rowObject.pushStatus == forum_articleStatus.RECALLED){
+                        return "<span class='red'>" + cellvalue + "</span>";
+                    }else if(rowObject.pushStatus == forum_articleStatus.WAIT_AUDIT){
+                        return "<span class='blue'>" + cellvalue + "</span>";
+                    }else{
+                        return cellvalue == null ? "" : cellvalue;
+                    }
+                }},
+            {name: 'creatorName', index: 'creator_name', align: 'center', width: '6%' },
+            {name: 'createTime', index: 'create_time', align: 'center', width: '10%' },
+            {name: 'cz', index:'cz', width:'18%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                var str="";
+
+                    //str += "<img src='images/public/pickOut.png' class='copyBtn img_c' data-path='" + rowObject.dataPath + "' title='拷贝文件路径'>";
+                    // str += "<img src='images/public/Twatch.png' class='detailBtn img_c' data-id='" + rowObject.dataId + "' title='查看详情'>";
+                    //
+                    // if(rowObject.pushStatus == forum_articleStatus.PUBLISHED) {
+                    //     str += "<img src='images/public/TeditG.png' class='editBtn img_c' data-id='" + rowObject.dataId + "' title='编辑'>";
+                    // }else{
+                    //     str += "<img src='images/public/Tedit.png' class='editBtn img_c' data-id='" + rowObject.dataId + "' title='编辑'>";
+                    // }
+
+
+
+                    str += "<img src='images/public/Twatch.png' class='detailBtn img_c' data-id='"+ rowObject.dataId +"'  title='查看详情'>";
+                    //编辑 只有自己的才可以编辑
+                    if(rowObject.pushStatus == forum_articleStatus.PUBLISHED) {
+                        str += "<img src='images/public/TeditG.png' class=' img_c' data-id='"+ rowObject.dataId +"' title='编辑'>";
+                    }else{
+                        str += "<img src='images/public/Tedit.png' class='editBtn img_c' data-id='"+ rowObject.dataId +"' title='编辑'>";
+                    }
+
+
+                    if(rowObject.pushStatus == forum_articleStatus.WAIT_AUDIT || rowObject.pushStatus == forum_articleStatus.RECALLED) {
+                        str += "<img src='images/public/share.png' class='passBtn img_c' data-id='" + rowObject.dataId + "' title='发布'>";
+                    }else{
+                        str += "<img src='images/public/shareG.png' class='img_c' data-id='" + rowObject.dataId + "' title='发布'>";
+                    }
+
+                    if(rowObject.pushStatus == forum_articleStatus.PUBLISHED) {
+                        str += "<img src='images/public/back.png' class='failBtn img_c' data-id='" + rowObject.dataId + "' title='撤回'>";
+                    }else{
+                        str += "<img src='images/public/backG.png' class='img_c' data-id='" + rowObject.dataId + "' title='撤回'>";
+                    }
+                    str += "<img src='images/public/Tdelete.png' class='deleteBtn img_c' data-id='" + rowObject.dataId + "' title='删除'>";
+
+                    return str;
+            }}
+        ];
+
+
+        var permissionFlag = true;
+
+        var loaderGrid = function(){
+            $("#dataGrid").jqGrid({
+                url: DOWNLOADDATA_CONFIG.findCmsPage_url,
+                datatype: "json",
+                postData:{
+                    //默认查询报告
+                    //articleType:11001
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['dataId','标题','regionId','区域','cropId','作物','精度','dataClassify','数据分类','数据时间','文件位置','pushStatus','状态','创建人','创建时间','操作'],
+                colModel:colmodel,
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#dataGrid").setGridWidth($(".rightMain").width() - 30);
+                    if(permissionFlag){
+                        permissionFlag = false;
+                        $("#pager2_left").html(
+                                "<input type='button' class='btn btn_grey' value='批量发布' id='batchPassBtn' />" +
+                                "<input type='button' class='btn btn_grey' value='批量撤回' id='batchFailBtn' />" +
+                                // "<input type='button' class='btn btn_grey' value='批量删除' id='batchDeleteBtn' />" +
+                                "<span id='errorInfo'></span>");
+                    }
+
+                    batchStyle();//批量样式
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();//批量样式
+                },
+                onSelectRow:function(rowid, e) {
+                    batchStyle();//批量样式
+                }
+            });
+        };
+
+
+        /**
+         * 批量按钮样式
+         * @version <1> 2018-06-06 lxy: Created.
+         * @version <2> 2019-02-18 lijie: update.
+         */
+        var batchStyle = function(){
+            var ids = $("#dataGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#dataGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+
+            //数据撤回和发布下载按钮处理
+            if(ids.length == 0){
+                $("#batchPassBtn").addClass("btn_grey");
+                $("#batchFailBtn").addClass("btn_grey");
+            }else{
+                //只要有一条数据满足，则可批量发布
+                var isAllPass=false;
+                //只要有一条数据满足，则可批量撤回
+                var isAllFail=false;
+
+
+                $(ids).each(function (index, id){
+                    var row = $("#dataGrid").jqGrid('getRowData', id);
+                    //帖子状态
+                    var articleStatus=row.pushStatus;
+
+                    // var articleType=row.articleType;
+                    // var isHot=row.articleHot;
+                    // var isNew=row.articleNew;
+                    //待审核的帖子，可以发布
+                    if(articleStatus == forum_articleStatus.WAIT_AUDIT){
+                        isAllPass=true;
+                    }
+
+
+                    //已发布的帖子，可以设置最新和最热
+                    if(articleStatus == forum_articleStatus.PUBLISHED){
+                        isAllFail=true;
+                    }
+
+                });
+                if(isAllPass){
+                    $("#batchPassBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchPassBtn").addClass("btn_grey");
+                }
+                if(isAllFail){
+                    $("#batchFailBtn").removeClass("btn_grey");
+                }else{
+                    $("#batchFailBtn").addClass("btn_grey");
+                }
+                // if(isAllHot){
+                //     $("#batchHotBtn").removeClass("btn_grey");
+                // }else{
+                //     $("#batchHotBtn").addClass("btn_grey");
+                // }
+                // if(isAllNew){
+                //     $("#batchNewBtn").removeClass("btn_grey");
+                // }else{
+                //     $("#batchNewBtn").addClass("btn_grey");
+                // }
+                // if(isAllDelete){
+                //     $("#batchDeleteBtn").removeClass("btn_grey");
+                // }else{
+                //     $("#batchDeleteBtn").addClass("btn_grey");
+                // }
+
+            }
+
+            var records = $("#dataGrid").jqGrid('getGridParam', 'records');
+            if(records<=0){
+                $("#batchPassBtn").hide("btn_grey");
+                $("#batchFailBtn").hide("btn_grey");
+                // $("#batchHotBtn").hide("btn_grey");
+                // $("#batchNewBtn").hide("btn_grey");
+                // $("#batchDeleteBtn").hide("btn_grey");
+            }else{
+                $("#batchPassBtn").show("btn_grey");
+                $("#batchFailBtn").show("btn_grey");
+                // $("#batchHotBtn").show("btn_grey");
+                // $("#batchNewBtn").show("btn_grey");
+                // $("#batchDeleteBtn").show("btn_grey");
+            }
+        };
+
+
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var tableEvent = function(){
+            $("#addBtn,.editBtn,.createBtn, .hotBtn,.newBtn,.nohotBtn,.nonewBtn,.passBtn,.failBtn,.deleteBtn, #batchHotBtn, #batchNewBtn, #batchPassBtn,#batchFailBtn,#batchDeleteBtn").off("click");
+
+            //新增
+            $("#addBtn").bind("click",function () {
+                addDataFun();
+            });
+
+            //编辑
+            $(".editBtn").bind("click",function () {
+                addDataFun($(this).data("id"));
+            });
+
+
+            //审核发布
+            $(".passBtn").bind("click",function () {
+                var articleId = $(this).attr("data-id");
+                auditArticleFun([articleId],forum_articleStatus.PUBLISHED);
+            });
+
+            //审核撤回
+            $(".failBtn").bind("click",function () {
+                var articleId = $(this).attr("data-id");
+                auditArticleFun([articleId],forum_articleStatus.RECALLED);
+            });
+
+
+            //删除
+            $(".deleteBtn").bind("click",function () {
+                deleteArticleFun($(this).data("id"));
+            });
+
+            //查看详情
+            $(".detailBtn").bind("click",function () {
+                var dataId = $(this).data("id");
+                detailArticleFun(dataId);
+            });
+
+            $(".copyBtn").bind("click", function(){
+                var dataPath = $(this).attr("data-path");
+                copyFun(dataPath)
+
+            })
+
+
+            //批量发布
+            $("#batchPassBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    auditArticleFun(getValidData("0"),forum_articleStatus.PUBLISHED);
+                }
+            });
+            //批量撤回
+            $("#batchFailBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    auditArticleFun(getValidData("0"),forum_articleStatus.RECALLED);
+                }
+            });
+            //批量标记最热
+            $("#batchHotBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    signArticleFun(getValidData("1"),0,1);
+                }
+            });
+            //批量标记最新
+            $("#batchNewBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    signArticleFun(getValidData("1"),1,1);
+                }
+            });
+
+            //批量删除
+            $("#batchDeleteBtn").bind("click", function(){
+                if(!$(this).hasClass("btn_grey")){
+                    deleteArticleFun(getValidData("2"));
+                }
+            });
+
+        };
+
+
+        var copyFun = function(path){
+            var pathNode = document.getElementById("data_path_hidden");
+            pathNode.value = path;
+            pathNode.select();
+            document.execCommand("Copy"); // 执行浏览器复制命令
+
+            PopWin.showMessageWin("路径拷贝成功");
+        }
+
+        /**
+         * 检查合法Ids
+         * batchType:0批量发布和撤回 1批量标记最新和最热 2删除
+         * @version <1> 2019-06-19 lijie: Created.
+         */
+        var getValidData=function(batchType){
+            var ids=[];
+            var rowIds = $("#dataGrid").jqGrid("getGridParam", "selarrrow");
+            $(rowIds).each(function (index,id) {
+                var row = $("#dataGrid").jqGrid('getRowData', id);
+                var articleId=row.dataId;
+                var articleStatus=row.pushStatus;
+                if(batchType=="0"){//批量发布和撤回
+                    ids.push(articleId)
+                }else if(batchType=="2"){//删除
+                    ids.push(articleId)
+                }
+            });
+            return ids;
+        }
+
+        /**
+         * 审核帖子
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var auditArticleFun = function(ids,status,flag) {
+
+            console.log(ids, status)
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var msg="";
+            if(status== forum_articleStatus.PUBLISHED){//审核发布
+                msg="发布";
+            }else if(status== forum_articleStatus.RECALLED){//审核撤回
+                msg="撤回";
+            }
+            confirmDialog.html("是否确认" +msg+ "所选可下载数据项？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DOWNLOADDATA_CONFIG.audit_url;
+                        ajax.opts.data = JSON.stringify({'dataIds':ids,'pushStatus':status});
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                if(flag){
+                                    $("#articleInfo").dialog("close");
+                                }
+                                $("#dataGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin(msg+"成功");
+                            } else {
+                                PopWin.showMessageWin(msg+"失败，请检查是否有已经设置过价格");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+
+                            processDialog.dialog("open");
+                            PopWin.showMessageWin("系统错误："+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 标记最热和最新
+         * @version <1> 2019-03-11 lijie： Created
+         * ids：帖子ID
+         * type: 0 最热，1最新
+         * value :1 标记 0 取消
+         */
+        var signArticleFun = function(ids,type,value) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+            var paramData={};
+            var url="";
+            var msg="";
+            if(type== 0){//最热
+                msg="最热";
+                url=CMS_MANAGE.signHotArticle_url;
+                paramData.articleHot=value;
+            }else if(type== 1){//最新
+                msg="最新";
+                url=CMS_MANAGE.signNewArticle_url;
+                paramData.articleNew=value;
+            }
+            var flagMsg="";
+            if(value ==0){
+                flagMsg="取消"
+            }else if(value== 1){
+                flagMsg="标记"
+            }
+            paramData.articleIds=ids;
+
+            confirmDialog.html("是否确认"+flagMsg+"该帖子为"+msg+"？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = url;
+                        ajax.opts.data = JSON.stringify(paramData);
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#dataGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("标记"+msg+"成功");
+                            } else {
+                                PopWin.showMessageWin("标记"+msg+"失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：标记"+msg+"失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 删除帖子
+         * @version <1> 2019-03-11 lijie： Created
+         */
+        var deleteArticleFun = function(id) {
+            var confirmDialog = $("#confirmDialog");//操作确认对话框
+            var dialogParent = confirmDialog.parent();
+            var dialogOwn = confirmDialog.clone();
+
+            confirmDialog.html("是否确认删除数据？");
+            confirmDialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        //显示进度条 关闭提示框
+                        confirmDialog.dialog("close");
+                        showProcess();
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DOWNLOADDATA_CONFIG.deleteDownload_url+"?dataId="+id;
+                        ajax.opts.contentType = "application/json";
+                        ajax.opts.successFun = function (result) {
+                            //关闭进度条
+                            processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                            if (result.flag) {
+                                $("#dataGrid").trigger("reloadGrid");//刷新列表
+                                PopWin.showMessageWin("删除成功");
+                            } else {
+                                PopWin.showMessageWin("删除失败");
+                            }
+                        };
+                        ajax.opts.errorFun = function () {
+                            PopWin.showMessageWin("系统错误：删除失败");
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            confirmDialog.dialog("open");
+        };
+
+        /**
+         * 查看帖子详情
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var detailArticleFun = function(dataId) {
+
+            $("#downloadDataInfo").load("module/cms/cms_downloadDataInfo.html",function(){
+                $("#dataId").val(dataId);
+            });
+
+            var title="下载数据详情";
+            var detailButtons=[{
+                    text:"关闭",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }];
+
+            var width = 800;//宽度
+            var height = $(document.body).height()*0.8;//高度
+
+            var dataProductInfoDialog =  $("#downloadDataInfo");
+            var dialogParent = dataProductInfoDialog.parent();
+            var dialogOwn = dataProductInfoDialog.clone();
+            dataProductInfoDialog.dialog({
+                autoOpen: false,
+                title:title,
+                height: height,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:detailButtons
+            });
+            dataProductInfoDialog.dialog("open");
+        };
+
+        /**
+         * 新增、编辑下载数据
+         * @version <1> 2018-09-27 lijie： Created.
+         */
+        var addDataFun = function(dataId) {
+            var msg="新增";
+            if(dataId!=null&&dataId!=''){
+                msg="编辑";
+            }
+            $("#addDownloadData").load("module/cms/cms_downloadDataAdd.html",function(){
+                $("#dataId").val(dataId);
+            });
+            var width = 900;//宽度
+            var height = $(document.body).height()- 10;//高度
+            var dataProductInfoDialog =  $("#addDownloadData");
+            var dialogParent = dataProductInfoDialog.parent();
+            var dialogOwn = dataProductInfoDialog.clone();
+            dataProductInfoDialog.dialog({
+                autoOpen: false,
+                title:msg+"下载数据",
+                height: height-60,
+                width: width,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:[]
+            });
+            dataProductInfoDialog.dialog("open");
+
+        };
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings(".ui-dialog-titlebar").hide();
+                    processDialog.parent(".ui-dialog").css({"opacity":1,"background":"rgba(0,0,0,0)"});
+                },
+            });
+            processDialog.dialog("open");
+        }
+
+
+        /**
+         * 初始化创建时间控件
+         * @version <1> 2018-04-27 lijie : Created.
+         */
+        var dateFun = function(){
+            $("#search_publishTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+            $("#search_auditTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+
+        };
+
+        /**
+         * 根据指定的查询条件，查询对应的记录并重新渲染
+         *
+         * @version <1> 2018-04-27 lijie： Created.
+         */
+        var searchFun = function() {
+            var data = {};
+
+            data.regionCode = $("#txtRegion").attr("regionCode"); //区域
+            data.cropId=$("#cropSearch").val();//作物
+            data.accuracy =　$("#searchAccuracy").val();//精度
+            data.dataClassify =　$("#seachDataClassify").val();//数据分类
+            data.pushStatus = $("#searchPushStatus").val();//状态
+
+            data.creatorName = $("#searchCreatorName").val();
+            data.dataTitle = $("#searchTitle").val();
+
+            $("#dataGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData:data,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+        
+        /**
+         * 自动计算各类型的数据价格(包括 降雨18701 地温18702  气温18703  干旱指数18801   病虫害监测 18801 )
+         * 其中除了病虫害监测为10元  其他均为1元
+         * @version <1> 2019-10-22 wangli : created.
+         */
+        var calcFun = function () {
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.calculate_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type = "post";
+            ajax.opts.successFun = function(result){
+                if (result.flag) {
+                    PopWin.showMessageWin("价格设置成功");
+                } else {
+                    PopWin.showMessageWin("价格设置失败");
+                }
+
+            }
+            ajax.run();
+
+        }
+        
+
+        /**
+         * 根据帖子ID获取详情
+         * @version <1> 2018-06-12 lijie : created.
+         */
+        var articleDetail = function(articleId){
+            var article={};
+            var ajax = new BaseAjax();
+            ajax.opts.url = CMS_MANAGE.findArticleInfo_url+"?articleId="+articleId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    article=result.data;
+                }
+            }
+            ajax.run();
+            return article;
+        };
+
+        init();
+    });
+</script>

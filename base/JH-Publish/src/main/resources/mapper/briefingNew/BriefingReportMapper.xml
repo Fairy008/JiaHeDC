@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefingNew.mapping.IBriefingReportMapper">
+    <resultMap id="BaseResultMap" type="com.jh.briefingNew.entity.BriefingReport">
+        <id column="reporter_id" jdbcType="BIGINT" property="reporterId" />
+        <result column="reporter_name" jdbcType="VARCHAR" property="reporterName" />
+        <result column="reporter_content" jdbcType="VARCHAR" property="reporterContent" />
+        <result column="reporter_mobile_content" jdbcType="VARCHAR" property="reporterMobileContent" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="creator" jdbcType="VARCHAR" property="creator" />
+        <result column="audis_state" jdbcType="SMALLINT" property="audisState" />
+        <result column="region_id" jdbcType="BIGINT" property="regionId" />
+        <result column="crops_id" jdbcType="INTEGER" property="cropsId" />
+        <result column="report_data_time_start" jdbcType="DATE" property="reportDataTimeStart" />
+        <result column="report_data_time_end" jdbcType="DATE" property="reportDataTimeEnd" />
+        <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+        <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+        <result column="template_id" jdbcType="INTEGER" property="templateId" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        reporter_id, reporter_name, reporter_content,reporter_mobile_content,create_time, creator, audis_state,
+        region_id, crops_id, report_data_time_start, report_data_time_end, modify_time, modifier,
+        template_id
+    </sql>
+
+    <!-- 根据 regionId（区域编号） 和 dateTime （创建时间）查询地温均值信息和对应的区域-->
+    <select id="queryTtnByRegionAndDateTime" resultType="com.jh.briefingNew.model.TtnRegionAvg"
+            parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        select regionName,ttnAvg from (
+        select
+        regionName,
+        round(avg(case when t>0 then t else null end),2) ttnAvg
+        from (
+        select
+        ttn.id,
+        r1.region_id regionId,
+        r1.china_name regionName,
+        ttn.t,
+        ttn.data_time dataTime
+        from ds_t ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+            <if test="level &lt; 4">
+                r2.region_id = #{regionId}
+            </if>
+            <if test="level == 4">
+                and ttn.region_id = #{regionId}
+            </if>
+            <if test="startDate != null &amp;&amp; endDate !=null  ">
+                and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+            </if>
+        </where>
+        ) statistics
+        group by regionName
+        ) final
+        where ttnAvg>0
+        order by ttnAvg asc
+    </select>
+    
+    <select id="queryTtnStatistics" resultType="com.jh.briefingNew.model.chartDatas" parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        SELECT
+            COALESCE(round( AVG (t), 2 ), 0) avgData,
+            to_char( data_time, 'mm-dd' ) AS dataTime
+        FROM
+            ds_t
+        WHERE
+            region_id = #{regionId}
+        <if test="history==1">
+            AND to_char( data_time, 'mm-dd' ) BETWEEN #{startDateNoYear}  AND #{endDateNoYear}
+        </if>
+        <if test="history==0">
+            AND to_char( data_time, 'yyyy-mm-dd' ) BETWEEN #{startDate}  AND #{endDate}
+        </if>
+        GROUP BY
+            to_char( data_time, 'mm-dd' )
+        ORDER BY
+            to_char( data_time, 'mm-dd' )
+    </select>
+    <!-- 查询分页 -->
+    <select id="queryByPage" resultType="com.jh.briefing.model.TemplateReporterParam"
+            parameterType="com.jh.briefing.model.TemplateReporterParam">
+        select
+        reporter.reporter_id reporterId,
+        reporter.reporter_name reporterName,
+        region.china_name regionName,
+        dict.data_name cropsName,
+        reporter.creator,
+        account.nick_name creatorNickName,
+        reporter.create_time createTime,
+        reporter.modifier,
+        reporter.modify_time modifyTime,
+        reporter.audis_state audisState
+        from briefing_reporter reporter
+        left join init_region region on reporter.region_id= region.region_id
+        left join init_dict dict on reporter.crops_id = dict.dict_id
+        left join sys_perm_account account on reporter.creator = account.account_name
+        <where>
+            <if test="reporterName!=null &amp;&amp; reporterName!=''">
+                reporter.reporter_name like '%' || #{reporterName} || '%'
+            </if>
+            <if test="startDate != null &amp;&amp; startDate != '' &amp;&amp; endDate !=null &amp;&amp; endDate != ''">
+                and reporter.create_time between cast(#{startDate} ||' 00:00:00' as timestamp) and cast(#{endDate}||' 23:59:59' as TIMESTAMP )
+            </if>
+            <if test="audisState!=null">
+                and reporter.audis_state=#{audisState}
+            </if>
+        </where>
+        ORDER BY
+        <choose>
+            <when test="sidx != null and sidx != ''">
+                ${sidx} ${sord}
+            </when>
+            <otherwise>
+                audisState desc,modifyTime desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <!-- 根据 regionId（区域编号） 和 dateTime(创建时间),查询有效积温和对应的区域 注意参数：growthStartDate(播种时间)-->
+    <select id="queryTtnTotalByRegionAndDateTime" resultType="com.jh.briefingNew.model.TtnRegionAvg"
+            parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        select regionName,ttnAvg from (
+        select
+        regionName,
+        round(sum(case when t>0 then t else null end),2) ttnAvg
+        from (
+        select
+        ttn.id,
+        r1.region_id regionId,
+        r1.china_name regionName,
+        <if test="ifWinter == 1">
+            ttn.t  as t,
+        </if>
+        <if test="ifWinter == 0">
+            ttn.t-10 as t,
+        </if>
+        ttn.data_time dataTime
+        from ds_t ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+            <if test="level &lt; 4">
+                r2.region_id = #{regionId}
+            </if>
+            <if test="level == 4">
+                and ttn.region_id = #{regionId}
+            </if>
+            <if test="growthStartDate != null &amp;&amp; endDate !=null  ">
+                and ttn.data_time between cast(#{growthStartDate} as timestamp) and cast(#{endDate} as timestamp)
+            </if>
+        </where>
+        ) statistics
+        group by regionName
+        ) final
+        where 1=1
+        <if test="ifWinter == 1">
+            and ttnAvg>0
+        </if>
+        <if test="ifWinter == 0">
+            and ttnAvg>10
+        </if>
+        order by ttnAvg asc
+    </select>
+
+    <!-- 查询指定时间范围周雨量信息 -->
+    <select id="queryTrrmStatisticsForWeek" resultType="com.jh.briefingNew.model.TrrmStatisticsMultRegionNew"
+            parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        select
+        regionId,regionName,trrmTotal,trrmTotalMonth,avgTrrmLastYear,avgTrrmHistory,
+        round(case when avgTrrmHistory>0 then (trrmTotal-avgTrrmHistory)/avgTrrmHistory*100 else 0.0 end,2) percentHistoryYear,
+        round(case when avgTrrmLastYear>0 then (trrmTotal-avgTrrmLastYear)/avgTrrmLastYear*100 else 0.0 end,2) percentLastYear
+        from (
+        select
+        regionId,regionName,COALESCE(sum(trmm),0) trrmTotal,
+        (
+        select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+        from(
+        select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="startDate != null">
+                and data_time &lt; cast(#{startDate} as timestamp)
+            </if>
+            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+            </if>
+        </where>
+        group by date_part('YEAR',data_time)
+        )avgB
+        ) avgTrrmHistory,
+        (
+        select round(trrmTotal,2) avgTrrm
+        from(
+        select COALESCE(SUM(trmm),0) trrmTotal
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="lastYear != null">
+                and date_part('YEAR',data_time) = #{lastYear}
+            </if>
+            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+            </if>
+        </where>
+        )avgB
+        ) avgTrrmLastYear,
+        (
+        select trrmTotal
+        from(
+        select COALESCE(SUM(trmm),0) trrmTotal
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="startDateMonth != null &amp;&amp; endDateMonth !=null">
+                and data_time between cast(#{startDateMonth} as timestamp) and cast(#{endDateMonth} as timestamp)
+            </if>
+        </where>
+        )avgB
+        ) trrmTotalMonth
+        from (
+        select
+        r1.region_id regionId,
+        r1.china_name regionName,
+        ttn.trmm,
+        ttn.data_time dataTime
+        from ds_trmm ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+            <if test="level &lt; 4">
+                r2.region_id = #{regionId}
+            </if>
+            <if test="level == 4">
+                and ttn.region_id = #{regionId}
+            </if>
+            <if test="startDate != null &amp;&amp; endDate !=null  ">
+                and ttn.data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+            </if>
+        </where>
+        ) statistics
+        group by regionName,regionId
+        ) final
+        order by trrmTotal asc
+    </select>
+
+    <!-- 查询指定时间范围内月雨量信息 -->
+    <select id="queryTrrmStatisticsForMonth" resultType="com.jh.briefingNew.model.TrrmStatisticsMultRegionNew"
+            parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        select
+        regionId,regionName,trrmTotal,trrmTotalMonth,avgTrrmLastYear,avgTrrmHistory,avgTrrmMonthHistory,
+        round(case when avgTrrmHistory>0 then (trrmTotal-avgTrrmHistory)/avgTrrmHistory*100 else 0.0 end,2) percentHistoryYear,
+        round(case when avgTrrmMonthHistory>0 then (trrmTotalMonth-avgTrrmMonthHistory)/avgTrrmMonthHistory*100 else 0.0 end,2) percentMonthHistoryYear,
+        round(case when avgTrrmLastYear>0 then (trrmTotal-avgTrrmLastYear)/avgTrrmLastYear*100 else 0.0 end,2) percentLastYear
+        from (
+        select
+        regionId,regionName,COALESCE(sum(trmm),0) trrmTotalMonth,
+        (
+        select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+        from(
+        select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="startDate != null">
+                and data_time &lt; cast(#{startDate} as timestamp)
+            </if>
+            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+            </if>
+        </where>
+        group by date_part('YEAR',data_time)
+        )avgB
+        ) avgTrrmHistory,
+        (
+        select round(trrmTotal,2) avgTrrm
+        from(
+        select COALESCE(SUM(trmm),0) trrmTotal
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="lastYear != null">
+                and date_part('YEAR',data_time) = #{lastYear}
+            </if>
+            <if test="startDateNoYear != null &amp;&amp; endDateNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForWeek})||'-'||#{startDateNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateNoYear} as timestamp)
+            </if>
+        </where>
+        )avgB
+        ) avgTrrmLastYear,
+        (
+        select trrmTotal
+        from(
+        select COALESCE(SUM(trmm),0) trrmTotal
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="startDate != null &amp;&amp; endDate !=null">
+                and data_time between cast(#{startDate} as timestamp) and cast(#{endDate} as timestamp)
+            </if>
+        </where>
+        )avgB
+        ) trrmTotal,
+        (
+        select COALESCE(round(avg(trrmTotal),2),0) avgTrrm
+        from(
+        select SUM(trmm) trrmTotal,date_part('YEAR',data_time) yyyy
+        from ds_trmm
+        <where>
+            region_id = regionId
+            <if test="startDateMonth != null">
+                and data_time &lt; cast(#{startDateMonth} as timestamp)
+            </if>
+            <if test="startDateMonthNoYear != null &amp;&amp; endDateMonthNoYear !=null  ">
+                and data_time
+                between cast((date_part('YEAR',data_time)-${spanYearForMonth})||'-'||#{startDateMonthNoYear} as timestamp)
+                and cast(date_part('YEAR',data_time)||'-'||#{endDateMonthNoYear} as timestamp)
+            </if>
+        </where>
+        group by date_part('YEAR',data_time)
+        )avgB
+        ) avgTrrmMonthHistory
+        from (
+        select
+        r1.region_id regionId,
+        r1.china_name regionName,
+        ttn.trmm,
+        ttn.data_time dataTime
+        from ds_trmm ttn
+        left join init_region r1
+        on ttn.region_id = r1.region_id
+        left join init_region r2
+        on r1.parent_id = r2.region_id
+        <where>
+            <if test="level &lt; 4">
+                r2.region_id = #{regionId}
+            </if>
+            <if test="level == 4">
+                and ttn.region_id = #{regionId}
+            </if>
+            <if test="startDateMonth != null &amp;&amp; endDateMonth !=null  ">
+                and ttn.data_time between cast(#{startDateMonth} as timestamp) and cast(#{endDateMonth} as timestamp)
+            </if>
+        </where>
+        ) statistics
+        group by regionName,regionId
+        ) final
+        order by percentMonthHistoryYear asc
+    </select>
+
+    <!-- 查询湿度 -->
+    <select id="queryAllHumidity" resultType="com.jh.briefingNew.entity.BriefingHumidity">
+        select
+        hum_id humId, hum_name humName, range_start rangeStart, range_end rangeEnd
+        from  briefing_humidity
+        order by hum_id asc
+    </select>
+
+    <!-- 查询墒情 -->
+    <select id="queryAllSoilMoisture" resultType="com.jh.briefingNew.entity.BriefingSoilMoisture">
+        select
+        soid_id soidId,soid_name soidName,avg_percentage_start avgPercentageStart,avg_percentage_end avgPercentageEnd
+        from  briefing_soil_moisture
+        order by soid_id asc
+    </select>
+
+    <select id="queryTrmmStatistics" resultType="com.jh.briefingNew.model.chartDatas" parameterType="com.jh.briefingNew.model.BriefingReportParam">
+        SELECT
+        COALESCE(round( AVG (trmm), 2 ), 0) avgData,
+        to_char( data_time, 'mm-dd' ) AS dataTime
+        FROM
+        ds_trmm
+        WHERE
+        region_id = #{regionId}
+        <if test="history==1">
+            AND to_char( data_time, 'mm-dd' ) BETWEEN #{startDateNoYear}  AND #{endDateNoYear}
+        </if>
+        <if test="history==0">
+            AND to_char( data_time, 'yyyy-mm-dd' ) BETWEEN #{startDate}  AND #{endDate}
+        </if>
+        GROUP BY
+        to_char( data_time, 'mm-dd' )
+        ORDER BY
+        to_char( data_time, 'mm-dd' )
+    </select>
+
+
+    <!--根据时间查询改区域下所有子区域的降雨量-->
+    <!-- 查询指定时间范围周雨量信息 -->
+    <select id="queryAvgTrrmMonthHistory" resultType="com.jh.briefingNew.model.TrrmStatisticsMultRegionNew"
+            parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator="UNION ALL">
+        SELECT
+            r.region_id AS regionId,
+            r.china_name AS regionName,
+            COALESCE(SUM ( T.trmm ),0) AS trrmTotal
+        FROM
+            ds_trmm T,
+            init_region r
+        WHERE
+            T.region_id = r.region_id
+              AND (r.parent_id = #{item.regionId} OR r.parent_id = #{item.regionId})
+              AND T.data_time BETWEEN to_date( #{item.startDate}, 'yyyy-MM-dd' )
+              AND to_date( #{item.endDate}, 'yyyy-MM-dd' )
+        GROUP BY
+            r.region_id,
+            r.china_name
+        </foreach>
+    </select>
+
+    </mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.agric.mapping.IAreaMapper" >
+
+    <!--
+     * 根据用户ID查询区域
+     * @param token 用户标识
+     * @return ResultMessage
+     * @version <1> 2018-08-10 cxw: Created.
+     -->
+    <select id="findAreaByUserId" parameterType="java.lang.Integer" resultType="java.util.HashMap">
+
+        select c.region_id,r.region_code,r.region_name,r.china_name,r.level,r.parent_id from  custom_locale c left join init_region r on r.region_id = c.region_id
+        where c.user_id = #{accountId}
+        order by region_id
+
+    </select>
+
+    <!--
+    * 查询报告时间轴 仅查询ds_area 表中的有效数据
+    * @param map
+    * regionId 区域ID
+    * resolution 精度
+    * @return ResultMessage :
+    * @version <1> 2018-08-13 cxw:Created.
+    */
+    -->
+    <select id="findTimeAxisForWx" resultType="java.util.HashMap" parameterType="java.util.HashMap">
+        SELECT
+        --DISTINCT(to_char(data_time,'yyyy-MM-dd')) as dataTime
+        to_char(zz.data_time,'yyyy-MM-dd')  as dataTime,array_to_string(array_agg(DISTINCT zz.crop_id),',') as cropId, array_to_string(array_agg(DISTINCT zz.crop_name),',')
+        as cropName from
+        (select data_time,crop_id,(select data_name from init_dict d where d.dict_id= a.crop_id) as crop_name
+        FROM
+        ds_area a
+        WHERE
+        del_flag = #{delFlag}
+        AND data_status = #{dataStatus}
+        AND publish_status = #{publishStatus}
+        AND area>0
+        <if test="resolution != null">AND resolution = #{resolution}
+        </if>
+            <if test="
+        regionId != null and regionId != ''">AND region_id = #{regionId}
+            </if>
+        )zz group by dataTime order by dataTime
+    </select>
+
+</mapper>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.dgy.mapping.IGrowthMapper" >
+
+    <!--
+     * 根据区域、日期段查询区域及下一级区域在日期段内的同期环比长势数据
+     * @param param：参数，（区域ID，起止日期）
+     *  regionId: 区域ID
+     *  cropId: 作物ID
+     *  startDate: 开始日期
+     *  endDate: 结束日期
+     *   resolution: 分辨率
+     * @return  List<Growth> : 返回一年同期环比长势数据
+     * @version <1> 2018-05-03 cxw: Created.
+    *-->
+    <!--<select id="findGrowth" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity" >-->
+        <!--select  p.region_id as regionId,p.region_code as regionCode,p.areaName as regionName,p.region_name,p.data_time as date,p.growth as value from-->
+         <!--(select t.region_id,t.data_time,t.growth,r.parent_id,r.region_name ,r.region_code,(case when r.china_name is null then r.region_name-->
+        <!--else r.china_name end) as areaName from ( SELECT a.region_id,a.data_time,a.growth  FROM public.ds_growth a WHERE-->
+        <!--a.data_status='1' AND del_flag='1' AND a.resolution= #{resolution} AND a.crop_id= #{cropId}  AND  cast(substring(#{endDate},0,5)||'-12-31' as timestamp)>=a.data_time-->
+         <!--and a.data_time>= cast(#{startDate} as timestamp) ) t LEFT JOIN init_region r on r.region_id = t.region_id ) p where-->
+         <!--1=1   and  p.region_id = #{regionId} or p.parent_id = #{regionId} ORDER BY p.region_id-->
+    <!--</select>-->
+
+    <!--
+     * 根据区域及指定日期段，查询近三年及近十年的长势均值
+     * @param param：参数，（区域ID，起止日期）
+     *  regionId: 区域ID
+     *  cropId: 作物ID
+     *  startDate: 开始日期
+     *  endDate: 结束日期
+     *   resolution: 分辨率
+     * @return  List<Growth> : 返回一年同期环比长势数据
+     * @version <1> 2018-05-03 cxw: Created.
+     -->
+    <!--<select id="findGrowthByYear" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity">-->
+        <!--select SUBSTRING(to_char(data_time,'yyyy-MM-dd'), 6,6)  as monthAndDay, p.region_id as regionId,p.region_code as regionCode,p.areaName as regionName,p.region_name,p.data_time as date,p.growth as value from-->
+        <!--(select t.region_id,t.data_time,t.growth,r.parent_id,r.region_name ,r.region_code,(case when r.china_name is null then r.region_name-->
+        <!--else r.china_name end) as areaName from ( SELECT a.region_id,a.data_time,a.growth  FROM public.ds_growth a WHERE-->
+        <!--a.data_status='1' AND del_flag='1' AND a.resolution= #{resolution} AND a.crop_id= #{cropId}  AND cast(substring(#{endDate},0,5)||'-12-31' as timestamp)>= a.data_time-->
+         <!--and a.data_time>= cast(#{startDate} as timestamp) ) t LEFT JOIN init_region r on r.region_id = t.region_id ) p where-->
+        <!--1=1   and  p.region_id = #{regionId}  ORDER BY p.data_time-->
+    <!--</select>-->
+
+
+    <!--
+    * 查询指定日期范围内所有长势数据的时间点
+    * @param regionId  区域id
+    * @param cropId    作物id
+    * @param startDate 开始日期
+    * @param endDate   结束日期
+    * @param resolution    数据精度
+    * @return
+    -->
+    <select id="findGrowthTimes" resultType="java.lang.String" parameterType="com.jh.dgy.entity.GrowthEntity" >
+        SELECT
+            to_char( data_time, 'yyyy-MM-dd' ) AS data_time
+        FROM
+            ds_growth
+        WHERE
+            del_flag = '1'
+            AND data_status = '1'
+            AND publish_status = 2201
+        <if test="regionId != null" >
+            AND region_id = #{regionId}
+        </if>
+        <if test="cropId != null" >
+            AND crop_id = #{cropId}
+        </if>
+        <if test="resolution != null" >
+            AND resolution = #{resolution}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND data_time BETWEEN to_date( #{startDate}, 'yyyy-MM-dd' )
+            AND to_date( #{endDate}, 'yyyy-MM-dd' )
+        </if>
+        
+          order by data_time asc
+    </select>
+
+    <!--
+    * 查询指定日期范围内所有长势数据的时间点
+    * @param regionId  区域id
+    * @param cropId    作物id
+    * @param startDate 开始日期
+    * @param endDate   结束日期
+    * @param resolution    数据精度
+    * @return
+    -->
+    <select id="findGrowthTimesString" resultType="java.lang.String" parameterType="com.jh.dgy.entity.GrowthEntity" >
+        SELECT
+        to_char( data_time, 'yyyy-MM-dd' ) AS data_time
+        FROM
+        ds_growth
+        WHERE
+        del_flag = '1'
+        AND data_status = '1'
+        AND publish_status = 2201
+        <if test="regionId != null" >
+            AND region_id = #{regionId}
+        </if>
+        <if test="cropId != null" >
+            AND crop_id = #{cropId}
+        </if>
+        <if test="resolution != null" >
+            AND resolution = #{resolution}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND data_time BETWEEN to_date( #{startDate}, 'yyyy-MM-dd' )
+            AND to_date( #{endDate}, 'yyyy-MM-dd' )
+        </if>
+
+        order by data_time asc
+    </select>
+
+    <!--
+      * 查询所有长势数据
+      * @param regionId  区域id
+      * @param startDate 开始日期
+      * @param endDate   结束日期
+      * @return
+      -->
+    <select id="findAllGrowth" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity" >
+        select DISTINCT region_id as regionId,crop_id as cropId,resolution from ds_growth where  del_flag='1' and data_status='1' and publish_status = 2201 and resolution is not null
+        <if test="regionId != null" >
+            and  region_id = #{regionId}
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            AND data_time BETWEEN to_date( #{startDate}, 'yyyy-MM-dd' )
+            AND to_date( #{endDate}, 'yyyy-MM-dd' )
+        </if>
+        order by crop_id
+    </select>
+
+
+
+    <!--
+    * 查询该区域作物各种长势情况的面积分布和占比数据
+    * @param regionId  区域
+    * @param cropId    作物
+    * @param dataTime 数据日期
+    * @param resolution 精度
+    -->
+    <select id="queryGrowthArea" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity">
+        SELECT
+            region_id AS regionId,--区域id
+            crop_id AS cropId,--作物id
+            lowest AS lowest,--长势-很差(平方公里)
+            "lower" AS lower,--长势-差(平方公里)
+            low AS low,--长势-较差(平方公里)
+            normal AS normal,--长势-中等(平方公里)
+            high AS high,--长势-较好(平方公里)
+            higher AS higher,--长势-好(平方公里)
+            highest AS highest,--长势-很好(平方公里)
+            to_char( data_time, 'yyyy-MM-dd' ) AS dataTime,--数据日期
+            ( lowest + "lower" + low + normal + high + higher + highest ) AS value
+/*--             round( lowest / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS lowestPercent,--长势-很差(百分比)
+--             round( "lower" / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS lowerPercent,--长势-差(百分比)
+--             round( low / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS lowPercent,--长势-较差(百分比)
+--             round( normal / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS normalPercent,--长势-中等(百分比)
+--             round( high / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS highPercent,--长势-较好(百分比)
+--             round( higher / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS higherPercent,--长势-好(百分比)
+--             round( highest / ( lowest + "lower" + low + normal + high + higher + highest ) * 100, 2 ) AS highestPercent --长势-很好(百分比)*/
+        FROM
+            ds_growth
+        WHERE
+            del_flag = '1'--删除标记
+            AND data_status = '1'--数据状态
+            AND publish_status = 2201 --发布状态：2201表示已发布，2202表示未发布
+            <if test="regionId != null">
+                AND region_id = #{regionId}--区域id
+            </if>
+            <if test="cropId != null">
+                AND crop_id = #{cropId}--作物id
+            </if>
+            <if test="dataTime != null">
+                AND data_time = to_date( #{dataTime}, 'yyyy-MM-dd' )--数据时间
+            </if>
+            <if test="resolution != null">
+                AND resolution = #{resolution}--数据精度
+            </if>
+    </select>
+
+
+    <!--
+    * 查询该区域下各级区域的作物长势数据
+    * @param regionId  区域id
+    * @param cropId    作物id
+    * @param dataTime  数据时间
+    * @param resolution    数据精度
+    * @return
+    -->
+    <select id="queryGrowthInRegion" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity" >
+        SELECT
+            r.region_id AS regionId,
+            r.region_code AS regionCode,
+            r.china_name AS regionName,
+            G.crop_id AS cropId,
+            G.lowest AS lowest,
+            G."lower" AS LOWER,
+            G.low AS low,
+            G.normal AS normal,
+            G.high AS high,
+            G.higher AS higher,
+            G.highest AS highest,
+            to_char( G.data_time, 'yyyy-MM-dd' ) AS dataTime
+        FROM
+            ds_growth G,
+            init_region r
+        WHERE
+            G.del_flag = '1' --删除标记
+
+            AND G.data_status = '1' --数据状态
+
+            AND G.publish_status = 2201 --发布状态：2201表示已发布，2202表示未发布
+
+            AND G.region_id = r.region_id
+            <if test="regionId != null">
+               AND G.region_id IN ( SELECT region_id FROM init_region WHERE parent_id = #{regionId} or region_id= #{regionId} ) --该区域的所有下级区域
+            </if>
+            <if test="cropId != null">
+               AND G.crop_id = #{cropId} --作物id
+            </if>
+            <if test="dataTime != null">
+               AND G.data_time = to_date( #{dataTime}, 'yyyy-MM-dd' ) --数据时间
+            </if>
+            <if test="resolution != null">
+               AND G.resolution = #{resolution} --数据精度
+            </if>
+            
+            order by (G.lowest+G.lowest+ G."lower"+G.low+G.normal+G.high+G.higher+G.highest) desc
+    </select>
+
+
+    <!--
+    * 查询该区域下各级各级区域的作物长势数据及上年同期作物长势数据
+    * @param regionId  区域id
+    * @param cropId    作物id
+    * @param dataTime  数据时间
+    * @param resolution    数据精度
+    * @return
+    -->
+    <!--<select id="queryGrowthWithLastYear" resultType="com.jh.dgy.vo.GrowthVo" parameterType="com.jh.dgy.entity.GrowthEntity" >-->
+        <!--SELECT-->
+            <!--region_id AS regionId,-->
+            <!--crop_id AS cropId,-->
+            <!--lowest AS lowest,-->
+            <!--"lower" AS lower,-->
+            <!--low AS low,-->
+            <!--normal AS normal,-->
+            <!--high AS high,-->
+            <!--higher AS higher,-->
+            <!--highest AS highest,-->
+            <!--to_char( data_time, 'yyyy-MM-dd' ) AS dataTime-->
+        <!--FROM-->
+            <!--ds_growth-->
+        <!--WHERE-->
+            <!--del_flag = '1' &#45;&#45;删除标记-->
+            <!--AND data_status = '1'   &#45;&#45;数据状态-->
+            <!--AND publish_status = 2201    &#45;&#45;发布状态：2201表示已发布，2202表示未发布，正式环境需要取消屏蔽此查询条件-->
+            <!--<if test="regionId != null">-->
+                <!--AND region_id IN ( SELECT region_id FROM init_region WHERE parent_id = #{regionId} )&#45;&#45;该区域的所有下级区域-->
+            <!--</if>-->
+            <!--<if test="cropId != null">-->
+                <!--AND crop_id = #{cropId} &#45;&#45;作物id-->
+            <!--</if>-->
+            <!--<if test="dataTime != null">-->
+                <!--AND (data_time = to_date( #{dataTime}, 'yyyy-MM-dd' ) OR data_time = to_date( #{dataTime}, 'yyyy-MM-dd' ) - interval '1 year')  &#45;&#45; - interval '1 year'  &#45;&#45;数据时间-->
+            <!--</if>-->
+            <!--<if test="resolution != null">-->
+                <!--AND resolution = #{resolution} &#45;&#45;数据精度-->
+            <!--</if>-->
+    <!--</select>-->
+
+
+
+
+</mapper>

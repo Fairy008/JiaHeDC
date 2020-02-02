@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.report.mapping.IReportMapper" >
+    <sql id="Base_Column_List" >
+        report_id,
+        data_status,
+        del_flag,
+        create_time,
+        creator_name,
+        creator,
+        modify_time,
+        modifier_name,
+        modifier,
+        remark,
+        region_id,
+        report_name,
+        file_showname,
+        file_path,
+        file_realname,
+        file_size,
+        file_suffix,
+        cycle,
+        mechanism,
+        crop_id,
+        publish_time,
+        data_type,
+        approval_status,
+        ds_id,
+        report_time,
+        publish_status,
+        publisher_name,
+        resolution,
+        keyword
+    </sql>
+    <!--分页查询报告列表-->
+    <select id="findReportByPage" resultType="map" parameterType="java.util.HashMap">
+        SELECT
+        report_id,report_name
+        FROM
+            ds_report
+        WHERE
+            del_flag='1'
+            AND data_status='1'
+        <if test="publishStatus != null and publishStatus != ''">
+            AND publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="regionList != null and regionList.size()>0">
+            AND region_id in (
+            <foreach item="item" index="index" collection="regionList" separator=",">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+            )
+        </if>
+        <if test="regionId != null and regionId != ''">
+            AND region_id = #{regionId,jdbcType=BIGINT}
+        </if>
+        ORDER BY
+            report_time DESC
+    </select>
+    <!--根据id查询报告详情-->
+    <select id="findReportById" resultType="map" parameterType="Integer">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+            ds_report
+        WHERE
+            del_flag='1'
+            AND data_status='1'
+            AND report_id = #{reportId,jdbcType=INTEGER}
+    </select>
+    <!--查询时间轴-->
+    <select id="findTimeAxis" resultType="map" parameterType="hashMap">
+    SELECT
+    DISTINCT( data_time )
+    FROM
+    ds_area
+    WHERE
+    del_flag = '1'
+    AND data_status = '1'
+    AND area>0
+    <if test="resolution != null">
+        AND resolution = #{resolution,jdbcType=INTEGER}
+    </if>
+    <if test="publishStatus != null and publishStatus != ''">
+        AND publish_status = #{publishStatus,jdbcType=INTEGER}
+    </if>
+    <if test="regionId != null and regionId != ''">
+        AND region_id = #{regionId,jdbcType=BIGINT}
+    </if>
+    <if test="regionList != null">
+        AND region_id in (
+        <foreach item="item" index="index" collection="regionList" separator=",">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+        )
+    </if>
+    ORDER BY
+    data_time ASC
+</select>
+    <!--查询图层-->
+    <select id="findLayers" resultType="map" parameterType="hashMap">
+        SELECT
+            layer_id,
+            data_status,
+            del_flag,
+            create_time,
+            creator_name,
+            creator,
+            modify_time,
+            modifier_name,
+            modifier,
+            remark,
+            region_id,
+            title,
+            NAME,
+            type,
+            url,
+            ds,
+            data_time,
+            crop_id,
+            data_type,
+            publish_status,
+            publish_time,
+            publisher_name,
+            resolution,
+            publisher,
+            reprocess_id
+        FROM
+            ds_layer
+        WHERE
+            del_flag = '1'
+            AND data_status = '1'
+        <if test="ds != null and ds != ''">
+            AND ds  =#{ds,jdbcType=INTEGER}
+        </if>
+        <if test="publishStatus != null and publishStatus != ''">
+            AND publish_status =#{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="dataTime != null">
+            AND data_time = #{dataTime,jdbcType=DATE}
+        </if>
+        <if test="regionList != null and regionList != ''">
+            AND region_id in (
+            <foreach item="item" index="index" collection="regionList" separator=",">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+            )
+        </if>
+        <if test="regionId != null and regionId != ''">
+            AND region_id = #{regionId,jdbcType=BIGINT}
+        </if>
+    </select>
+    <insert id="saveRegionByUser" parameterType="hashMap" useGeneratedKeys="true" keyProperty="id" >
+        insert into custom_locale (
+          region_name,bbox,user_id,region_type
+        )VALUES (
+            #{regionName,jdbcType=INTEGER},
+            #{bbox,jdbcType=VARCHAR},
+            #{userId,jdbcType=INTEGER},
+             #{regionType,jdbcType=INTEGER}
+        )
+    </insert>
+    <select id="findAreaByYear" parameterType="hashMap" resultType="map">
+        SELECT
+            sum( ds.area ) AS area,
+            to_char ( to_date ( cast( ds.data_time AS VARCHAR ), 'yyyy-MM-dd' ), 'yyyy-MM-dd' ) AS data_time,
+            ds.crop_id,
+            d.data_name AS crop_name
+        FROM
+            ds_area ds
+            LEFT JOIN init_dict d ON ds.crop_id = d.dict_id
+            AND d.parent_id = 500
+        WHERE 1=1
+        <if test="publishStatus != null and publishStatus != ''">
+            AND ds.publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="regionList != null and regionList != ''">
+            AND ds.region_id in (
+            <foreach item="item" index="index" collection="regionList" separator=",">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+            )
+        </if>
+        <if test="dataTime != null and dataTime != ''">
+            AND to_char ( to_date ( cast( ds.data_time AS VARCHAR ), 'yyyy-MM-dd' ), 'yyyy-MM-dd' ) = #{dataTime,jdbcType=DATE}
+        </if>
+        GROUP BY
+            to_char ( to_date ( cast( ds.data_time AS VARCHAR ), 'yyyy-MM-dd' ), 'yyyy-MM-dd' ),
+            ds.crop_id,
+            d.data_name
+    </select>
+    <select id="findCustomLocaleList" parameterType="Integer" resultType="hashMap">
+          select id,region_name,bbox from custom_locale
+           WHERE 1=1
+            <if test="id != null and id != ''">
+                AND id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="userId != null and userId != ''">
+                AND user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="regionName != null and regionName != ''">
+                AND region_name = #{regionName,jdbcType=VARCHAR}
+            </if>
+            <if test="regionType != null and regionType != ''">
+                AND region_type = #{regionType,jdbcType=INTEGER}
+            </if>
+           ORDER BY region_name
+    </select>
+    <select id="findLayersCrop" resultType="map" parameterType="hashMap">
+        SELECT
+        DISTINCT( ds.crop_id ),
+        ds.crop_id,
+        d.data_code
+        FROM
+            ds_layer ds
+            LEFT JOIN init_dict d ON ds.crop_id = d.dict_id
+        WHERE ds.del_flag='1' and ds.data_status='1' and  publish_status=2201
+        <if test="dataTime != null">
+            AND data_time = #{dataTime,jdbcType=DATE}
+        </if>
+        <if test="regionId != null and regionId != ''">
+            AND ds.region_id = #{regionId,jdbcType=INTEGER}
+        </if>
+        <if test="regionList != null and regionList != ''">
+            AND ds.region_id in (
+            <foreach item="item" index="index" collection="regionList" separator=",">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+            )
+        </if>
+    </select>
+    
+    <update id="updateCustomLocale" parameterType="map">
+        UPDATE custom_locale SET region_id = #{regionId} WHERE user_id = #{userId} AND region_type = #{regionType}
+    </update>
+
+    <delete id="deleteCustomLocale" parameterType="map">
+        DELETE FROM custom_locale WHERE user_id = #{userId} AND region_type = #{regionType}
+    </delete>
+
+</mapper>

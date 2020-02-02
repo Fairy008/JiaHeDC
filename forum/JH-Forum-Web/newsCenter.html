@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="css/index/index.css" > -->
+    <style>
+
+
+        .content{ width: 984px;padding:0px 20px; margin:0 auto ;    overflow: auto; }
+        /*左侧轮播*/
+        .content .conMain{ width: 672px; float: left;position: relative }
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 50px;}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; font-weight: bold; line-height: 22px; color: #000;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+        .list h2 a{text-decoration: none; color: #000;}
+        .list h2 a:hover{color: #00a4da;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: left; margin-top:2px;margin-right: 20px}
+        .list dl dt.report img{ width: 147px; height: 135px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ /*height: 54px;*/ margin-top:8px;overflow: hidden;text-overflow: ellipsis;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;margin-top: 5px}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.comment:hover{color:#0b0b0b;cursor:pointer; background: url("images/public/forum/comment_hover.png") 0px 0px no-repeat;}
+
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px; line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px 0 10px 0;background-color: #ededed}
+        .loadMore:hover{ cursor: pointer;color:#00a4da;}
+
+
+        /*右侧 侧边栏*/
+        .sidebar{ width: 290px; float: right;     margin-right: 5px;}
+
+        /*热门标签*/
+        .hotTag{ margin-top:25px; position: relative; /*padding-bottom: 20px;*/}
+        .hotTag h2{ font-size: 16px; color: #040000; font-weight: bold; }
+        .hotTag p.tags{ margin-top:16px; /*padding-left:2px; height: 110px; overflow: hidden;*/}
+        .hotTag p.tags a{position:relative; display: inline-block; margin:0 3.5px; margin-bottom:8px;border:1px solid #dfdcdc; height: 23px; line-height: 23px; border-radius: 5px; padding:0 8px; font-size: 12px; color: #3b3b3b;}
+        .hotTag p.tags a.on{border: 1px solid #028ec9; color: #028ec9;background:url("images/public/forum/tagChoosed.png") right bottom no-repeat;}
+
+
+        .hotTag p.tags a:hover{cursor: pointer;color:#00a4da;}
+        .hotTag p.lookMore{ text-align: center; height: 45px; line-height: 76px; width: 100%; position: absolute; bottom: 0;
+            background: -moz-linear-gradient(top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,1) 100%) ;
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.2)), color-stop(100%,rgba(255,255,255,1)))  ;
+            background: -webkit-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;
+            background: -o-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;
+            background: -ms-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;}
+        .hotTag p.lookMore a{ color: #028ec9; font-size: 12px;}
+        .hotTag p.lookMore a:hover{cursor: pointer;}
+        /*热门报告*/
+        .hotList{ margin-top:25px;}
+        .hotList dl{ margin-bottom: 25px;}
+        .hotList dl dt{ border-bottom: 1px solid #e9e9e9;}
+        .hotList dl dt h2{ height: 30px; line-height: 30px; font-weight: bold;}
+        .hotList dl dt .changeIco:hover{ cursor: pointer;}
+        .hotList dl dt .changeIco{float: right; font-weight: normal; font-size: 12px; color: #969696; padding-left:17px; background: url("images/public/forum/change.png") left center no-repeat;}
+        .hotList dl dt a.more{ float: right; font-size: 12px; color: #2997cd; text-decoration: none}
+        .hotList dl dt a.more:hover{ cursor: pointer;color:#00a4da;}
+        .hotList ul li{ padding:14px 0; border-bottom: 1px solid #e9e9e9; overflow: auto;}
+        .hotList ul li p.info{ color: #9cbfcb; font-size: 12px; margin-top:14px;}
+        .hotList ul li p.info b{ font-weight: bold; margin-right: 4px;}
+        .hotList ul li p.info i.time{ margin-right: 24px;}
+        .hotList ul li .addBtn{ float: right; height: 18px; line-height: 18px; margin-top:10px; padding:0 7px; display: inline-block; border:1px solid #00a4da; color: #00a4da; border-radius: 5px; font-size: 12px;}
+        .hotList ul li .addBtn:hover{ cursor: pointer;}
+        .hotList ul li h3{ font-size: 14px; color: #040000; width: 230px;overflow: hidden; text-overflow: ellipsis; white-space:nowrap;}
+        .hotList ul li h3 a{text-decoration: none; color: #000;}
+        .hotList ul li h3 a:hover{cursor: pointer;color:#00a4da !important;}
+        /*专家列表*/
+        /*.hotList ul.expertList li a:hover{ cursor: pointer;color:#00a4da;}*/
+        .hotList ul.expertList li a img{ float: left; width: 45px; height: 45px; border-radius: 50%;}
+        .hotList ul.expertList li .peoInfo{ float: left; width: 180px; margin-left:7px; margin-top:4px;}
+        .hotList ul.expertList li .peoInfo h3{ font-size: 14px; color: #040000;}
+        .hotList ul.expertList li .peoInfo p{ margin-top:10px; font-size: 12px; color: #7b7b7b;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
+
+        .follow{cursor:pointer; height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;}
+        .followed{cursor:pointer; height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;}
+
+        #noComment{height: 84px;width: 100%;border-bottom: 1px solid #f0f0f0;padding-bottom: 16px;padding-top: 16px;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noComment img{width: 33px;height: 33px;border-radius: 50%;}
+        #noComment p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+
+        #hotDataList li{position:relative;cursor:pointer;font-size:14px;  }
+        .circle{height:6px;width:6px; border-radius: 50%;      -moz-border-radius: 50%;      -webkit-border-radius: 50%;display: inline-block;background-color:#505050;position:absolute;top:17px;left:5px;}
+
+        #hotDataList li p{padding-left:20px;  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+        #hotDataList li:hover{color:#0da6e6;}
+
+        #myTool{margin-top:30px;}
+
+        #carousel{width:100%;}
+
+        .faqListBox{
+            height: 100%;
+            margin-top: -95px;
+            background-color: #fbfbfb;
+        }
+        .searchBoxContent{
+            display:none
+        }
+        #orderDataBtn{position:absolute;top:590px;left:50px;}
+        /*#carousel{*/
+        /*display: none;*/
+        /*}*/
+    </style>
+    <title>珈和遥感社区</title>
+</head>
+<body>
+
+<div class="faqListBox" >
+
+
+    <div id="carousel" style="display: none"></div>
+
+    <div class="content" style="margin-top: 290px">
+
+        <!--<a href="javascript:void(0)" id="orderDataBtn"><img src="images/public/dataimg/dataOrder.png"  ></a>-->
+        <div class="arrow"></div>
+        <!--顶部轮播-->
+        <div class="conMain">
+
+
+            <div class="list">
+                <h1><a class="on" articleType="all">全部</a><a articleType="11001">报告</a><a articleType="11002">调研</a><a articleType="11003">问答</a></h1>
+                <div id="articleList">
+                </div>
+                <p class="loadMore" style="display: none;">加载更多>></p>
+                <div id="noComment" style="display: none;">
+                    <img src="images/public/forum/POKERFACE.png"><p>暂无内容</p>
+                </div>
+            </div>
+
+
+        </div>
+        <!--右侧侧边栏-->
+        <div class="sidebar">
+
+            <!--需要与class=sidebar组合使用-->
+            <div id="myTool" ></div>
+            <!--热门标签-->
+            <!--<div class="hotTag">-->
+            <!--<h2>热门标签</h2>-->
+            <!--<p class="tags">&lt;!&ndash;<a>分布</a><a>遥感</a><a>春玉米</a><a>农业保险</a><a>冬小麦</a><a>期货指数</a><a>冬小麦</a><a>分布</a><a>遥感</a><a>春玉米</a><a>农业保险</a><a>冬小麦</a><a>期货指数</a><a>分布</a><a>遥感</a><a>春玉米</a><a>农业保险</a><a>冬小麦</a><a>期货指数</a><a>分布</a><a>遥感</a><a>春玉米</a><a>农业保险</a><a>冬小麦</a><a>期货指数</a><a>分布</a><a>遥感</a><a>春玉米</a><a>农业保险</a><a>冬小麦</a><a>期货指数</a>&ndash;&gt;</p>-->
+            <!--<p class="lookMore" style="display: none;"><a>查看更多标签>></a></p>-->
+            <!--</div>-->
+            <!--右侧列表-->
+            <div class="hotList">
+                <!--<dl id="hotListArticle">-->
+                <!--<dt><h2><a class="changeIco">换一批</a>热门报告<i class="hot pdl5"></i></h2></dt>-->
+                <!--<dd>-->
+                <!--<ul>-->
+                <!--</ul>-->
+                <!--</dd>-->
+                <!--</dl>-->
+                <!--<dl id="newListArticle">-->
+                <!--<dt><h2><a class="changeIco">换一批</a>最新调研<i class="new pdl5"></i></h2></dt>-->
+                <!--<dd>-->
+                <!--<ul>-->
+                <!--</ul>-->
+                <!--</dd>-->
+                <!--</dl>-->
+
+
+                <dl id="hotDataList" style="display: none" >
+                    <dt><h2><a class="changeIco">换一批</a><i class="hot pdl5"></i>热门数据</h2></dt>
+                    <dd>
+                        <ul>
+                        </ul>
+                    </dd>
+                </dl>
+                <dl id="expertListRight" style="display:none">
+                    <dt><h2><a href="javascript:void(0)" url= "index.html#expertList" id="expertMore" class="more">更多>></a>专家列表</h2></dt>
+                    <dd>
+                        <ul class="expertList">
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+    <div id="footer"></div>
+
+</div>
+
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","UserModule","commons","enums","urlConfig","custom_settings"],function($,Marquee,BaseAjax,UserModule,commons,enums,urlConfig,custom_settings){
+        /**
+         * 初始化加载热门标签列表
+         * @version <1> 2019/3/7 13:24 zhangshen:Created.
+         */
+        var initLabelList = function () {
+            var forumLabel = {dataStatus: '1', delFlag: '1'};
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumLabel);
+            ajax.opts.async = false;
+            ajax.opts.url = FORUM_LABEL.nolog_findLabelList_url;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data) {
+                    var list = data.list;
+                    $.each(list,function(i,o){
+                        str += '<a labelId="'+ o.labelId +'">' + o.labelName + '</a>';
+                    });
+                }
+                $(".hotTag .tags").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+
+            if ($(".hotTag .tags").height() > 150) {
+                $(".hotTag .tags").css({"height": "115px", "overflow": "hidden"});
+                $(".hotTag .lookMore").show();
+            } else {
+                $(".hotTag .tags").css({"height": "auto", "overflow": "initial"});
+                $(".hotTag .lookMore").hide();
+            }
+        };
+
+
+        /**
+         * 初始化热门数据
+         *
+         */
+        var initHotDataList = function(){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DOWNLOADDATA_CONFIG.findHotDataList_url;
+            ajax.opts.type="GET";
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data.flag) {
+                    $.each(data.data,function(i,o){
+
+                        str += "<li data-id='"+ o.dataId +"' title='"+ o.dataTitle +"'><span class='circle'></span><p>"+ o.dataTitle +"</p></li>"
+                    });
+                }
+                $("#hotDataList dd ul").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+
+        }
+
+
+        /**
+         * 初始化热门报告列表
+         * @version <1> 2019/3/7 15:43 zhangshen:Created.
+         */
+        var initHotListArticle = function (articleType) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_ARTICLE.nolog_findHotArticleList_url + "?articleType=" + articleType;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data.flag) {
+                    $.each(data.data,function(i,o){
+
+                        var _str =  '<a class="addBtn" id="'+ o.articleId +'">+收藏</a>'
+
+                        if(o.followId != null && o.followId != ""){
+
+                            _str =  '<a class="addBtn follow" id="'+ o.articleId +'">已收藏</a>';
+                        }
+
+                        str += '<li>' + _str +
+                            '<h3><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank">'+ o.articleTitle +'</a></h3>' +
+                            '<p class="info"><b>' + (o.auditName == null ? "" : o.auditName)+ '</b>发布于<i class="time">' + strSubstring(o.publishTime, 0, 10) + '</i></p>' +
+                            '</li>';
+                    });
+                }
+                $("#hotListArticle dd ul").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        /**
+         * 初始化最新调研列表
+         * @version <1> 2019/3/7 16:28 zhangshen:Created.
+         */
+        var initNewListArticle = function (articleType) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_ARTICLE.nolog_findNewArticleList_url + "?articleType=" + articleType;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data.flag) {
+                    $.each(data.data,function(i,o){
+                        var _str =  '<a class="addBtn" id="'+ o.articleId +'">+收藏</a>'
+                        if(o.followId != null && o.followId != ""){
+
+                            _str =  '<a class="addBtn follow" id="'+ o.articleId +'">已收藏</a>';
+                        }
+                        str += '<li>' + _str +
+                            '<h3><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank">'+ o.articleTitle +'</a></h3>' +
+                            '<p class="info"><b>' +  (o.auditName == null ? "" : o.auditName) + '</b>发布于<i class="time">' + strSubstring(o.publishTime, 0, 10) + '</i></p>' +
+                            // '<p class="content_tag"><span class="tag_1">数据1</span><span class="tag_2">数据2</span><span class="tag_3">数据3</span></p>'+
+                            '</li>';
+                    });
+                }
+                $("#newListArticle dd ul").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        /**
+         * 初始化专家列表
+         * @version <1> 2019/3/7 17:06 zhangshen:Created.
+         */
+        var initExpertListRight = function () {
+            //查询当前用户关注的所有专家的id
+            var focusIdList = [];
+            focusIdList = queryMyFocusExperts();
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_EXPERT.nolog_findRandomExpert_url;
+            ajax.opts.type = "GET";
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data.flag) {
+                    $.each(data.data,function(i,o){
+
+                        var photoUrl = 'images/public/forum/userImg.png'
+                        if (null != o.photoUrl && '' != o.photoUrl) photoUrl =download_config.DOWNLOD_URL + o.photoUrl;
+
+                        str += '<li>' +
+                            '<a href="index.html?expertId='+o.expertId+'&accountId='+o.accountId+'#expertInfo" target="_blank" title="' + o.expertName + '"><img src="' + photoUrl + '" /></a>' +
+                            '<div class="peoInfo">' +
+                            '<h3><a href="index.html?expertId='+o.expertId+'&accountId='+o.accountId+'#expertInfo" target="_blank" title="' + o.expertName + '" style="text-decoration: none; color: #000;">' + o.expertName + '</a></h3>' ;
+                        str += '<p title="' + o.introduction + '">' + o.introduction + '</p></div>';
+                        if (null != focusIdList && focusIdList.indexOf(o.accountId) != -1) {
+                            str +=  '<a class="followed" expertId="'+o.expertId+'" accountId="'+ o.accountId +'">已关注</a>' ;
+                            str += '<a class="follow" expertId="'+o.expertId+'" accountId="'+ o.accountId +'" style="display: none">+关注</a>';
+                        }else {
+                            str +=  '<a class="followed" expertId="'+o.expertId+'" accountId="'+ o.accountId +'" style="display: none">已关注</a>' ;
+                            str += '<a class="follow" expertId="'+o.expertId+'" accountId="'+ o.accountId +'">+关注</a>';
+                        }
+
+                        str += '</li>';
+                    });
+                }
+                $("#expertListRight dd ul").html("").html(str);
+
+                //点击关注按钮
+                $('.expertList .follow').bind('click',function () {
+                    //1、首先查询用户是否登录，没有登录跳转到登录页面
+                    if (commons.checkForumLoginStatus()) {
+                        // var expertId = $(this).attr('expertId');
+                        var accountId = $(this).attr("accountId");
+                        //关注专家
+                        var flag = followPerson(accountId);
+                        if (flag){
+                            // $(this).removeClass('follow').addClass('followed');
+                            // $(this).text('已关注');
+                            $(this).hide();
+                            $(this).prev().show();
+                        }
+                    }
+
+                });
+
+                //点击已关注按钮，取消关注
+                $('.expertList .followed').bind('click',function () {
+                    //1、首先查询用户是否登录，没有登录跳转到登录页面
+                    if (commons.checkForumLoginStatus()) {
+                        var expertId = $(this).attr('expertId');
+                        var accountId = $(this).attr("accountId");
+                        //取消关注专家
+                        var flag = cancelFollowPerson(accountId);
+                        if (flag) {
+                            // $(this).removeClass('followed').addClass('follow');
+                            // $(this).text('+关注');
+                            $(this).hide();
+                            $(this).next().show();
+                        }
+                    }
+                });
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        /**
+         * 初始化全部帖子列表
+         * @param page第几页，rows每页条数，flag是否第一次加载（第一页），articleType类型（全部、报告、调研、问答）
+         * @return
+         * @version <1> 2019/3/7 20:34 zhangshen:Created.
+         */
+        var initFirstRows = 8;//第一次夹加载条数
+        var initRows = 4;//之后每次加载条数
+        var initArticlePage = function (page, rows, flag) {
+            var forumArticle = {page:page, rows:rows, articleStatus: forum_articleStatus.PUBLISHED};
+            var articleType = $(".list h1 a.on").attr("articleType");
+            var articleLabel = $(".hotTag .tags a.on").text();
+            if (articleType != "all") {
+                forumArticle.articleType = articleType;
+            }
+            if (articleLabel) {
+                forumArticle.articleLabel = articleLabel;
+            }
+            //关键字查询
+            var keyWords = $.trim($("#searchText").val());
+            if (keyWords) {
+                forumArticle.keyWords = keyWords;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumArticle);
+            ajax.opts.url = FORUM_ARTICLE.nolog_findCombinationPage_url;
+            ajax.opts.successFun = function(data){
+
+                var str = "";
+                if (data) {
+                    var list = data.list;
+                    $.each(list,function(i,o){
+                        var hasTag = false;
+                        if(o.articleLabelList.length>0){
+                            hasTag = true;
+                        }
+                        var articleLabelListStr = "";
+                        $.each(o.articleLabelList,function(ii,oo){
+                            if (ii < 3) {
+                                for (var k in oo) {
+                                    if (oo[k]) {
+                                        articleLabelListStr += '<span class="lab" style="background-color: '+ oo[k] +';">' + k + '</span>';
+                                    } else {
+                                        articleLabelListStr += '<span class="lab">' + k + '</span>';
+                                    }
+                                }
+                            }
+                        });
+
+                        // str += '<dl>';
+                        if (o.articleType == forum_articleType.follow_paper) {//报告
+
+                            str += '<dl style="min-height:145px;">';
+                            var imgUrl =  "images/public/forum/list_img.png";
+
+                            if(null != o.imageUrl && "" != o.imageUrl){
+                                imgUrl =   o.imageUrl;
+                            }
+
+
+                            if (o.articleHot == 1) {
+                                str += '<dt class="report"><img src="'+ imgUrl +'" /></dt>' +
+                                    '<dt>';
+
+                                if(o.articleSummary == null || o.articleSummary == ""){
+                                    str += '<h2 style="margin-top:25px;"><i class="hot"></i>';
+                                }else{
+                                    str += '<h2><i class="hot"></i>';
+                                }
+                            } else {
+                                str += '<dt class="report"><img src="'+ imgUrl +'" /></dt>' +
+                                    '<dt>' ;
+                                if(o.articleSummary == null || o.articleSummary == ""){
+                                    str += '<h2 style="margin-top:25px;"></i>';
+                                }else{
+                                    str += '<h2></i>';
+                                }
+                            }
+
+                        } else if (o.articleType == forum_articleType.follow_survey) {//约调研
+
+                            str += '<dl>';
+                            str += '<dt>' +
+                                '<h2><i class="type">调研</i>';
+                        } else if (o.articleType == forum_articleType.follow_faq) {//问答
+
+                            str += '<dl>';
+                            str += '<dt>' +
+                                '<h2><i class="type">问答</i>';
+                        } else if (o.articleType == forum_articleType.follow_share) {//数据分享
+
+                            str += '<dl>';
+                            str += '<dt>' +
+                                '<h2><i class="type">数据分享</i>';
+                        } else if (o.articleType == forum_articleType.follow_other) {//其他
+
+                            str += '<dl>';
+                            str += '<dt>' +
+                                '<h2><i class="type">其他</i>';
+                        }
+
+
+                        var _articleTitle = o.articleTitle;
+                        if(o.articleTitle != null && o.articleTitle.length > 30){
+                            _articleTitle = o.articleTitle.substring(0,30);
+                        }
+
+                        str += '<a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank">' + _articleTitle + '</a>';
+
+                        if(o.articleType == forum_articleType.follow_survey && o.articleNew == '1'){
+                            str += '<i class="new"></i>'
+                        }
+                        if(hasTag == true){
+                            str  +=  '</h2></dt>' +
+                                '<dd>' +
+                                '<p class="brief">' + (o.articleSummary == null ? '' : o.articleSummary )+ '</p>' +
+                                '<p class="info"><b>' +  (o.auditName == null ? "" : o.auditName) + '</b>发布于<i class="time">' + strSubstring(o.publishTime, 0, 10) + '</i> <span class="comment" articleId = "'+ o.articleId +'">' + o.commentCount + '</span><span class="collect">' + o.likeCount + '</span></p>' +
+                                '<p class="content_tag">'+ articleLabelListStr+'</p>'+
+                                '</dd>' +
+                                '</dl>';
+                        }else{
+                            str  +=  '</h2></dt>' +
+                                '<dd>' +
+                                '<p class="brief" style="margin-top: 18px">' + (o.articleSummary == null ? '' : o.articleSummary )+ '</p>' +
+                                '<p class="info" style="margin-top: 20px" ><b>' +  (o.auditName == null ? "" : o.auditName) + '</b>发布于<i class="time">' + strSubstring(o.publishTime, 0, 10) + '</i> <span class="comment" articleId = "'+ o.articleId +'">' + o.commentCount + '</span><span class="collect">' + o.likeCount + '</span></p>' +
+                                // '<p class="content_tag">'+ articleLabelListStr+'</p>'+
+                                '</dd>' +
+                                '</dl>';
+                        }
+
+                    });
+
+
+                    $("#articleList").append(str);
+                    if (data.hasNextPage) {
+                        if (flag) {
+                            $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                        } else {
+                            $(".loadMore").attr("nextPage", data.nextPage).html("加载更多>>");
+                        }
+                    } else {
+                        $(".loadMore").attr("nextPage", data.nextPage).html("没有更多了");
+                    }
+
+                    if (list.length > 0) {
+                        $(".loadMore").show();
+                        $("#noComment").hide();
+                    } else {
+                        $(".loadMore").hide();
+                        $("#noComment").show();
+                    }
+
+                }
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+
+        $(window).resize(function(){
+
+            var _width = ($(".loadContent").outerWidth() - $(".content").outerWidth()) / 2;
+            var _left = 210
+            if(_width < 210){ //将图片宽高变小
+                $("#orderDataBtn img").css({"width":(_width-15)+"px", "height":(_width/2) + "px"})
+                _left = 150;
+            }else{
+                $("#orderDataBtn img").css({"width":"200px", "height":"110px"})
+            }
+            $("#orderDataBtn").css({"left": _width - _left + "px"})
+        })
+
+        var initOrderDataFun = function(){
+
+            var _width = ($(".loadContent").outerWidth() - $(".content").outerWidth()) / 2;
+            var _left = 210
+            if(_width < 210){ //将图片宽高变小
+                $("#orderDataBtn img").css({"width":(_width-15)+"px", "height":(_width/2) + "px"})
+                _left = 150;
+            }else{
+                $("#orderDataBtn img").css({"width":"200px", "height":"110px"})
+            }
+
+            $("#orderDataBtn").css({"left": _width - _left + "px"})
+            $(document).scroll(function(){
+                var scrollTop =$(this).scrollTop();
+                var _top = 590;
+                if(scrollTop > 590){
+                    _top = scrollTop + 70 ;
+                }
+                $("#orderDataBtn").css({"top": _top + "px"})
+            })
+        }
+
+
+        var gotoOrderDataPage = function(){
+            $("#orderDataBtn").bind("click",function(){
+
+                if (commons.checkForumLoginStatus()) {
+
+                    $(".loadContent").load("orderData.html")
+                }
+
+            })
+        }
+
+
+        var init = function(){
+            // console.log("訂單")
+            //隐藏搜索框并修改样式
+            $("#indexRightTop").css({"height":"115px"});
+            $("#headRightTop").css({"height":"85px"});
+            // $(".liA li:last-child").css({"display":"none"})
+            $(".searchContentBox").css({"display":"none"})
+
+            initOrderDataFun();
+            gotoOrderDataPage();
+
+            $("#carousel").load("carousel.html");
+            // initMarqueeList(5);
+
+            $("#myTool").load("myTool.html")
+            //初始化全部帖子列表
+            initArticlePage(1, initFirstRows, true);
+            //初始化加载热门标签列表
+            initLabelList();
+            initHotDataList();
+            // //初始化热门报告列表
+            // initHotListArticle(forum_articleType.follow_paper);
+            // //初始化最新调研列表
+            // initNewListArticle(forum_articleType.follow_survey);
+            //初始化专家列表
+            initExpertListRight();
+
+
+            hotDataClick();
+
+
+            //
+            // //热门报告换一批
+            // hotChangeIcoClick();
+            // //最新调研换一批
+            // nowChangeIcoClick();
+
+            //加载更多
+            loadMore();
+            //查看更多标签
+            lookMore();
+            //tab切换
+            tabFun();
+
+            //加载需要登录的方法
+            initWithUserInfoFun();
+            addCommentFun();
+
+            //加载专家
+            loadExpertFun();
+
+            $("#footer").load("footer.html")
+
+        }
+
+        var loadExpertFun = function(){
+            $("#expertMore").on("click",function () {
+
+                var url = $(this).attr("url");
+
+                window.open(url)
+
+
+
+            })
+        }
+
+        /**
+         * 初始化轮播列表
+         * @param num轮播个数
+         * @return
+         * @version <1> 2019/3/18 14:44 zhangshen:Created.
+         */
+        var initMarqueeList = function (num) {
+
+            //一次滚动一屏
+            $('#marquee3').kxbdSuperMarquee({
+                distance:window.screen.width,
+                time:4,
+                navId:'#mar3Nav',
+                direction:'left',
+                btnGo:{left:'#goL',right:'#goR'}
+            });
+
+
+            // var objParam = {indexShow: 1};
+            // var ajax = new BaseAjax();
+            // var url = COLLECTION_TASK.nolog_findCollectionTaskList_url;
+            // if(custom_settings.isNewTask == 1){
+            //     var url = COLLECTION_TASK_NEW.nolog_findTaskByPage_url;
+            // }
+            // ajax.opts.url = url;
+            // ajax.opts.data = JSON.stringify(objParam);
+            // ajax.opts.successFun = function(data){
+            //     var str = "";
+            //     if (data) {
+            //         var list = data.list;
+            //         $.each(list,function(i,o){
+            //             if (i < num) {
+            //                 var strFormat = '<li taskInfoId="{key1}"><a href="javascript:void(0)"><img width="100%" height="520" src="{key2}" /></a><span>{key3}</span></li>';
+            //                 var indexShowImg = '';
+            //                 // if (!o.indexShowImg) {//如果为空
+            //                 if (true) {//如果为空
+            //                     indexShowImg = 'images/public/forum/banner_img1.jpg';//默认图片
+            //                 } else {
+            //                     indexShowImg = download_config.DOWNLOD_URL + o.indexShowImg;
+            //                 }
+            //                 var taskId = o.id;
+            //                 if(custom_settings.isNewTask == 1){
+            //                     taskId =o.taskId;
+            //                 }
+            //                 var obj = {'key1': taskId, 'key2': indexShowImg, 'key3': o.taskName};
+            //                 str += strFormat.format(obj);
+            //             }
+            //         });
+            //     }
+            //     $("#marquee3 ul").html(str);
+            //
+            //     //一次滚动一屏
+            //     $('#marquee3').kxbdSuperMarquee({
+            //         distance:window.screen.width,
+            //         time:4,
+            //         navId:'#mar3Nav',
+            //         direction:'left',
+            //         btnGo:{left:'#goL',right:'#goR'}
+            //     });
+            // };
+            // ajax.opts.failureFun = function(){};
+            // ajax.run();
+
+            /**
+             * 绑定点击事件
+             * @version<2> lcw : Created.
+             * 轮播放广告，此处去掉点击事件
+             */
+            // $(document).on('click', '#marquee3 ul li', function(){
+            //     //if (commons.checkForumLoginStatus()) {
+            //         var taskInfoId = $(this).attr('taskInfoId');
+            //         // window.open("index.html?taskInfoId=" + taskInfoId + "#collectionTaskDetail");
+            //         window.open("collectionTaskDetail.html?taskInfoId=" +taskInfoId )
+            //     //}
+            // });
+
+            //绑定鼠标事件
+            $(document).on('mouseover', '#marquee3 ul li', function(event){
+                $(".leftBotton").css("display","inline-block");
+                $(".rightBotton").css("display","inline-block");
+                event.stopPropagation();//阻止事件向上冒泡
+            });
+            $(document).on('mouseleave', '#marquee3 ul li', function(e){
+                $(".leftBotton").hide();
+                $(".rightBotton").hide();
+                event.stopPropagation();//阻止事件向上冒泡
+            });
+            $(".leftBotton,.rightBotton").on('mouseover', function(e){
+                $(".leftBotton").css("display","inline-block");
+                $(".rightBotton").css("display","inline-block");
+            });
+            $(".leftBotton,.rightBotton").on('mouseleave', function(e){
+                $(".leftBotton").hide();
+                $(".rightBotton").hide();
+            });
+        };
+
+        //字符串模板生成
+        String.prototype.format = function() {
+            if (arguments.length == 0) return this;
+            var param = arguments[0];
+            var s = this;
+            if (typeof(param) == 'object') {
+                for (var key in param)
+                    s = s.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+                return s;
+            } else {
+                for (var i = 0; i < arguments.length; i++)
+                    s = s.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+                return s;
+            }
+        };
+
+        /**
+         * 需要用户登录
+         * 我的菜单： 写报告、约调研、提问
+         * 绑定click事件，点击时，需要判断用户是否登录，若没登录，则跳转至登录页面
+         * @version<1> 2019-03-11 lcw:Created.
+         */
+        var initWithUserInfoFun = function(){
+
+
+            /**
+             * 收藏帖子
+             * 已收藏的帖子无需重复收藏
+             * @version<1> 2019-03-12 lcw :Created.
+             */
+            $(document).on("click",".addBtn", function(){
+                var _this = $(this)
+
+                var url = "";
+                //如果已收藏，则无需触发
+                if($(this).hasClass("follow")){  //已收藏
+                    url = FORUM_FOLLOW.removeFollow_url;
+                    // return false;
+                }else{
+                    url = FORUM_FOLLOW.addFollow_url;
+                }
+
+                //收藏帖子
+                if(commons.checkForumLoginStatus()){
+                    var forumFollow = {
+                        "articleId":_this.attr("id"),
+                        "followType":forum_followType.follow_follow //收藏
+                    }
+
+                    var ajax = new BaseAjax();
+                    ajax.opts.url = url;
+
+                    ajax.opts.data = JSON.stringify(forumFollow);
+                    ajax.opts.successFun = function(data){
+                        var str = "";
+                        if (data.flag) {
+                            if($(_this).hasClass("follow")){
+                                $(_this).removeClass("follow").html("+收藏")
+                            }else{
+
+                                $(_this).addClass("follow").html("已收藏")
+                            }
+
+                        }
+                    };
+                    ajax.opts.failureFun = function(){};
+                    ajax.run();
+
+                }
+            })
+        }
+
+
+        /**
+         * 点击列表的评论图标
+         * 1.打开报告详情
+         * 2.跳到评论区域
+         */
+        var addCommentFun = function(){
+            $(document).on("click", ".list dl dd p.info span.comment", function(){
+
+                window.open("index.html?articleId=" + $(this).attr("articleid")+"&comment=1#articleInfo")
+
+            })
+        }
+
+
+        /*//一次滚动一屏
+         $('#marquee3').kxbdSuperMarquee({
+         distance:672,
+         time:4,
+         navId:'#mar3Nav',
+         direction:'left'
+         });*/
+
+        var lookMore = function(){
+            $('.lookMore a').on('click',function(){
+                $('.tags').css('height','auto');
+                $('.lookMore').hide();
+            });
+        };
+
+        var tabFun = function(){
+            //(全部、报告、调研、问答 tab切换查询)
+            $('.list h1 a').on('click',function(){
+                console.log("切换aaaa");
+                $(".loadMore").hide();
+                $(this).addClass('on').siblings('a').removeClass('on');
+
+                $("#articleList").html("");
+                initArticlePage(1, initFirstRows, true);
+            });
+
+            //热门标签切换查询
+            $(".hotTag .tags a").live('click',function(){
+                $(".loadMore").hide();
+                if ($(this).hasClass('on')) {
+                    $(this).removeClass('on');
+                } else {
+                    $(this).addClass('on').siblings('a').removeClass('on');
+                }
+                //$('.list h1>a:first-child').addClass('on').siblings('a').removeClass('on');
+
+                $("#articleList").html("");
+                initArticlePage(1, initFirstRows, true);
+            });
+
+            //$(".liA .searchBox").show();
+            //头部搜索查询
+            $("#searchBtn").off("click").on("click", function(){
+                $("#articleList").html("");
+                if ($(".liA li a.on").text() == '首页') {
+                    $('.list h1>a:first-child').addClass('on').siblings('a').removeClass('on');
+                    $(".hotTag .tags a").siblings('a').removeClass('on');
+                    initArticlePage(1, initFirstRows, true);
+                }
+            });
+        };
+
+        /**
+         * 点击帖子更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    initArticlePage(nextPage, initRows, false);
+                }
+            });
+        };
+
+
+
+        var hotDataClick = function () {
+            $('#hotDataList .changeIco').on('click',function(){
+                initHotDataList();
+            });
+
+
+            $("#hotDataList").on("click", "ul li", function(){
+                showDataDetail($(this).attr("data-id"))
+            })
+        };
+
+
+        /**
+         *
+         */
+        var showDataDetail = function(dataId){
+
+            $(".liA li a").removeClass("on");
+            $("#downloadData").addClass("on")
+
+            $(".loadContent").load("downloadData.html",function(){
+                $("#homeDataId").val(dataId)
+            });
+
+        }
+
+        /**
+         * 热门报告换一批
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:57 zhangshen:Created.
+         */
+        var hotChangeIcoClick = function () {
+            $('#hotListArticle .changeIco').on('click',function(){
+                initHotListArticle(forum_articleType.follow_paper);
+            });
+        };
+
+        /**
+         * 最新调研换一批
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:58 zhangshen:Created.
+         */
+        var nowChangeIcoClick = function () {
+            $('#newListArticle .changeIco').on('click',function(){
+                initNewListArticle(forum_articleType.follow_survey);
+            });
+        };
+
+        /**
+         * 截取
+         * @param str要截取的字符串, start开始小标, end结束下标
+         * @return
+         * @version <1> 2019/3/8 10:48 zhangshen:Created.
+         */
+        var strSubstring = function (str, start, end) {
+            if (str) {
+                str = str != null ? str.substring(start,end) : str;
+            }
+            return str;
+        };
+
+
+        /**
+         * 查询当前登录用户关注的所有专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var queryMyFocusExperts = function(){
+            //1、判断是否登录,登录后查询用户信息
+            var userInfo = isLogion();
+            if (userInfo.flag){
+                var person = JSON.parse(userInfo.data);
+                var focusIdList = [];
+                var accountId = person.accountId;
+                //2、查询用户关注的所有专家
+                var param = {
+                    followType : forum_followType.follow_focus,
+                    creator : accountId
+                }
+                var ajax = new BaseAjax();
+                ajax.opts.url = FORUM_FOLLOW.findByPage_url;
+                ajax.opts.data = JSON.stringify(param);
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag && null != result.data) {
+                        for (var i=0;i<result.data.length;i++){
+                            //将查询出的关注的专家列表的id存入数组
+                            focusIdList.push(result.data[i].articleId);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+                return focusIdList;
+            }
+
+        }
+
+        /**
+         * 关注专家方法
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var followPerson = function(expertId){
+            var flag = false;
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.addFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+                //此处欠缺弹框提示用户关注失败
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 取消关注专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var cancelFollowPerson = function (expertId) {
+            var flag = false;
+            var result = isLogion();
+            var userInfo = JSON.parse(result.data);
+            var accountId = null;
+            if (null != userInfo.accountId) {
+                accountId = userInfo.accountId;
+            }else {
+                alert('取消关注失败');
+                return;
+            }
+
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus,
+                creator :accountId
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.removeFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+            return flag;
+        }
+
+        /**
+         * 判断用户是否登陆,若登录成功，返回用户信息
+         * @param
+         * @return boolean
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+        init();
+    })
+</script>
+</body>
+</html>

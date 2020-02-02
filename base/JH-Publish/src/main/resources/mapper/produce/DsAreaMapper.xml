@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.data.mapping.IDsAreaMapper" >
+    <resultMap id="BaseResultMap" type="com.jh.data.entity.DsArea" >
+
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="region_id" property="regionId" jdbcType="BIGINT" />
+        <result column="remark" property="remark" jdbcType="VARCHAR" />
+        <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+        <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+        <result column="create_time" property="createTime" jdbcType="DATE" />
+        <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+        <result column="creator" property="creator" jdbcType="INTEGER" />
+        <result column="modify_time" property="modifyTime" jdbcType="DATE" />
+        <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+        <result column="modifier" property="modifier" jdbcType="INTEGER" />
+        <result column="crop_id" property="cropId" jdbcType="INTEGER" />
+        <result column="area" property="area" jdbcType="NUMERIC" />
+        <result column="data_time" property="dataTime" jdbcType="DATE" />
+        <result column="data_type" property="dataType" javaType="INTEGER"/>
+        <result column="publish_status" property="publishStatus" jdbcType="INTEGER" />
+        <result column="publish_time" property="publishTime" jdbcType="DATE" />
+        <result column="publisher_name" property="publisherName" jdbcType="VARCHAR" />
+        <result column="publisher" property="publisher" jdbcType="INTEGER" />
+        <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+        <result column="region_code" property="regionCode" jdbcType="VARCHAR" />
+        <result column="crop_name" property="cropName" jdbcType="VARCHAR" />
+        <result column="dataType_value" property="dataTypeValue" jdbcType="VARCHAR" />
+        <result column="resolution_value" property="resolutionValue" jdbcType="VARCHAR" />
+        <result column="publish_status_name" property="publishStatusName" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List" >
+        id,region_id,remark,data_status,create_time,creator_name,modify_time,modifier_name,
+        modifier,crop_id,area,data_type,publish_status,publish_time,publisher_name,data_time,del_flag,publisher
+    </sql>
+    <select id="findByPage" resultMap="BaseResultMap" parameterType="com.jh.data.model.DsAreaParam" >
+        SELECT
+        ds.id,
+        ds.region_id,
+        ds.remark,
+        ds.data_status,
+        ds.create_time,
+        ds.creator_name,
+        ds.creator,
+        ds.modify_time,
+        ds.modifier_name,
+        ds.modifier,
+        ds.crop_id,
+        ds.area,
+        ds.data_type,
+        ds.publish_status,
+        ds.publish_time,
+        ds.publisher_name,
+        ds.data_time,
+        ds.del_flag,
+        ds.publisher,
+        ds.resolution
+        FROM
+        /*ds_area ds*/
+        (select *  from ds_area where id in (select max(id) from ds_area ds GROUP BY region_id,crop_id,data_time,resolution)) ds
+        LEFT JOIN init_region r ON ds.region_id = r.region_id
+        AND r.del_flag = '1'
+        AND r.data_status = '1'
+        WHERE
+        ds.del_flag = '1'
+        AND ds.data_status = '1'
+        <if test="id!=null and id!=''">
+            AND  ds.id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="dataType!=null and dataType!=''">
+            AND  ds.data_type = #{dataType,jdbcType=INTEGER}
+        </if>
+        <if test="resolution!=null and resolution!=''">
+            AND  ds.resolution = #{resolution,jdbcType=INTEGER}
+        </if>
+        <if test="cropId!=null and cropId!=''">
+            AND  ds.crop_id = #{cropId,jdbcType=INTEGER}
+        </if>
+        <if test="publishStatus!=null and publishStatus!=''">
+            AND  ds.publish_status = #{publishStatus,jdbcType=INTEGER}
+        </if>
+        <if test="publisherName!=null and publisherName!=''">
+            AND  ds.publisher_name like CONCAT('%', #{publisherName}, '%')
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            AND ds.data_time BETWEEN CAST((#{startTime} || ' 00:00:00') AS  TIMESTAMP)AND CAST((#{endTime} || ' 23:59:59') AS TIMESTAMP)
+        </if>
+        <if test="regionCode!=null and regionCode!=''">
+            AND r.region_code like #{regionCode,jdbcType=VARCHAR} || '%'
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sidx != null and sidx != ''">
+                ${sidx} ${sord}
+            </when>
+            <otherwise>
+                ds.publish_status DESC, ds.data_time desc
+            </otherwise>
+        </choose>
+    </select>
+    
+    <update id="updateDsArea" parameterType="com.jh.data.model.DsAreaParam">
+        update  ds_area
+        <set >
+            <if test="regionId != null" > region_id = #{regionId}, </if>
+            <if test="remark != null" > remark = #{remark},</if>
+            <if test="dataStatus != null" > data_status = #{dataStatus},</if>
+            <if test="delFlag != null" > del_flag = #{delFlag}, </if>
+            modify_time = now(),
+            <if test="modifierName != null" > modifier_name = #{modifierName},</if>
+            <if test="modifier != null" > modifier = #{modifier}, </if>
+            <if test="cropId != null" > crop_id = #{cropId}, </if>
+            <if test="area != null" > area = #{area}, </if>
+            <if test="dataType != null" > data_type = #{dataType}, </if>
+            <if test="publishStatus != null" > publish_status = #{publishStatus}, </if>
+            publish_time  = now(),
+            <if test="publisherName != null" > publisher_name = #{publisherName}, </if>
+            <if test="publisher != null" > publisher = #{publisher}, </if>
+        </set>
+        where 1 = 1
+        <if test="id!=null and id!=''">
+            AND id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="productId!=null and productId!=''">
+            AND product_id = #{productId,jdbcType=INTEGER}
+        </if>
+    </update>
+    <update id="publish" parameterType="com.jh.data.model.DsAreaParam" >
+        update  ds_area
+        <set >
+            <if test="publishStatus != null" > publish_status = #{publishStatus}, </if>
+            publish_time  = now(),
+            <if test="publisherName != null" > publisher_name = #{publisherName}, </if>
+            <if test="publisher != null" > publisher = #{publisher}, </if>
+        </set>
+        where id in
+        <foreach collection="idList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        SELECT
+        ds.id,
+        ds.region_id,
+        ds.remark,
+        ds.data_status,
+        ds.create_time,
+        ds.creator_name,
+        ds.creator,
+        ds.modify_time,
+        ds.modifier_name,
+        ds.modifier,
+        ds.crop_id,
+        ds.area,
+        ds.data_type,
+        ds.publish_status,
+        ds.publish_time,
+        ds.publisher_name,
+        ds.data_time,
+        ds.del_flag,
+        ds.publisher,
+        ds.resolution
+        FROM
+        ds_area ds
+        WHERE
+        ds.del_flag = '1'
+        AND ds.data_status = '1'
+        AND id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="findListByProductId" resultMap="BaseResultMap" parameterType="com.jh.data.model.DsAreaParam" >
+        SELECT
+        ds.id,
+        ds.region_id,
+        ds.remark,
+        ds.data_status,
+        ds.create_time,
+        ds.creator_name,
+        ds.creator,
+        ds.modify_time,
+        ds.modifier_name,
+        ds.modifier,
+        ds.crop_id,
+        ds.area,
+        ds.data_type,
+        ds.publish_status,
+        ds.publish_time,
+        ds.publisher_name,
+        ds.data_time,
+        ds.del_flag,
+        ds.publisher,
+        ds.resolution
+        FROM
+        ds_area ds
+        WHERE
+        ds.del_flag = '1'
+        AND ds.data_status = '1'
+        AND product_id = #{productId,jdbcType=INTEGER}
+        ORDER BY
+        <choose>
+            <when test="sidx != null and sidx != ''">
+                ${sidx} ${sord}
+            </when>
+            <otherwise>
+                ds.region_id
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findDsAreaReportCreateData" resultMap="BaseResultMap" parameterType="com.jh.data.model.ReportCreateParam">
+        SELECT
+            a.id,
+            a.region_id,
+            a.remark,
+            a.data_status,
+            a.create_time,
+            a.creator_name,
+            a.modify_time,
+            a.modifier_name,
+            a.modifier,
+            a.crop_id,
+            a.area,
+            a.data_type,
+            a.publish_status,
+            a.publish_time,
+            a.publisher_name,
+            a.data_time,
+            a.del_flag,
+            a.publisher,
+            r.china_name as region_name,
+            r.region_code as region_code,
+            (select data_name from init_dict where init_dict.parent_id = 500 and init_dict.dict_id = a.crop_id AND init_dict.data_status = '1' AND init_dict.del_flag = '1') as crop_name,
+            (select data_name from init_dict where init_dict.parent_id = 4000 and init_dict.dict_id = a.resolution AND init_dict.data_status = '1' AND init_dict.del_flag = '1') as resolution_value
+        FROM
+            ds_area a
+            LEFT JOIN init_region r ON a.region_id = r.region_id
+        WHERE
+            a.data_status = '1' AND r.data_status = '1' AND a.del_flag = '1' AND r.del_flag = '1' AND a.publish_status = 2201
+            <if test="regionId!=null and regionId!=''">
+                AND (a.region_id = #{regionId,jdbcType=INTEGER} OR r.parent_id = #{regionId,jdbcType=INTEGER})
+            </if>
+            <if test="cropId!=null and cropId!=''">
+                AND a.crop_id = #{cropId,jdbcType=INTEGER}
+            </if>
+            <if test="resolution!=null and resolution!=''">
+                AND a.resolution = #{resolution,jdbcType=INTEGER}
+            </if>
+            <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+                and to_char(to_date(cast(a.data_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startTime} as VARCHAR) and cast(#{endTime} as VARCHAR)
+            </if>
+            ORDER BY a.region_id, a.crop_id, a.id
+    </select>
+
+    <!--分布的十年平均值-->
+    <select id="findDistributionForAvg" resultType="com.jh.data.model.DatasetReturn" parameterType="com.jh.data.model.ReportCreateParam">
+        SELECT
+            regionId,
+            regionName,
+            (SELECT data_name FROM init_dict WHERE dict_id = crop_id) AS cropName,
+            10 as year,
+            area as value
+        FROM
+            (SELECT
+                region_id AS regionId,
+                ( CASE WHEN china_name IS NULL THEN region_name ELSE china_name END ) AS regionName
+            FROM(SELECT
+                    region_id,
+                    region_name,
+                    china_name
+                FROM
+                    init_region
+                WHERE
+                    (region_id = #{regionId,jdbcType=INTEGER} or parent_id = #{regionId,jdbcType=INTEGER})
+                    and data_status='1' and del_flag = '1') as temp ) as region
+            ,
+            (select region_id,
+                crop_id,
+                round( avg( area ), 2 ) AS area
+            FROM
+                ds_area
+            WHERE
+                cast(SUBSTR(cast(data_time as varchar),1,4) as INTEGER) BETWEEN (cast(SUBSTR(cast(#{startTime} as VARCHAR),1,4) as INTEGER) - 10) and cast(SUBSTR(cast(#{endTime} as VARCHAR),1,4) as INTEGER)
+                and SUBSTR(cast(data_time as varchar),6,5) BETWEEN SUBSTR(cast(#{startTime} as VARCHAR),6,5) and SUBSTR(cast(#{endTime} as VARCHAR),6,5)
+                and crop_id = #{cropId,jdbcType=INTEGER}
+                and resolution = #{resolution,jdbcType=INTEGER}
+                and data_status = '1'
+                and del_flag = '1'
+                and publish_status = 2201
+            GROUP BY
+                region_id,
+                crop_id
+                ) AS distribution
+            where distribution.region_id = region.regionId
+        ORDER BY
+            regionId
+    </select>
+
+    <!--分布近三年数据-->
+    <select id="findDistribution" resultType="com.jh.data.model.DatasetReturn" parameterType="com.jh.data.model.ReportCreateParam">
+        SELECT
+            regionId,
+            regionName,
+            ( SELECT data_name FROM init_dict WHERE dict_id = #{cropId,jdbcType=INTEGER} ) AS cropName,
+            cast( SUBSTR( cast( #{endTime} AS VARCHAR ), 1, 4 ) AS INTEGER ) as year,
+            area AS VALUE
+        FROM
+            (SELECT
+                region_id AS regionId,
+                ( CASE WHEN china_name IS NULL THEN region_name ELSE china_name END ) AS regionName
+            FROM
+                ( SELECT region_id, region_name, china_name FROM init_region WHERE region_id = #{regionId,jdbcType=INTEGER} OR parent_id = #{regionId,jdbcType=INTEGER} AND data_status = '1' AND del_flag = '1') AS TEMP
+                ) AS region
+            LEFT JOIN (
+            SELECT
+                region_id,
+                crop_id,
+                YEAR,
+                data_type,
+                area
+            FROM
+                ds_area
+            WHERE
+                to_char(to_date(cast(data_time as varchar),'yyyy-mm-dd'), 'yyyy-mm-dd') BETWEEN cast(#{startTime} as VARCHAR) and cast(#{endTime} as VARCHAR)
+                AND crop_id = #{cropId,jdbcType=INTEGER}
+                AND resolution = #{resolution,jdbcType=INTEGER}
+                AND data_status = '1'
+                AND del_flag = '1'
+                AND publish_status = 2201
+            ) AS area ON area.region_id = region.regionId
+        ORDER BY
+        regionId
+    </select>
+
+    <select id="queryDateTimeList" resultMap="BaseResultMap" parameterType="com.jh.data.model.ReportCreateParam">
+        SELECT DISTINCT data_time FROM ds_area
+        WHERE data_status = '1' AND del_flag = '1' AND publish_status = 2201
+        <if test="regionId != null">
+            AND region_id = #{regionId,jdbcType=INTEGER}
+        </if>
+        <if test="cropId != null">
+            AND crop_id = #{cropId,jdbcType=INTEGER}
+        </if>
+        <if test="resolution != null">
+            AND resolution = #{resolution,jdbcType=INTEGER}
+        </if>
+        ORDER BY data_time DESC
+    </select>
+
+    <select id="findDsAreaByCondition" resultMap="BaseResultMap" parameterType="com.jh.data.model.ReportCreateParam">
+        SELECT
+            ds.id,
+            ds.region_id,
+            ds.remark,
+            ds.data_status,
+            ds.create_time,
+            ds.creator_name,
+            ds.creator,
+            ds.modify_time,
+            ds.modifier_name,
+            ds.modifier,
+            ds.crop_id,
+            ds.area,
+            ds.data_type,
+            ds.publish_status,
+            ds.publish_time,
+            ds.publisher_name,
+            ds.data_time,
+            ds.del_flag,
+            ds.publisher,
+            ds.resolution,
+            (select d.data_name from init_dict d where d.data_status = '1' and d.del_flag = '1' and ds.crop_id = d.dict_id and d.parent_id = 500) AS crop_name,
+            r.china_name AS region_name,
+            r.region_code,
+            (select dr.data_name from init_dict dr where dr.del_flag = '1' and dr.data_status = '1' and ds.resolution = dr.dict_id and dr.parent_id = 4000) AS resolution_value,
+            (select dp.data_name from init_dict dp where dp.del_flag = '1' and dp.data_status = '1' and ds.publish_status = dp.dict_id and dp.parent_id = 2200) AS publish_status_name
+        FROM ds_area ds
+        LEFT JOIN init_region r ON ds.region_id = r.region_id
+          AND r.del_flag = '1'
+          AND r.data_status = '1'
+        WHERE
+            ds.del_flag = '1'
+            AND ds.data_status = '1'
+            AND ds.publish_status = 2201
+            AND ds.region_id = #{reportCreateParam.regionId,jdbcType=INTEGER}
+            AND ds.crop_id = #{reportCreateParam.cropId,jdbcType=INTEGER}
+            AND ds.resolution = #{reportCreateParam.resolution,jdbcType=INTEGER}
+            <if test="calculationDays == null">
+                AND ds.data_time BETWEEN cast((#{reportCreateParam.dataTime} || ' 00:00:00') as timestamp) and cast((#{reportCreateParam.dataTime} || ' 23:59:59') as timestamp)
+            </if>
+            <if test="calculationDays != null">
+                AND ds.data_time BETWEEN (cast(((to_date(#{reportCreateParam.dataTime},'yyyy-mm-dd') - #{calculationDays}) || ' 00:00:00') as timestamp) + '-1 year')
+                                and (cast(((to_date(#{reportCreateParam.dataTime},'yyyy-mm-dd') + #{calculationDays}) || ' 23:59:59') as timestamp) + '-1 year')
+            </if>
+
+    </select>
+
+    <select id="getDsAreaListByParent" resultMap="BaseResultMap" parameterType="com.jh.data.entity.DsArea">
+        SELECT
+        ds.id,
+        ds.region_id,
+        ds.remark,
+        ds.data_status,
+        ds.create_time,
+        ds.creator_name,
+        ds.creator,
+        ds.modify_time,
+        ds.modifier_name,
+        ds.modifier,
+        ds.crop_id,
+        ds.area,
+        ds.data_type,
+        ds.publish_status,
+        ds.publish_time,
+        ds.publisher_name,
+        ds.data_time,
+        ds.del_flag,
+        ds.publisher,
+        ds.resolution,
+        (select d.data_name from init_dict d where d.data_status = '1' and d.del_flag = '1' and ds.crop_id = d.dict_id and d.parent_id = 500) AS crop_name,
+        r.china_name AS region_name,
+        r.region_code,
+        (select dr.data_name from init_dict dr where dr.del_flag = '1' and dr.data_status = '1' and ds.resolution = dr.dict_id and dr.parent_id = 4000) AS resolution_value,
+        (select dp.data_name from init_dict dp where dp.del_flag = '1' and dp.data_status = '1' and ds.publish_status = dp.dict_id and dp.parent_id = 2200) AS publish_status_name
+        FROM ds_area ds
+        LEFT JOIN init_region r ON ds.region_id = r.region_id
+        AND r.del_flag = '1'
+        AND r.data_status = '1'
+        WHERE
+        ds.del_flag = '1'
+        AND ds.data_status = '1'
+        AND ds.publish_status = 2201
+        AND r.parent_id = #{regionId,jdbcType=INTEGER}
+        AND ds.crop_id = #{cropId,jdbcType=INTEGER}
+        AND ds.resolution = #{resolution,jdbcType=INTEGER}
+        AND ds.data_time BETWEEN cast((#{dataTime} || ' 00:00:00') as timestamp) and cast((#{dataTime} || ' 23:59:59') as timestamp)
+    </select>
+
+    <!--根据任务ID删除数据集明细-->
+    <delete id="deleteByProductId" parameterType="java.lang.Integer" >
+        delete from ds_area
+        where product_id = #{producId,jdbcType=INTEGER}
+    </delete>
+
+</mapper>

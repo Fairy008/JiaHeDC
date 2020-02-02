@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.manage.order.mapping.IDataOrderPathMapper" >
+
+
+    <!--
+      *数据订单路径存储
+     * @param dataOrderPath 数据订单路径存储对象
+     * @return ResultMessage
+     * @version <1> 2018-03-16 cxw： Created.
+    -->
+    <insert id="insertDataOrderPath" parameterType="com.jh.manage.order.model.DataOrderPath">
+        insert into man_order_path
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="orderId != null" >
+            order_id,
+            </if>
+            <if test="dataPath != null" >
+            data_path,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="orderId != null" >
+            #{orderId,jdbcType=INTEGER},
+            </if>
+            <if test="dataPath != null" >
+            #{dataPath,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+
+    <!--
+     *数据订单路径批量存储
+     * @param dataOrderPaths 数据订单路径存储对象
+     * @return ResultMessage
+     * @version <1> 2018-03-16 cxw： Created.
+    -->
+    <insert id="insertDataOrderPathList" parameterType="java.util.List">
+       insert into man_order_path (order_id,data_path)
+            <trim prefix="values"  suffixOverrides="," >
+                <foreach collection="list" item="item" index="index" separator=",">
+                    <trim prefix="(" suffix=")" suffixOverrides=",">
+                        <if test="item.orderId != null" >#{item.orderId,jdbcType=INTEGER},</if>
+                        <if test="item.dataPath != null" >#{item.dataPath,jdbcType=VARCHAR},</if>
+                    </trim>
+                </foreach>
+            </trim>
+        </insert>
+
+    <!--
+      *根据订单ID查询分发路径
+     * @param orderId 订单ID
+     * @return list
+     * @version <1> 2018-03-19 cxw： Created.
+    -->
+    <select id="findDataOrderPathList" resultType="com.jh.manage.order.model.DataOrderPath" parameterType="java.lang.Integer">
+      select order_id as orderId,data_path as dataPath from man_order_path where order_id = #{order_id}
+    </select>
+</mapper>

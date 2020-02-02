@@ -1,0 +1,378 @@
+<style>
+    .searchRowData{
+        color:#020202;
+        line-height:36px;
+        margin:4px 0px 2px 0px;
+        padding:0px 10px 0px 10px;
+    }
+</style>
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRowData">
+            <div class="searchRow">
+                <div class="searchBGleft">
+                    <div id="type">
+                        <span class="label">业务类型：</span>
+                        <span>
+                            <select id="search_businessType" class="input" style="width:120px;text-align:center;"></select>
+                        </span>
+                    </div>
+                   <!-- <div>
+                        <span class="label">业务名称：</span>
+                        <span><input type="text" class="input" id="search_businessName"/></span>
+                    </div>-->
+                    <div >
+                        <span class="label">告警时间：</span>
+                        <span>
+                            <input type="text" id="search_alarmTime" class="input"  readonly/>
+                        </span>
+                    </div>
+                    <div>
+                        <span class="label">业务状态：</span>
+                        <span>
+                            <select id="search_busStatus" class="input" style="width:120px;text-align:center;">
+                                <option value="">所有状态</option>
+                                <option value="1" >成功</option>
+                                <option value="0">失败</option>
+                            </select>
+                        </span>
+                    </div>
+                    <div>
+                        <span class="label">阅读状态：</span>
+                        <span>
+                            <select id="search_dataStatus" class="input" style="width:120px;text-align:center;">
+                                <option value="">所有状态</option>
+                                <option value="1" selected>未读</option>
+                                <option value="0">已读</option>
+                            </select>
+                        </span>
+                    </div>
+
+                </div>
+                <div class="searchBGright">
+                    <input type="button" class="btn" value="查询" id="queryBtn1"/>
+                    <input type="button" class="btn " id="resetBtn" value="重置" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="grid" id="grid">
+        <table id="alarmGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <div class="form" id="detailDialog" style="display:none;">
+        <div  id="DetailInfo" >
+            <table>
+                <tr>
+                    <td class="alarm_td1">业务类型:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_businessType" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alarm_td1">业务名称:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_businessName" class="viewType3"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alarm_td1">责&nbsp;任&nbsp;人:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_creatorName" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alarm_td1">告警时间:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_createTime" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alarm_td1">业务状态:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_busStatus" class="viewType"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="alarm_td1">原<span class="spanSpace"></span>因:</td>
+                    <td class="alarm_td2">
+                        <span id="detail_reason" class="viewType3"></span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        require(["jquery","jqGrid","jqueryUi", "BaseAjax", "PopWin", "commons","dateUtil"], function ($,jqGrid,jqueryUi, BaseAjax, PopWin,commons,dateUtil) {
+
+            var init = function () {
+                dateFun('search_alarmTime');//初始化查询框的时间
+                getBusinessTypeFun(1600);
+                alarmGrid();//默认加载导入数据列表
+                $(window).resize(function () {
+                    $("#alarmGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+                chanageTableCss();
+                userType();//判断是内部还是外部用户 外部用户不显示  业务类型的下拉框
+                $("#queryBtn1").on("click",queryFun)
+                $("#resetBtn").on("click",resetFun);
+            };
+            
+            var  userType=function () {
+                var personType=commons.getCookie("personType");
+                if(personType==1702){
+                    $("#type").hide();
+                }
+            }
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+                $('#search_busStatus').html('<option value="">所有状态</option><option value="1" >成功</option><option value="0">失败</option>');
+                $('#search_dataStatus').html('<option value="">所有状态</option><option value="1" selected>未读</option><option value="0">已读</option>');
+            }
+
+            var chanageTableCss = function () {
+                var divObj = $('#alarmGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight': ($(".rightMain").height() - $(".searchItems").height() - $(".ui-jqgrid-hdiv").height()) - $("#pager2").height() - 50 + "px"});
+                var divObj = $('#loaderGridReprocess').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight': ($(".rightMain").height() - $(".searchItems").height() - $(".ui-jqgrid-hdiv").height()) - $("#pagerReprocess").height() - 50 + "px"});
+            };
+
+            //日期控件
+            var dateFun = function(idName){
+                $("#"+idName).jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+
+            var alarmGrid = function () {//数据导入列表
+
+                $("#alarmGrid").jqGrid({
+                    url: ALARM_CONFIG.alarm_findByPage,
+                    datatype: "json",
+                    postData: {
+                        'dataStatus':'1'
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['alarmId', '业务类型', '业务编号', '业务名称', 'creator', '告警时间', '业务状态', '操作'],
+                    colModel: [
+                        {name: 'alarmId', index: 'alarm_id', align: 'center', hidden: true, sortable:false},
+                        {name: 'businessType', index: 'business_type', align: 'center', width: '20%',formatter:function(cellvalue,options,rowObject){
+                            var len = businessTypeCache.length;
+                            for(var i = 0;i < len;i++){
+                                if(businessTypeCache[i].dictId == cellvalue){
+
+                                    return businessTypeCache[i].dataName;
+                                }
+                            }
+                            return "";
+                        }},
+                        {name: 'businessId', index: 'business_id', align: 'center', hidden: true, sortable:false},
+                        {name: 'businessName', index: 'business_name', align: 'left', width: '20%'},
+                        {name: 'creator', index: 'creator', align: 'center', hidden: true, sortable:false},
+                        {name: 'alarmTime', index: 'alarm_time', align: 'center', width: '20%'},
+                        {
+                            name: 'busStatus',
+                            index: 'bus_status',
+                            align: 'center',
+                            width: '20%',
+                            formatter: function (cell, options, rowObject) {
+                                if (cell == 1) {
+                                    return "成功";
+                                } else {
+                                    return "失败";
+                                }
+                            }
+                        },
+                        {
+                            name: 'cz',
+                            index: 'cz',
+                            align: 'center',
+                            width: '20%',
+                            formatter: function (cell, options, rowObject) {
+                                if(rowObject.dataStatus == '1'){
+                                    return "<img src='images/public/unread.png' class='seeBtn' style='width:20px;height:16px;' data-id='" + rowObject.alarmId + "' title='未读' >";
+                                }else{
+                                    return "<img src='images/public/read.png' style='width:20px;height:16px;' title='已读' >";
+                                }
+
+                            }, sortable:false
+                        }
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    viewrecords: true,
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                        tableEvent();
+                        $("#alarmGrid").setGridWidth($(".rightMain").width() - 30);
+                    }
+                });
+            };
+
+            var tableEvent = function () {
+                $(".seeBtn").on("click", function () {
+                    seeFun($(this).attr("data-id"));
+                })
+            }
+
+
+            var businessTypeCache = [];
+            var getBusinessTypeFun = function (dictId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.data = JSON.stringify({'parentId' : dictId});
+                ajax.opts.successFun = function(result){
+                    var str = "<option value=''>所有类型</option>";
+                    if(result.flag){
+                        businessTypeCache = result.data;
+                        $.each(result.data, function(index, element){
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        })
+                        $("#search_businessType").append(str);
+                    }
+                }
+                ajax.run();
+            };
+
+            /**
+             * 列表查询条件查询
+             * @version<1> 2018-03-15 lcw :Created.
+             * @version<2> 2018-05-26 lxy :Updated. 增加告警时间的查询
+             */
+            var queryFun = function(){
+                var businessType = $("#search_businessType").val().trim();
+                var businessName = $("#search_businessName").val();
+                var busStatus = $("#search_busStatus").val().trim();
+                var dataStatus = $("#search_dataStatus").val().trim();
+                var alarmTime = $("#search_alarmTime").val();//报警时间
+                var startTime = alarmTime.split("至")[0];//告警开始时间
+                var endTime = alarmTime.split("至")[1];//告警结束时间
+                var param = {};
+                param.businessType = businessType;
+                param.businessName = businessName==null?"":$.trim(businessName);
+                param.busStatus = busStatus;
+                param.dataStatus = dataStatus;
+                param.startTime = startTime;
+                param.endTime = endTime;
+                $("#alarmGrid").jqGrid('setGridParam',{
+                    datatype:'json',
+                    postData:param,
+                    page:1
+                }).trigger("reloadGrid");
+            }
+
+            var seeFun = function(evt){
+                var detailDialog = $("#detailDialog");
+                var dialogParent = detailDialog.parent();
+                var dialogOwn = detailDialog.clone();
+                detailFun(evt);//查看详情
+                //选择数据类型并添加说明
+                detailDialog.dialog({
+                    autoOpen: false,
+                    title: '告警详情',
+                    height: 353,
+                    width: 400,
+                    modal: true,
+                    close:function(){
+                        dialogOwn.appendTo(dialogParent);
+                        $(this).dialog("destroy").remove();
+                        commons.loadAlarmMsgFun();
+                        queryFun();
+                    },
+                    buttons: [
+                        {
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                                commons.loadAlarmMsgFun();
+                                queryFun();
+                            }
+                        }
+                    ]
+                });
+                detailDialog.dialog("open");
+
+//                $("#alarmGrid").trigger("reloadGrid");
+            }
+
+            /**
+             * 查看详情
+             * @param id
+             * @version <1> 2018-04-02 wl: created.
+             */
+            var detailFun = function(id){
+                $(".viewType3").css("display","block");
+                var ajax = new BaseAjax();
+                ajax.opts.url = ALARM_CONFIG.getById_url + "?alarmId=" + id;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false; //同步请求
+                ajax.opts.successFun = function(result){
+                    if(result.flag){
+                        var data = result.data;
+                        $('#detail_businessName').html(data.businessName);
+                        $('#detail_businessName').attr('title',data.businessName);
+                        $('#detail_creatorName').html(data.creatorName);
+                        $('#detail_createTime').html(data.createTime);
+                        $('#detail_createTime').attr('title',data.createTime);
+                        $('#detail_busStatus').html(data.busStatus==1?'成功':'失败');
+                        $('#detail_reason').html(data.reason);
+                        $('#detail_reason').attr('title',data.reason);
+                        var len = businessTypeCache.length;
+                        for(i = 0;i < len;i++){
+                            if(businessTypeCache[i].dictId == data.businessType){
+                                $('#detail_businessType').html(businessTypeCache[i].dataName);
+                            }
+                        }
+
+                    }
+                    else{
+                        PopWin.showMessageWin("系统错误!");
+                    }
+                };
+                ajax.opts.errorFun = function(){
+                    PopWin.showMessageWin("系统错误!");
+                    return false;
+                };
+                ajax.run();
+            }
+
+
+
+
+            init();
+        })
+
+    </script>
+
+</div>
+<style type="text/css">
+    #detailDialog {width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+</style>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.manage.alarm.mapping.IDataAlarmMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.manage.alarm.entity.DataAlarm" >
+
+    <id column="alarm_id" property="alarmId" jdbcType="INTEGER" />
+    <result column="business_id" property="businessId" jdbcType="INTEGER" />
+    <result column="business_name" property="businessName" jdbcType="VARCHAR" />
+    <result column="business_type" property="businessType" jdbcType="INTEGER" />
+    <result column="alarm_time" property="alarmTime" jdbcType="TIMESTAMP" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <!--数据状态（1未读，0已读)-->
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <!--告警状态（1成功，0失败)-->
+    <result column="bus_status" property="busStatus" jdbcType="CHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    alarm_id, data_status,  create_time, creator_name, creator, business_id, business_name, business_type, alarm_time,
+    reason,bus_status
+  </sql>
+
+  <select id="findByPage" parameterType="AlarmParam" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from op_alarm where del_flag = '1'
+    <if test="dataStatus != null and dataStatus != ''">
+      and data_status = #{dataStatus,jdbcType=CHAR}
+    </if>
+    <if test="busStatus != null and busStatus != ''">
+      and bus_status = #{busStatus,jdbcType=CHAR}
+    </if>
+    <if test="businessName != null and businessName != ''">
+      and business_name like '%' || #{businessName,jdbcType=VARCHAR} || '%'
+    </if>
+    <if test="businessType != null and businessType != ''">
+      and business_type = #{businessType,jdbcType=CHAR}
+    </if>
+      <if test="startTime != null and startTime != '' and  endTime != null and endTime != ''"  >
+          and create_time between cast(#{startTime} ||' 00:00:00' as timestamp) and cast(#{endTime}||' 23:59:59' as timestamp)
+      </if>
+      and creator = #{creator,jdbcType=INTEGER}
+    ORDER BY
+    <choose>
+      <when test="sidx != null and sidx != ''">
+        ${sidx} ${sord}
+      </when>
+      <otherwise>
+        data_status DESC, alarm_time DESC
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="findAlarm" parameterType="DataAlarm" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from op_alarm where del_flag = '1' and data_status = '1'
+    <if test="businessId != null and businessId != ''">
+      and business_id = #{businessId,jdbcType=INTEGER}
+    </if>
+    <if test="businessType != null and businessType != ''">
+      and business_type = #{businessType,jdbcType=INTEGER}
+    </if>
+    <if test="alarmId != null and alarmId != ''">
+      and alarm_id = #{alarmId,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <select id="getAlarmNum" parameterType="Integer" resultType="Integer">
+    select count(alarm_id) from op_alarm where data_status = '1'  and del_flag = '1' and creator = #{accountId}
+  </select>
+
+  <update id="update" parameterType="DataAlarm" >
+    update op_alarm
+    <set>
+        create_time = now(),
+      <if test="creatorName != null">
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null">
+        business_id = #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="businessName != null">
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=INTEGER},
+      </if>
+        alarm_time = now(),
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="busStatus != null">
+        bus_status = #{busStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where alarm_id = #{alarmId,jdbcType=INTEGER}
+  </update>
+
+  <insert id="save" parameterType="DataAlarm">
+    insert into op_alarm
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        create_time,
+      <if test="creatorName != null">
+        creator_name,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="businessId != null">
+        business_id,
+      </if>
+      <if test="businessName != null">
+        business_name,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+        alarm_time,
+      <if test="reason != null">
+        reason,
+      </if>
+      <if test="busStatus != null">
+        bus_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      now(),
+      <if test="creatorName != null">
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="businessId != null">
+        #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="businessName != null">
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=INTEGER},
+      </if>
+      now(),
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="busStatus != null">
+        #{busStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateDataStatus" parameterType="Integer">
+    update op_alarm set data_status = '0' where alarm_id= #{alarmId,jdbcType=INTEGER}
+  </update>
+</mapper>

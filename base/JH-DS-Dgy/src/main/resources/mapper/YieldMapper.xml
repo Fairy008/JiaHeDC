@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.dgy.mapping.IYieldMapper" >
+
+
+    <!--
+    * 根据区域、时间，作物，分辨率查询作物估产生成时间
+    * @param :param
+    *   regionId: 区域ID
+    *     cropId: 作物ID
+    *  startDate: 开始日期
+    *    endDate: 结束日期
+    *   resolution: 分辨率
+    * @return List<LocalDate>
+    * @version <1> 2018-05-23 huxiaoqiang: Created.
+    *-->
+    <select id="findYieldTimes" resultType="java.lang.String" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        SELECT
+            to_char( data_time, 'yyyy-MM-dd' ) AS dataTime  --数据时间
+        FROM
+            ds_yield
+        WHERE
+            del_flag = '1'  --删除标记
+            AND data_status = '1'  -- 数据状态
+            AND publish_status = 2201  --发布状态：2201表示已发布
+        <if test="regionId != null" >
+            AND  region_id = #{regionId}  --区域id
+        </if>
+        <if test="cropId != null" >
+            AND  crop_id = #{cropId}  --作物id
+        </if>
+        <if test="resolution != null" >
+            AND  resolution = #{resolution}  --数据集精度
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            AND  data_time BETWEEN  to_date(#{startDate},'yyyy-MM-dd') AND to_date(#{endDate},'yyyy-MM-dd')
+        </if>
+           order by data_time asc
+    </select>
+
+
+    <!--
+      * 根据区域、时间，作物，分辨率查询作物估产生成时间
+      * @param :param
+      *   regionId: 区域ID
+      *     cropId: 作物ID
+      *  startDate: 开始日期
+      *    endDate: 结束日期
+      *   resolution: 分辨率
+      * @return List<LocalDate>
+      * @version <1> 2018-05-23 huxiaoqiang: Created.
+      *-->
+    <select id="findYieldTimesString" resultType="java.lang.String" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        SELECT
+        to_char( data_time, 'yyyy-MM-dd' ) AS dataTime  --数据时间
+        FROM
+        ds_yield
+        WHERE
+        del_flag = '1'  --删除标记
+        AND data_status = '1'  -- 数据状态
+        AND publish_status = 2201  --发布状态：2201表示已发布
+        <if test="regionId != null" >
+            AND  region_id = #{regionId}  --区域id
+        </if>
+        <if test="cropId != null" >
+            AND  crop_id = #{cropId}  --作物id
+        </if>
+        <if test="resolution != null" >
+            AND  resolution = #{resolution}  --数据集精度
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            AND  data_time BETWEEN  to_date(#{startDate},'yyyy-MM-dd') AND to_date(#{endDate},'yyyy-MM-dd')
+        </if>
+        order by data_time asc
+    </select>
+
+    <!--
+    * 根据区域、时间查询所有估产
+    * @param :param
+    *   regionId: 区域ID
+    *  startDate: 开始日期
+    *    endDate: 结束日期
+    * @return List<LocalDate>
+    * @version <1> 2019-03-20 cxw: Created.
+    *-->
+    <select id="findAllYield" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        select DISTINCT region_id as regionId,crop_id as cropId,resolution from ds_yield where  del_flag='1' and data_status='1' and publish_status = 2201 and resolution is not null
+        <if test="regionId != null" >
+            and  region_id = #{regionId}
+        </if>
+        <if test="startDate != null and endDate != null"  >
+            and  data_time  BETWEEN  #{startDate} and #{endDate}
+        </if>
+        order by crop_id
+    </select>
+
+
+    <!--
+     * 根据年份查询区域及子区域的作物估产数据
+     * @param DatasetParam :
+     *   regionId:
+     *   cropId:
+     *  dataTime: 时间点
+     *    resolution: 分辨率
+     * @return ResultMessage ：作物估产数据
+     * @version <1> 2018-05-03 huxiaoqiang: Created.
+     *-->
+    <select id="findYieldList" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+      SELECT A.region_id AS regionId,
+            A.china_name AS regionName,
+            A.region_code AS regionCode,
+            ( SELECT data_name FROM init_dict WHERE dict_id = crop_id ) AS cropName,
+            YEAR,
+            yield AS VALUE
+        FROM
+            init_region
+            A LEFT JOIN ds_yield b ON A.region_id = b.region_id
+            AND resolution =#{resolution}
+            AND data_time BETWEEN to_date(#{startDate},'yyyy-MM-dd')
+            AND to_date(#{endDate},'yyyy-MM-dd')
+            AND crop_id =#{cropId}
+            AND b.data_status = '1'
+            AND b.del_flag = '1'
+            AND b.publish_status = 2201
+        WHERE
+            ( A.region_id = #{regionId} OR A.parent_id = #{regionId} )
+            AND A.del_flag = '1'
+            AND A.data_status = '1'
+        ORDER BY YEAR ASC
+
+    </select>
+
+    <!--
+     * 根据年份查询区域的作物估产数据
+     * @param DatasetParam :
+     *   regionId:
+     *   cropId:
+     *  dataTime: 时间点
+     *    resolution: 分辨率
+     * @return ResultMessage ：作物估产数据
+     * @version <1> 2018-05-29 huxiaoqiang: Created.
+     *-->
+    <select id="findYield" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+      SELECT A
+            .region_id AS regionId,
+            A.china_name AS regionName,
+            A.region_code AS regionCode,parent_id as regionParent,
+            ( SELECT data_name FROM init_dict WHERE dict_id = crop_id ) AS cropName,
+            YEAR,
+            yield AS
+        VALUE
+
+        FROM
+            init_region
+            A LEFT JOIN ds_yield b ON A.region_id = b.region_id
+            AND resolution =#{ resolution }
+            AND data_time BETWEEN to_date(#{ startDate },'yyyy-MM-dd')
+            AND to_date(#{ endDate },'yyyy-MM-dd')
+            AND crop_id =#{ cropId }
+            AND b.data_status = '1'
+            AND b.del_flag = '1'
+            AND b.publish_status = 2201
+        WHERE
+            A.region_id = #{ regionId }
+            AND A.del_flag = '1'
+            AND A.data_status = '1'
+
+    </select>
+
+    <!--
+    * 根据年份查询区域及子区域作物当年与上一年的估产数据
+    * @param DatasetParam :
+    *   regionId:
+    *   cropId:
+    *  startDate: 开始日期
+    *    endDate: 结束日期
+    *    resolution: 分辨率
+    * @return ResultMessage ：区域及子区域作物当年与上一年的估产数据
+    * @version <1> 2018-05-03 cxw: Created.
+     -->
+    <select id="findYieldForAvg" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity">
+        select regionId,regionName,regionCode,(select data_name from init_dict where dict_id=crop_id) as cropName , (cast(substring(cast(#{endDate} as character varying) ,0,5) as integer ) -cast(substring(cast(#{startDate} as character varying) ,0,5) as integer )) as year ,yield  as value from
+        ( select region_id as regionId,region_code as regionCode,(case when china_name is null then region_name else china_name end) as regionName from (select region_id,region_name,region_code,china_name
+        from init_region where region_id=#{regionId} or parent_id=#{regionId} and data_status='1' and del_flag='1') as temp ) as region left join ( select region_id,crop_id, round(avg(yield),2)
+        as yield from ds_yield where  data_time>=#{dataTime} and crop_id=#{cropId} and resolution=#{resolution}  and data_status='1' and del_flag='1' and a.publish_status = 2201 group by region_id,crop_id )
+        as distribution on distribution.region_id=region.regionId order by regionId
+    </select>
+
+    <!--根据local_name字段分组求分布数据-->
+    <select id="findYieldBeyond" resultType="com.jh.dgy.vo.DistributionAndYieldVo" parameterType="com.jh.dgy.entity.DistributionAndYieldEntity" >
+        SELECT
+            localName AS regionName,
+            SUM ( yield ) AS
+        VALUE
+
+        FROM
+            (
+            SELECT
+                region_id AS regionId,
+                region_code AS regionCode,
+                ( CASE WHEN china_name IS NULL THEN region_name ELSE china_name END ) AS regionName,
+                local_name AS localName
+            FROM
+                (
+                SELECT
+                    region_id,
+                    region_name,
+                    region_code,
+                    china_name,
+                    local_name,
+                LEVEL
+                FROM
+                    init_region
+                WHERE
+                    parent_id = #{regionId}
+                    AND data_status = '1'
+                    AND del_flag = '1'
+                ) AS TEMP
+            ) AS region
+            LEFT JOIN (
+            SELECT
+                region_id,
+                crop_id,
+                data_time,
+                resolution,
+                yield
+            FROM
+                ds_yield
+            WHERE
+                resolution = 4011
+                AND data_time BETWEEN #{startDate}
+                AND #{endDate}
+                AND crop_id = #{cropId}
+                AND data_status = '1'
+                AND del_flag = '1'
+                AND publish_status = 2201
+            ) AS area ON area.region_id = region.regionId
+        GROUP BY
+            localName
+    </select>
+
+
+</mapper>

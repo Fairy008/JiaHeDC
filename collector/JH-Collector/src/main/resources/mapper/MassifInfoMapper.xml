@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.collector.mapping.MassifInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.collector.entity.MassifInfo" >
+    <id column="bsm" property="bsm" jdbcType="VARCHAR" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="DATE" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="ysdm" property="ysdm" jdbcType="VARCHAR" />
+    <result column="dkbm" property="dkbm" jdbcType="VARCHAR" />
+    <result column="dkmc" property="dkmc" jdbcType="VARCHAR" />
+    <result column="syqxz" property="syqxz" jdbcType="VARCHAR" />
+    <result column="dklb" property="dklb" jdbcType="VARCHAR" />
+    <result column="tdlylx" property="tdlylx" jdbcType="VARCHAR" />
+    <result column="dldj" property="dldj" jdbcType="VARCHAR" />
+    <result column="tdyt" property="tdyt" jdbcType="VARCHAR" />
+    <result column="sfjbnt" property="sfjbnt" jdbcType="VARCHAR" />
+    <result column="dkdz" property="dkdz" jdbcType="VARCHAR" />
+    <result column="dkxz" property="dkxz" jdbcType="VARCHAR" />
+    <result column="dknz" property="dknz" jdbcType="VARCHAR" />
+    <result column="dkbz" property="dkbz" jdbcType="VARCHAR" />
+    <result column="dkbzxx" property="dkbzxx" jdbcType="VARCHAR" />
+    <result column="zjrxm" property="zjrxm" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    bsm, data_status, del_flag, create_time, creator_name, creator, modify_time, modifier_name,
+    modifier, remark, ysdm, dkbm, dkmc, syqxz, dklb, tdlylx, dldj, tdyt, sfjbnt, dkdz, 
+    dkxz, dknz, dkbz, dkbzxx, zjrxm
+  </sql>
+
+  <insert id="insert" parameterType="com.jh.collector.entity.MassifInfo" >
+    insert into is_massif_info (bsm, data_status, del_flag,
+      create_time, creator_name, creator, 
+      modify_time, modifier_name, modifier, 
+      remark, ysdm, dkbm, 
+      dkmc, syqxz, dklb, 
+      tdlylx, dldj, tdyt, 
+      sfjbnt, dkdz, dkxz, 
+      dknz, dkbz, dkbzxx, 
+      zjrxm)
+    values (#{bsm,jdbcType=VARCHAR}, #{dataStatus,jdbcType=CHAR}, #{delFlag,jdbcType=CHAR}, 
+      #{createTime,jdbcType=DATE}, #{creatorName,jdbcType=VARCHAR}, #{creator,jdbcType=INTEGER}, 
+      #{modifyTime,jdbcType=DATE}, #{modifierName,jdbcType=VARCHAR}, #{modifier,jdbcType=INTEGER}, 
+      #{remark,jdbcType=VARCHAR}, #{ysdm,jdbcType=VARCHAR}, #{dkbm,jdbcType=VARCHAR}, 
+      #{dkmc,jdbcType=VARCHAR}, #{syqxz,jdbcType=VARCHAR}, #{dklb,jdbcType=VARCHAR}, 
+      #{tdlylx,jdbcType=VARCHAR}, #{dldj,jdbcType=VARCHAR}, #{tdyt,jdbcType=VARCHAR}, 
+      #{sfjbnt,jdbcType=VARCHAR}, #{dkdz,jdbcType=VARCHAR}, #{dkxz,jdbcType=VARCHAR}, 
+      #{dknz,jdbcType=VARCHAR}, #{dkbz,jdbcType=VARCHAR}, #{dkbzxx,jdbcType=VARCHAR}, 
+      #{zjrxm,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jh.collector.entity.MassifInfo" >
+
+    insert into is_massif_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bsm != null" >
+        bsm,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="ysdm != null" >
+        ysdm,
+      </if>
+      <if test="dkbm != null" >
+        dkbm,
+      </if>
+      <if test="dkmc != null" >
+        dkmc,
+      </if>
+      <if test="syqxz != null" >
+        syqxz,
+      </if>
+      <if test="dklb != null" >
+        dklb,
+      </if>
+      <if test="tdlylx != null" >
+        tdlylx,
+      </if>
+      <if test="dldj != null" >
+        dldj,
+      </if>
+      <if test="tdyt != null" >
+        tdyt,
+      </if>
+      <if test="sfjbnt != null" >
+        sfjbnt,
+      </if>
+      <if test="dkdz != null" >
+        dkdz,
+      </if>
+      <if test="dkxz != null" >
+        dkxz,
+      </if>
+      <if test="dknz != null" >
+        dknz,
+      </if>
+      <if test="dkbz != null" >
+        dkbz,
+      </if>
+      <if test="dkbzxx != null" >
+        dkbzxx,
+      </if>
+      <if test="zjrxm != null" >
+        zjrxm,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bsm != null" >
+        #{bsm,jdbcType=VARCHAR},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ysdm != null" >
+        #{ysdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbm != null" >
+        #{dkbm,jdbcType=VARCHAR},
+      </if>
+      <if test="dkmc != null" >
+        #{dkmc,jdbcType=VARCHAR},
+      </if>
+      <if test="syqxz != null" >
+        #{syqxz,jdbcType=VARCHAR},
+      </if>
+      <if test="dklb != null" >
+        #{dklb,jdbcType=VARCHAR},
+      </if>
+      <if test="tdlylx != null" >
+        #{tdlylx,jdbcType=VARCHAR},
+      </if>
+      <if test="dldj != null" >
+        #{dldj,jdbcType=VARCHAR},
+      </if>
+      <if test="tdyt != null" >
+        #{tdyt,jdbcType=VARCHAR},
+      </if>
+      <if test="sfjbnt != null" >
+        #{sfjbnt,jdbcType=VARCHAR},
+      </if>
+      <if test="dkdz != null" >
+        #{dkdz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkxz != null" >
+        #{dkxz,jdbcType=VARCHAR},
+      </if>
+      <if test="dknz != null" >
+        #{dknz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbz != null" >
+        #{dkbz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbzxx != null" >
+        #{dkbzxx,jdbcType=VARCHAR},
+      </if>
+      <if test="zjrxm != null" >
+        #{zjrxm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.jh.collector.entity.MassifInfo" >
+    <!--
+      WARNING - @mbggenerated
+      This element is automatically generated by MyBatis Generator, do not modify.
+    -->
+    update is_massif_info
+    <set >
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="ysdm != null" >
+        ysdm = #{ysdm,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbm != null" >
+        dkbm = #{dkbm,jdbcType=VARCHAR},
+      </if>
+      <if test="dkmc != null" >
+        dkmc = #{dkmc,jdbcType=VARCHAR},
+      </if>
+      <if test="syqxz != null" >
+        syqxz = #{syqxz,jdbcType=VARCHAR},
+      </if>
+      <if test="dklb != null" >
+        dklb = #{dklb,jdbcType=VARCHAR},
+      </if>
+      <if test="tdlylx != null" >
+        tdlylx = #{tdlylx,jdbcType=VARCHAR},
+      </if>
+      <if test="dldj != null" >
+        dldj = #{dldj,jdbcType=VARCHAR},
+      </if>
+      <if test="tdyt != null" >
+        tdyt = #{tdyt,jdbcType=VARCHAR},
+      </if>
+      <if test="sfjbnt != null" >
+        sfjbnt = #{sfjbnt,jdbcType=VARCHAR},
+      </if>
+      <if test="dkdz != null" >
+        dkdz = #{dkdz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkxz != null" >
+        dkxz = #{dkxz,jdbcType=VARCHAR},
+      </if>
+      <if test="dknz != null" >
+        dknz = #{dknz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbz != null" >
+        dkbz = #{dkbz,jdbcType=VARCHAR},
+      </if>
+      <if test="dkbzxx != null" >
+        dkbzxx = #{dkbzxx,jdbcType=VARCHAR},
+      </if>
+      <if test="zjrxm != null" >
+        zjrxm = #{zjrxm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where bsm = #{bsm,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

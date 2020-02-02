@@ -1,0 +1,153 @@
+/* 字体大小 */
+.jh-font-size1 {
+	font-size: 1.5rem;
+}
+
+.jh-font-size2 {
+	font-size: 1.2rem;
+}
+
+.jh-font-size3 {
+	font-size: 0.8rem;
+}
+
+/* 颜色 */
+.mui-progressbar-success span {
+	background-color: #4cd964;
+}
+
+.mui-progressbar-warning span {
+	background-color: #f0ad4e;
+}
+
+.mui-progressbar-danger span {
+	background-color: #dd524d;
+}
+
+.mui-progressbar-royal span {
+	background-color: #8a6de9;
+}
+
+.mui-progressbar-green span {
+	background-color: #47d600;
+}
+
+.mui-progressbar-red span {
+	background-color: #e30060;
+}
+
+.mui-progressbar-yellow span {
+	background-color: #dac516;
+}
+
+.mui-progressbar-blue span {
+	background-color: #09b4d8;
+}
+
+.mui-progressbar-purple span {
+	background-color: #8000ca;
+}
+
+/* div样式ul样式 */
+.jh-padding-div {
+	padding: 0.7rem;
+}
+
+.mui-btn.mui-btn-blue {
+	background-color: #2da3d5;
+}
+
+/* li相关 */
+.jh-li-2 {
+	padding-left: 1rem;
+	height: 6rem;
+	margin-bottom: 0.7rem;
+	background-color: #FFFFFF;
+	border: 0 soild #FFFFFF !important;
+	-moz-border-radius: 0.625rem;
+	/* Gecko browsers */
+	-webkit-border-radius: 0.625rem;
+	/* Webkit browsers */
+	border-radius: 0.625rem;
+	/* W3C syntax */
+}
+
+.jh-li-2 p .jh-item-title {
+	margin-top: 1.5rem;
+	display: inline-block;
+	width: 90%;
+	font-size: 1.5rem;
+	color: black;
+}
+
+.jh-li-2 p .jh-area-title {
+	margin-top: 0.5rem;
+	display: inline-block;
+	width: 90%;
+	font-size: 1.5rem;
+	color: #C0C0C0;
+}
+
+.jh-subtitle {
+	color: #000000;
+	margin-right: 0.5rem;
+}
+
+.jh-li-2 p .jh-area-title.jh-color-finsh {
+	color: #47d600;
+}
+
+.jh-li-2 .jh-show-item-button {
+	position: absolute;
+	margin-top: 0.5rem;
+	width: 5rem;
+	height: 2rem;
+	border-radius: 1rem
+}
+
+.jh-li-2 .jh-show-area-button {
+	position: absolute;
+	margin-top: -1.5rem;
+	right: 5%;
+	width: 5rem;
+	height: 2rem;
+	border-radius: 0.5rem
+}
+
+.jh-li-2 .jh-phone-button {
+	position: absolute;
+	padding: 0;
+	margin-top: 0.5rem;
+	right: 5%;
+	width: 7rem;
+	height: 1.5rem;
+	border-radius: 1rem
+}
+
+.jh-item-state {
+	position: absolute;
+	/* top: -5.5rem; */
+	right: 0;
+	width: 5rem;
+	height: 3.125rem;
+	font-size: 1.5rem;
+	color: #C0C0C0;
+	line-height: 3.125rem;
+	text-align: center;
+	border: 0px solid;
+	margin: 100px auto;
+	-moz-transform: rotate(45deg);
+	/* Firefox 旋转属性，参数表示角度(deg表示角度)，负数逆时针，正数顺时针 */
+	-webkit-transform: rotate(45deg);
+	/* Safari和Chrome */
+	-ms-transform: rotate(45deg);
+	/* IE 9 */
+	-o-transform: rotate(45deg);
+	/* Opera */
+}
+
+.jh-text-oneline {
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}

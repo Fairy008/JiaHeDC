@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script src="../../../js/v4.6.5-dist/ol.js"></script>
+		<script type="text/javascript">
+			window.onload = function() {
+				//初始化点要素
+				var pointFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+				//初始化线要素
+				var lineFeature = new ol.Feature(new ol.geom.LineString([
+					[-1e7, 1e6],
+					[-1e6, 3e6]
+				]));
+				//初始化多边形要素
+				var polygonFeature = new ol.Feature(new ol.geom.Polygon([
+					[
+						[-3e6, -1e6],
+						[-3e6, 1e6],
+						[-1e6, 1e6],
+						[-1e6, -1e6],
+						[-3e6, -1e6]
+					]
+				]));
+
+				//初始化矢量数据源
+				var source = new ol.source.Vector({
+					//指定矢量数据源的要素为点、线、面要素的数组
+					features: [pointFeature, lineFeature, polygonFeature]
+				});
+
+				//创建一个矢量图层
+				var vector = new ol.layer.Vector({
+					//数据源
+					source: source,
+					//样式
+					style: new ol.style.Style({
+						//填充
+						fill: new ol.style.Fill({
+							color: 'rgba(255,255,255,0.2)'
+						}),
+						//笔触
+						stroke: new ol.style.Stroke({
+							color: '#ffcc33',
+							width: 2
+						}),
+						//图像
+						image: new ol.style.Circle({
+							radius: 7,
+							fill: new ol.style.Fill({
+								color: '#ffcc33'
+							})
+						})
+					})
+				});
+
+				//创建一个瓦片图层
+				var raster = new ol.layer.Tile({
+					//OSM数据源
+					source: new ol.source.OSM()
+				});
+
+				//创建一个交互选择对象
+				var select = new ol.interaction.Select({
+					//水平包裹
+					//Wrap the world horizontally on the selection overlay
+					wrapX: false
+				});
+
+				//创建一个交互修改对象
+				var modify = new ol.interaction.Modify({
+					//设置要素为交互选择对象所获取的要素
+					features: select.getFeatures()
+				});
+
+				//初始化地图
+				var map = new ol.Map({
+					interactions: ol.interaction.defaults().extend([select, modify]),
+					layers: [raster, vector],
+					target: 'map',
+					view: new ol.View({
+						center: [0, 0],
+						zoom: 4
+					})
+				});
+			};
+		</script>
+	</head>
+	<body>
+		<div>
+			<label>修改几何图形：请用鼠标选择修改要素，选中后再修改其几何信息</label>
+		</div>
+		<div id="map"></div>
+	</body>
+</html>

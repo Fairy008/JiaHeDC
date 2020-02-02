@@ -1,0 +1,221 @@
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" id="formDiv">
+                <div class="btLabel divStatis">
+                    <span  class="t1"  id="day">当日</span>
+                    <span  class="t1" id="threeDay">近三天</span>
+                    <span  class="t1 on" id="week">一周</span>
+                    <span  class="t1" id="month">一个月</span>
+                </div>
+
+                <div class="divStatis">
+                    <span class="label">归档时间：</span>
+                    <span><input type="text" class="input" id="search_archiveDate" /></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+            </div>
+        </div>
+    </div>
+    <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;margin-top: 10px;text-align:center;">各卫星归档数量统计<em>(单位：条)</em></div>
+    <div id="dataArchiveSateNum" style="width: 100%;min-height:100px;"></div>
+</div>
+<script type="text/javascript">
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","commons","echarts"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,commons,echarts){
+        var timeSlot="week";
+
+            var init=function () {
+            resizeContainer();
+            loadArchiveSateNum();//数据订单 已分发状态的  各卫星数据
+            $("#queryBtn").bind("click",searchFun);
+            $('.t1').click(function(){
+                $("#search_archiveDate").val("");
+                timeSlotClick(this.id);
+            });
+            dateFun('search_archiveDate');
+            changeCss();
+        }
+
+        var changeCss=function(){
+            $(".btLabel span").on("click", function() {
+                $(this).addClass("on");
+                $(this).siblings().removeClass("on");
+            });
+        }
+
+        var timeSlotClick=function(time){
+            timeSlot=time;
+            loadArchiveSateNum();
+        }
+
+        /**
+         * 统计不同卫星的数据数量
+         * @version<1> 2018-04-18 wl
+         */
+        var loadArchiveSateNum = function () {
+            var archiveParam = {};
+            var archiveDate=($("#search_archiveDate").val().trim()).split('至');
+                archiveParam.beginDate=archiveDate[0];
+                archiveParam.endDate=archiveDate[1];
+            if(timeSlot!=undefined){
+                archiveParam.timeSlot=timeSlot;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = ARCHIVE_CONFIG.queryArchiveSateNum_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(archiveParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                        var dataNames=new Array();
+                        var dataValues=new Array();
+                        $(result.data).each(function (i,d) {//组装name
+                            if(d.name!=undefined){
+                                dataNames[i]=d.name;
+                            }else {
+                                dataNames[i]="";
+                            }
+                            dataValues[i]=d.value;
+                        });
+                        var show;
+                        if(dataNames.length>8){
+                            show=true;
+                        }
+                    drawGraph("dataArchiveSateNum",dataNames,dataValues,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+
+
+        //柱状图内容填充
+        var drawGraph=function(id,dataNames,dataValues,show){
+            var myChart = echarts.init(document.getElementById("dataArchiveSateNum"));
+                var option= {
+                  /*  title: {
+                        text: '归档统计'
+                    },*/
+                    tooltip: {},
+                    toolbox: {
+                        show : true,
+                        feature : {
+                            dataView : {show: true, readOnly: false},
+                            magicType : {show: true, type: ['line', 'bar']},
+                            restore : {show: true},
+                            saveAsImage : {show: true}
+                        }
+                    },
+                    legend: {
+                        //right:'right',
+                        data:['数量']
+                    },
+                    xAxis: {
+                        data: dataNames,
+                        axisLabel:{
+                            interval:0,
+                            formatter:function(value,index){
+                                if(show){
+                                    if (index % 2 != 0) {
+                                        return '\n\n' + value;
+                                    }
+                                    else {
+                                        return value;
+                                    }
+                                }else {
+                                    return value;
+                                }
+
+                            }
+                        }
+                    },
+                    yAxis: [
+                        {
+
+                        }
+                    ],
+                    series: [{
+                        name: '数量',
+                        type: 'bar',
+                        barMaxWidth: '100',
+                        data: dataValues,
+                        //顶部数字展示pzr
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,//是否展示
+                                    position:'top',
+                                    textStyle: {
+                                        fontWeight:'bolder',
+                                        fontSize : '12',
+                                        fontFamily : '宋体',
+                                        color:'black'
+                                    }
+                                }
+                            }
+                        }
+                    }]
+                }
+                myChart.setOption(option);
+                window.onresize = function () {
+                    resizeContainer();
+                    myChart.resize();
+                }
+            clearBg(id);
+            if(dataNames.length==0 && dataValues.length==0){
+                //销毁echarts
+                myChart.clear();
+                window.onresize=""
+                //设置div的背景图
+                setBg(id);
+            }
+
+        }
+
+        var dateFun = function(idName){
+            $("#"+idName).jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+        //设置背景
+        var setBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = 'url(images/public/nodata.jpg)';
+            div.style.backgroundRepeat='no-repeat';
+            div.style.backgroundPosition='center';
+        }
+        //清除背景
+        var clearBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = '';
+        }
+        var searchFun=function(){
+            timeSlot="";
+            $(".t1").removeClass("on");
+            loadArchiveSateNum();
+        }
+        var resizeContainer= function () {
+            var container = document.getElementById('dataArchiveSateNum');
+            //container.style.height="100px";
+             container.style.height = $(".rightMain").height()-$(".searchItems").height()-50+"px";
+        };
+        init();
+    });
+
+</script>
+<style>
+    .statisticsTitle em{font-weight:normal !important;font-size:10px !important;}
+    #formDiv .btLabel span{background:#CDC9C9;color:#fff;float:left;display:block;width:20%;text-align:center;border-right:1px solid #fff;cursor:pointer;}
+    .on{background:#1f4350 !important;}
+    .divStatis{width:300px !important;}
+
+</style>

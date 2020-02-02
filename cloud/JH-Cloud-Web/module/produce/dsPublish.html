@@ -1,0 +1,1850 @@
+<!--发布明细 @version 2018-05-16 wl : Created.-->
+<style type="text/css">
+    /* 下拉多选 */
+    .dropdown {
+        position:relative;
+        height: 28px;
+    }
+    .dropdown-toggle {
+        display:inline-block;
+        height:28px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        text-align:left;
+        border-radius:5px;
+        background:#fff right no-repeat;
+        background-position:358px 13px;
+
+        width: 210px;
+        line-height: 28px;
+        color: #0b0b0b;
+        border: 1px solid rgb(212, 212, 212);
+        outline: none;
+    }
+    .dropdown-menu {
+        background:#fff;
+        border:1px #ccc solid;
+        margin-top:30px;
+        border-radius:5px;
+        position:absolute;
+        left:0;
+        width: 210px;
+        display: none;
+        z-index: 999;
+    }
+    .dropdown-menu ul {
+        padding:0px 10px 0px 10px;
+    }
+    .dropdown-menu .scroll {
+        overflow-y:auto;
+        position:relative;
+    }
+    .dropdown-menu ul li {
+        width:auto;
+        text-align:left;
+        height:32px;
+        margin-top:6px;
+        border-bottom:1px #ccc dashed;
+    }
+    .dropdown-menu ul li a {
+        text-decoration:none;
+        color:#666;
+        float: left;
+    }
+    .dropdown-menu ul li input {
+        width:14px;
+        height:14px;
+        display:inline-block;
+        border:none;
+        margin-right:5px;
+        padding-left:0;
+    }
+    #dsId input{
+        width: 14px !important;
+        float: left;
+    }
+    /***选项卡样式***/
+    .contentBottom{height: calc(100% - 24px - 50px - 10px);}
+    .btLabelLeft{float: left;width: 12%;margin-left:5px;margin-bottom:8px;border: 1px solid #F3F3F3;margin: 10px 0px;height: calc(100% - 20px);border-radius: 10px;}
+    .btLabelLeft span{background:#3FC7F7;color:#fff;display:block;width:135px;text-align:center;border-bottom:1px solid #fff;cursor:pointer;height: 28px; line-height: 28px;}
+    .btLabelLeft .on{background:#00A7ED !important;border-bottom-right-radius: 15px;border-top-right-radius: 15px;width: 145px !important;}
+    .gridRight{float: left;width: calc(88% - 14px);border: 1px solid #f3f3f3;height: calc(100% - 20px);border-radius: 10px;margin-left: 10px;margin-top: 10px;}
+    .gridRight .btLabelTop{height: 28px;}
+    .gridRight .btLabelTop span{float: left;width: 12%; height: 28px; line-height: 28px;background:#3FC7F7;color:#fff;display:block;width:135px;text-align:center;border-right: 1px solid #fff;cursor:pointer;}
+    .gridRight .btLabelTop .on{background:#00A7ED !important;}
+    .textareaStyle{width:94%;font-size:12px;border-radius:3px;border:1px solid #dfdfdf;resize:none;margin-top:4px;padding:4px;color:#000000}.outerDiv
+</style>
+<div class="content" style="height: 100%">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input id = "txtArea" class="input" type="text" placeholder="请选择区域" readonly/></span>
+                </div>
+              <!--  <div>
+                    <span class="label2">数据集：</span>
+                    <span>
+                       <span class="dropdown">
+                           <butten class="dropdown-toggle" type="button" value=""></butten>
+                           <span class="dropdown-menu">
+                               <span class="scroll">
+                                   <ul id="dsId"></ul>
+                               </span>
+                           </span>
+                       </span>
+                   </span>
+                </div>-->
+                <div>
+                    <span class="label">数据集：</span>
+                    <span>
+                     <select id="search_dataSet" class="input inputWidth_100" style="text-align:center;" >
+                    </select>
+                    </span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span><select id = "search_resolution" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id = "search_cropId" class="input"></select></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />&nbsp;&nbsp;
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">数据时间：</span>
+                    <span><input type="text" class="input" id="search_dataTime" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">发布人：</span>
+                    <span><input type="text" class="input" id="search_publisherName"/></span>
+                </div>
+                <div>
+                    <span class="label2">发布状态：</span>
+                    <span><select id = "search_publishStatus" name = "search_publishStatus" class="input"></select></span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="contentBottom">
+      <!--  &lt;!&ndash;左边选项卡&ndash;&gt;
+        <div class="btLabelLeft">
+            &lt;!&ndash;<span class="on t1" target="gridDistribution" tip="distributionTip" data-id="1801">分布</span>
+            <span class="t2" target="gridGrowth" tip="growthTip" data-id="1802">长势</span>
+            <span class="t2" target="gridAssess" tip="assessTip" data-id="1803">估产</span>
+            <span class="t2" target="gridLowTemperature" tip="lowTemperatureTip" data-id="1804">低温</span>
+            <span class="t2" target="gridRainfall" tip="rainfallTip" data-id="1805">降雨</span>&ndash;&gt;
+        </div>
+-->
+        <div class="gridRight">
+            <!--上面选项卡-->
+            <div class="btLabelTop">
+                <span class="on t1" target="gridData" tip="dataTip" data-id="1">数据</span>
+                <span class="t2" target="gridLayer" tip="layerTip" data-id="2">图层</span>
+                <span class="t2" target="gridThematic" tip="thematicTip" data-id="3">专题图</span>
+            </div>
+            <div class="grid" id="grid">
+                <table id="dataSetGrid"></table>
+                <div id="pager2"></div>
+            </div>
+        </div>
+    </div>
+    <div class="form" id="areaInfo" style="display:none;">
+        <table>
+            <tr>
+                <td class="four_td1"><span class="txtRequired">*</span>区域:</td>
+                <td class="four_td2">
+                    <input type="text" id="regionId" class="inputType"  readonly style="background-color: rgb(245, 245, 245)"/>
+                </td>
+                <td class="four_td1"><span class="txtRequired">*</span>农作物:</td>
+                <td class="four_td2" >
+                    <input type="text" class="inputType" id="cropId" readonly style="background-color: rgb(245, 245, 245)"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="four_td1"><span class="txtRequired">*</span>精度:</td>
+                <td class="four_td2">
+                    <input type="text" class="inputType" id="resolution" readonly style="background-color: rgb(245, 245, 245)"/>
+                </td>
+                <td class="four_td1"><span class="txtRequired">*</span>面积:</td>
+                <td class="four_td2" >
+                    <input type="text" class="inputType" id="area" />
+                </td>
+            </tr>
+
+            <tr rows="5">
+                <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                <td colspan="3"><textarea class="textareaStyle"  id = "remark" cols="30" rows="5"></textarea></td>
+            </tr>
+        </table>
+
+
+
+        <div class="form" id="growthInfo" style="display:none;">
+            <table>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="four_td2">
+                        <input type="text" id="growthRegionId" class="inputType" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>农作物:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="growthCropId" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="growthResolution" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>均值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="growth" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>最小值:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="growthMin" />
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>最大值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="growthMax" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>标准差:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="growthStddev" />
+                    </td>
+                </tr>
+
+                <tr rows="5">
+                    <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                    <td colspan="3"><textarea class="textareaStyle"  id = "growthRemark" cols="30" rows="5"></textarea></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="form" id="tInfo" style="display:none;">
+            <table>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="four_td2">
+                        <input type="text" id="tRegionId" class="inputType" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="tResolution"  readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="four_td1"><span class="txtRequired">*</span>均值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="t" />
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>标准差:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="tStddev" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>最小值:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="tMin" />
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>最大值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="tMax" />
+                    </td>
+                </tr>
+
+                <tr rows="5">
+                    <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                    <td colspan="3"><textarea class="textareaStyle"  id = "tRemark" cols="30" rows="5"></textarea></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="form" id="trmmInfo" style="display:none;">
+            <table>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="four_td2">
+                        <input type="text" id="trmmRegionId" class="inputType" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="trmmResolution" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                </tr>
+                <tr>
+
+                    <td class="four_td1"><span class="txtRequired">*</span>均值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="trmm" />
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>标准差:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="trmmStddev" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>最小值:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="trmmMin" />
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>最大值:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="trmmMax" />
+                    </td>
+                </tr>
+
+
+                <tr rows="5">
+                    <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                    <td colspan="3"><textarea class="textareaStyle"  id = "trmmRemark" cols="30" rows="5"></textarea></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="form" id="yieldInfo" style="display:none;">
+            <table>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="four_td2">
+                        <input type="text" id="yieldRegionId" class="inputType" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>农作物:</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="yieldCropId" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="four_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="four_td2">
+                        <input type="text" class="inputType" id="yieldResolution" readonly style="background-color: rgb(245, 245, 245)"/>
+                    </td>
+                    <td class="four_td1"><span class="txtRequired">*</span>估产(亩):</td>
+                    <td class="four_td2" >
+                        <input type="text" class="inputType" id="yield" />
+                    </td>
+                </tr>
+
+                <tr rows="5">
+                    <td class="four_td1"><div class="justify">备注:<span class='p'></span></div></td>
+                    <td colspan="3"><textarea class="textareaStyle"  id = "yieldRemark" cols="30" rows="5"></textarea></td>
+                </tr>
+            </table>
+        </div>
+        <div id="showDialog" class="dialogStyle" style="display:none">
+        </div>
+</div>
+<script type="text/javascript">
+
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","ztree","formVerfication","RegionModule","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax, ztree,formVerfication,RegionModule,PopWin,commons){
+        var dataSet = 1801;//设置默认初始化数据集:1801表示分布,
+        var tabSet = 1;//设置默认初始化值:1表示数据,2表示图层,3表示专题图
+
+        var init = function(){
+            dateFun();//初始化日期控件
+            RegionSelectFun("txtArea","cropId");//加载区域
+            //getDataSet(1800)//获取数据集产品
+            initResolutionFun(4000);
+            initDataSetFun(1800);//初始化数据集下拉框
+            initCropIdFun(500);//初始化农作物下拉框
+           // initPersonFun();//初始化  入库人  发布人 下拉框
+            initPublishStatusFun(2200);//初始化发布状态的下拉框
+            $("#resetBtn").on("click",resetFun);
+            $("#queryBtn").on("click",searchFun);
+
+            //titleLeftSelectFun();//左边选项卡切换
+            titleRightSelectFun();//右边选项卡切换
+
+            loaderGrid(dataSet, tabSet);//加载gird
+
+
+        }
+
+        /**
+         * 加载gird
+         * var1: 数据集
+         * var2: table页签
+         * @version<1> 2018-05-17 wl :created.
+         */
+        var loaderGrid = function(var1, var2){
+            var txtArea = document.getElementById("txtArea");
+            var areaId = txtArea.getAttribute("regionId");
+            $("#dataSetGrid").jqGrid({
+                url: getGridUrl(var1, var2),
+                datatype: "json",
+                postData:{
+                    dataSet: var1,
+                    regionId: areaId,//区域id
+                    cropId: $("#search_cropId").val(),//作物
+                    resolution: $("#search_resolution").val(),//分辨率
+                    creator:$("#search_creator").val(),//创建人
+                    publisherName:$("#search_publisherName").val(),//发布人
+                    publishStatus:$("#search_publishStatus").val(),//发布状态
+                    startTime: (($("#search_dataTime").val().trim()).split('至')) [0],
+                    endTime: (($("#search_dataTime").val().trim()).split('至')) [1]
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                multiselect: true,//复选框
+                colNames: getGridColNames(var1, var2),
+                colModel: getGridColModel(var1, var2),
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#dataSetGrid").setGridWidth($(".rightMain").width() - 30);
+                    $("#pager2_left").html('<input type="button" value="发布" id="publishBtn" class="btn btn_grey" />&nbsp;&nbsp;&nbsp;<input type="button" value="撤回" id="cancelBtn" class="btn btn_grey"  />');
+                    tableEvent();
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    var ids = $("#dataSetGrid").jqGrid("getGridParam", "selarrrow");
+                    if(ids.length == 0 &&  !$("#createBtn").hasClass("btn_grey")){
+                        $("#publishBtn").addClass("btn_grey");
+                    }else{
+                        $("#publishBtn").removeClass("btn_grey");
+                    }
+
+                },
+                onSelectRow:function(rowid, e){
+                    var ids = $("#dataSetGrid").jqGrid("getGridParam", "selarrrow");
+                    if(ids.length == 0 &&  !$("#createBtn").hasClass("btn_grey")){
+                        $("#publishBtn").addClass("btn_grey");
+                    }else{
+                        $("#publishBtn").removeClass("btn_grey");
+                    }
+                }
+            });
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018-05-17 wl : Created.
+         */
+        var tableEvent = function(){
+            $(".editBtn,.publishBtn,.cancelBtn").off("click");
+            $(".editBtn").on("click",function(){//编辑
+                dataSet = $("#search_dataSet").val();
+                switch(dataSet){
+                    case 1801://分布
+                    case "1801":
+                        editDsAreaFun($(this).attr("data-id"))
+                        break;
+                    case 1802://估产
+                    case "1802":
+                        editDsYieldFun($(this).attr("data-id"))
+                        break;
+                    case 1803://长势
+                    case "1803":
+                        editDsGrowthFun($(this).attr("data-id"))
+                        break;
+                    case 1804://地温
+                    case "1804":
+                        editDsTFun($(this).attr("data-id"))
+                        break;
+                    case 1805://降雨
+                    case "1805":
+                        editDsTrmmFun($(this).attr("data-id"))
+                        break;
+                }
+
+            })
+            $(".publishBtn").on("click", function () {
+                detailPublishById($(this).attr("data-id"));
+            });
+            $(".cancelBtn").on("click", function () {
+                detailCancelById($(this).attr("data-id"));
+            });
+
+            if(!$(this).hasClass("btn_grey")){
+                $("#publishBtn").on("click",detailPublish);//发布数据集明细
+                $("#cancelBtn").on("click",detailCancel);//撤销发布信息
+            }
+
+        }
+
+        /**
+         * 修改分布明细
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var editDsAreaFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_AREA.getById_url + "?id=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                $("#area").val(result.data.area);
+                $("#resolution").val(result.data.resolutionValue);
+                $("#cropId").val(result.data.cropName);
+                $("#regionId").val(result.data.regionName);
+                $("#remark").val(result.data.remark);
+                showDialog(id,"areaInfo","分布明细信息");
+            };
+            ajax.run();
+        };
+
+
+
+        /**
+         * 修改长势明细
+         * @version <1> 2018-05-11 wl: created.
+         */
+        var editDsGrowthFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_GROWTH.getById_url + "?id=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                var regionId = document.getElementById("regionId");
+                /* $("#satId").attr("disabled", "disabled")*/
+                $("#growth").val(result.data.growth);
+                $("#growthMin").val(result.data.growthMin);
+                $("#growthMax").val(result.data.growthMax);
+                $("#growthStddev").val(result.data.growthStddev);
+                $("#growthResolution").val(result.data.resolutionValue);
+                $("#growthRegionId").val(result.data.regionName);
+
+                $("#growthRemark").val(result.data.remark);
+
+
+                $("#growthCropId").val(result.data.cropName);
+                $("#growthRegionId").val(result.data.regionName);
+                showDialog(id,"growthInfo","长势明细信息");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 修改地温明细
+         * @version <1> 2018-05-11 wl: created.
+         */
+        var editDsTFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_TTN.getById_url + "?id=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                var regionId = document.getElementById("regionId");
+                /* $("#satId").attr("disabled", "disabled")*/
+                $("#t").val(result.data.t);
+                $("#tMin").val(result.data.tMin);
+                $("#tMax").val(result.data.tMax);
+                $("#tStddev").val(result.data.tStddev);
+                $("#tResolution").val(result.data.resolutionValue);
+                $("#tRegionId").val(result.data.tRegionId);
+                $("#tCropId").val(result.data.cropName);
+                $("#tRegionId").val(result.data.regionName);
+                $("#tRemark").val(result.data.remark);
+                showDialog(id,"tInfo","地温明细信息");
+            };
+            ajax.run();
+        };
+
+
+
+        /**
+         * 修改降雨明细
+         * @version <1> 2018-05-11 wl: created.
+         */
+        var editDsTrmmFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_TTN.getById_url + "?id=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                var regionId = document.getElementById("regionId");
+                /* $("#satId").attr("disabled", "disabled")*/
+                $("#trmm").val(result.data.trmm);
+                $("#trmmMin").val(result.data.trmmMin);
+                $("#trmmMax").val(result.data.trmmMax);
+                $("#trmmStddev").val(result.data.trmmStddev);
+                $("#trmmResolution").val(result.data.trmmResolution);
+                $("#trmmRegionId").val(result.data.trmmRegionId);
+
+                $("#trmmRemark").val(result.data.trmmRemark);
+                $("#trmmCropId").val(result.data.cropName);
+                $("#trmmRegionId").val(result.data.regionName);
+                showDialog(id,"trmmInfo","降雨明细信息");
+            };
+            ajax.run();
+        };
+
+        /**
+         * 修改估产明细
+         * @version <1> 2018-05-11 wl: created.
+         */
+        var editDsYieldFun = function(id){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_YIELD.getById_url + "?id=" + id;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false; //同步请求
+            ajax.opts.successFun = function(result){
+                var regionId = document.getElementById("regionId");
+
+                $("#yield").val(result.data.yield);
+                $("#yieldResolution").val(result.data.resolutionValue);
+                $("#yieldCropId").val(result.data.cropName);
+                $("#yieldRegionId").val(result.data.regionName);
+                $("#yieldRemark").val(result.data.remark);
+                showDialog(id,"yieldInfo","估产明细信息");
+            };
+            ajax.run();
+        };
+
+
+
+        /**
+         * 弹出框
+         * @param type  : 编辑
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var showDialog = function(id,type,title){
+            var Dialog =  $("#"+type);
+            var dialogParent = Dialog.parent();
+            var dialogOwn = Dialog.clone();
+            Dialog.dialog({
+                autoOpen: false,
+                title:title,
+                height: 330,
+                width: 550,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons:[
+                    {
+                        text: "保存",
+                        click: function () {
+                            switch(type){
+                                case "areaInfo":
+                                    editAreaSaveFun(Dialog, id);
+                                    break;
+                                case "growthInfo":
+                                    editGrowthSaveFun(Dialog,id);
+                                    break;
+                                case "tInfo"://地温
+                                    editTSaveFun(Dialog,id);
+                                    break;
+                                case "trmmInfo"://降雨
+                                    editTrmmSaveFun(Dialog,id);
+                                    break;
+                                case "yieldInfo":
+                                    editYieldSaveFun(Dialog,id);
+                                    break;
+
+                            }
+
+                        }
+                    },{
+                        text: "取消",
+                        click: function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+
+            });
+
+            Dialog.dialog("open");
+        };
+
+        var formVerf = function(){//分布验证
+            var areaInfo = $('#areaInfo');
+            if(formVerfication.checkInputLength(1,15,$('#area'),areaInfo,'面积只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#area'),areaInfo,'面积只能为15位以内的数字')){
+                return false;
+            }
+            return true;
+        }
+
+        var formVerfYield = function(){//估产验证
+            var yieldInfo = $('#yieldInfo');
+            if(formVerfication.checkInputLength(1,15,$('#yield'),yieldInfo,'估产只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#yield'),yieldInfo,'估产只能为15位以内的数字')){
+                return false;
+            }
+            return true;
+        }
+
+        var formVerfGrowth = function(){//长势验证
+            var growthInfo = $('#growthInfo');
+            if(formVerfication.checkInputLength(1,15,$('#growth'),growthInfo,'估产均值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#growth'),growthInfo,'估产均值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#growthMin'),growthInfo,'估产最小值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#growthMin'),growthInfo,'估产最小值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#growthMax'),growthInfo,'估产最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#growthMax'),growthInfo,'估产最大值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#growthStddev'),growthInfo,'估产最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#growthStddev'),growthInfo,'估产最大值只能为15位以内的数字')){
+                return false;
+            }
+            return true;
+        }
+
+        var formVerfT = function(){//地温验证
+            var tInfo = $('#tInfo');
+            if(formVerfication.checkInputLength(1,15,$('#t'),tInfo,'地温均值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#t'),tInfo,'地温均值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#tMin'),tInfo,'地温最小值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#tMin'),tInfo,'地温最小值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#tMax'),tInfo,'地温最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#tMax'),tInfo,'地温最大值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#tStddev'),tInfo,'地温最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#tStddev'),tInfo,'地温最大值只能为15位以内的数字')){
+                return false;
+            }
+            return true;
+        }
+
+        var formVerfTrmm = function(){//降雨验证
+            var trmmInfo = $('#trmmInfo');
+            if(formVerfication.checkInputLength(1,15,$('#trmm'),trmmInfo,'降雨均值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#trmm'),trmmInfo,'降雨均值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#trmmMin'),trmmInfo,'降雨最小值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#trmmMin'),trmmInfo,'降雨最小值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#trmmMax'),trmmInfo,'降雨最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#trmmMax'),trmmInfo,'降雨最大值只能为15位以内的数字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(1,15,$('#trmmStddev'),trmmInfo,'降雨最大值只能为15位以内的数字')){
+                return false;
+            }
+            if(formVerfication.checkInputIsNumber($('#trmmStddev'),trmmInfo,'降雨最大值只能为15位以内的数字')){
+                return false;
+            }
+            return true;
+        }
+
+        /**
+         * 修改分布信息保存
+         * @param dsAreaDialog
+         */
+        var editAreaSaveFun = function(areaDialog, id ){
+            if(!formVerf()){
+                return ;
+            }
+            var dsArea = {};
+
+            dsArea.area=$("#area").val().trim();
+            dsArea.remark=$("#remark").val().trim();
+            dsArea.id = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_AREA.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(dsArea);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    //  $("#loaderGrid").trigger("reloadGrid");
+                    areaDialog.dialog("close");
+
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    dataSet = $("#search_dataSet").val();
+                    loaderGrid(dataSet);//加载gird
+
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 修改长势信息保存
+         * @param dsgrowthDialog
+         */
+        var editGrowthSaveFun = function(growthDialog, id ){
+            if(!formVerfYield()){
+             return ;
+             }
+            var dsGrowth = {};
+
+            dsGrowth.growth=$("#growth").val().trim();
+            dsGrowth.growthMin=$("#growthMin").val().trim();
+            dsGrowth.growthMax=$("#growthMax").val().trim();
+            dsGrowth.growthStddev=$("#growthStddev").val().trim();
+            dsGrowth.remark=$("#growthRemark").val().trim();
+            dsGrowth.id = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_GROWTH.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(dsGrowth);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    growthDialog.dialog("close");
+
+                    $("#grid").html('<table id="loaderGrid"></table><div id="pager2"></div>');
+                    dataSet = $("#search_dataSet").val();
+                    loaderGrid(dataSet);//加载gird
+
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 修改地温信息保存
+         * @param dsTDialog
+         */
+        var editTSaveFun = function(tDialog, id ){
+            if(!formVerfT()){
+             return ;
+             }
+            var dsT = {};
+
+            dsT.remark=$("#tRemark").val().trim();
+            dsT.t=$("#t").val().trim();
+            dsT.tMin=$("#tMin").val().trim();
+            dsT.tMax=$("#tMax").val().trim();
+            dsT.tStddev=$("#tStddev").val().trim();
+            dsT.id = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_TTN.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(dsT);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    tDialog.dialog("close");
+
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    dataSet = $("#search_dataSet").val();
+                    loaderGrid(dataSet);//加载gird
+
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 修改降雨信息保存
+         * @param dsTrmmDialog
+         */
+        var editTrmmSaveFun = function(trmmDialog, id ){
+            if(!formVerfTrmm()){
+             return ;
+             }
+            var dsTrmm = {};
+
+            dsTrmm.remark=$("#tRemark").val().trim();
+            dsTrmm.trmm=$("#trmm").val().trim();
+            dsTrmm.trmmMin=$("#trmmMin").val().trim();
+            dsTrmm.trmmMax=$("#trmmMax").val().trim();
+            dsTrmm.trmmStddev=$("#trmmStddev").val().trim();
+            dsTrmm.id = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_TTN.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(dsTrmm);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    trmmDialog.dialog("close");
+
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    dataSet = $("#search_dataSet").val();
+                    loaderGrid(dataSet);//加载gird
+
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+        /**
+         * 修改估产信息保存
+         * @param dsYieldDialog
+         */
+        var editYieldSaveFun = function(yieldDialog, id ){
+            /*if(!formVerf()){
+             return ;
+             }*/
+            var dsYield = {};
+
+            dsYield.yield=$("#yield").val().trim();
+            dsYield.remark=$("#yieldRemark").val().trim();
+            dsYield.id = id;
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_YIELD.edit_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(dsYield);
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    yieldDialog.dialog("close");
+
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    dataSet = $("#search_dataSet").val();
+                    loaderGrid(dataSet);//加载gird
+
+                    PopWin.showMessageWin("修改成功");
+                }else{
+                    PopWin.showMessageWin("修改失败，没有符合条件的数据");
+                }
+            };
+            ajax.opts.errorFun = function (result) {
+                PopWin.showMessageWin("修改失败");
+            };
+            ajax.run();
+        };
+
+
+        /**
+         * 设置grid url属性
+         * var1: 数据集
+         * var2: table页签
+         * @version<1> 2018-05-09 zhangshen :created.
+         */
+        var getGridUrl = function(var1, var2){
+            var url = "";
+            if(var1 == 1801 && var2 == 1){//分布-----数据
+                url = DS_AREA.findByPage_url;
+            }else if(var1 == 1802 && var2 == 1){//估产-----数据
+                url = DS_YIELD.findByPage_url;
+            } else if(var1 == 1803 && var2 == 1){//长势-----数据
+                url = DS_GROWTH.findByPage_url;
+            }else if((var1 == 1804 || var1 == 1805 || var1 == 1806) && var2 == 1){//低温,降雨,干旱-----数据
+                url = DS_TTN.findByPage_url;
+            }else if((var1 == 1801 || var1 == 1802 || var1 == 1803) && (var2 == 2 || var2 == 3)){//分布,长势,估产-----图层,专题图
+                url = DS_LAYER.findByPage_url;
+            }else if((var1 == 1804 || var1 == 1805 || var1 == 1806) && (var2 == 2 || var2 == 3)){//低温,降雨-----图层,专题图
+                url = "";
+            }
+            return url;
+        };
+
+        /**
+         * 设置grid colNames属性
+         * var1: 数据集
+         * var2: table页签
+         * @version<1> 2018-05-09 zhangshen :created.
+         */
+        var getGridColNames = function(var1, var2){
+            var colNames = [];
+            if((var1 == 1801 || var1 == 1802) && var2 == 1){//分布,估产-----数据
+                colNames = ['ID', '区域名称', '区域编码', '数据集', '分辨率', '农作物', '数据时间', '面积（亩）','发布状态', '发布时间','发布人','操作'];
+            }else if(var1 == 1803 && var2 == 1){//长势-----数据
+                colNames = ['ID', '区域名称', '区域编码', '数据集', '分辨率', '农作物', '数据时间', '长势均值1km', '长势最小值1km', '长势最大值1km', '长势标准差1km','发布状态', '发布时间','发布人','操作'];
+            }else if((var1 == 1804 || var1 == 1805 || var1 == 1806) && var2 == 1){//低温,降雨-----数据
+                colNames = ['ID', '区域名称', '区域编码', '数据集', '分辨率', '数据时间', '最大值', '最小值', '均值', '标准差','发布状态', '发布时间','发布人','操作'];
+            }else if(var2 == 2 || var2 == 3){//分布,长势,估产,地温，降雨-----图层,专题图
+                colNames = ['ID', '区域名称', '区域编码', '数据集', '分辨率', '农作物', '数据时间', '文件', '图层地址', '发布状态', '发布时间','发布人','操作'];
+            }else if((var1 == 1804 || var1 == 1805 || var1 == 1806) && (var2 == 2 || var2 == 3)){//低温,降雨-----图层,专题图
+                colNames = ['ID', '区域名称', '区域编码', '数据集', '分辨率', '数据时间', '文件', '地址','操作'];
+            }
+            return colNames;
+        };
+
+        /**
+         * 设置grid colModel属性
+         * var1: 数据集
+         * var2: table页签
+         * @version<1> 2018-05-09 zhangshen :created.
+         */
+        var getGridColModel = function(var1, var2){
+            var colModel = [];
+            if(var1 == 1801 && var2 == 1){//分布-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'cropName',index:'cropName', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'area',index:'area', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if(var1 == 1802 && var2 == 1){//估产-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'cropName',index:'cropName', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'yield',index:'yield', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            } else if(var1 == 1803 && var2 == 1){//长势-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'cropName',index:'cropName', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'growth',index:'growth', align:'center', width:'5%'},
+                    {name:'growthMin',index:'growthMin', align:'center', width:'5%'},
+                    {name:'growthMax',index:'growthMax', align:'center', width:'5%'},
+                    {name:'growthStddev',index:'growthStddev', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if(var1 == 1804 && var2 == 1){//低温-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'tMax',index:'tMax', align:'center', width:'5%'},
+                    {name:'tMin',index:'tMin', align:'center', width:'5%'},
+                    {name:'t',index:'t', align:'center', width:'5%'},
+                    {name:'tStddev',index:'tStddev', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if(var1 == 1805 && var2 == 1){//降雨-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'trmmMax',index:'trmmMax', align:'center', width:'5%'},
+                    {name:'trmmMin',index:'trmmMin', align:'center', width:'5%'},
+                    {name:'trmm',index:'trmm', align:'center', width:'5%'},
+                    {name:'trmmStddev',index:'trmmStddev', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if(var1 == 1806 && var2 == 1){//干旱-----数据
+                colModel = [
+                    {name:'id',index:'id', align:'center', width:'2%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'5%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'5%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolutionValue', align:'center', width:'5%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'5%'},
+                    {name:'nddiMax',index:'nddiMax', align:'center', width:'5%'},
+                    {name:'nddiMin',index:'nddiMin', align:'center', width:'5%'},
+                    {name:'nddi',index:'nddi', align:'center', width:'5%'},
+                    {name:'nddiStddev',index:'nddiStddev', align:'center', width:'5%'},
+                    {name:'publishStatus',index:'publish_status', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+
+                    }},
+                    {name:'publisherTime',index:'publisher_time', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisher_name', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/back.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/backG.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if(var2 == 2 || var2 == 3){//分布,长势,估产,地温，降雨-----图层,专题图
+                colModel = [
+                    {name:'id',index:'id', align:'left', width:'5%'},
+                    {name:'regionName',index:'regionName', align:'center', width:'8%'},
+                    {name:'regionCode',index:'regionCode', align:'center', width:'8%'},
+                    {name:'dataSet',index:'dataSet', align:'center', width:'8%',formatter:function(cellvalue,options,rowObject){
+                        return getDataSetStr();
+                    }},
+                    {name:'resolutionValue',index:'resolution_value', align:'center', width:'8%'},
+                    {name:'cropName',index:'cropName', align:'center', width:'8%'},
+                    {name:'dataTime',index:'dataTime', align:'center', width:'8%'},
+                    {name:'typeName',index:'typeName', align:'center', width:'5%'},
+                    {name:'url',index:'url', align:'center', width:'10%'},
+                    {name:'publishStatus',index:'publishStatus', align:'center', width:'5%',formatter:function(cellvalue,options,rowObject){
+                        var len = publishStatusCache.length;
+                        for(i = 0;i < len;i++){
+                            if(publishStatusCache[i].dictId == cellvalue){
+                                return publishStatusCache[i].dataName;
+                            }
+                        }
+                        return "";
+                    }},
+                    {name:'publisherTime',index:'publisherTime', align:'center', width:'5%'},
+                    {name:'publisherName',index:'publisherName', align:'center', width:'5%'},
+                    {name:'cz',index:'cz', width:'20%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/backG.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/back.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }else if((var1 == 1804 || var1 == 1805|| var1 == 1806) && (var2 == 2 || var2 == 3)){//低温,降雨-----图层,专题图
+                colModel = [
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'fileName',index:'fileName', align:'left', width:'5%'},
+                    {name:'cz',index:'cz', width:'10%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                        var str="";
+                        if(rowObject.publishStatus==2201){//已经发布的数据不可修改  只能撤销
+                            str+= "<img src='images/public/TeditG.png' title='编辑' >" +
+                                    "<img src='images/public/TdeleteG.png'  title='删除' >"+
+                                    "<img src='images/public/shareG.png' title='发布' >" +
+                                    "<img src='images/public/backG.png' class='cancelBtn'  data-id='" + rowObject.id + "'  title='撤销' >";
+                        }else {
+                            str+= "<img src='images/public/Tedit.png'  class='editBtn' data-id='" + rowObject.id + "'   title='编辑' >" +
+                                    "<img src='images/public/Tdelete.png' class='delBtn'  data-id='" + rowObject.id + "'  title='删除' >"+
+                                    "<img src='images/public/share.png'  class='publishBtn' data-id='" + rowObject.id + "'   title='发布' >" +
+                                    "<img src='images/public/back.png'  title='撤销' >";
+                        }
+                        return str;
+                    }}
+                ];
+            }
+            return colModel;
+        };
+
+        /**
+         * 查询
+         * @version<1> 2018-05-18 wl :created.
+         */
+        var searchFun = function(){
+            $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+            dataSet = $("#search_dataSet").val();
+            loaderGrid(dataSet, tabSet);//加载gird
+        }
+
+        /**
+         * 重置
+         * @version<1> 2018-05-03 lcw :created.
+         */
+        var resetFun = function(){
+            $(".searchItems .input").val("");
+            $("#txtArea").removeAttr("regionid");
+            var str = "";//数据集文字
+            var val = "";//数据集值
+            $("#dsId li").each(function(i,d){
+                if(i == 1){
+                    $(this).find("input").attr("checked","checked");
+                    val += $(this).find("input").val() + ";";
+                    str += $(this).find("a").text() + ";";
+                }else{
+                    $(this).find("input").removeAttr("checked");
+                }
+            });
+            $(".dropdown-toggle").text(str.substr(0,str.length-1)).attr("value",val.substr(0,val.length-1));
+        }
+
+        /**
+         * 初始化日期控件
+         * @version<1> 2018-05-18 wl :Created.
+         */
+        var dateFun = function(){
+            $("#search_dataTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        /**
+         * 区域选择控件
+         * @version<1> 2018-05-03 lcw :Created.
+         */
+        /**
+         * 区域选择控件
+         * @param regionIdName 区域ID
+         * *@param cropIdName 作物ID
+         * @version <1> 2018-4-17 cxw : created.
+         */
+        var RegionSelectFun = function(regionIdName,cropIdName){
+            var txtArea = document.getElementById(regionIdName);
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400};
+                opts = {url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                    var regionId = txtArea.getAttribute("regionId");
+                    if(regionId!=null)
+                    {
+                        queryCropFun(regionId,cropIdName)
+                    }
+                    else{
+                        $('#'+cropIdName).html('<option value="">--请选择--</option>');
+                    }
+                }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            }
+            return true;
+        }
+
+        //区域缓存
+        var cropCache = [];
+        /**
+         * 通过区域获取作物
+         * @version<1> 2018-05-03 lcw :Created.
+         */
+        var queryCropFun = function(regionId,cropIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.successFun = function (data) {
+                var crop = data.data;
+                cropCache = crop;
+                initCropFun(crop,cropIdName);
+            };
+            ajax.run();
+
+        }
+
+        /**
+         * 初始化作物下拉框
+         * @param crop 查询出的作物对象集合
+         * @version<1> 2018-05-03 lcw :Created.
+         */
+        var initCropFun = function(crop,cropIdName){
+            var result;
+            result = '<option value="">--请选择--</option>';
+            if(crop!=null)
+            {
+                $.each(crop,function(i,o){
+                    result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                });
+            }
+            $('#'+cropIdName).html(result);
+        };
+
+        //数据集集合
+        //var dataSetArrCache = [];
+        var getDataSetStr = function(){
+            var len = dataSetCache.length;
+            for(i = 0;i < len;i++){
+                if(dataSetCache[i].dictId == dataSet){
+                    return dataSetCache[i].dataName;
+                }
+            }
+            return "";
+        }
+
+        /**
+         * 右边选项卡切换
+         * @version<1> 2018-05-14 wl :Created.
+         */
+        var titleRightSelectFun = function(){
+            $(".gridRight span").on("click", function(){
+                $(this).addClass("on");
+                $(this).siblings().removeClass("on");
+                tabSet = $(this).attr("data-id");
+                $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                loaderGrid(dataSet, tabSet);
+            })
+        };
+
+        /**
+         * 批量发布明细
+         * @version<1> 2018-05-14 wl :Created.
+         */
+        var detailPublish = function(){
+            var ajax = new BaseAjax();
+            var detailPublishParam = {};//参数
+            detailPublishParam.dataSet = dataSet;//单个数据集
+            detailPublishParam.publishStatus=2201;
+            var ids = $("#dataSetGrid").jqGrid("getGridParam", "selarrrow");
+            detailPublishParam.idList= ids;//批量发布id
+            if(tabSet==1){
+                switch(dataSet){
+                    case 1801://分布
+                    case "1801":
+                        ajax.opts.url = DS_AREA.publish_url;
+                        break;
+                    case 1802://估产
+                    case "1802":
+                        ajax.opts.url = DS_YIELD.publish_url;
+                        break;
+                    case 1803://长势
+                    case "1803":
+                        ajax.opts.url = DS_GROWTH.publish_url;
+                        break;
+                    case 1804://地温
+                    case "1804":
+                    case 1805://降雨
+                    case "1805":
+                        ajax.opts.url = DS_TTN.publish_url;
+                        break;
+                }
+            }else{
+                ajax.opts.url = DS_LAYER.publish_url;
+            }
+
+            ajax.opts.data = JSON.stringify(detailPublishParam);
+            ajax.opts.successFun = function(data){
+                if(data.flag){
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    loaderGrid(dataSet, tabSet);
+                    PopWin.showMessageWin("成功");
+                }else{
+                    PopWin.showMessageWin(data.msg);
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+            }
+            ajax.run();
+
+        };
+
+        /**
+         * 单条明细发布
+         * @version<1> 2018-05-14 wl :Created.
+         */
+        var detailPublishById = function(id){
+            var detailPublishParam = {};//参数
+            detailPublishParam.dataSet = dataSet;//单个数据集
+            detailPublishParam.publishStatus=2201;
+            detailPublishParam.idList=id;
+            var ajax = new BaseAjax();
+            switch(dataSet){
+                case 1801://分布
+                case "1801":
+                    ajax.opts.url = DS_AREA.publish_url;
+                    break;
+                case 1802://估产
+                case "1802":
+                    ajax.opts.url = DS_YIELD.publish_url;
+                    break;
+                case 1803://长势
+                case "1803":
+                    ajax.opts.url = DS_GROWTH.publish_url;
+                    break;
+                case 1804://地温
+                case "1804":
+                case 1805://降雨
+                case "1805":
+                    ajax.opts.url = DS_TTN.publish_url;
+                    break;
+            }
+
+            ajax.opts.data = JSON.stringify(detailPublishParam);
+            ajax.opts.successFun = function(data){
+                if(data.flag){
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    loaderGrid(dataSet, tabSet);
+                    PopWin.showMessageWin("成功");
+                }else{
+                    PopWin.showMessageWin(data.msg);
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+            }
+            ajax.run();
+
+        };
+
+        /**
+         * 撤销发布
+         * @version<1> 2018-05-14 wl :Created.
+         */
+        var detailCancel = function(){
+            var ajax = new BaseAjax();
+            var detailPublishParam = {};//参数
+            detailPublishParam.dataSet = dataSet;//单个数据集
+            detailPublishParam.publishStatus=2202;
+            var ids = $("#dataSetGrid").jqGrid("getGridParam", "selarrrow");
+            detailPublishParam.idList= ids;//批量发布id
+            switch(dataSet){
+                case 1801://分布
+                case "1801":
+                    ajax.opts.url = DS_AREA.publish_url;
+                    break;
+                case 1802://估产
+                case "1802":
+                    ajax.opts.url = DS_YIELD.publish_url;
+                    break;
+                case 1803://长势
+                case "1803":
+                    ajax.opts.url = DS_GROWTH.publish_url;
+                    break;
+                case 1804://地温
+                case "1804":
+                case 1805://降雨
+                case "1805":
+                    ajax.opts.url = DS_TTN.publish_url;
+                    break;
+            }
+            ajax.opts.data = JSON.stringify(detailPublishParam);
+            ajax.opts.successFun = function(data){
+                if(data.flag){
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    loaderGrid(dataSet, tabSet);
+                    PopWin.showMessageWin("成功");
+                }else{
+                    PopWin.showMessageWin(data.msg);
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+            }
+            ajax.run();
+
+        };
+
+
+        /**
+         * 单条明细撤销
+         * @version<1> 2018-05-18 wl :Created.
+         */
+        var detailCancelById = function(id){
+            var detailPublishParam = {};//生成报告参数
+            detailPublishParam.dataSet = dataSet;//单个数据集
+            detailPublishParam.publishStatus=2202;
+            detailPublishParam.id=id;
+            var ajax = new BaseAjax();
+            switch(dataSet){
+                case 1801://分布
+                case "1801":
+                    ajax.opts.url = DS_AREA.publish_url;
+                    break;
+                case 1802://估产
+                case "1802":
+                    ajax.opts.url = DS_YIELD.publish_url;
+                    break;
+                case 1803://长势
+                case "1803":
+                    ajax.opts.url = DS_GROWTH.publish_url;
+                    break;
+                case 1804://地温
+                case "1804":
+                case 1805://降雨
+                case "1805":
+                    ajax.opts.url = DS_TTN.publish_url;
+                    break;
+            }
+
+            ajax.opts.data = JSON.stringify(detailPublishParam);
+            ajax.opts.successFun = function(data){
+                if(data.flag){
+                    $("#grid").html('<table id="dataSetGrid"></table><div id="pager2"></div>');
+                    loaderGrid(dataSet, tabSet);
+                    PopWin.showMessageWin("成功");
+                }else{
+                    PopWin.showMessageWin(data.msg);
+                }
+            };
+            ajax.opts.failureFun = function(){
+
+            }
+            ajax.run();
+
+        };
+
+        var dataSetCache=[];
+        /**
+         * 获取数据集下拉框数据
+         * @param parentId = 1800
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var initDataSetFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if(result.flag){
+                    dataSetCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#dataSet").append(str);
+                    $("#search_dataSet").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+        /**
+         * 获取入库人 发布人下拉框数据
+         * @version <1> 2018-05-18 wl: created.
+         */
+       /* var initPersonFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = USER_CONFIG.queryPerson_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.personId+"'>"+ element.personName +"</option>";
+                    })
+                    $("#search_publisher").append(str);
+                    $("#search_creator").append(str);
+                }
+            }
+            ajax.run();
+        }*/
+
+        //农作物缓存
+        var cropIdCache=[];
+        /**
+         * 获取农作物下拉框数据
+         * @param parentId = 500
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var initCropIdFun=function (parentId) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    cropIdCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    /*  $("#cropId").append(str);
+                     $("#growthCropId").append(str);*/
+                    $("#search_cropId").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+
+        //分辨率缓存
+        var resolutionCache = [];
+
+        /**
+         * 获取分辨率下拉框数据
+         * @param parentId = 4000
+         * @version <1> 2018-05-09 wl: created.
+         */
+        var initResolutionFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    resolutionCache = result.data;
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#search_resolution").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+        var publishStatusCache=[];
+        /**
+         * 获取发布状态下拉框数据
+         * @version <1> 2018-05-21 wl: created.
+         */
+        var initPublishStatusFun = function(parentId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+            ajax.opts.successFun = function(result){
+                var str = "";
+                if(result.flag){
+                    publishStatusCache = result.data;
+                    $.each(result.data, function(index, element){
+                        if(element.dictId=2202){
+                            str += "<option value='"+ element.dictId+"' selected>"+ element.dataName +"</option>";
+                        }else{
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        }
+
+                    })
+                    $("#search_publishStatus").append(str);
+                }
+            }
+            ajax.run();
+        }
+
+        init();
+
+    })
+</script>

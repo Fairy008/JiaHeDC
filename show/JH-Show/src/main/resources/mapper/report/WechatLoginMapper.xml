@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.report.mapping.IWechatLoginMapper" >
+    <!--查询当前登录的用户信息-->
+    <select id="findUser" resultType="map" parameterType="hashMap">
+        SELECT
+        a.account_id,
+        a.account_name,
+        a.nick_name,
+        a.account_pwd,
+        p.email,
+        p.wechat_id,
+        p.email,
+        p.company
+        FROM
+        sys_perm_account a
+        INNER JOIN sys_perm_person p ON p.account_id = a.account_id
+        WHERE
+        a.del_flag = '1'
+        AND p.del_flag = '1'
+        AND a.data_status = '1'
+        AND p.data_status = '1'
+        <if test="accountId != null and accountId!=''">
+            AND  a.account_id =  #{accountId,jdbcType=INTEGER}
+        </if>
+        <if test="accountName != null and accountName!=''">
+            AND a.account_name =  #{accountName,jdbcType=VARCHAR}
+        </if>
+        <if test="accountPwd != null and accountPwd!=''">
+            AND a.account_pwd  =  #{accountPwd,jdbcType=VARCHAR}
+        </if>
+        <if test="wechatId != null and wechatId != ''">
+            AND p.wechat_id = #{wechatId}
+        </if>
+    </select>
+    <!--用户注册-->
+    <insert id="saveUser" parameterType="hashMap">
+         insert into offcial_web_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+         <if test="openId != null and openId!=''">
+             open_id,
+         </if>
+            register_time,
+        <if test="tel != null and tel!=''">
+            tel,
+        </if>
+        <if test="password != null and password!=''">
+            password,
+        </if>
+       </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="openId != null and openId!=''">
+            #{openId,jdbcType=VARCHAR},
+        </if>
+            now(),
+        <if test="tel != null and tel!=''">
+            #{tel,jdbcType=VARCHAR},
+        </if>
+        <if test="password != null and password!=''">
+            #{password,jdbcType=VARCHAR},
+        </if>
+        </trim>
+    </insert>
+
+
+    <select id="findParentRegion" parameterType="Long" resultType="map">
+        SELECT
+            parent_id,
+            LEVEL,
+            china_name,
+            region_code
+        FROM
+            init_region
+        WHERE
+            region_id = #{regionId,jdbcType=BIGINT}
+    </select>
+
+    <select id="checkUser" resultType="map" parameterType="hashMap">
+        select
+        a.account_id,
+        a.account_name,
+        a.account_pwd,
+        a.nick_name,
+        a.remark,
+        a.data_status,
+        a.del_flag,
+        a.create_time,
+        a.creator_name,
+        a.creator,
+        a.modify_time,
+        a.modifier_name,
+        a.modifier,
+        b.wechat_id,
+        b.person_id
+        from sys_perm_account a join sys_perm_person b ON a.account_id = b.account_id
+        where  a.del_flag = '1' and a.data_status='1' and a.account_name =  #{accountName,jdbcType=VARCHAR}
+    </select>
+    <select id="checkRegion" parameterType="hashMap" resultType="map">
+        SELECT
+            id,
+            region_name,
+            bbox,
+            user_id,
+            region_id,
+            region_type
+        FROM
+            custom_locale
+        WHERE
+            region_type =  #{regionType,jdbcType=INTEGER}
+            AND user_id= #{accountId,jdbcType=INTEGER}
+    </select>
+    <insert id="setRegion" parameterType="hashMap">
+        insert into custom_locale
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="regionName != null and regionName!=''">
+                region_name,
+            </if>
+            <if test="bbox != null and bbox!=''">
+                bbox,
+            </if>
+            <if test="userId != null and userId!=''">
+                user_id,
+            </if>
+            <if test="regionId != null and regionId!=''">
+                region_id,
+            </if>
+            <if test="regionType != null and regionType!=''">
+                region_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="regionName != null and regionName!=''">
+                #{regionName,jdbcType=VARCHAR},
+            </if>
+            <if test="bbox != null and bbox!=''">
+                #{bbox,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null and userId!=''">
+                #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="regionId != null and regionId!=''">
+                #{regionId,jdbcType=BIGINT},
+            </if>
+            <if test="regionType != null and regionType!=''">
+                #{regionType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <insert id="saveAccount" parameterType="hashMap" useGeneratedKeys="true" keyProperty="account_id" >
+        insert into sys_perm_account
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                remark,
+            </if>
+            create_time,
+            <if test="creatorName != null" >
+                creator_name,
+            </if>
+            <if test="creator != null" >
+                creator,
+            </if>
+            account_name,
+            account_pwd,
+            <if test="nickName != null" >
+                nick_name,
+            </if>
+            <if test="dataStatus != null" >
+                data_status,
+            </if>
+            <if test="accountType != null">
+                account_type,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            now(),
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null" >
+                #{creator,jdbcType=INTEGER},
+            </if>
+            #{accountName,jdbcType=VARCHAR},
+            #{accountPwd,jdbcType=VARCHAR},
+            <if test="nickName != null" >
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="dataStatus != null" >
+                #{dataStatus,jdbcType=CHAR},
+            </if>
+            <if test="accountType != null">
+                #{accountType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <insert id="savePerson" parameterType="hashMap" useGeneratedKeys="true" keyProperty="person_id" >
+        insert into sys_perm_person
+        <trim prefix="(" suffix=")" suffixOverrides="," >
+            <if test="accountId != null" >
+                account_id,
+            </if>
+            <if test="remark != null" >
+                remark,
+            </if>
+            <if test="dataStatus != null" >
+                data_status,
+            </if>
+            create_time,
+            <if test="creatorName != null" >
+                creator_name,
+            </if>
+            <if test="creator != null" >
+                creator,
+            </if>
+
+            <if test="personName != null" >
+                person_name,
+            </if>
+            <if test="sex != null" >
+                sex,
+            </if>
+            <if test="personBorn != null" >
+                person_born,
+            </if>
+            <if test="qq != null" >
+                qq,
+            </if>
+            <if test="email != null" >
+                email,
+            </if>
+            <if test="mobile != null" >
+                mobile,
+            </if>
+            <if test="address != null" >
+                address,
+            </if>
+            <if test="personType != null" >
+                person_type,
+            </if>
+            <if test="industry != null" >
+                industry,
+            </if>
+            <if test="company != null" >
+                company,
+            </if>
+            <if test="wechatId != null">
+                wechat_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="accountId != null" >
+                #{accountId,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null" >
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dataStatus != null" >
+                #{dataStatus,jdbcType=CHAR},
+            </if>
+            now(),
+            <if test="creatorName != null" >
+                #{creatorName,jdbcType=VARCHAR},
+            </if>
+            <if test="creator != null" >
+                #{creator,jdbcType=BIGINT},
+            </if>
+            <if test="personName != null" >
+                #{personName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null" >
+                #{sex,jdbcType=CHAR},
+            </if>
+            <if test="personBorn != null" >
+                #{personBorn,jdbcType=TIMESTAMP},
+            </if>
+            <if test="qq != null" >
+                #{qq,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null" >
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="mobile != null" >
+                #{mobile,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null" >
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="personType != null" >
+                #{personType,jdbcType=BIGINT},
+            </if>
+            <if test="industry != null" >
+                #{industry,jdbcType=BIGINT},
+            </if>
+            <if test="company != null" >
+                #{company,jdbcType=VARCHAR},
+            </if>
+            <if test="wechatId != null">
+                #{wechatId},
+            </if>
+        </trim>
+    </insert>
+    <update id="updatePerson" parameterType="map">
+        UPDATE sys_perm_person SET wechat_id = #{wetchatId,jdbcType=VARCHAR},company = #{company,jdbcType=VARCHAR}
+        WHERE person_id = #{personId,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="queryRegionWithAccount" parameterType="hashMap" resultType="map">
+        SELECT
+        a.id,
+        a.region_name,
+        a.bbox,
+        a.user_id,
+        a.region_id,
+        a.region_type
+        FROM
+        custom_locale a , sys_perm_account b
+        WHERE
+        a.user_id = b.account_id
+        and b.del_flag = '1' and b.data_status = '1'
+        and region_type =  #{regionType,jdbcType=INTEGER}
+        AND b.account_name = #{accountName,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

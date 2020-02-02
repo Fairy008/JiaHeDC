@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.forum.bbs.mapping.IForumOrderDetailMapper" >
+
+  <resultMap id="BaseResultMap" type="com.jh.forum.bbs.entity.ForumOrderDetail" >
+    <id column="order_id" property="orderId" jdbcType="INTEGER" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="data_id" property="dataId" jdbcType="INTEGER" />
+    <result column="classify_name" property="classifyName" jdbcType="VARCHAR" />
+    <result column="region_name" property="regionName" jdbcType="VARCHAR" />
+    <result column="accuracy_name" property="accuracyName" jdbcType="VARCHAR" />
+    <result column="crop_name" property="cropName" jdbcType="VARCHAR" />
+    <result column="unit_price" property="unitPrice" jdbcType="NUMERIC" />
+    <result column="num" property="num" jdbcType="INTEGER" />
+    <result column="price " property="price" jdbcType="NUMERIC" />
+    <result column="order_no" property="orderNo" jdbcType="VARCHAR" />
+    <result column="data_time" property="dataTime" jdbcType="DATE" />
+    <result column="data_name" property="dataName" jdbcType="VARCHAR" />
+    <result column="data_path" property="dataPath" jdbcType="VARCHAR" />
+    <result column="data_package_path" property="dataPackagePath" jdbcType="VARCHAR" />
+  </resultMap>
+
+
+
+  <sql id="Base_Column_List" >
+    order_id, data_status, del_flag, create_time, creator_name, creator, modify_time,
+    modifier_name, modifier, data_id, classify_name, region_name, accuracy_name, unit_price, 
+    num, "price ",order_no,crop_name,data_time,data_name,data_path,data_package_path
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from forum_order_detail
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </select>
+
+  <select id="findDetailsByOrderNo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List"/>
+    from forum_order_detail a
+    where order_no = #{orderNo,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from forum_order_detail
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.jh.forum.bbs.entity.ForumOrderDetail" >
+    insert into forum_order_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        order_id,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+        create_time,
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="dataId != null" >
+        data_id,
+      </if>
+      <if test="classifyName != null" >
+        classify_name,
+      </if>
+      <if test="regionName != null" >
+        region_name,
+      </if>
+      <if test="accuracyName != null" >
+        accuracy_name,
+      </if>
+      <if test="unitPrice != null" >
+        unit_price,
+      </if>
+      <if test="num != null" >
+        num,
+      </if>
+      <if test="price != null" >
+        "price ",
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="dataTime != null" >
+        data_time,
+      </if>
+      <if test="dataName != null" >
+        data_name,
+      </if>
+      <if test="dataPath != null" >
+        data_path,
+      </if>
+      <if test="dataPackagePath != null" >
+        data_package_path,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="orderId != null" >
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+        now(),
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="dataId != null" >
+        #{dataId,jdbcType=INTEGER},
+      </if>
+      <if test="classifyName != null" >
+        #{classifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="accuracyName != null" >
+        #{accuracyName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        #{unitPrice,jdbcType=NUMERIC},
+      </if>
+      <if test="num != null" >
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=NUMERIC},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=VARCHAR},
+      </if>
+      <if test="dataTime != null" >
+        #{dataTime,jdbcType=DATE},
+      </if>
+      <if test="dataName != null" >
+        #{dataName,jdbcType=VARCHAR},
+      </if>
+      <if test="dataPath != null" >
+        #{dataPath,jdbcType=VARCHAR},
+      </if>
+      <if test="dataPackagePath != null" >
+        #{dataPackagePath,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.jh.forum.bbs.entity.ForumOrderDetail" >
+    update forum_order_detail
+    <set >
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="dataId != null" >
+        data_id = #{dataId,jdbcType=INTEGER},
+      </if>
+      <if test="classifyName != null" >
+        classify_name = #{classifyName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionName != null" >
+        region_name = #{regionName,jdbcType=VARCHAR},
+      </if>
+      <if test="accuracyName != null" >
+        accuracy_name = #{accuracyName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitPrice != null" >
+        unit_price = #{unitPrice,jdbcType=NUMERIC},
+      </if>
+      <if test="num != null" >
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="price != null" >
+        "price " = #{price,jdbcType=NUMERIC},
+      </if>
+      <if test="dataPath != null" >
+        dataPath = #{dataPath,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where order_id = #{orderId,jdbcType=INTEGER}
+  </update>
+
+
+
+</mapper>

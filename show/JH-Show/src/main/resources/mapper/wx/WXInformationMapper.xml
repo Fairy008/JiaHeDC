@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.wx.mapping.WXInformationMapper">
+
+
+    <insert id="insertWXAccount" parameterType="com.jh.show.wx.model.WXInformation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO wx_information(wx_id,keyword,push_time,follow_time)
+        VALUES(#{wxId},#{keyWord},#{pushTime},now())
+    </insert>
+
+    <select id="findKeyWordByAccount" parameterType="java.lang.String" resultType="com.jh.show.wx.model.WXInformation">
+        SELECT wx_id AS wxId,keyword AS keyWord,push_time AS pushTime,follow_time AS followTime FROM
+        wx_information WHERE wx_id = #{wxID}
+    </select>
+
+    <update id="updateInformation" parameterType="com.jh.show.wx.model.WXInformation">
+        UPDATE wx_information
+        <set>
+            <if test="keyWord != null">
+                keyword = #{keyWord},
+            </if>
+            <if test="pushTime != null">
+                push_time = #{pushTime},
+            </if>
+        </set>
+        WHERE wx_id = #{wxId}
+    </update>
+
+    <select id="findKeyWordByWxid" parameterType="java.lang.String" resultType="com.jh.show.wx.model.WXInformation">
+        SELECT wx_id AS wxId,keyword AS keyWord,push_time AS pushTime,follow_time AS followTime
+        FROM wx_information WHERE wx_id = #{wxID}
+    </select>
+
+    <!-- 根据微信id删除该微信用户下的关键字信息-->
+    <select id="delKeyWordByWxId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        DELETE FROM wx_information WHERE wx_id = #{wxId}
+    </select>
+
+</mapper>

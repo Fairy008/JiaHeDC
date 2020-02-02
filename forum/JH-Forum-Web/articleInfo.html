@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <!-- <link rel="stylesheet" type="text/css" href="css/index/index.css" > -->
+    <style>
+        /*body{ min-width: 1366px;}*/
+
+        /*.content{ width: 984px; margin:27px auto; overflow: auto; min-height: 616px;}*/
+        .content{ width: 984px; margin-left: calc(50% - 350px); overflow: auto; min-height: 616px;}
+        /*左侧轮播*/
+        .content .conMain{ width: 672px; float: left;}
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 55px;}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; font-weight: bold; line-height: 22px; color: #000;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: right; margin-top:10px;}
+        .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ height: 54px; margin-top:16.5px;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px; line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin-top:40px;}
+        .loadMore:hover{ cursor: pointer;}
+        /*右侧 侧边栏*/
+        .content .sidebar{ width: 290px; float: right; }
+
+
+
+        .titleDiv{min-height: 125px;border-bottom: 1px solid #f0f0f0;padding-bottom:8px;margin-top: 30px}
+        .contentDiv{min-height: 80px;height: auto;border-bottom: 1px solid #f0f0f0;padding-top: 30px;}
+        .addCommentDiv{height: 90px;position: relative;}
+        .addCommentDiv img{height: 46px;width: 46px;margin-top: 0px;float: left;border-radius: 50%;}
+        .addCommentDiv textarea{border: 1px solid #eaeaea;border-radius:7px;resize: none;height: 85px;width:606px;display: inline;float: right;padding:5px 0 0 5px;}
+
+        .titleAndLabel{display: inline-block;/*float: left;*/width: 85%;}
+        .userInfo{/*display: inline-block;float: right;*/width: 100%;height: 100%;margin-left:13px;}
+        .userInfo img{width: 46px;height: 46px;border-radius: 50%;/*margin-top: 15px;*/float: left;}
+        .userInfo .userSub{height: 46px;width: calc(100% - 66px);display: inline-block;float: right;/*margin-top: 15px;*/margin-left: 16px;position: relative;}
+        .userSub #userName{font-size: 14px;font-weight: bold;text-overflow: ellipsis;white-space: nowrap;overflow: hidden;height:22px;line-height:22px;}
+        .userSub #introduction{display:none;font-size: 12px;color: #b7b7b7;height: 12px;position: absolute;bottom: 6px;line-height:14px;text-indent:12px;}
+
+
+        .followDiv{height: 88px;margin-top:40px;vertical-align: middle;text-align: center;   }
+        #like{width: 110px;height: 40px;color: #00a5da;border-radius: 20px;display: inline-block;text-align: center;line-height: 40px;border:1px solid #00a5da;
+            margin-right: 16px;}
+        #follow{width: 110px;height: 40px;color: #00bd26;border: 1px solid #00bd26;border-radius: 20px;display: inline-block;text-align: center;line-height: 40px;}
+        i.follow{cursor:pointer;color: #00a4da; font-size: 12px; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-left: 12px;}
+        #like i.isNotLike{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Praise.png') center no-repeat;}
+        #follow i.isNotFollow{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Collect.png') center no-repeat;}
+        #like i.isLike{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Praised.png') center no-repeat;}
+        #follow i.isFollow{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; background: url('images/public/forum/icon-Collected.png') center no-repeat;}
+        .followDiv div{cursor: pointer;display: inline-block;}
+        .followDiv div.isLikeDiv{background-color: #00a5da; color: #fff !important;}
+        .followDiv div.isFollowDiv{background-color: #00bd26; color: #fff !important;}
+        .followDiv div.isNotLikeDiv{background-color: #fff; color: #00a5da;}
+        .followDiv div.isNotFollowDiv{background-color: #fff; color: #00bd26;}
+
+        .loginDiv{width: 100%;position: relative;z-index: 1;font-size: 14px;height: 90px;}
+        .loginDiv span{    position: absolute;width: 119px;height: 50px;top: 68%;left: 50%;margin-left: -50px;margin-top: -25px;text-align: center;}
+
+        #articleTitle{width:100%;font-size: 23px;font-weight: bold;padding-top: 15px;}
+        #articleLabel{/*margin-left:13px;margin-top:12px;*/margin:12px 8px 12px 13px;height:22px;line-height:22px;}
+        #publishTime{font-size: 10px;color: #d1d1d1;height: 22px;width: 300px;line-height: 22px;}
+
+
+
+
+
+
+        #commentCount{font-size: 16px;font-weight: bold;width: 100%;border-bottom: 1px solid #f0f0f0;padding-bottom: 16px;}
+
+        #noComment{height: 84px;width: 100%;padding-bottom: 16px;padding-top: 16px;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noComment img{width: 33px;height: 33px;border-radius: 50%;}
+        #noComment p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+        #articleContent img{max-width: 672px;}
+
+        .commentDiv{border-bottom: 1px solid #f0f0f0;padding-bottom: 16px;}
+        .firstCommentUser{width: 100%;display: flex;align-items: center;padding-top: 16px;padding-bottom: 16px;}
+        .firstCommentUser .photo{height: 46px;width: 46px;display: inline-block;}
+        .firstCommentUser img{height: 46px;width: 46px;margin-top: 0px;float: left;border-radius: 50%;}
+        .firstCommentUser .userOuter{width: 300px;display: inline-block;padding-left: 7px;}
+        .firstCommentUser .userOuter .userName{font-size: 14px;font-weight: bold;}
+        .firstCommentUser .userOuter .commentDate{font-size: 12px;color: #b7b7b7;height: 12px;padding-top: 7px;}
+
+        .firstCommentContent{height: auto;font-size: 14px;line-height: 18px;padding-bottom: 16px;}
+
+        .showSubComment img{height: 24px;width: 24px;margin-top: 0px;float: left;}
+        .showSubComment a{color: #40b2df;font-size: 14px;height: 24px;width: 150px;line-height: 24px;display: inline;}
+        .showSubComment .delCommentBtn{color: #969696;width: 28px;float: right;display: none;}
+
+        .secondCommentDiv{min-height: 70px;height:auto;border-left: 2px solid #e9e9e9;overflow: hidden;}
+        .secondCommentDiv .secondCommentList{width: 100%;}
+        .secondCommentDiv .secondComment{font-size: 14px;min-height: 69px;width:640px;float: right;border-top: 1px dashed #e9e9e9;}
+        .secondCommentUserDiv{padding-top: 17px;}
+        .secondCommentUserName{color: #00a6d6;display: inline;line-height: 18px;}
+        .secondCommentContent{display: inline;}
+        .secondCommentDate{font-size: 10px;color: #7c7c7c;padding-top: 10px;padding-bottom: 17px;display: block}
+        .secondCommentDate p{float: left}
+        .secondCommentDate a{float: right}
+        .secondCommentDate .commentSubBtn{color: #00a6d6;}
+        .secondCommentDiv .delCommentBtn{color: #969696;width: 28px;float: right;display: none;}
+
+        .showHideMoreSecondComment{width:640px;float: right;text-align: center;color: #01a6d9;font-size: 14px;border-top: 1px dashed #e9e9e9;padding-top: 6px;padding-bottom: 8px;}
+        .editSecondCommentDiv{height: 92px;width:638px;display: inline;float: right;background-color: #f6f6f6;}
+        .editSecondCommentDiv textarea{border: 1px solid #eaeaea;border-radius:7px;resize: none;height: 100%;width:99%;padding:5px 0 0 5px;}
+        .editSecondCommentBtnDiv{clear: both;height: 30px;padding-top: 10px;font-size: 16px;color: #6c6c6c;width: 606px;float: right;}
+        .editSecondCommentBtnDiv input{float: right;width: 55px;height: 30px;color: #ebf4ec;background-color: #00bb25;border: none;border-radius: 5px;}
+        .editSecondCommentBtnDiv a{float: right;width: 55px;height: 30px;line-height:30px;background: none;}
+        .secondCommentDiv .editSecondCommentBtnDiv{width: 638px !important;}
+
+        #publish, #edit, #delete,#recall{height: 40px; width: 110px; border-radius: 20px; text-align: center; line-height: 40px; cursor: pointer; margin-left: 10px;}
+        #publish .publishIcon, #edit .editIcon, #delete .deleteIcon,#recall .recallIcon{width: 20px; height: 20px; display: inline-block; vertical-align: text-top; margin-right: 5px; }
+        #publish{border: 1px solid #0BA8DB; color: #0BA8DB;}
+        #publish .publishIcon{background: url('images/public/forum/icon-Release.png') center no-repeat;}
+        #edit{border: 1px solid #23C548; color: #23C548;}
+        #edit .editIcon{background: url('images/public/forum/icon-Editer.png') center no-repeat;}
+        #delete{border: 1px solid #DF0025; color: #DF0025;}
+        #delete .deleteIcon{background: url('images/public/forum/icon-Delete.png') center no-repeat;}
+        #recall{border: 1px solid #FFAB00;color: #FFAB00}
+        #recall .recallIcon{background: url('images/public/forum/icon-Recall.png') center no-repeat;}
+
+        #articleContent p{line-height:26px;}
+
+        .atrcleDownloadDiv {margin-top: 10px;}
+        .atrcleDownloadDiv a{ color:#EE7942; font-size: 16px; float: left;text-decoration: underline;margin-left:5px;}
+        .atrcleDownloadDiv a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .atrcleDownloadDiv a:hover{ cursor: pointer;color:#00a4da;}
+        .atrcleDownloadDiv img {width:20px;float: left;}
+        
+        #addCommentBtn,#cancelCommentBtn,.showSubBtn,.hideSubBtn,.delCommentBtn,.showMoreSubBtn,.hideMoreSubBtn,.addSubCommentBtn,.cancelSubCommentBtn,.commentSubBtn{cursor: pointer;}
+
+        strong{font-weight: bold;}
+        .faceButton,.secondFaceButton{border: none;background: url("images/public/forum/emoji.png") center no-repeat;background-color: transparent !important;float: left !important;width: 25px !important;height: 25px !important;cursor: pointer;}
+
+        #operate{margin-top:8px;clear:both;width:100%;text-align:right;display:none;}
+        #operate div{display:inline-block;}
+
+        .share-div{border: 1px solid #DCDCDC;border-radius:50px;float: right;width: 40px;height: 40px;position: relative;margin-left: 10px;}
+        .share-img{width: 28px;height: 28px;position: absolute;left: 50%;top:50%;margin-top: -14px;margin-left: -14px;}
+
+        #showReport {
+            overflow: hidden;
+        }
+
+        #reportTop {
+            height: 40px;
+            position: relative;
+        }
+
+        #title,
+        #icoList {
+            position: absolute;
+            top: 50%;
+            transform: translate(0, -50%);
+        }
+
+        #qrcode img {
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+
+
+
+    </style>
+    <title></title>
+</head>
+<body>
+
+<div id="showReport" style="display: none;">
+    <div id="reportTop">
+        <div id="title"></div>
+        <div id="icoList"></div>
+        <div id="showQrCode" class="dialogStyle" style="display: none;text-align:center;">
+            打开微信“扫一扫”，</br>打开网页后点击屏幕右上角分享按钮
+            <div id="qrcode" style="align: center;"></div>
+        </div>
+    </div>
+    <iframe src="" id="pdfHTML" name="pdfHTML" width="100%" height="100%"></iframe>
+</div>
+
+<div style="height:100%;background-color: white">
+    <div class="content">
+        <div class="conMain">
+            <!--问答标题-->
+            <div class="titleDiv">
+                <div id="articleTitle"></div>
+                <div class="titleAndLabel">
+                    <input type="hidden" id="articleId" />
+                    <input type="hidden" id="isMyArticle" />
+                    <div id="articleLabel"></div>
+                    <div class="userInfo">
+                        <img id="photoUrl" src="images/public/forum/userImg.png">
+                        <div class="userSub" style="">
+                            <p style="clear:both"></p>
+                            <p ><span id="userName"></span><i class="follow" followFlag="1">+关注</i></p>
+                            <p id="publishTime"></p>
+                            <!--<div id="introduction" style="clear:both;"></div>-->
+                            <!--<div id="userName"><i class="follow">+关注</i></div>-->
+
+                            <!--<div id="publishTime"></div>-->
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <div id="operate">
+                <!--<div id="publish" articletype="11001"><i class="publishIcon"></i>提交</div>
+                <div id="edit" articletype="11001"><i class="editIcon"></i>编辑</div>
+                <div id="delete" articletype="11001"><i class="deleteIcon"></i>删除</div>-->
+            </div>
+            <!--问答正文-->
+            <div class="contentDiv">
+                <p id="articleContent"></p>
+            </div>
+            <!-- 报告下载 -->
+            <div class="atrcleDownloadDiv" style="display: none">
+                <img src="images/public/forum/icon-attach.png" /><a id="atrcleDownload" href="javascript:void(0);"></a>
+            </div>
+            <!--点赞和收藏区域-->
+            <div class="followDiv">
+                <div id="like"><i class="isNotLike"></i>赞</div>
+                <div id="follow"><i class="isNotFollow"></i>收藏</div>
+                <div class="share-div" shareType="weibo" title="分享到新浪微博">
+                    <img class="share-img" src="images/public/forum/weibo.png">
+                </div>
+                <div class="share-div" shareType="pengyouquan" title="分享到朋友圈">
+                    <img class="share-img" src="images/public/forum/pengyouquan.png">
+                </div>
+                <div class="share-div" shareType="weixin" title="分享到微信">
+                    <img class="share-img" src="images/public/forum/wx.png">
+                </div>
+            </div>
+            <!--编辑评论区域-->
+            <div class="addCommentDiv"  >
+                <img src="images/public/forum/userImg.png">
+                <textarea id="firstContent" placeholder="写下你的评论..."  maxlength="500" onchange="this.value=this.value.substring(0, 500)" onkeydown="this.value=this.value.substring(0, 500)" onkeyup="this.value=this.value.substring(0, 500)"></textarea>
+                <div class="loginDiv"><span><a href="javascript:void(0)" id="loginBtn">登录</a>&nbsp;后发表评论</span></div>
+            </div>
+
+
+            <!--评论列表-->
+            <div class="list" id="auto_content">
+                <!--评论总数-->
+                <div id="commentCount"></div>
+                <!--暂无评论，默认隐藏-->
+                <div id="noComment" >
+                    <img src="images/public/forum/POKERFACE.png"><p>暂无评论</p>
+                </div>
+
+            </div>
+            <div style="clear: both;"></div>
+            <p class="loadMore">加载更多>></p>
+        </div>
+        <!--右侧侧边栏-->
+        <div class="sidebar">
+
+
+            <div id="myTool" style="height:180px;"></div>
+
+
+
+        </div>
+        <!--回到顶部按钮-->
+        <!--<a class="returnTop"></a>-->
+    </div>
+    <!--个人中心菜单内容显示-->
+    <div id="menuInfo" style="display:none;"></div>
+    <div id="dialog" class="dialogStyle" style="display:none"></div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/url_config.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<!--<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>-->
+<script type="text/javascript" src="js/lib/qrcode/qrcode.min.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqueryUi","UserModule","commons","enums","PopWin","emoji"],function($,Marquee,BaseAjax,jqueryUi,UserModule,commons,enums,PopWin,emoji){
+        //帖子id
+        var articleId = null;
+
+        /**
+         * 绑定按钮操作事件
+         * @version <1> 2019-03-14 lijie : Created.
+         */
+        var buttonEvent = function(){
+
+            $("#publish,#edit,#delete,#recall").off("click");
+
+            //提交
+            $("#publish").bind("click",function () {
+                if (commons.checkForumLoginStatus()) {
+                    var articleType = $(this).attr("articletype");
+                    var articleId = $("#articleId").val();
+                    updateFun(articleId, articleType,forum_articleStatus.WAIT_AUDIT);
+                }
+            });
+
+            //编辑
+            $("#edit").bind("click",function () {
+                if (commons.checkForumLoginStatus()) {
+                    var articleType = $(this).attr("articletype");
+                    var articleId = $("#articleId").val();
+                    editFun(articleId, articleType);
+                }
+            });
+
+            //删除
+            $("#delete").bind("click",function () {
+                if (commons.checkForumLoginStatus()) {
+                    var articleType = $(this).attr("articletype");
+                    var articleId = $("#articleId").val();
+                    deteleFun(articleId, articleType);
+                }
+            });
+
+            //撤回
+            $("#recall").bind("click",function () {
+                if (commons.checkForumLoginStatus()) {
+                    var articleType = $(this).attr("articletype");
+                    var articleId = $("#articleId").val();
+                    updateFun(articleId, articleType,forum_articleStatus.RECALLED);
+                }
+            })
+        };
+
+
+        /**
+         * 关注专家方法
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var followPerson = function(article_creator){
+            console.log(article_creator)
+            var flag = false;
+            var param = {
+                articleId : article_creator,
+                followType :forum_followType.follow_focus
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.addFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+                //此处欠缺弹框提示用户关注失败
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 取消关注专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var cancelFollowPerson = function (articleCreator) {
+            var flag = false;
+            var result = isLogion();
+            var userInfo = JSON.parse(result.data);
+            var accountId = null;
+            if (null != userInfo.accountId) {
+                accountId = userInfo.accountId;
+            }else {
+                alert('取消关注失败');
+                return;
+            }
+
+            var param = {
+                articleId : articleCreator,
+                followType :forum_followType.follow_focus,
+                creator :accountId
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.removeFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 判断用户是否登陆,若登录成功，返回用户信息
+         * @param
+         * @return boolean
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+
+        //提交
+        var updateFun=function(articleId,articleType,articleStatus){
+            var dialog = $("#dialog");
+            var type = "";
+            switch (parseInt(articleType)) {
+                case (forum_articleType.follow_paper):
+                    type = "报告";
+                    break;
+                case (forum_articleType.follow_survey):
+                    type = "调研";
+                    break;
+                case (forum_articleType.follow_faq):
+                    type = "问答";
+                    break;
+            }
+            dialog.html(articleStatus==forum_articleStatus.WAIT_AUDIT?"是否确认提交":"是否确认撤回" + type + "？");
+            dialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = FORUM_ARTICLE.editArticle_url;
+                        ajax.opts.data = JSON.stringify({articleId: articleId, articleStatus: articleStatus});
+                        ajax.opts.successFun = function (data) {
+                            dialog.dialog("close");
+                            var msg = articleStatus==forum_articleStatus.WAIT_AUDIT?"提交成功":"撤回成功";
+
+                            if(data.flag){
+                                commons.tipMessageShow(type + msg, 2000, true);
+                            }else{
+                                commons.tipMessageShow(type + msg, 2000, false);
+                            }
+
+                            $(".loadContent").load('personal.html', function(){
+                                $('.menuDiv dl dt p').removeClass('on');
+                                switch (parseInt(articleType)) {
+                                    case (forum_articleType.follow_paper):
+                                        $(".menuDiv dl dt p:eq(4)").addClass('on');
+                                        break;
+                                    case (forum_articleType.follow_survey):
+                                        $(".menuDiv dl dt p:eq(6)").addClass('on');
+                                        break;
+                                    case (forum_articleType.follow_faq):
+                                        $(".menuDiv dl dt p:eq(5)").addClass('on');
+                                        break;
+                                }
+                            });
+
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        }
+
+        //编辑
+        var editFun=function(articleId,articleType){
+            if (articleType == forum_articleType.follow_paper) {//报告
+                // window.open("index.html?articleId="+ articleId+"#writeReport")
+                window.open("writeReport.html?articleId=" + articleId)
+
+            } else if (articleType == forum_articleType.follow_faq) {
+                window.open("index.html?articleId="+ articleId+"#invitedSurvey")
+            } else if (articleType == forum_articleType.follow_survey) {
+                window.open("index.html?articleId="+ articleId+"#invitedSurvey")
+            } else if (articleType == forum_articleType.follow_share) {
+
+            }
+        }
+
+        //删除
+        var deteleFun=function(articleId,articleType){
+            var dialog = $("#dialog");
+            var type = "";
+            switch (parseInt(articleType)) {
+                case (forum_articleType.follow_paper):
+                    type = "报告";
+                    break;
+                case (forum_articleType.follow_survey):
+                    type = "调研";
+                    break;
+                case (forum_articleType.follow_faq):
+                    type = "问答";
+                    break;
+            }
+            dialog.html("是否确认删除" + type + "？");
+            dialog.dialog({
+                autoOpen: false,
+                title: '提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = FORUM_ARTICLE.deleteArticle_url;
+                        ajax.opts.data = JSON.stringify({articleId: articleId});
+                        ajax.opts.successFun = function (data) {
+                            dialog.dialog("close");
+                            if(data.flag){
+                                //PopWin.showMessageWin(type + "删除成功");
+                                commons.tipMessageShow(type + "删除成功", 2000, true);
+                            }else{
+                                //PopWin.showMessageWin(type + "删除失败");
+                                commons.tipMessageShow(type + "删除失败", 2000, false);
+                            }
+
+                            $(".loadContent").load('personal.html', function(){
+                                $('.menuDiv dl dt p').removeClass('on');
+                                switch (parseInt(articleType)) {
+                                    case (forum_articleType.follow_paper):
+                                        $(".menuDiv dl dt p:eq(4)").addClass('on');
+                                        break;
+                                    case (forum_articleType.follow_survey):
+                                        $(".menuDiv dl dt p:eq(6)").addClass('on');
+                                        break;
+                                    case (forum_articleType.follow_faq):
+                                        $(".menuDiv dl dt p:eq(5)").addClass('on');
+                                        break;
+                                }
+                            });
+
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        }
+
+        /**
+         * 获取url中的参数
+         * @param 参数名称
+         * @return 参数值
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var GetQueryString = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        };
+
+
+        var init = function(){
+
+            $("#indexRightTop").css({"height":"115px"});
+            $("#headRightTop").css({"height":"85px"});
+            $(".loadContent").css({"margin-top":"160px"});
+
+            articleId = $("#articleId").val() == "" ?  GetQueryString('articleId') : $("#articleId").val();
+
+           //查看更多标签
+            lookMore();
+            //加载更多
+            loadMore();
+            //初始化页面评论
+            initCommentPage(1, initFirstRows, false, articleId);
+            //初始化页面权限
+            initArticleAuth();
+            //初始化点赞、收藏点击事件
+            initFollowFun();
+            //登录
+            loginFun()
+            //800是滑动动画持续时间
+            $('#firstContent').focus();
+            //查询问答详情
+            findArticleInfo();
+            //关注
+            $(".userSub .follow").bind("click", function(){
+                //1、首先查询用户是否登录，没有登录跳转到登录页面
+                if (commons.checkForumLoginStatus()) {
+                    var articleCreator = $("#userName").attr('accountId');
+                    var followFlag = $(this).attr("followFlag");
+                    console.log(followFlag == 1)
+                    if(1 == parseInt(followFlag)){
+                        //关注专家
+                        var flag = followPerson(articleCreator);
+                        console.log(flag)
+                        if(flag){
+                            $(this).attr("followFlag", "2");
+                            $(this).html("已关注");
+                        }
+                    }else {
+                        var flag = cancelFollowPerson(articleCreator);
+                        if(flag){
+                            $(this).attr("followFlag", "1");
+                            $(this).html("+关注");
+                        }
+                    }
+                }
+            })
+
+            //本地测试
+            // var url = 'http://forum.ngrok.xiaomiqiu.cn/forum/shareArticleInfo.html?articleId='+GetQueryString('articleId');
+            //正式环境
+            var url = project_app_path + '/forum/shareArticleInfo.html?articleId='+GetQueryString('articleId');
+            var qrcode = new QRCode('qrcode');
+            qrcode.makeCode(url);
+
+            //绑定分享操作事件
+            $('.share-div').bind('click',function () {
+                var shareType = $(this).attr('shareType');
+                shareFunc(shareType);
+            })
+        }
+
+        /**
+         * 登录
+         */
+        var loginFun = function(){
+            $(".addCommentDiv #loginBtn").bind("click",function(){
+                var flag = commons.checkForumLoginStatus();
+            })
+        }
+
+        /**
+         * 初始化点赞、收藏点击事件
+         * @param
+         * @return 
+         * @version <1> 2019/3/12 17:26 zhangshen:Created.
+         */
+        var initFollowFun = function () {
+            var paramValue = GetQueryString('articleId') == null ? $("#articleId").val() : GetQueryString('articleId');
+
+            //点赞
+            $('.followDiv #like').bind('click', function(){
+                //检查用户是否登录
+                if (!commons.checkForumLoginStatus()) {
+                    return ;
+                }
+
+                if ($(this).find('i').hasClass('isNotLike')) {
+                    $(this).html('<i class="isLike"></i>已赞').removeClass('isNotLikeDiv').addClass('isLikeDiv');
+                    likeOrFollowFun("add", paramValue, forum_followType.follow_like);
+                } else {
+                    $(this).html('<i class="isNotLike"></i>赞').removeClass('isLikeDiv').addClass('isNotLikeDiv');
+                    likeOrFollowFun("remove", paramValue, forum_followType.follow_like);
+                }
+            });
+
+            //收藏
+            $('.followDiv #follow').bind('click', function(){
+                //检查用户是否登录
+                if (!commons.checkForumLoginStatus()) {
+                    return ;
+                }
+
+                if ($(this).find('i').hasClass('isNotFollow')) {
+                    $(this).html('<i class="isFollow"></i>已收藏').removeClass('isNotFollowDiv').addClass('isFollowDiv');
+                    likeOrFollowFun("add", paramValue, forum_followType.follow_follow);
+                } else {
+                    $(this).html('<i class="isNotFollow"></i>收藏').removeClass('isFollowDiv').addClass('isNotFollowDiv');
+                    likeOrFollowFun("remove", paramValue, forum_followType.follow_follow);
+                }
+            });
+        };
+
+        /**
+         * 点赞或收藏
+         * @param type('add','remove')，articleId帖子id，followType(点赞或收藏)
+         * @return 
+         * @version <1> 2019/3/12 19:41 zhangshen:Created.
+         */
+        var likeOrFollowFun = function (type, articleId, followType) {
+            var ajax = new BaseAjax();
+            var forumFollow = {articleId: articleId, followType: followType};
+            ajax.opts.data = JSON.stringify(forumFollow);
+            if (type == 'add') {
+                ajax.opts.url = FORUM_FOLLOW.addFollow_url;
+            } else if (type == 'remove') {
+                ajax.opts.url = FORUM_FOLLOW.removeFollow_url;
+            }
+            ajax.opts.successFun = function(data){
+                if (type == 'add') {
+                    if (followType == forum_followType.follow_like) {
+                        //alert("点赞成功");
+                    } else if (followType == forum_followType.follow_follow) {
+                        //alert("收藏成功");
+                    }
+                } else if (type == 'remove') {
+                    if (followType == forum_followType.follow_like) {
+                        //alert("取消点赞");
+                    } else if (followType == forum_followType.follow_follow) {
+                        //alert("取消收藏");
+                    }
+                }
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+        //查看更多
+        var lookMore = function(){
+            $('.lookMore').on('click',function(){
+                $('.tags').css('height','auto');
+                $('.lookMore').hide();
+            });
+        };
+
+
+        /**
+         * 点击帖子更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    initCommentPage(nextPage, initFirstRows, false, articleId);
+                }
+            });
+        };
+
+        /**
+         * 查询问答的详情、点赞数量
+         * @param
+         * @return
+         * @version <1> 2019/3/9 mason:Created.
+         */
+        var findArticleInfo = function(articleId){
+            var paramValue = $("#articleId").val() == "" ?  GetQueryString('articleId') : $("#articleId").val();
+            if (paramValue) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = FORUM_ARTICLE.nolog_findArticleInfo_url+"?articleId="+paramValue;
+                ajax.opts.type = 'get';
+                ajax.opts.successFun = function (result) {
+                    if (null != result || null != result.data){
+                        generateArticleInfo(result);
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+
+
+                //查询是否点赞与收藏
+                var likeAjax = new BaseAjax();
+                likeAjax.opts.url = FORUM_ARTICLE.nolog_articleFollow_url+"?articleId="+paramValue;
+                likeAjax.opts.type = 'get';
+                likeAjax.opts.successFun = function (result) {
+                    if (result.flag){
+                        // generateArticleInfo(result);
+                        if (result.data) {
+                            $.each(result.data,function(index, element){
+                                if(element == forum_followType.follow_follow){ //收藏
+                                    $('#follow').html('<i class="isFollow"></i>已收藏').removeClass('isNotFollowDiv').addClass('isFollowDiv');
+                                }else if(element == forum_followType.follow_like){//点赞
+                                    $('#like').html('<i class="isLike"></i>已赞').removeClass('isNotLikeDiv').addClass('isLikeDiv');
+                                }
+                            });
+                        }
+                    }
+                };
+                likeAjax.opts.errorFun = function () {
+
+                };
+                likeAjax.run();
+
+
+
+            }
+        }
+
+        /**
+         * 将查询到的帖子内容加载到页面上显示
+         * @param
+         * @return
+         * @version <1> 2019/3/9 mason:Created.
+         */
+        var generateArticleInfo = function(result){
+            var article = result.data;
+
+            var articleTitle = article.articleTitle;//帖子标题
+            if(article.articleTitle != null && article.articleTitle.length > 50){
+                articleTitle = article.articleTitle.substring(0,50);
+            }
+
+            var articleContent = "<br/>" +  article.articleContent;//帖子详情
+            var articleLabelList = generateLabelContent(article.articleLabelList);//标签列表
+            var publishTime = (article.publishTime == null ? strSubstring(article.createTime, 0, 10) : article.publishTime);//创建日期
+            var commentCount = article.commentCount;//评论数量
+            var likeCount = article.likeCount;//点赞数
+            var articleHot = article.articleHot;//是否最热问答
+            var articleNew = article.articleNew;//是否最新问答
+            var creator = article.creator;
+            var articleType = article.articleType;
+            var articleStatus = article.articleStatus;
+
+            if(creator != null && creator != ""){
+                //加载作者信息
+                showUser(creator);
+            }
+
+
+            $(".atrcleDownloadDiv").hide();
+            var articleTypeStr = "";
+            if (articleType == 11001) {
+                articleTypeStr = '【报告】';
+
+                if(article.reportUrl){
+                    //展示报告下载链接
+                    $(".atrcleDownloadDiv").show();
+                    $("#atrcleDownload").text(articleTitle+".pdf");
+                    $("#atrcleDownload").click(function(){
+                        downloadArticle(article.reportUrl);
+                    });
+                }
+
+            } else if (articleType == 11002) {
+                articleTypeStr = '【调研】';
+            } else if (articleType == 11003) {
+                articleTypeStr = '【问答】';
+            } else if (articleType == 11004) {
+                articleTypeStr = '【数据分享】';
+            } else if (articleType == 11005) {
+                articleTypeStr = '【其他】';
+            }
+
+            $('#articleTitle').text(articleTypeStr + articleTitle);
+            $('#articleLabel').html(articleLabelList);
+            $('#publishTime').text(publishTime);
+            $('#commentCount').text('评论（'+commentCount+'）');
+            $('#articleContent').html(articleContent);
+
+
+            if(article.followId != null){ //表示已经关注此文作者
+                $(".userSub .follow").attr("followFlag" , "2").text("已关注")
+            }
+
+
+
+            //个人中心过来的则加载按钮
+            if ($("#articleId").val() && $("#isMyArticle").val() == "1") {
+                showOperate(articleId, articleType, articleStatus);
+            }
+
+
+            var commentFlag = GetQueryString("comment")
+            //滑动到指定位置
+            // window.location.hash = "#auto_content";
+            if(commentFlag == 1){
+                //简单粗暴的解决办法：跳至最低下页面
+                $("html,body").animate({scrollTop: 40000000},1000);//1000是ms,也可以用slow代替
+            }
+
+            if (articleStatus != forum_articleStatus.PUBLISHED) {
+                $(".followDiv").hide();
+                $(".addCommentDiv").hide();
+                $("#auto_content").hide();
+                $(".loadMore").hide();
+            } else {
+                $(".followDiv").show();
+                $(".addCommentDiv").show();
+                $("#auto_content").show();
+                $(".loadMore").show();
+            }
+
+            //如果有评论，则隐藏没有评论的提示
+            if (commentCount > 0) {
+                $('#noComment').hide();
+            }else {
+                $(".loadMore").hide();
+            }
+        }
+
+        var downloadArticle= function(url){
+            //解决百分号不能查看的情况
+            url = url.replace("%","%25");
+            var url = download_config.DOWNLOD_URL+ url;
+            window.open(url);
+        }
+
+        /**
+         * 个人中心过来的显示操作按钮
+         * 1.已提交显示按钮：删除
+         * 2.待审核显示按钮：编辑、删除
+         * 3.未提交显示按钮：提交、编辑、删除
+         * @param articleType articleStatus
+         * @return
+         * @version <1> 2019/3/13 19:54 zhangshen:Created.
+         */
+        var showOperate = function(articleId, articleType, articleStatus){
+            $("#operate").show()
+            var str = "";
+            if (articleStatus == forum_articleStatus.WAIT_SUBMIT || articleStatus == forum_articleStatus.REJECTED || articleStatus == forum_articleStatus.RECALLED) {
+                str +='<div id="publish" articletype="'+articleType+'"><i class="publishIcon"></i>提交</div>' +
+                    '<div id="edit" articletype="'+articleType+'"><i class="editIcon"></i>编辑</div>' +
+                    '<div id="delete" articletype="'+articleType+'"><i class="deleteIcon"></i>删除</div>';
+                // $("#operate").css({"float": "right","position": "relative","top": "-55px"});
+            } else if (articleStatus == forum_articleStatus.WAIT_AUDIT) {
+                str += '<div id="edit" articletype="'+articleType+'"><i class="editIcon"></i>编辑</div>' +
+                    '<div id="delete" articletype="'+articleType+'"><i class="deleteIcon"></i>删除</div>';
+                // $("#operate").css({"float": "right","position": "relative","top": "-55px"});
+            } else if (articleStatus == forum_articleStatus.PUBLISHED) {
+                str += '<div id="recall" articletype="'+articleType+'"><i class="recallIcon"></i>撤回</div>';
+                str += '<div id="delete" articletype="'+articleType+'"><i class="deleteIcon"></i>删除</div>';
+                // $("#operate").css({"float": "right","position": "relative","top": "-55px"});
+            }
+            $("#operate").html(str);
+            //绑定事件
+            buttonEvent();
+        };
+
+        /**
+         * 根据帖子的标签列表动态生成该帖子的标签HTML内容
+         * 只加载帖子的前3个标签
+         * @param articleLabelList 标签列表
+         * @return 帖子的标签HTML内容
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateLabelContent = function(articleLabelList){
+            var str = '';
+            $.each(articleLabelList,function(ii,oo){
+                //if (ii < 3) {
+                    for (var k in oo) {
+                        if (oo[k]) {
+                            str += '<span class="lab" style="background-color: '+ oo[k] +';">' + k + '</span>';
+                        } else {
+                            str += '<span class="lab">' + k + '</span>';
+                        }
+                    }
+                //}
+            })
+            return str;
+        }
+
+
+        /**
+         * 初始化文章操作的权限
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var initArticleAuth = function () {
+            //1、判断用户是否登录
+            var user = queryUser();
+            //2、登录后才有权限对帖子进行评论
+            if (null != user && JSON.stringify(user) != '{}'){
+                //3、登录后隐藏登录提示
+                $('.loginDiv').hide();
+                //设置一级评论用户的头像
+                if (null != user.photoUrl && '' != user.photoUrl)  $('.addCommentDiv img').attr('src',download_config.DOWNLOD_URL + user.photoUrl);
+
+                //给一级评论框绑定获取焦点，获取焦点后在下方显示发送和取消按钮
+                $('.addCommentDiv textarea').one('focus',function () {
+                    $('.addCommentDiv').append('<div class="editSecondCommentBtnDiv">' +
+                        '<input id="face" class="faceButton" type="button"/>' +
+                        '   <input id="addCommentBtn" type="button" value="发送">' +
+                        '   <a id="cancelCommentBtn">取消</a>' +
+                        '</div>');
+
+                    //新增一级评论
+                    $('#addCommentBtn').bind('click',function () {
+                        if (commons.checkForumLoginStatus()) {
+                            var content = $('#firstContent').val();
+                            var param = {
+                                articleId : articleId,
+                                content : content,
+                                level : 1
+                            }
+                            // 新增一级评论
+                            addComment(param);
+                            $('#firstContent').val('');//清除输入框内容
+                        }
+                    });
+
+                    //取消提交一级评论
+                    $('#cancelCommentBtn').bind('click',function () {
+                        $('#firstContent').val('');//清除输入框内容
+                    });
+
+                    //点击显示新浪微博表情
+                    $('#face').bind({
+                        click: function (event) {
+                            if (!$('#sinaEmotion').is(':visible')) {
+                                $(this).sinaEmotion($('#firstContent'));
+                                event.stopPropagation();
+                            }
+                        }
+                    });
+
+                })
+            }
+
+        }
+
+
+
+        /**
+         * 判断用户是否登陆
+         * @param
+         * @return
+         * @version <1> 2019/3/26 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+
+
+        /**
+         * 生成用户信息
+         * @param
+         * @return
+         * @version <1> 2019/3/19 mason:Created.
+         */
+        var queryUser = function(){
+            var currentUser = commons.getCurrentUser();
+            var accountId = currentUser.accountId;
+            if (null == accountId) return null;
+            //查询专家信息
+            // var user = commons.findExpertByAccountId(accountId)
+
+            // if (JSON.stringify(user) == '{}'){
+            var user = commons.getUserByAccountId(accountId);
+            // }
+            return user;
+        }
+
+
+        /**
+         * 获取并加载作者详情
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var showUser = function(accountId){
+            //查询专家信息
+            var user = commons.findExpertByAccountId(accountId);
+            if (JSON.stringify(user) == '{}'){
+                user = commons.getUserByAccountId(accountId);
+            }
+            if (null != user.photoUrl && '' != user.photoUrl) {
+                $('#photoUrl').attr('src',download_config.DOWNLOD_URL + user.photoUrl);
+            }
+            //获取昵称
+            $('#userName').attr("accountId",accountId).text(commons.queryAccountName(accountId));//用户名
+
+            // $('#introduction').text(user.introduction);//用户简介
+            var intro = user.introduction;
+
+            if(user.introduction != null && user.introduction != "" && user.introduction.length > 30){
+                intro = user.introduction.substring(0,30) + "..."
+            }
+
+            $('#introduction').text(intro);//用户简介
+            $('#introduction').attr("title", user.introduction)
+
+            // $('#industry').text(user.industry);//用户行业
+            // $('#industry').addClass('lab ' + user.industryCode);//行业样式
+        };
+
+        /**
+         * 分页查询一级评论列表
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var initFirstRows = 4;//第一次夹加载条数
+        var initRows = 2;//之后每次加载条数
+        var initCommentPage = function(page, rows, flag, articleId){
+            var param = {
+                page:page,
+                rows:rows,
+                articleId:articleId
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.nolog_queryCommentsByPage_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.successFun = function (result) {
+                var articleCommentListStr = '';
+                var logionResult = isLogion();//判断用户是否登录并返回用户信息
+                if (result) {
+                    //更新一级评论总数
+                    $('#commentCount').text('评论（'+result.total+'）');
+
+                    if (result.total > 0) {
+                        $('#noComment').hide();
+                        $(".loadMore").show();
+                    }else {
+                        $(".loadMore").hide();
+                        $('#noComment').show();
+                    }
+                    var list = result.list;
+                    $.each(list,function (i,o) {
+                        var owner = 0;
+                        if (logionResult.flag && null != logionResult.data){
+                            var person = JSON.parse(logionResult.data);
+                            var accountId = person.accountId;
+                            if (o.creator == accountId){
+                                owner = 1;
+                            }
+                        }
+
+
+                        //获取评论用户的头像
+                        var photoUrl = "images/public/forum/userImg.png";
+                        var user = commons.getUserByAccountId(o.creator);
+                        if (JSON.stringify(user) != '{}' && null != user.photoUrl && '' != user.photoUrl){
+                            photoUrl = download_config.DOWNLOD_URL + user.photoUrl;
+                        }
+
+
+                        articleCommentListStr += '' +
+                            ' <div class="commentDiv" id="'+o.commentId+'" owner="'+owner+'">' +
+                            '                    <div class="firstCommentUser">' +
+                            '                        <div class="photo"><img src="'+photoUrl+'" style=""></div>' +
+                            '                        <div class="userOuter">' +
+                            '                            <div class="userName">'+o.creatorName+'</div>' +
+                            '                            <div class="commentDate">'+o.createTime+'</div>' +
+                            '                        </div>' +
+                            '                    </div>' +
+                            '                    <div class="firstCommentContent"><p>'+o.content+'</p></div>';
+
+
+                        //如果该评论下有二级评论，则显示展开回复和隐藏回复按钮
+                        if (null != o.secondCommentCount && o.secondCommentCount >0) {
+                            articleCommentListStr += '' +
+                                ' <div class="showSubComment"><img src="images/public/forum/icon-answer1.png">' +
+                                '                        <a class="showSubBtn" commentId="'+o.commentId+'">展开回复</a>' +
+                                '                        <a class="hideSubBtn" commentId="'+o.commentId+'" style="display: none">隐藏回复</a>' +
+                                '                        <a class="delCommentBtn" commentId="'+o.commentId+'">删除</a>' +
+                                '                    </div>';
+                        }else{//如果该评论下没有二级评论，则只显示回复按钮
+                            if(logionResult.flag){
+                                articleCommentListStr += '' +
+                                    ' <div class="showSubComment"><img src="images/public/forum/icon-answer1.png">' +
+                                    '                        <a class="showSubBtn" commentId="'+o.commentId+'">回复</a>' +
+                                    '                        <a class="hideSubBtn" commentId="'+o.commentId+'" style="display: none">回复</a>' +
+                                    '<a class="delCommentBtn" commentId="'+o.commentId+'">删除</a>' +
+                                    '                    </div>';
+                            }
+                        }
+                        articleCommentListStr +=  ' </div>';
+
+                    });
+
+                    if (result.hasNextPage) {
+                        if (flag) {
+                            $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                        } else {
+                            $(".loadMore").attr("nextPage", result.nextPage).html("加载更多>>");
+                        }
+                    } else {
+                            $(".loadMore").attr("nextPage", result.nextPage).html("没有更多了");
+                    }
+                    $('.list').append(articleCommentListStr);
+                    //解析评论内容，将表情编码转换为表情图标
+                    $.each($('.firstCommentContent p'),function (i,o) {
+                        if ($(this).html().indexOf('img') <=0){
+                            $(this).html($(this).text()).parseEmotion();
+                        }
+
+                    });
+
+                    $('.showSubBtn').bind('click',function () {
+                        showSubFun($(this).attr('commentId'));
+                    });
+                    $('.hideSubBtn').bind('click',function () {
+                        hideSubFun($(this).attr('commentId'));
+                    });
+                    //单条一级评论鼠标移入事件
+                    $('.commentDiv').bind('mouseenter',function () {
+                        var owner = $(this).attr('owner');//是否有该评论的删除权限:0否，1是
+                        if (1 == owner) {
+                            $(this).find('.showSubComment .delCommentBtn').show();
+                        }
+                    });
+                    //单条一级评论鼠标移出事件
+                    $('.commentDiv').bind('mouseleave',function () {
+                        $(this).find('.delCommentBtn').hide();
+                    });
+                    //给评论删除按钮绑定事件
+                    $('.delCommentBtn').bind('click',function () {
+                        var commentId = $(this).attr('commentId');
+                        if(confirm("确实要删除吗？")){
+                            delComment(commentId,articleId);
+                            //删除成功后重新加载所有评论
+                            $('.commentDiv').remove();
+                            initCommentPage(1, initFirstRows, false, articleId);
+                        }else {
+                            // alert("已经取消了删除操作");
+                        }
+
+                    })
+
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+
+        }
+
+        /**
+         * 获取访问地址参数
+         * @param name
+         * @return
+         * @version <1> 2019/3/11 15:19 zhangshen:Created.
+         */
+        var getHrefParamValue = function(name) {
+            var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if(r!=null) return  unescape(r[2]); return null;
+        };
+
+        /**
+         * 根据一级评论id加载并显示二级评论
+         * @param commentId 一级评论id
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var showSubFun = function(commentId){
+            //将“展开回复”按钮改为“收起回复”
+            $('#'+ commentId).find('.showSubBtn').hide();
+            $('#' + commentId).find('.hideSubBtn').show();
+            //防止重复添加二级评论
+            if ($('#'+ commentId).children('.secondCommentDiv').length>0) return;
+            querySubCommentList(commentId,2);
+            //给二级评论输入框加上默认@一级评论的用户名
+            var userName = $('#'+commentId+' .firstCommentUser .userName').text();
+            var content = '@'+userName.substring(0,userName.length)+ ' ';
+            $('#'+commentId+' textarea').val(content);
+            $('#'+commentId+' textarea').focus();
+        }
+
+        /**
+         * 根据一级评论id隐藏二级评论
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var hideSubFun = function(commentId){
+            //将“收起回复”按钮更改为“展开回复”
+            $('#'+ commentId).find('.showSubBtn').show();
+            $('#' + commentId).find('.hideSubBtn').hide();
+            $('#' + commentId).find('.secondCommentDiv').remove();
+        }
+
+
+        /**
+         * 根据一级评论的id查询二级评论列表
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var querySubCommentList = function(commentId,size){
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.nolog_findCommentsByFirstCommentId_url+'?firstCommentId='+commentId;
+            ajax.opts.type = 'GET';
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                if (result && result.flag){
+                    var commentDivStr = '';
+                    commentDivStr += ' ' +
+                        '<div class="secondCommentDiv">' +
+                        '   <div class="secondCommentList">' +
+                        '   </div>';
+
+                    //1、只有当二级评论总数大于2的时候才显示展开更多回复按钮
+                    if (null != result.data && result.data.length > 2) {
+                        commentDivStr += '   <div class="showHideMoreSecondComment">' +
+                            '       <a class="showMoreSubBtn">↓展开</a>' +
+                            '       <a class="hideMoreSubBtn" style="display: none">↑收起</a>' +
+                            '   </div>';
+                    }
+
+                    var loginResult = isLogion();
+                    if (loginResult.flag){
+                        commentDivStr +=
+                            '<div class="editSecondCommentDiv"><textarea placeholder="写下你的评论..."  maxlength="500" onchange="this.value=this.value.substring(0, 500)" onkeydown="this.value=this.value.substring(0, 500)" onkeyup="this.value=this.value.substring(0, 500)"></textarea></div>' +
+                            '<div class="editSecondCommentBtnDiv">' +
+                            '   <input class="secondFaceButton" type="button"/>' +
+                            '   <input class="addSubCommentBtn" type="button" value="发送">' +
+                            '   <a class="cancelSubCommentBtn">取消</a>' +
+                            '</div>';
+                    }
+                    commentDivStr += '</div>';
+                    $('#'+commentId).append(commentDivStr);
+                    var str = generateSubCommentList(loginResult,result,size);
+                    $('#'+commentId).find('.secondCommentList').append(str);
+
+
+                    //2、给二级评论中的“展开所有回复按钮”按钮绑定事件
+                    $('#'+commentId).find('.showMoreSubBtn').bind('click',function (commentId) {
+                        var comment_id = $(this).parent().parent().parent().attr('id');
+                        $('#'+comment_id).find('.showMoreSubBtn').hide();
+                        $('#'+comment_id).find('.hideMoreSubBtn').show();
+                        // 显示剩余所有的二级评论
+                        addSubCommentList(loginResult,comment_id,100000);
+                    });
+                    //3、给二级评论中的“收起”按钮绑定事件
+                    $('#'+commentId).find('.hideMoreSubBtn').bind('click',function (commentId) {
+                        var comment_id = $(this).parent().parent().parent().attr('id');
+                        $('#'+comment_id).find('.hideMoreSubBtn').hide();
+                        $('#'+comment_id).find('.showMoreSubBtn').show();
+                        //隐藏剩余的二级评论
+                        $('#'+comment_id + ' .secondComment').each(function (i,o) {
+                            if (i>=2) {
+                                $(this).hide();
+                                $(this).nextAll().hide();
+                                return;
+                            }
+                        });
+                    });
+                    //3、给二级评论区域绑定事件
+                    bindFunc();
+
+                    //二级评论点击显示新浪微博表情
+                    $('.secondFaceButton').bind({
+                        click: function (event) {
+                            if (!$('#sinaEmotion').is(':visible')) {
+                                $(this).sinaEmotion($(this).parent().prev().find('textarea'));
+                                event.stopPropagation();
+                            }
+                        }
+                    });
+
+
+                    //解析评论内容，将表情编码转换为表情图标
+                    $.each($('.secondCommentContent'),function (i,o) {
+                        if ($(this).html().indexOf('img') <=0){
+                            $(this).html($(this).text()).parseEmotion();
+                        }
+
+                    });
+
+                }
+
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        }
+
+        /**
+         * 根据二级评论数，控制显示条目数
+         * @param
+         * @return
+         * @version <1> 2019/3/12 mason:Created.
+         */
+        var generateSubCommentList = function(loginResult,result,size){
+            var str = ''
+            //默认加载2条二级评论
+            if (null == size) size = 2;
+            var i = size==2?0:2;
+            for (i;i<result.data.length;i++){
+                var creator = result.data[i].creator;//评论创建人
+                var owner = 0;
+                if (loginResult.flag && null != loginResult.data){
+                    var person = JSON.parse(loginResult.data);
+                    var accountId = person.accountId;//当前登录用户id
+                    if (accountId == creator) owner = 1;
+                }
+
+                if (i == size) break;
+                str += '' +
+                    '<div index="'+i+'" id="'+result.data[i].commentId+'" class="secondComment" owner="'+owner+'">' +
+                    '   <div class="secondCommentUserDiv">' +
+                    '       <p class="secondCommentUserName">'+result.data[i].creatorName+':</p>' +
+                    '       <p class="secondCommentContent">'+checkContentUser(result.data[i].content)+'</p>' +
+                    '   </div>' +
+                    '   <div class="secondCommentDate">' +
+                    '       <p>'+result.data[i].createTime+'</p>' +
+                    '       <img src="images/public/forum/icon-answer1.png" style="height:20px;width:20px;margin-top:-3px;float: left;padding-left: 10px;">' +
+                    '       <a style="float: left;" class="commentSubBtn" firstCommentId="'+result.data[i].firstCommentId+'" commentId="'+result.data[i].commentId+'">回复</a>' +
+                    '       <a class="delCommentBtn" firstCommentId="'+result.data[i].firstCommentId+'" commentId="'+result.data[i].commentId+'">删除</a>' +
+                    '   </div>' +
+                    '</div>'
+            }
+            return str;
+        }
+
+
+        /**
+         * 展开剩余所有二级评论
+         * @param
+         * @return
+         * @version <1> 2019/3/12 mason:Created.
+         */
+        var addSubCommentList = function(loginResult,commentId,size){
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.nolog_findCommentsByFirstCommentId_url+'?firstCommentId='+commentId;
+            ajax.opts.type = 'GET';
+            ajax.opts.successFun = function (result) {
+                if (null != result && result.data.length > 0){
+                        //1、获取二级评论html内容
+                        var str = generateSubCommentList(loginResult,result,size);
+                        //2、将html追加到一级评论下方
+                        $('#'+commentId).find('.secondCommentList').append(str);
+                        //3、绑定操作按钮
+                        bindFunc();
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            }
+            ajax.run();
+
+        }
+
+
+        /**
+         * 新增一级评论
+         * @param
+         * @return
+         * @version <1> 2019/3/12 mason:Created.
+         */
+        var addComment = function(param){
+            if (null == param.articleId || null == param.level
+                || null == param.content) {
+                return;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.addComment_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.successFun = function (result) {
+                if (null != result && result.flag) {
+                    // 目前不加提示，只是刷新评论列表
+                    $('.commentDiv').remove();
+                    initCommentPage(1, initFirstRows, false, articleId);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        }
+
+        /**
+         * 新增二级评论
+         * @param
+         * @return
+         * @version <1> 2019/3/12 mason:Created.
+         */
+        var addCommentInFirstCommentId = function(param){
+            if (null == param.articleId || null == param.firstCommentId
+                || null == param.level || null == param.content) {
+                return;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.addCommentInFirstCommentId;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.successFun = function (result) {
+                if (null != result && result.flag) {
+                    //重新加载该评论下的所有二级评论
+                    $('#'+param.firstCommentId + ' .secondCommentDiv').remove();
+                    querySubCommentList(param.firstCommentId,2);
+                }
+            };
+            ajax.opts.errorFun = function () {
+                return;
+            };
+            ajax.run();
+        }
+
+
+        /**
+         * 删除评论（如果是一级评论，会删除其下面的所有二级评论）
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var delComment = function(commentId,articleId){
+            var param = {commentId:commentId,articleId:articleId}
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_COMMENT.deleteComment_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                if (result.flag) {
+
+                }
+            };
+            ajax.opts.errorFun = function () {
+            };
+            ajax.run();
+        };
+
+        var strSubstring = function (str, start, end) {
+            if (str) {
+                str = str != null ? str.substring(start,end) : str;
+            }
+            return str;
+        };
+
+
+        /**
+         * 鼠标移动到textarea对象的文字末尾
+         * @param obj textarea对象
+         * @return
+         * @version <1> 2019/3/15 mason:Created.
+         */
+       var moveEnd =  function (obj){
+            obj.focus();
+            var len = obj.text().length;
+            if (document.selection) {
+                var sel = obj.createTextRange();
+                sel.moveStart('character',len);
+                sel.collapse();
+                sel.select();
+            } else if (typeof obj.selectionStart == 'number' && typeof obj.selectionEnd == 'number') {
+                obj.selectionStart = obj.selectionEnd = len;
+            }
+        }
+
+        /**
+         * 给二级评论区域绑定事件
+         * @param
+         * @return
+         * @version <1> 2019/3/15 mason:Created.
+         */
+        var bindFunc = function(){
+
+            //给所有的二级评论中的发送按钮绑定事件
+            $('.addSubCommentBtn').unbind('click');
+            $('.addSubCommentBtn').bind('click',function () {
+                var firstCommentId = $(this).parent().parent().parent().attr('id');
+                var content = $(this).parent().parent().find('textarea').val();
+                var param = {
+                    articleId : articleId,
+                    firstCommentId : firstCommentId,
+                    level:2,
+                    content:content
+                }
+                addCommentInFirstCommentId(param);
+                //清空输入框
+                $(this).parent().parent().find('textarea').val('');
+            });
+            //给所有的二级评论中的取消按钮绑定事件
+            $('.cancelSubCommentBtn').unbind('click');
+            $('.cancelSubCommentBtn').bind('click',function () {
+                //清空输入框
+                $(this).parent().parent().find('textarea').val('');
+            });
+
+
+            //单条二级评论区域鼠标移入事件
+            $('.secondComment').unbind('click');
+            $('.secondComment').bind('mouseenter',function () {
+                var owner = $(this).attr('owner');//是否有该评论的删除权限:0否，1是
+                if (1 == owner) {
+                    $(this).find('.delCommentBtn').show();
+                }
+            });
+
+            //单条二级评论鼠标移出事件
+            $('.secondComment').unbind('mouseleave');
+            $('.secondComment').bind('mouseleave',function () {
+                $(this).find('.delCommentBtn').hide();
+            });
+
+
+            //给二级评论删除按钮绑定事件
+            $('.secondCommentDate .delCommentBtn').unbind('click');
+            $('.secondCommentDate .delCommentBtn').bind('click',function () {
+                var commentId = $(this).attr('commentId');
+                var firstCommentId = $(this).attr('firstCommentId');
+                if(confirm("确实要删除吗？")){
+                    delComment(commentId);
+                    //重新加载该评论下的所有二级评论
+                    $('#'+firstCommentId + ' .secondCommentDiv').remove();
+                    querySubCommentList(firstCommentId,2);
+                }else {
+                    // alert("已经取消了删除操作");
+                }
+
+            });
+
+            //针对二级评论的回复按钮绑定事件
+            $('.secondCommentDate .commentSubBtn').unbind('click');
+            $('.secondCommentDate .commentSubBtn').bind('click',function () {
+                if (commons.checkForumLoginStatus()){
+                    //点击某个二级评论的“回复”按钮后，将该二级评论的内容，自动填充到二级评论输入框
+                    var firstCommentId = $(this).attr('firstCommentId');//一级评论id
+                    var commentId = $(this).attr('commentId');//二级评论id
+                    $('#' + firstCommentId + ' .editSecondCommentDiv textarea').val('');
+                    var userName = $('#'+ commentId +' .secondCommentUserDiv .secondCommentUserName').text();
+                    var content = '@'+userName.substring(userName,userName.length-1)+ ' '
+
+                    $('#' + firstCommentId + ' .editSecondCommentDiv textarea').val(content);
+                    moveEnd($('#' + firstCommentId + ' .editSecondCommentDiv textarea'));
+                }
+            });
+        }
+
+
+        /**
+         * 1、根据评论的内容解析评论中@的用户，
+         * 2、给用户名加上区分与评论内容的样式，
+         * 3、返回解析后拼接的html
+         * @param
+         * @return
+         * @version <1> 2019/3/15 mason:Created.
+         */
+        var checkContentUser = function(content){
+            if (null == content || ''== content) return;
+            //@用户名正则表达式
+            var reg = /\@([^\@|.|^ ]+)/g;
+            content = content.replace(reg,function (word) {
+                // return "<a href=\""+ word +"\">" + word + "</a>";
+                return word ;
+            })
+            return content;
+        }
+
+
+        //点击就刷新cookie
+        $(document).click(function(){
+            setInterval(function(){
+                commons.setCookie(COOKIE_CONFIG.cookieName,commons.getCookie(COOKIE_CONFIG.cookieName),120);
+            },60000)
+        });
+
+
+        var shareFunc = function(shareType){
+            //生产环境
+            var url = project_app_path + '/forum/shareArticleInfo.html?articleId='+GetQueryString('articleId');
+            //本地测试
+            // var url = 'http://forum.ngrok.xiaomiqiu.cn/forum/shareArticleInfo.html?articleId='+ GetQueryString('articleId');
+            switch (shareType) {
+                case 'weibo':
+                    var sinaUrl = 'http://v.t.sina.com.cn/share/share.php?appkey=3359020342&&source=&content=utf-8&url=' +
+                        url + '&title=' + $('#articleTitle').text();
+                    window.open(sinaUrl,'_blank')
+                    break;
+                case 'weixin':
+                    showQrCode(url);
+                    break;
+                case 'pengyouquan':
+                    showQrCode(url);
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        var showQrCode = function (url) {
+            var codeDialog = $("#showQrCode");
+            codeDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                title: '微信分享',
+                width: 460,
+                modal: true,
+                closeOnEscape: false,
+                open:function(event, ui){
+                    $(this).parent().focus();
+                }//取消获取焦点
+
+            });
+            codeDialog.dialog("open");
+        }
+
+        init();
+
+    })
+</script>
+</body>
+</html>

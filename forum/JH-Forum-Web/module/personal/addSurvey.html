@@ -1,0 +1,398 @@
+<style>
+    .content{ width: 993px;margin:0 auto}
+    /*左侧轮播*/
+    .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+    /*左侧列表**/
+    .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box}
+    .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+    .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+    .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+    .list h1 a:hover{ cursor: pointer;}
+    .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+    .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+    .list span.lab:first-of-type{margin-left:8px;}
+    .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+    .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+    .list dl dt.report{ float: right; margin-top:10px;}
+    .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+    .list dl dd p.brief{ height: 54px; margin-top:16.5px;}
+    .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+    .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+    .list dl dd p.info i.time{ margin-right: 24px;}
+    .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+    .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+    .list dl dd p.info span.collect{ background-position: 0px -49px;}
+    .loadMore{ height: 38px; width:672px;line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+    .loadMore:hover{ cursor: pointer;}
+
+    .personDiv img{width: 70px;height: 70px;border-radius: 50%;margin-top: 38px;}
+
+    .menuDiv dt:not(:last-child){border-bottom:1px solid #EEEEEE;}
+    .menuDiv dt p{text-align: left;padding-left: 31px;line-height: 35px;}
+    .menuDiv dt p.on{border-left: 4px solid #007bc3}
+
+
+    .myFollow div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+
+    .myArticle div{
+        height: 47px;
+        display: flex;align-items:center
+    }
+    #listTitle{font-size: 30px;margin-bottom: 20px;}
+
+    i.follow{ height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;}
+    .expertDiv{height: 257px;width: 150px;border: 1px solid #ececec;text-align: center;float: left;margin-right: 16px;margin-top: 20px;}
+    .expertDivLast{height: 257px;width: 150px;border: 1px solid #ececec;text-align: center;float: left;}
+    .expertImg{height: 175px;width: 130px;margin-top: 10px;border-radius: 5px;}
+    .expertName{display: flex;justify-content:center;align-items:Center;margin-top: 10px;}
+    .expertName a{font-size: 14px;}
+
+    dl{min-height: 260px;border-bottom: none !important;}
+
+    /*农业*/
+    span.lab.agriculture{ background: #65d763;}
+    /*气象*/
+    span.lab.meteorology{ background: #00a5da;}
+    /*遥感*/
+    span.lab.remotesensing{ background: #daa900;}
+    /*期货*/
+    span.lab.futures{ background: #dbab00;}
+    /*保险*/
+    span.lab.insurance{ background: #0c6e86;}
+    /*输入框样式*/
+    .input{
+        border: 1px solid #ccc;
+        padding: 7px 0px;
+        border-radius: 3px; /*css3属性IE不支持*/
+        padding-left:5px;
+        width: 600px;
+        margin-bottom: 15px;
+    }
+
+    /*热门标签*/
+    .hotTag{ margin-top:17px; position: relative; padding-bottom: 20px;width: 300px}
+    .hotTag h2{ margin-left:8px;font-size: 16px; color: #040000; font-weight: bold; }
+    .errorTip{float: right;margin-top: -18px;margin-right: 10px;
+        color: red;font-size: 12px;}
+    .hotTag p.tags{ margin-top:16px; padding-left:2px; /*height: 150px; overflow: hidden;*/}
+    .hotTag p.tags a{ display: inline-block; margin:0 3.5px; margin-bottom:8px;border:1px solid #dfdcdc; height: 23px; line-height: 23px; border-radius: 5px; padding:0 8px; font-size: 12px; color: #3b3b3b;}
+    .hotTag p.tags a.on{border: 1px solid #028ec9; color: #028ec9;}
+    .hotTag p.tags a:hover{cursor: pointer;}
+    .hotTag p.lookMore{ text-align: center; height: 45px; line-height: 76px; width: 100%; position: absolute; bottom: 0;
+        background: -moz-linear-gradient(top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,1) 100%) ;
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.2)), color-stop(100%,rgba(255,255,255,1)))  ;
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;
+        background: -o-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;
+        background: -ms-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,1) 100%) ;}
+    .hotTag p.lookMore a{ color: #028ec9; font-size: 12px;}
+    .hotTag p.lookMore a:hover{cursor: pointer;}
+
+    .labelDiv .myLabel{padding: 12px 0;z-index: 9999;position:absolute;background-color:#fff;border-radius:5px;border:1px solid #d5d5d5;}
+    .labelDiv .myLabel:before{position: absolute;content: "";width: 0;height: 0;left: 44px;top: -22px;border-bottom: 11px solid #d5d5d5;border-top: 11px solid transparent;border-right: 11px solid transparent;border-left: 11px solid transparent;}
+    .labelDiv .myLabel:after{position: absolute;content: "";width: 0;height: 0;left: 45px;top: -20px;border-bottom: 10px solid #fff;border-top: 10px solid transparent;border-right: 10px solid transparent;border-left: 10px solid transparent;}
+
+    .labelDiv .myLabel li{width:98px;height:35px;line-height:35px;padding-left:0;}
+    .labelDiv .myLabel .solid{height:1px;padding-left:50px; border-bottom:1px solid #d5d5d5;}
+    .labelDiv .myLabel li a{height:35px;line-height:35px; display: block; padding-left:33px; background: url('images/public/forum/users.png') 0 0 no-repeat;}
+    .labelDiv .myLabel li a.myHome{ background-position: 14px 9px;}
+    .labelDiv .myLabel li a.exit{ background-position: 14px -39px;}
+    .labelDiv .myLabel li:hover{cursor:pointer;}
+
+    .btn1{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;color:#42A7F4;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}
+    .btn2{float:left;width:165px;margin-top: 20px;margin-left: 120px;margin-bottom: 20px;}
+    .btn3{text-align:center;display:block;margin-right:18px;height:30px;border:1px solid #42A7F4;background-color:#42A7F4;color:#ffffff;line-height:30px;font-size:14px;border-radius:3px;cursor:pointer;}
+    .btn4{float:left;width:165px;margin-top: 20px;margin-left: 60px;margin-bottom: 20px;}
+</style>
+
+
+<div class="list">
+    <div><input type="text" class="input" id="articleTitle" placeholder="此处添加标题"/></div>
+    <!-- <div><input type="text" class="input" id="articleSummary" placeholder="此处添加摘要"/></div>-->
+    <div class="labelDiv"><input type="text" class="input" id="articleLabel" placeholder="此处添加标签" readonly/>
+        <ul class="myLabel" style="float: left;display: none">
+            <div class="hotTag">
+                <h2>热门标签</h2><span class="errorTip"></span>
+                <p class="tags"></p>
+            </div>
+        </ul>
+
+    </div>
+    <div><script id="editor" type="text/plain" style="width:605px;height:400px;">此处输入调研时间/地点/调研事项及注意事项</script></div>
+
+
+
+
+
+    <!-- <div>文章标签：
+         <table>
+             <tbody id="paramsList">
+             <tr class="paramsTr">
+                 <td id="firstTd"><img src="images/public/addrow.png"  id="addTd" style='margin-top: 2px;'>新增标签</td>
+             </tr>
+             </tbody>
+         </table>
+     </div>-->
+
+    <div>
+        <span class="btn1 btn2" id="publishArticle">发布</span>
+        <span class="btn3 btn4" id="saveArticle">保存</span>
+    </div>
+
+</div>
+<div style="clear: both;"></div>
+
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","urlConfig","PopWin"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,urlConfig,PopWin){
+
+        var token = commons.getAccessToken();
+        //articleType 11002 表示约调研 articleStatus 12001 待提交  tobePublish = 已提交 待审核
+        var maxLabelNum = 5,articleType = 11002,toBeSubmit = 12001,toBePublish = 12002;//标签最多不可超过5个;
+        var articleLabelArr = [];//被选中的标签
+       // var ue = UE.getEditor('editor',{"serverUrl":FORUM_COMMENT.upFile+"?AccessToken=" + token});
+
+       /* if(typeof(UE.getEditor("editor")) !='undefined'){
+            //如果已经渲染过ueditor 需要先销毁 不然 二次渲染的时候会失败
+            UE.getEditor("editor").destroy();
+            //  UE.delEditor('editor');
+        }*/
+        //如果已经渲染过ueditor 需要先销毁 不然 二次渲染的时候会失败
+        UE.delEditor('editor');
+        var ue =  UE.getEditor('editor',{"serverUrl":FORUM_COMMENT.upFile+"?AccessToken=" + token});
+        //var ue = UE.getEditor('editor');
+        //初始化方法
+        var init = function(){
+            //加载热门标签
+            initLabelList();
+            //给选中的标签加上样式
+            labelCss();
+            //点击标签文本框  隐藏或者展示 标签选择div
+            $("#articleLabel").click(function(){
+                $(".myLabel").toggle(100);
+            });
+            //保存
+            $("#saveArticle").click(function(){
+                addSaveFun(toBeSubmit);
+            });
+            //发布
+            $("#publishArticle").click(function(){
+                addSaveFun(toBePublish);
+            });
+        }
+
+        var addSaveFun =function(status){
+            var articleLabel = "";//拼接选中的标签
+            //获取勾选的标签
+            $('input[name="label"]:checked').each(function(){
+                //向数组中添加元素
+                articleLabelArr.push($(this).next().text());
+
+            });
+            /* for(var i=0;i<articleLabelArr.length;i++){
+             if(i!=articleLabelArr.length-1){
+             articleLabel += articleLabelArr[i] +",";
+             }else{//最后一个不加"，"
+             articleLabel += articleLabelArr[i];
+             }
+             };*/
+
+            //首先验证标签是否超过5个
+            if(articleLabelArr.length>maxLabelNum){
+                PopWin.showMessageWin("标签不可超过"+maxLabelNum+"个");
+                return false;
+            }
+            <!--获取标签开始-->
+            /*  var articleLabelArr = [];
+             var articleLabel= "";
+             $("#paramsList").find("tr").children().each(function(){
+             var labelContent = $(this).find("input").val();
+             if(labelContent!=undefined && labelContent!=""){
+             articleLabelArr.push($(this).find("input").val());
+             }
+             });
+             for(var i=0;i<articleLabelArr.length;i++){
+             if(i!=articleLabelArr.length-1){
+             articleLabel += articleLabelArr[i] +",";
+             }else{//最后一个不加"，"
+             articleLabel += articleLabelArr[i];
+             }
+             };*/
+            <!--获取标签结束-->
+            var article = {};
+            article.articleTitle = $("#articleTitle").val();//标题
+            /*article.articleSummary = $("#articleSummary").val();//摘要*/
+            article.articleType = articleType;//约调研
+            article.articleStatus = status;//待提交
+            article.articleContent = UE.getEditor('editor').getContent();
+            article.articleLabel = $("#articleLabel").val();
+
+            var checkAjax = new BaseAjax();
+            checkAjax.opts.url = FORUM_ARTICLE.addArticle_url;
+            checkAjax.opts.async = false; //同步
+            checkAjax.opts.data = JSON.stringify(article);
+            checkAjax.opts.successFun = function(result){
+                if(result.flag){
+                    switch (status){
+                        case toBeSubmit:
+                            PopWin.showMessageWin("保存成功");
+                            break;
+                        case toBePublish:
+                            PopWin.showMessageWin("发布成功");
+                            break;
+                    }
+
+                }else{
+                    switch (status){
+                        case toBeSubmit:
+                            PopWin.showMessageWin("保存失败");
+                            break;
+                        case toBePublish:
+                            PopWin.showMessageWin("发布失败");
+                            break;
+                    }
+                }
+            }
+
+            checkAjax.run();
+        };
+
+
+        /**
+         * 初始化加载热门标签列表
+         * @version <1> 2019/3/7 13:24 zhangshen:Created.
+         */
+        var initLabelList = function () {
+            var forumLabel = {dataStatus: '1', delFlag: '1'};
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumLabel);
+            ajax.opts.async = false;
+            ajax.opts.url = FORUM_LABEL.nolog_findLabelList_url;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data) {
+                    var list = data.list;
+                    $.each(list,function(i,o){
+                        str += '<a labelId="'+ o.labelId +'">' + o.labelName + '</a>';
+                    });
+                }
+                $(".hotTag .tags").html("").html(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+
+            if ($(".hotTag .tags").height() > 150) {
+                $(".hotTag .tags").css({"height": "150px", "overflow": "hidden"});
+                $(".hotTag .lookMore").show();
+            } else {
+                $(".hotTag .tags").css({"height": "auto", "overflow": "initial"});
+                $(".hotTag .lookMore").hide();
+            }
+        };
+        //给选中的标签加上样式
+        var labelCss = function () {
+            $(".hotTag .tags a").live('click',function(){
+                var labelContent = "";
+                if ($(this).hasClass('on')) {
+                    $(this).removeClass('on');
+                    $(".errorTip").html("")
+                    //找到这个元素
+                    var index = articleLabelArr.indexOf($(this).text());
+                    if (index > -1) {
+                        //删除元素
+                        articleLabelArr.splice(index, 1);
+                    }
+                } else {
+                    if(articleLabelArr.length==maxLabelNum){
+                        $(".errorTip").html("标签不可超过"+maxLabelNum+"个")
+                    }else{
+                        articleLabelArr.push($(this).text());
+                        $(this).addClass('on');
+                    }
+
+                }
+
+                //获取数组中已有元素 拼接并显示在input输入框中
+                for(var i=0;i<articleLabelArr.length;i++){
+                    if(i!=articleLabelArr.length-1){
+                        labelContent += articleLabelArr[i] +",";
+                    }else{//最后一个不加"，"
+                        labelContent += articleLabelArr[i];
+                    }
+                };
+                //给标签文本框赋值
+                $("#articleLabel").val(labelContent);
+            });
+        }
+
+        /*/!**
+         * 查询系统内置的标签
+         * @param regionId 区域ID
+         * @version <1> 2018-3-11 wl : Created.
+         **!/
+         var queryLabel = function () {
+
+         var ajax = new BaseAjax();
+         ajax.opts.url = FORUM_LABEL.nolog_findAllLabel_url;
+         ajax.opts.contentType = "application/json";
+         ajax.opts.type = "POST";
+         ajax.opts.async = false; //同步请求
+         ajax.opts.successFun=function(result){
+         if(result.flag){
+         showLabel(result.data);
+         }
+         };
+         ajax.opts.errorFun = function(){
+
+         };
+         ajax.run();
+         }
+
+
+         var showLabel = function (labelList){
+         var labelHtml = "";
+         if(labelList !=null && labelList!=undefined && labelList.length>0)
+         {
+         labelHtml = ""
+         labelHtml += "<tr>";
+         for(var a in labelList)
+         {
+         if((labelList[a].labelId)!=null){
+         labelHtml += "<td><div  class='Check'><input class = 'labelCheck' type='checkbox' name='label' value='" + labelList[a].labelId + "'><span class='label' title='" + labelList[a].labelName +"'>"+labelList[a].labelName + "</span></div></td>";
+         }
+         else {
+         labelHtml += "<td><div  class='Check'><input class = 'labelCheck' type='checkbox' name='label' value='" + labelList[a].labelId + "'><span class='label' title='" + labelList[a].labelName +"'>"+labelList[a].labelName + "</span></div></td>";
+         }
+         if(a>0&&((parseInt(a)+1)%4)==0)
+         {
+         labelHtml+="</tr><tr>";
+         }
+         }
+         labelHtml+="</tr>";
+         }
+
+         $("#saveLabel").html(labelHtml);
+
+         var  checkbox=$("input[name='crop']");
+         checkbox.each(function(index){
+         if(this.checked==true){
+         $(this).parent().css('background','#00A7ED');
+         }
+         $(this).click(function(){
+         if(this.checked==true){
+         $(this).parent().css('background','#00A7ED');
+         }
+         else{
+         $(this).parent().css('background','#d3d3d3');
+         }
+         })
+         })
+         }*/
+
+        init();
+
+    })
+</script>
+

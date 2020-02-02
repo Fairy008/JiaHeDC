@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jh.briefing.mapping.ITemplateModuleMapper">
+  <resultMap id="BaseResultMap" type="com.jh.briefing.entity.TemplateModule">
+    <id column="template_id" jdbcType="INTEGER" property="templateId" />
+    <result column="template_name" jdbcType="VARCHAR" property="templateName" />
+    <result column="template_file_position" jdbcType="VARCHAR" property="templateFilePosition" />
+      <result column="template_mobile_file_position" jdbcType="VARCHAR" property="templateMobileFilePosition" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    template_id, template_name, template_file_position,template_mobile_file_position,create_time, modify_time
+  </sql>
+  <select id="findTemplateModuleByTemplateId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from briefing_template
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByTemplateId" parameterType="java.lang.Integer">
+    delete from briefing_template
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </delete>
+  <insert id="saveTemplateModule" parameterType="com.jh.briefing.entity.TemplateModule">
+    insert into briefing_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        template_id,
+      </if>
+      <if test="templateName != null">
+        template_name,
+      </if>
+      <if test="templateFilePosition != null">
+        template_file_position,
+      </if>
+        <if test="templateMobileFilePosition != null">
+            template_mobile_file_position,
+        </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="modifyTime != null">
+        modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="templateId != null">
+        #{templateId,jdbcType=INTEGER},
+      </if>
+      <if test="templateName != null">
+        #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateFilePosition != null">
+        #{templateFilePosition,jdbcType=VARCHAR},
+      </if>
+        <if test="templateMobileFilePosition != null">
+            #{templateMobileFilePosition,jdbcType=VARCHAR},
+        </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateTemplateModule" parameterType="com.jh.briefing.entity.TemplateModule">
+    update briefing_template
+    <set>
+      <if test="templateName != null">
+        template_name = #{templateName,jdbcType=VARCHAR},
+      </if>
+      <if test="templateFilePosition != null">
+        template_file_position = #{templateFilePosition,jdbcType=VARCHAR},
+      </if>
+        <if test="templateMobileFilePosition != null">
+            template_mobile_file_position = #{templateMobileFilePosition,jdbcType=VARCHAR},
+        </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyTime != null">
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where template_id = #{templateId,jdbcType=INTEGER}
+  </update>
+
+    <!-- 分页查询 -->
+    <select id="queryTemplateModuleByPage" resultType="com.jh.briefing.model.TemplateModuleParam" parameterType="com.jh.briefing.model.TemplateModuleParam">
+        select
+        template_id templateId, template_name templateName, template_file_position templateFilePosition,
+        template_mobile_file_position templateMobileFilePosition,create_time createTime, modify_time modifyTime
+        from briefing_template
+        <where>
+            <if test="templateName !=null &amp;&amp; templateName != ''">
+                template_name like '%${templateName}%'
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <!-- 查询所有的TemplateModule -->
+    <select id="queryAllTemplateModules" resultType="com.jh.briefing.model.TemplateModuleParam">
+        select
+        template_id templateId, template_name templateName, template_file_position templateFilePosition,
+        create_time createTime, modify_time modifyTime
+        from briefing_template
+    </select>
+
+    <!-- 根据不同的查询条件来查询简报模板，后面参数可以自己添加 -->
+    <select id="queryTemplateModuleByParam" resultType="com.jh.briefing.model.TemplateModuleParam" parameterType="com.jh.briefing.model.TemplateModuleParam">
+        select
+        template_id templateId, template_name templateName, template_file_position templateFilePosition,
+        template_mobile_file_position templateMobileFilePosition,create_time createTime, modify_time modifyTime
+        from briefing_template
+        <where>
+            <if test="templateName !=null &amp;&amp; templateName != ''">
+                template_name = #{templateName}
+            </if>
+        </where>
+        order by create_time desc
+    </select>
+</mapper>

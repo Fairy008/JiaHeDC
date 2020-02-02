@@ -1,0 +1,281 @@
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" id="formDiv">
+                <div class="btLabel divStatis">
+                    <span  class="t1"  id="day">当日</span>
+                    <span  class="t1" id="threeDay">近三天</span>
+                    <span  class="t1 on" id="week">一周</span>
+                    <span  class="t1" id="month">一个月</span>
+                </div>
+
+                <div class="divStatis">
+                    <span class="label">数据时间：</span>
+                    <span><input type="text" class="input"  id="search_Date"/></span>
+                </div>
+
+                <div class="divStatis">
+                    <span class="label">入库时间：</span>
+                    <span><input type="text" class="input" id="search_create_date"/></span>
+                </div>
+
+                <div class="divStatis">
+                    <span class="label">卫星：</span>
+                    <span><select id="search_sat_name" class="input"></select></span>
+                </div>
+
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="查询" id="queryBtn" />
+            </div>
+        </div>
+    </div>
+   <div class="statisticsTitle" style="font-size: 19px!important;font-weight:bolder;margin-top: 10px;text-align:center;">卫星数据统计<em>(单位：条)</em></div>
+    <div id="dataStorageSateNum" style="float:left;width: 100%;min-height: 100px"></div>
+</div>
+
+<script type="text/javascript">
+
+    require(["jquery", "BaseAjax","echarts","PopWin","jqueryUi","dateUtil","commons"], function ($, BaseAjax,echarts,PopWin,jqueryUi,dateUtil,commons) {
+        var timeSlot="week";
+
+        var init=function () {//初始化方法
+            resizeContainer();//动态更改图表宽度和高度
+            //setHeight();
+            loadDataStorageSateNum();//数据订单 已分发状态的  各卫星数据
+            $('.t1').click(function(){
+                $("#search_Date").val("");
+                $("#search_create_date").val("");
+                timeSlotClick(this.id);
+            });
+            $("#queryBtn").bind("click",searchFun);//查询方法
+            dateFun('search_Date');//日期控件
+            dateFun('search_create_date');//日期控件
+            changeCss();//更改 日 三天 周 月的tab选中样式
+            getDataDictOption("search_sat_name", 400);//卫星加载
+        };
+
+        /**
+         * 查询数据字典数据
+         * @param selectId ： id选择器
+         * @paran dictId : 上级节点ID
+         * @paran defaultValue ： 默认值
+         */
+        var getDataDictOption = function(selectId, dictId, defaultValue) {
+            var baseAjax = new BaseAjax();
+            baseAjax.opts.url = DICT_COFING.queryDictByParentId_url;
+            baseAjax.opts.data = JSON.stringify({'parentId': dictId});
+            baseAjax.opts.successFun = function (resultData) {
+                if (resultData.flag) {
+                    $('#' + selectId).html("");
+
+                    var dataStatusArray = resultData.data;
+                    var optionHtml = "";
+
+                    if(defaultValue == undefined || defaultValue == null || defaultValue == ""){
+                        optionHtml += "<option value=''>--请选择--</option>";
+                    }
+
+                    for (var i = 0, j = dataStatusArray.length; i < j; i++) {
+                        var dataStatus = dataStatusArray[i];
+                        if(dataStatus.dictId == defaultValue){
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" data-id="' + dataStatus.dictId + '" selected>' + dataStatus.dataName + '</option>';
+                        }else{
+                            optionHtml += '<option value="' + dataStatus.dataValue + '" data-id="' + dataStatus.dictId + '">' + dataStatus.dataName + '</option>';
+                        }
+                    }
+
+                    $('#' + selectId).append(optionHtml);
+                } else {
+
+                }
+            };
+            baseAjax.run();
+        };
+
+        //更改 日 三天 周 月的tab选中样式
+        var changeCss=function(){
+            $(".btLabel span").on("click", function() {
+                $(this).addClass("on");
+                $(this).siblings().removeClass("on");
+            });
+        }
+
+        var timeSlotClick=function(time){
+            timeSlot=time;
+            loadDataStorageSateNum();
+        }
+
+        /**
+         * 统计不同卫星的数据数量
+         * @version<1> 2018-04-18 wl
+         */
+        var loadDataStorageSateNum = function () {
+            var storageParam = {};
+            var searchDate=($("#search_Date").val().trim()).split('至');
+            storageParam.beginTime = searchDate[0];//开始时间
+            storageParam.endTime = searchDate[1]; //  结束时间
+
+            var searchCreateDate=($("#search_create_date").val().trim()).split('至');
+            storageParam.beginCreateTime = searchCreateDate[0];//开始创建时间
+            storageParam.endCreateTime = searchCreateDate[1]; //  结束创建时间
+
+            storageParam.satellite = $("#search_sat_name").val();//卫星
+
+            if(timeSlot!=undefined){
+                storageParam.timeSlot=timeSlot;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = DATA_STORAGE.queryDataStorageSateNum_url;
+            ajax.opts.type = "POST";
+            ajax.opts.contentType = "application/json";
+            ajax.opts.data = JSON.stringify(storageParam);
+            ajax.opts.successFun = function (result) {
+                if(result.flag){
+                    var dataNames=new Array();
+                    var dataValues=new Array();
+                    $(result.data).each(function (i,d) {//组装name
+                        if(d.name!=undefined){
+                            dataNames[i]=d.name;
+                        }else {
+                            dataNames[i]="";
+                        }
+                        dataValues[i]=d.value;
+                    });
+                    var show;
+                    if(dataNames.length>8){
+                        show=true;
+                    }
+                    drawGraph("dataStorageSateNum","卫星数据统计",dataNames,dataValues,show);
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        };
+
+
+
+        //柱状图内容填充
+        var drawGraph=function(id,title,dataNames,dataValues,show) {
+            resizeContainer();
+            var myChart = echarts.init(document.getElementById(id));
+            var option = {
+                /*title: {
+                    text: title
+                },*/
+                tooltip: {},
+                toolbox: {
+                    show : true,
+                    feature : {
+                        dataView : {show: true, readOnly: false},
+                        magicType : {show: true, type: ['line', 'bar']},
+                        restore : {show: true},
+                        saveAsImage : {show: true}
+                    }
+                },
+                legend: {
+                    //right:'right',
+                    data: ['数量']
+                },
+                xAxis: {
+                    data: dataNames,
+                    axisLabel: {
+                        interval: 0,
+                        formatter: function (value, index) {
+                            if (show) {
+                                if (index % 2 != 0) {
+                                    return '\n\n' + value;
+                                }
+                                else {
+                                    return value;
+                                }
+                            } else {
+                                return value;
+                            }
+                        }
+                    }
+                },
+                yAxis: {},
+                series: [{
+                    name: '数量',
+                    type: 'bar',
+                    barMaxWidth: '100',
+                    data: dataValues,
+                    //顶部数字展示pzr
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,//是否展示
+                                position:'top',
+                                textStyle: {
+                                    fontWeight:'bolder',
+                                    fontSize : '12',
+                                    fontFamily : '宋体',
+                                    color:'black'
+                                }
+                            }
+                        }
+                    }
+                }
+                ]
+            }
+            myChart.setOption(option);
+            //myChart.resize();
+            window.onresize = function () {
+                resizeContainer();
+                myChart.resize();
+            }
+            clearBg(id);
+            if(dataNames.length==0 && dataValues.length==0){
+                //销毁echarts
+                myChart.clear();
+                window.onresize=""
+                //myChart.dispose();
+                //设置div的背景图
+                setBg(id,title);
+            }
+        }
+
+        var dateFun = function(idName){
+            $("#"+idName).jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        var searchFun=function(){
+            timeSlot="";
+            $(".t1").removeClass("on");
+            loadDataStorageSateNum();
+        }
+
+        var resizeContainer = function () {
+            var container = document.getElementById('dataStorageSateNum');
+            container.style.height = $(".rightMain").height()-$(".searchItems").height()-50+"px";
+        };
+
+        var setBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = 'url(images/public/nodata.jpg)';
+            div.style.backgroundRepeat='no-repeat';
+            div.style.backgroundPosition='center';
+        }
+
+        var clearBg=function(id){
+            var div = document.getElementById(id);
+            div.style.backgroundImage = '';
+        }
+
+        init();
+    });
+
+</script>
+<style>
+    .statisticsTitle em{font-weight:normal !important;font-size:10px !important;}
+    #formDiv .btLabel span{background:#CDC9C9;color:#fff;float:left;display:block;width:20%  !important;text-align:center;border-right:1px solid #fff;cursor:pointer;}
+    .on{background:#1f4350 !important;}
+    .divStatis{width:300px !important;}
+</style>

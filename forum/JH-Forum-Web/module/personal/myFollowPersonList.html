@@ -1,0 +1,463 @@
+    <style>
+        .content{ width: 993px;margin:0 auto}
+        /*左侧轮播*/
+        .content .conMain{ width: 750px; float: right;margin-top: 23px; }
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 4%;margin-left: 5%;height: border-box;/*min-height: 479px;*/}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: right; margin-top:10px;}
+        .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ height: 54px; margin-top:16.5px;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px; width:672px;line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+        .loadMore:hover{ cursor: pointer;}
+
+        .personDiv img{width: 70px;height: 70px;border-radius: 50%;margin-top: 38px;}
+
+        .menuDiv dt:not(:last-child){border-bottom:1px solid #EEEEEE;}
+        .menuDiv dt p{text-align: left;padding-left: 31px;line-height: 35px;}
+        .menuDiv dt p.on{border-left: 4px solid #007bc3}
+
+
+        .myFollow div{
+            height: 47px;
+            display: flex;align-items:center
+        }
+
+        .myArticle div{
+            height: 47px;
+            display: flex;align-items:center
+        }
+        #listTitle{font-size: 30px;margin-bottom: 20px;}
+
+        .follow{cursor: pointer;height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;}
+        .followed{cursor: pointer; height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;}
+        /*.expertDiv{height: 257px;width: 150px;border: 1px solid #ececec;text-align: center;float: left;margin-right: 16px;margin-top: 20px;}*/
+        /*.expertDivLast{height: 257px;width: 150px;border: 1px solid #ececec;text-align: center;float: left;}*/
+        /*.expertImg{height: 175px;width: 130px;margin-top: 10px;border-radius: 5px;}*/
+        /*.expertName{display: flex;justify-content:center;align-items:Center;margin-top: 10px;}*/
+        /*.expertName a{font-size: 14px;}*/
+
+
+        #noData{width: 100%;text-align: center;}
+        /*#noData img{width: 33px;height: 33px;border-radius: 50%;}*/
+        /*#noData p{font-size: 16px;color: #dadada;padding-left: 10px;}*/
+
+        #noData li{width:100%;padding:20px 12px;border-bottom:1px solid #EEEEEE;height:46px;}
+
+        #noData .noFollow{border-bottom:0px !important;}
+
+        #noData li img{width:45px;height:45px;border-radius:50%;cursor:pointer;}
+        #noData li>div{float:left;}
+        #noData li .imgDiv{width:45px;}
+        #noData li .personDiv{width:calc(80% - 45px);padding-left:10px;}
+        #noData li .personDiv p{text-align:left;height:23px;line-height:23px;font-size:14px;}
+        #noData li .personDiv p:last-child{color:#7b7b7b;}
+        #noData li .followDiv{width:calc(20% - 10px);height:45px;line-height:45px;}
+
+        #noDataShow{height: 100px;width: 100%;text-align: center;display: flex;justify-content: center;align-items: center;}
+        #noDataShow img{width: 33px;height: 33px;border-radius: 50%;}
+        #noDataShow p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+        dl{min-height: 260px;border-bottom: none !important;}
+
+        /*农业*/
+        span.lab.agriculture{ background: #65d763;}
+        /*气象*/
+        span.lab.meteorology{ background: #00a5da;}
+        /*遥感*/
+        span.lab.remotesensing{ background: #daa900;}
+        /*期货*/
+        span.lab.futures{ background: #dbab00;}
+        /*保险*/
+        span.lab.insurance{ background: #0c6e86;}
+
+
+    </style>
+
+
+    <div class="list">
+        <div style="border-bottom: 1px solid #EEEEEE">
+            <p id="listTitle">我的关注</p>
+        </div>
+        <ul id="noData" ></ul>
+        <div id="noDataShow" >
+            <img src="images/public/forum/POKERFACE.png"><p>暂无数据</p>
+        </div>
+    </div>
+    <div style="clear: both;"></div>
+    <p class="loadMore">加载更多>></p>
+
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons){
+
+        //初始化方法
+        var init = function(){
+            //查看更多标签
+            lookMore();
+            loadMore();
+            //加载专家列表
+            initExpertPage(1, initFirstRows, true);
+        }
+
+        //查看更多
+        var lookMore = function(){
+                $('.lookMore a').on('click',function(){
+                    $('.tags').css('height','auto');
+                    $('.lookMore').hide();
+            });
+
+        };
+
+        /**
+         * 根据查询结果，动态生成我的关注专家列表
+         * @param result 专家列表分页查询结果
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateContent = function(result,flag){
+
+            console.log(result, "result")
+
+            //查询当前用户关注的所有专家的id
+            var focusIdList = [];
+            focusIdList = queryMyFocusExperts();
+
+            var expert = null;
+            for (var i=0;i<result.list.length;i++){
+                expert = result.list[i].personMap;
+
+                console.log(expert)
+
+                if(expert == null )
+                    break;
+                //获取该专家的行业的样式
+                // var code = getIndustryColor(expert.industry);
+
+                var photoUrl = 'images/public/forum/userImg.png'
+                if (null != expert.photoUrl && '' != expert.photoUrl) photoUrl =download_config.DOWNLOD_URL + expert.photoUrl;
+
+                // var str = ' <div class="expertDiv">' +
+                //     '            <img class="expertImg" expertId="'+expert.expertId+'" accountId="'+expert.accountId+'" src="'+photoUrl+'"/>' +
+                //     '            <div class="expertName" ><span class="lab '+code+'">'+expert.industry+'</span><a>'+expert.expertName+'</a></div>';
+                // //如果当前用户已关注该专家
+                // if (null != focusIdList && focusIdList.indexOf(expert.accountId) != -1) {
+                //     str +=  '            <a class="followed" expertId="'+expert.expertId+'" accountId="'+ expert.accountId +'">已关注</a>' ;
+                //     str += '            <a class="follow" expertId="'+expert.expertId+'"  accountId="'+ expert.accountId +'" style="display: none">+关注</a>';
+                // }else {
+                //     str +=  '            <a class="followed" expertId="'+expert.expertId+'"  accountId="'+ expert.accountId +'" style="display: none">已关注</a>' ;
+                //     str += '            <a class="follow" expertId="'+expert.expertId+'"  accountId="'+ expert.accountId +'">+关注</a>';
+                // }
+                //
+                // str += '        </div>';
+
+
+            // <div class="imgDiv"><img src="/a/data\forum\photo\photo_url_15_1557293405311.jpeg"  ></div>
+            //         <div class="personDiv">
+            //         <p>刘传维</p>
+            //         <p>Java开发</p>
+            //         </div>
+            //         <div class="followDiv">
+            //         <a class="follow" >+关注</a>
+            //         </div>
+
+                var intro = expert.remark == undefined ? "" : expert.remark;
+                if(intro !=  "" && intro != null && intro.length > 15){
+                    intro = intro.substring(0,15);
+                }
+
+                var _followStr = "";
+                //如果当前用户已关注该专家
+                if (null != focusIdList && focusIdList.indexOf(expert.accountId) != -1) {
+                    _followStr +=  '<a class="followed"  accountId="'+ expert.accountId +'">已关注</a>' ;
+                    _followStr += '<a class="follow"   accountId="'+ expert.accountId +'" style="display: none">+关注</a>';
+                }else {
+                    _followStr +=  '<a class="followed"   accountId="'+ expert.accountId +'" style="display: none">已关注</a>' ;
+                    _followStr += '<a class="follow"   accountId="'+ expert.accountId +'">+关注</a>';
+                }
+
+                var str = '<li><div class="imgDiv expertImg"  expertId="' +expert.expertId + '" accountId="'+expert.accountId+ '" ><img src="'+ photoUrl +'"  ></div>';
+                var nickName = commons.queryAccountName(expert.accountId)
+                str += '<div class="personDiv"><p>'+ nickName +'</p><p>'+ intro +'</p></div>';
+                str += '<div class="followDiv">'+ _followStr +'</div></li>'
+
+                $('#noData').append(str);
+            }
+            //给专家图片绑定点击事件,打开新标签页展示专家详情
+            $('.expertImg').bind('click',function () {
+                // window.open('expertInfo.html?expertId='+$(this).attr('expertId'));
+                window.open('index.html?expertId='+$(this).attr('expertId')+'&accountId='+$(this).attr('accountId')+'#expertInfo');
+
+            })
+            if (result.hasNextPage) {
+                if (flag) {
+                    $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                } else {
+                    $(".loadMore").attr("nextPage", result.nextPage).html("加载更多>>");
+                }
+            } else {
+                $(".loadMore").attr("nextPage", result.nextPage).html("没有更多了");
+            }
+
+            //点击关注按钮
+            $('.follow').bind('click',function () {
+                //1、首先查询用户是否登录，没有登录跳转到登录页面
+                if (commons.checkForumLoginStatus()) {
+                    var expertId = $(this).attr('expertId');
+                    var accountId= $(this).attr("accountId");
+                    //关注专家
+                    var flag = followPerson(accountId);
+                    if (flag){
+                        // $(this).removeClass('follow').addClass('followed');
+                        // $(this).text('已关注');
+                        $(this).hide();
+                        $(this).prev().show();
+                    }
+                }
+            });
+
+            //点击已关注按钮，取消关注
+            $('.followed').bind('click',function () {
+                //1、首先查询用户是否登录，没有登录跳转到登录页面
+                if (commons.checkForumLoginStatus()) {
+                    var expertId = $(this).attr('expertId');
+                    var accountId= $(this).attr("accountId");
+                    //取消关注专家
+                    var flag = cancelFollowPerson(accountId);
+                    if (flag) {
+                        // $(this).removeClass('followed').addClass('follow');
+                        // $(this).text('+关注');
+                        $(this).hide();
+                        $(this).next().show();
+                        $(this).parent().parent("li").remove();//取消关注后移除
+
+
+                        if (0 == $("#noData li").length){
+                            $('#noDataShow').show();
+                            $('.loadMore').hide();
+                        }
+                    }
+                }
+            });
+        }
+
+        /**
+         * 根据行业名称获取配置的行业标签的颜色
+         * @param industry 行业名称
+         * @return 行业代码
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getIndustryColor = function(industry){
+            for (var i=0;i<industryList.length;i++) {
+                if (industryList[i].name == industry){
+                    return industryList[i].code;
+                }
+            }
+
+        }
+
+        /**
+         * 点击专家更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    initExpertPage(nextPage, initRows, false);
+                }
+            });
+        };
+
+
+        /**
+         * 加载更多专家
+         * @param
+         * @return
+         * @version <1> 2019/3/9 mason:Created.
+         */
+        var initFirstRows = 8;//第一次夹加载条数
+        var initRows = 4;//之后每次加载条数
+        var initExpertPage = function (page, rows, flag, industry) {
+            var userInfo = isLogion();
+            if (userInfo.flag){
+                var person = JSON.parse(userInfo.data)
+                var accountId = person.accountId;
+
+                var forumFollow = {
+                    page:page,
+                    rows:rows
+                    // dataStatus:'1',
+                    // delFlag:'1',
+                    // followerId : accountId
+                }
+                var ajax = new BaseAjax();
+                ajax.opts.url = FORUM_FOLLOW.findMyFollowPageInfo_url;
+                ajax.opts.data = JSON.stringify(forumFollow);
+                ajax.opts.successFun = function (result) {
+                    var str = '';
+                    if (null != result && result.list.length >0) {
+                        $('#noDataShow').hide();
+                        generateContent(result,flag);
+                    }else {
+                        $('.loadMore').hide();
+                        // $('#noData').show();
+                        $('#noDataShow').show();
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+            }
+
+        };
+
+
+        /**
+         * 关注专家方法
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var followPerson = function(expertId){
+            var flag = false;
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.addFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+                //此处欠缺弹框提示用户关注失败
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 取消关注专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var cancelFollowPerson = function (expertId) {
+            var flag = false;
+            var result = isLogion();
+            var userInfo = JSON.parse(result.data);
+            var accountId = null;
+            if (null != userInfo.accountId) {
+                accountId = userInfo.accountId;
+            }else {
+                alert('取消关注失败');
+                return;
+            }
+
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus,
+                creator :accountId
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.removeFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 判断用户是否登陆,若登录成功，返回用户信息
+         * @param
+         * @return boolean
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+
+        /**
+         * 查询我的关注的所有专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var queryMyFocusExperts = function(){
+            //1、判断是否登录,登录后查询用户信息
+            var userInfo = isLogion();
+            if (userInfo.flag){
+                var focusIdList = [];
+                var accountId = userInfo.accountId;
+                //2、查询用户关注的所有专家
+                var param = {
+                    followType : forum_followType.follow_focus,
+                    creator : accountId
+                }
+                var ajax = new BaseAjax();
+                ajax.opts.url = FORUM_FOLLOW.findByPage_url;
+                ajax.opts.data = JSON.stringify(param);
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag && null != result.data) {
+                        for (var i=0;i<result.data.length;i++){
+                            //将查询出的关注的专家列表的id存入数组
+                            focusIdList.push(result.data[i].articleId);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+                return focusIdList;
+            }
+        }
+
+
+        init();
+
+    })
+</script>
+

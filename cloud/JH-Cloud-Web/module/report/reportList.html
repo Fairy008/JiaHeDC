@@ -1,0 +1,1940 @@
+<style type="text/css">
+    .errorInfo{color:#f00;}
+    #downloadPdfAndWord a{color: #46B4F1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display: block;width:430px;}
+    #downloadPdfAndWord a:hover{text-decoration:underline;}
+</style>
+<!--报告列表 @version 2018-05-02 lcw: Created.-->
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">区域：</span>
+                    <span><input id = "txtArea" class="input" type="text" placeholder="请选择区域" readonly/></span>
+                </div>
+                <div>
+                    <span class="label2">作物：</span>
+                    <span><select id = "cropId" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label">数据集：</span>
+                    <span><select id="dataSet" class="input"></select></span>
+                </div>
+                <div>
+                    <span class="label2">精度：</span>
+                    <span><select id = "resolution" class="input"></select></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="  查询  " id="queryBtn" />&nbsp;&nbsp;
+                <input type="button" class="btn " value="  重置  " id="resetBtn" />
+            </div>
+        </div>
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <!--<div>
+                    <span class="label2">关键字：</span>
+                    <span><input type="text" class="input" id="words" /></span>
+                </div>-->
+                <div>
+                    <span class="label2">报告类型：</span>
+                    <span><select type="text" class="input" id="reportType"></select></span>
+                </div>
+                <div>
+                    <span class="label2">报告时间：</span>
+                    <span><input type="text" class="input" id="reportTime" readonly /></span>
+                </div>
+                <!--<div>
+                    <span class="label2">创建人：</span>
+                    <span><input type="text" class="input" id="creatorName" /></span>
+                </div>
+                <div>
+                    <span class="label2">创建时间：</span>
+                    <span><input type="text" class="input" id="createTime" /></span>
+                </div>-->
+                <div>
+                    <span class="label2">关键字：</span>
+                    <span><input type="text" class="input" id="keyword" /></span>
+                </div>
+                <div>
+                    <span class="label2">发布状态：</span>
+                    <span><select class="input" id="publishStatus" ></select></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn" value="生成报告" id="createBtn" />&nbsp;&nbsp;
+                <input type="button" class="btn" value="上传报告" id="uploadBtn" />
+            </div>
+        </div>
+    </div>
+    <div class="grid">
+        <table id="reportListGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <!--编辑-->
+    <div id="editReportInfo" class="formDialog form" style="display: none;">
+        <form id="fileInfo">
+            <table>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>数据集:</td>
+                    <td class="two_td2">
+                        <select id="edit_dataSet" name="dataSet" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="two_td2">
+                        <input type="text" id="edit_txtArea" class="selectType two_selectType"  placeholder="请选择区域" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>作物:</td>
+                    <td class="two_td2">
+                        <select id="edit_cropId" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="two_td2">
+                        <select id="edit_resolution" name="resolution" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>报告时间:</td>
+                    <td class="two_td2">
+                        <input type="text" id="edit_reportTime" name="reportTime" class="selectType two_selectType"  placeholder="请选择报告时间" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>报告类型:</td>
+                    <td class="two_td2">
+                        <select type="text" id="edit_reportType" name="reportType" class="selectType one_selectType"  placeholder="请选择报告类型"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span></span>关键字:</td>
+                    <td class="two_td2">
+                        <input type="text" id="edit_keyword" name="keyword" class="selectType two_selectType" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>报告文件:</td>
+                    <td class="two_td2">
+                        <input type="file" id="edit_reportFile" name="reportFile" class="selectType one_selectType" />
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td class="td1"></td>
+                    <td class="td2"><span class="errorInfo"></span></td>
+                </tr>-->
+            </table>
+        </form>
+    </div>
+
+    <!--生成报告-->
+    <div id="createReportInfo" class="formDialog form" style="display: none;">
+        <form id="createFileInfo">
+            <table>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>数据集:</td>
+                    <td class="two_td2">
+                        <select id="create_dataSet" name="dataSet" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>区域:</td>
+                    <td class="two_td2">
+                        <input type="text" id="create_txtArea" class="selectType two_selectType"  placeholder="请选择区域" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>作物:</td>
+                    <td class="two_td2">
+                        <select id="create_cropId" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>精度:</td>
+                    <td class="two_td2">
+                        <select id="create_resolution" name="resolution" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>模板类别:</td>
+                    <td class="two_td2">
+                        <select id="report_tempType" name="reportTempType" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>数据时间:</td>
+                    <td class="two_td2">
+                        <!--<input type="text" id="create_dataTime" name="dataTime" class="selectType two_selectType"  placeholder="请选择数据时间" readonly/>-->
+                        <select id="create_dataTime" name="dataTime" class="selectType one_selectType"></select>
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td class="two_td1"><span class="txtRequired">*</span>报告类型:</td>
+                    <td class="two_td2">
+                        <select type="text" id="create_reportType" name="reportType" class="input selectType two_selectType"  placeholder="请选择报告类型"></select>
+                    </td>
+                </tr>-->
+                <tr>
+                    <td class="two_td1"><span></span>关键字:</td>
+                    <td class="two_td2">
+                        <input type="text" id="create_keyword" name="keyword" class="selectType two_selectType" />
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td class="td1"></td>
+                    <td class="td2"><span class="errorInfo"></span></td>
+                </tr>-->
+            </table>
+        </form>
+    </div>
+
+    <!--下载-->
+    <div id="downloadPdfAndWord" class="form" style="display: none;">
+        <form>
+            <table>
+                <tr>
+                    <td class="two_td1">word文件:</td>
+                    <td class="two_td2">
+                        <a href="#"></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="two_td1">pdf文件:</td>
+                    <td class="two_td2">
+                        <a href="#"></a>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+
+    <div id="delDialog" class="dialogStyle" style="display:none"></div>
+</div>
+
+<!--预览-->
+<div id="previewDialog" style="display:none;">
+    <iframe src="js/lib/pdfjs/web/viewer.html?file=../1.pdf" id="pdfHTML"  name="pdfHTML" width="99%" height="99%"></iframe>
+</div>
+
+<!-- 遮罩层DIV -->
+<div id="process" class="dialogStyle" style="display: none;text-align:center;">
+    <img src="images/public/process.gif" />
+</div>
+
+<script type="text/javascript">
+    require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","formVerfication","RegionModule","PopWin","commons","custom_settings"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,formVerfication,RegionModule,PopWin,commons,custom_settings){
+        var processDialog = $("#process");
+
+        var init = function() {
+            regionSelectFun("txtArea", "cropId");//加载区域, 根据区域带出作物
+            //initCropIdFun(500, "cropId");//初始化作物下拉框
+            initDataSetFun(1800, "dataSet");//初始化数据集下拉框
+            //initResolutionFun(4000, "resolution");//初始化精度下拉框
+            initResolution("dataSet", "resolution");//初始化查询页面精度下拉框
+            initReportTypeFun(9001, "reportType");//初始化报告类型下拉框
+            initPublishStatusFun(2200, "publishStatus");//初始化发布状态
+            dateFun();//初始化创建时间 和 报告时间控件
+
+            $("#queryBtn").bind("click",searchFun);//点击查询
+            $("#resetBtn").bind("click",resetFun);//点击重置
+            $("#uploadBtn").click(function(){//上传报告
+                editReportFun(null);
+            });
+            $("#createBtn").bind("click",createReportFun);//生成报告
+
+            loaderGrid();//初始化grid
+
+            $(window).resize(function(){
+                $("#reportListGrid").setGridWidth($(".rightMain").width() - 30);
+                chanageTableCss();
+            });
+            chanageTableCss();
+
+
+
+            /**
+             * 选择区域控件后，再选择时间控件，区域控件无法关闭。
+             * 解决思路： 促发时间控件的点击时间，隐藏区域控件的显示框
+             * @version<1> 2018-07-20 lcw: Created.
+             */
+            $("#reportTime").on("click",function(){
+                if($("#divArea").css("display")== "block"){
+                    $("#divArea").css("display","none")
+                }
+            })
+
+        };
+
+        var chanageTableCss = function(){
+            var divObj = $('#reportListGrid').parent('div');
+            divObj.addClass('tableStyle');
+            divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+        };
+
+        /**
+         * Description: 初始化grid
+         * @version <1> 2018/5/15 14:20 zhangshen: Created.
+         */
+        var loaderGrid = function(){
+            $("#reportListGrid").jqGrid({
+                url: DS_REPORT.findDsReportByPage_url,
+                datatype: "json",
+                postData:{
+
+                },
+                mtype:'POST',
+                jsonReader: {
+                    root: "list",
+                    total: "pages",
+                    page: "page",
+                    records: "total",
+                    repeatitems: false
+                },
+                rownumbers: true,
+                colNames:['reportId','文件路径','approvalStatusId','dataTypeId','publishStatusId','报告名称','报告类型','报告时间','区域','数据集','精度', '作物', '关键字', '创建人','创建时间','发布状态', '操作'],
+                colModel:[
+                    {name: 'reportId', index:'reportId', hidden:true},
+                    {name: 'filePath', index:'filePath', hidden:true},
+                    {name: 'approvalStatus', index:'approvalStatus', hidden:true},
+                    {name: 'dataType', index:'dataType', hidden:true},
+                    {name: 'publishStatus', index:'publishStatus', hidden:true},
+                    {name: 'reportName', index:'report_name', align: 'left', width: '25%'},
+                    {name: 'approvalStatusCN', index: 'approval_status_cn', align: 'center', width: '6%'},
+                    {name: 'reportTime', index: 'report_time', align: 'center', width: '7%'},
+                    {name: 'regionName', index: 'region_name', align: 'center', width: '7%'},
+                    {name: 'dsName', index: 'ds_name', align: 'center', width: '5%'},
+                    {name: 'resolutionValue', index: 'resolution_value', align: 'center', width: '7%'},
+                    {name: 'cropName', index: 'crop_name', align: 'center', width: '6%'},
+                    {name: 'keyword', index: 'keyword', align: 'center', width: '5%'},
+                    {name: 'creatorName', index: 'creator_name', align: 'center', width: '6%'},
+                    {name: 'createTime', index:'create_time', width:'11%', align:"center"},
+                    {name: 'publishStatusCN', index: 'publish_status_cn', align: 'center', width: '7%',
+                        formatter:function (cellvalue,options,rowObject) {
+                            var str = "";
+                            var publishStatus = rowObject.publishStatus;
+                            var publishStatusCN = rowObject.publishStatusCN;
+                            if(publishStatus == 2201){//已发布
+                                str += "<span class='statusStyle'>" + publishStatusCN + "</span><img src='images/public/Ton.png' class='statusBtn' data-id='" + rowObject.reportId + "' data-status='" + publishStatus + "' title='"+publishStatusCN+"' >";
+                            }else if(publishStatus == 2202){//待发布
+                                str += "<span class='statusStyle'>" + publishStatusCN + "</span><img src='images/public/Toff.png' class='statusBtn' data-id='" + rowObject.reportId + "' data-status='" + publishStatus + "' title='"+publishStatusCN+"' >";
+                            }
+                            return str;
+                        }
+                    },
+                    {name: 'cz', index:'cz', width:'12%',align:"center", sortable:false,formatter:function(cellvalue, options, rowObject){
+                            var str="";
+                            var publishStatus = rowObject.publishStatus;
+                            if(publishStatus == 2201){//已发布
+                                str+= "<img src='images/public/Twatch.png' class='preview' data-id='"+ rowObject.reportId +"' path='" + rowObject.filePath + "' title='预览' target='pdfHTML' >" +
+                                    "<img src='images/public/TeditG.png' data-id='"+ rowObject.reportId +"' path='"+ rowObject.filePath +"' title='编辑' >" +
+                                    //"<img src='images/public/shareG.png' title='发布' >" +
+                                    //"<img src='images/public/back.png' class='cancelBtn' data-id='" + rowObject.reportId + "' title='撤回' >" +
+                                    "<img src='images/public/download.png' class='downloadBtn' data-id='"+ rowObject.reportId +"' path='"+ rowObject.filePath +"' title='文件下载' >" +
+                                    "<img src='images/public/TdeleteG.png' title='删除' data-id='"+ rowObject.reportId +"'>";
+                            }else if(publishStatus == 2202){//待发布
+                                str+= "<img src='images/public/Twatch.png' class='preview' data-id='"+ rowObject.reportId +"' path='" + rowObject.filePath + "' title='预览' target='pdfHTML' >" +
+                                    "<img src='images/public/Tedit.png' class='editBtn' data-id='"+ rowObject.reportId +"' path='"+ rowObject.filePath +"' title='编辑' >" +
+                                    //"<img src='images/public/share.png' class='publishBtn' data-id='"+ rowObject.reportId +"' title='发布' >" +
+                                    //"<img src='images/public/backG.png' title='撤回' >" +
+                                    "<img src='images/public/download.png' class='downloadBtn' data-id='"+ rowObject.reportId +"' path='"+ rowObject.filePath +"' title='文件下载' >" +
+                                    "<img src='images/public/Tdelete.png' class='deleteBtn' title='删除' data-id='"+ rowObject.reportId +"'>";
+                            }
+                            return str;
+                        }}
+                ],
+                width:'100%',
+                autowidth:true,
+                height:'100%',
+                rowNum:15,
+                multiselect: true,//复选框
+                rowList:[15,30],
+                pager: '#pager2',
+                viewrecords: true,
+                sortorder: "desc",
+                loadComplete:function(){
+                    commons.isNextDisable();
+                    $("#reportListGrid").setGridWidth($(".rightMain").width() - 30);
+                    $("#pager2_left").html("<input type='button' value='批量发布' class='btn btn_grey' id='batchPublishBtn' />" + "&nbsp;&nbsp;"
+                        + "<input type='button' value='批量撤回' class='btn btn_grey' id='batchCancelBtn' />" + "&nbsp;&nbsp;"
+                        + "<input type='button' class='btn btn_grey' value='批量下载' id='batchDownloadBtn' />");
+                    tableEvent();//绑定table表格操作事件
+                },
+                onSelectAll:function(rowid, status) { //rowid 数组
+                    batchStyle();
+                },
+                onSelectRow:function(rowid, e){
+                    batchStyle();
+                }
+            });
+        };
+
+        /**
+         * Description: 批量按钮样式
+         * @version <1> 2018/5/24 14:48 zhangshen: Created.
+         */
+        var batchStyle = function(){
+            var ids = $("#reportListGrid").jqGrid("getGridParam", "selarrrow");
+            var rowNum = $("#reportListGrid").jqGrid('getRowData').length; //获取当前页显示的行数
+            if(ids.length == rowNum){//全选
+                $("input[type='checkbox']").prop("checked",true);
+            }
+            var reportIds2201 = [];
+            var reportIds2202 = [];
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#reportListGrid").jqGrid('getRowData', id);
+                var reportId = row.reportId;//
+                var publishStatus = row.publishStatus;//获取发布状态
+                if(publishStatus == 2201){//如果此条报告信息的发布状态为已发布2201
+                    reportIds2201.push(reportId)
+                }else if(publishStatus == 2202){
+                    reportIds2202.push(reportId)
+                }
+            });
+            if(ids.length == 0){
+                $("#batchPublishBtn").addClass("btn_grey");
+                $("#batchCancelBtn").addClass("btn_grey");
+                $("#batchDownloadBtn").addClass("btn_grey");
+            }else if(reportIds2201.length > 0 && reportIds2202.length <= 0){
+                $("#batchPublishBtn").addClass("btn_grey");
+                $("#batchCancelBtn").removeClass("btn_grey");
+                $("#batchDownloadBtn").removeClass("btn_grey");
+            }else if(reportIds2202.length > 0 && reportIds2201.length <= 0){
+                $("#batchPublishBtn").removeClass("btn_grey");
+                $("#batchCancelBtn").addClass("btn_grey");
+                $("#batchDownloadBtn").removeClass("btn_grey");
+            }else if(reportIds2201.length > 0 && reportIds2202.length > 0){
+                $("#batchPublishBtn").removeClass("btn_grey");
+                $("#batchCancelBtn").removeClass("btn_grey");
+                $("#batchDownloadBtn").removeClass("btn_grey");
+            }
+        };
+
+        /**
+         * 绑定table表格操作事件
+         * @version <1> 2018/5/15 14:19 zhangshen: Created.
+         */
+        var tableEvent = function(){
+            $("#batchPublishBtn,#batchCancelBtn,#batchDownloadBtn,.downloadBtn,.preview,.editBtn,.publishBtn,.cancelBtn,.deleteBtn,.statusBtn").off("click");
+
+            $(".downloadBtn").on("click",function(){//根据reportId,单个下载
+                //var reportId = $(this).attr("data-id");
+                //window.open("/dsReport/down?reportId="+reportId);
+                downloadBtnFun($(this));
+            });
+
+            $(".preview").on("click",function(){//根据reportId,预览
+                previewFun($(this));
+            });
+
+            $(".editBtn").on("click",function(){//根据reportId,编辑
+                editReportFun($(this));
+            });
+
+            /*$(".publishBtn").on("click",function(){//根据reportId,发布
+                publishReportFun($(this));
+            });
+
+            $(".cancelBtn").on("click",function(){//根据reportId,撤回
+                cancelReportFun($(this));
+            });*/
+
+            $(".deleteBtn").on("click",function(){//根据reportId,删除
+                deleteReportFun($(this));
+            });
+
+            $("#batchPublishBtn").bind("click", function () {//批量发布报告
+                if(!$("#batchPublishBtn").hasClass("btn_grey")){
+                    batchPublishFun();
+                }
+            });
+
+            $("#batchCancelBtn").bind("click", function () {//批量撤回报告
+                if(!$("#batchCancelBtn").hasClass("btn_grey")){
+                    batchCancelFun();
+                }
+            });
+
+            $("#batchDownloadBtn").bind("click", function () {//批量下载报告
+                if(!$("#batchDownloadBtn").hasClass("btn_grey")){
+                    batchDownloadFun();
+                }
+            });
+
+            $(".statusBtn").on("click",function () {
+                var audisState = $(this).attr("data-status");
+                if(audisState == "2201"){//已发布
+                    cancelReportFun($(this));
+                }else if(audisState == "2202"){//待发布
+                    publishReportFun($(this));
+                }
+            });//发布状态
+        };
+
+        /**
+         * Description: 根据指定的查询条件，查询对应的记录并重新渲染
+         * @version <1> 2018/5/15 14:19 zhangshen: Created.
+         */
+        var searchFun = function() {
+            var regionId = document.getElementById("txtArea").getAttribute("regionid");//区域id
+            var cropId = $("#cropId").val();//作物id
+            var dataSet = $("#dataSet").val();//数据集id
+            //var createTime = ($("#createTime").val().trim()).split('至');
+            var reportType = $("#reportType").val();//报告类型
+            //var creatorName = $("#creatorName").val().trim();//创建人
+            var resolution = $("#resolution").val();//精度
+            var reportTime = ($("#reportTime").val().trim()).split('至');
+            var keyword = $("#keyword").val().trim();//关键字
+            var publishStatus = $("#publishStatus").val();//发布状态
+            var param = {};
+            param.regionId = regionId;
+            param.cropId = cropId;
+            param.dsId = dataSet;
+            //param.startTimeCreate = createTime[0] || '';
+            //param.endTimeCreate = createTime[1] || '';
+            param.approvalStatus = reportType;
+            //param.creatorName = creatorName;
+            param.startTimeReport = reportTime[0] || '';
+            param.endTimeReport = reportTime[1] || '';
+            param.resolution = resolution;
+            param.keyword = keyword;
+            param.publishStatus = publishStatus;
+            $("#reportListGrid").jqGrid('setGridParam', {
+                datatype: 'json',
+                postData: param,
+                page: 1
+            }).trigger("reloadGrid");
+        };
+
+        /**
+         * Description: 重置
+         * @version <1> 2018/5/15 16:40 zhangshen: Created.
+         */
+        var resetFun = function(){
+            $("#txtArea").val("");//区域
+            $("#txtArea").removeAttr("regionid");
+            //$("#cropId").val("");//作物
+            queryCropFun(document.getElementById("txtArea").getAttribute("regionid"), "cropId");
+            $("#dataSet").val("--请选择--");//数据集
+            //$("#resolution").val("--请选择--");//分辨率
+            queryResolutionFun($("#dataSet").val(), "resolution");
+            $("#createTime").val("");//创建时间
+            $("#reportTime").val("");//报告时间
+            $("#reportType").val("--请选择--");//报告类型
+            $("#creatorName").val("");//创建人
+            $("#keyword").val("");//关键字
+            $("#publishStatus").val("--请选择--");//发布状态
+        };
+
+        /**
+         * Description: 预览
+         * @param obj
+         * @version <1> 2018/5/16 13:21 zhangshen: Created.
+         */
+        var previewFun = function(obj){
+            var previewDialog = $("#previewDialog");
+            var previewParent = previewDialog.parent();
+            var previewOwn = previewDialog.clone();
+
+            //var reportId = obj.attr("data-id");
+            var filePath = obj.attr("path");
+
+            previewDialog.dialog({
+                autoOpen: false,
+                title: filePath,
+                height: 920,
+                width: 1200,
+                modal: true,
+                close:function(){
+                    previewOwn.appendTo(previewParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [
+                    {
+                        text:"关闭",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+            previewDialog.dialog("open");
+
+            /*var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.type = "GET";
+            ajax.opts.successFun = function (data) {
+                if(data.flag){//检查是否登录,登录就能预览pdf
+                    var reportId = obj.attr("data-id");
+                    var download_url = DS_REPORT.previewReportPdf_url + "?reportId=" + reportId + "&AccessToken=" + commons.getCookie("AccessToken");//"?filePath="+ encodeURIComponent(filePath);
+                    var url = "js/lib/pdfjs/web/viewer.html?" + download_url;
+                    $("#pdfHTML").attr("src",url);
+                }
+            };
+            ajax.run();*/
+
+            commons.isLoginFun();//是否登录, 没登录就跳到登录页面, 登录就执行下面预览功能
+
+            var reportId = obj.attr("data-id");
+            var download_url = DS_REPORT.previewReportPdf_url + "?reportId=" + reportId + "&AccessToken=" + commons.getAccessToken();//"?filePath="+ encodeURIComponent(filePath);
+            var url = "js/lib/pdfjs/web/viewer.html?" + download_url;
+            $("#pdfHTML").attr("src",url);
+        };
+
+        /**
+         * Description: 文件下载
+         * @param obj
+         * @return
+         * @version <1> 2018/5/23 16:22 zhangshen: Created.
+         */
+        var downloadBtnFun =  function(obj){
+            var dialog =  $("#downloadPdfAndWord");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+
+            var reportId = obj.attr("data-id");
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_REPORT.findDsReportById_url + "?reportId=" + reportId;//根据id查询报告信息
+            ajax.opts.successFun = function (data) {
+                if(data.flag){
+                    var object = data.data;
+                    //var filePath = object.filePath;//obj.attr("path");//pdf文件路径
+                    //var fileNameWord = filePath.substring(filePath.lastIndexOf("\\")+1, filePath.length-4) + ".doc";//word文件名
+                    //var fileNamePdf = filePath.substring(filePath.lastIndexOf("\\")+1, filePath.length;)//pdf文件名
+                    var dsReport = object.dsReport;
+                    var isExist = object.isExist;
+                    if(isExist){
+                        var fileNameWord = dsReport.reportName + ".doc";
+                        dialog.find("a").eq(0).parent().parent().css("dispaly","");
+                        dialog.find("a").eq(0).attr("href", DS_REPORT.reportDown_url + "?reportId="+reportId+"&type=word&AccessToken="+commons.getAccessToken()).attr("title", fileNameWord).text(fileNameWord);
+                    }else{
+                        dialog.find("a").eq(0).parent().parent().css("display","none");
+                    }
+                    var fileNamePdf = dsReport.reportName + ".pdf";
+                    dialog.find("a").eq(1).attr("href", DS_REPORT.reportDown_url + "?reportId="+reportId+"&type=pdf&AccessToken="+commons.getAccessToken()).attr("title", fileNamePdf).text(fileNamePdf);
+
+                    dialog.dialog({
+                        autoOpen: false,
+                        title: '文件下载',
+                        height: isExist ? 180 : 150,
+                        width: 550,
+                        modal: true,
+                        close:function(){
+                            dialogOwn.appendTo(dialogParent);
+                            $(this).dialog("destroy").remove();
+                        },
+                        buttons: [{
+                            text:"关闭",
+                            click:function(){
+                                $(this).dialog("close");
+                            }
+                        }]
+                    });
+                    dialog.dialog("open");
+                }
+            };
+            ajax.run();
+        };
+
+        /**
+         * Description: 初始化编辑和上传报告的下拉框
+         * @version <1> 2018/5/21 17:25 zhangshen: Created.
+         */
+        var initUploadAndEdit = function(){
+            regionSelectFun("edit_txtArea", "edit_cropId");//加载区域 和 作物
+            //initCropIdFun(500, "edit_cropId");//初始化作物下拉框
+            initEditReportTime();//加载报告时间
+            initDataSetFun(1800, "edit_dataSet");//加载数据集
+            initResolution("edit_dataSet", "edit_resolution");
+            //initResolutionFun(4000, "edit_resolution");//加载分辨率
+            initReportTypeFun(9001, "edit_reportType");//加载报告类型
+        };
+
+        /**
+         * Description: 编辑报告 和 上传报告
+         * @version <1> 2018/5/18 14:40 zhangshen: Created.
+         */
+        var editReportFun = function(obj){
+            //$('.errorInfo').text('');
+            initUploadAndEdit();
+            createDataSetChangeFun("edit_dataSet", "edit_cropId");
+
+            if(obj != null){
+                var reportId = obj.attr("data-id");
+                var ajax = new BaseAjax();
+                ajax.opts.url = DS_REPORT.findDsReportById_url + "?reportId=" + reportId;//根据id查询报告信息
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (data) {
+                    if(data.flag){
+                        var reportObj = data.data.dsReport;//报告对象
+                        $("#edit_txtArea").val(reportObj.regionName);//设置区域中文名
+                        $("#edit_txtArea").attr("regionid", reportObj.regionId).attr("regioncode", reportObj.regionCode).attr("chinaname", reportObj.regionName).attr("disabled",true).css("background-color","#ebebe4");//设置区域id
+                        queryCropFun(reportObj.regionId, "edit_cropId");//根据区域id查询加载作物
+                        if(reportObj.dsId && (reportObj.dsId == 1801 || reportObj.dsId == 1802 || reportObj.dsId == 1803)){
+                            $("#edit_cropId").val(reportObj.cropId).attr("disabled",true).css("background-color","#ebebe4");//设置作物id
+                            $("#edit_cropId").parent().parent().css("display","");
+                        }else{
+                            $("#edit_cropId").parent().parent().css("display","none");
+                        }
+                        $("#edit_dataSet").val(reportObj.dsId).attr("disabled",true).css("background-color","#ebebe4");//设置数据集
+                        queryResolutionFun($("#edit_dataSet").val(), "edit_resolution");//初始化编辑和上传报告精度下拉框
+                        $("#edit_resolution").val(reportObj.resolution).attr("disabled",true).css("background-color","#ebebe4");//设置分辨率
+                        $("#edit_reportTime").val(reportObj.reportTime);//设置报告时间
+                        $("#edit_reportType").val(reportObj.approvalStatus).removeAttr("disabled").css("background-color","");//设置报告类型
+                        $("#edit_keyword").val(reportObj.keyword);
+                    }
+                };
+                ajax.run();
+            }else{
+                $("#edit_txtArea").val("");//区域
+                $("#edit_txtArea").removeAttr("regionid");
+                $("#edit_reportTime").val("");//报告时间
+                $("#edit_keyword").val("");//关键字
+                queryCropFun(document.getElementById("edit_txtArea").getAttribute("regionid"), "edit_cropId");
+
+                $("#edit_txtArea, #edit_cropId, #edit_dataSet, #edit_resolution").removeAttr("disabled").css("background-color","");
+                $("#edit_reportType").val(9102).attr("disabled",true).css("background-color","#ebebe4");
+            }
+
+            var dialog =  $("#editReportInfo");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: (obj != null ? '编辑报告' : '上传报告'),
+                height: 425,
+                width: 460,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    $(this).dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"保存",
+                    click:function(){
+                        saveReportInfoFun(obj, $(this));//编辑 和 上传
+                    }},{
+                    text:"取消",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        };
+
+        /**
+         * Description: 初始化生成报告的下拉框
+         * @version <1> 2018/6/4 14:50 zhangshen: Created.
+         */
+        var initCreate = function(){
+            //regionSelectFun("create_txtArea", "create_cropId");//加载区域 和 作物
+            //initCropIdFun(500, "create_cropId");//初始化作物下拉框
+            initDataSetFun(1800, "create_dataSet");//加载数据集
+            //initResolutionFun(4000, "create_resolution");//加载分辨率
+            initResolution("create_dataSet", "create_resolution");//初始化生成报告精度下拉框
+            //initReportTypeFun(9001, "create_reportType");//加载报告类型
+            initReportCategoryFun("report_tempType");//初始化报告模板种类下拉框
+
+            var createDataSet = $("#create_dataSet").val();
+            if(createDataSet == "1805" || createDataSet == "1804" || createDataSet == "1806"){//降雨,地温,干旱
+                $("#create_cropId").parent().parent().css("display","none");
+            }else {
+                $("#create_cropId").parent().parent().css("display","black");
+            }
+
+            var str = "<option value=''>--请选择--</option>";
+            $("#create_dataTime").html('').append(str);
+
+            var txtArea = document.getElementById("create_txtArea");
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        queryCropFun(txtArea.getAttribute("regionid"), "create_cropId");
+
+                        $("#create_dataTime").html('').append(str);
+                        if($("#create_dataSet").val() == "1805" || $("#create_dataSet").val() == "1804" || $("#create_dataSet").val() == "1806"){//降雨,地温,干旱
+                            if($("#create_dataSet").val() && $("#create_txtArea").val() && $("#create_resolution").val()){
+                                initCreateReportTime("create_dataTime");//加载数据时间
+                            }
+                        }else {
+                            initCreateReportTime("create_dataTime");//加载数据时间
+                        }
+                    }};
+                var regionSelector = new RegionModule.RegionSelector("create_txtArea",opts);
+                regionSelector.show();
+            };
+            queryCropFun(txtArea.getAttribute("regionid"), "create_cropId");
+
+            $("#create_dataSet, #create_cropId, #create_resolution").change(function(){
+                $("#create_dataTime").html('').append(str);
+                if($("#create_dataSet").val() == "1805" || $("#create_dataSet").val() == "1804" || $("#create_dataSet").val() == "1806"){//降雨,地温,干旱
+                    if($("#create_dataSet").val() && $("#create_txtArea").val() && $("#create_resolution").val()){
+                        initCreateReportTime("create_dataTime");//加载数据时间
+                    }
+                }else {
+                    initCreateReportTime("create_dataTime");//加载数据时间
+                }
+            });
+
+
+
+
+            //设置默认数据
+            /*var begin = new Date();
+            var end = new Date();
+            new Date(begin.setMonth((new Date().getMonth()-1)));
+            var begintime = begin.Format("yyyy-MM-dd");
+            var endtime = end.Format("yyyy-MM-dd");
+            $("#create_dataTime").val(begintime + " 至 " + endtime);*/
+            //$("#create_txtArea").val("中国").attr("regionid", "3100000000").attr("regioncode", "CHN");//默认设置区域中文和id
+            //$("#create_txtArea").val(custom_settings.main_search_region_name).attr("regionid", custom_settings.main_search_region_id).attr("regioncode", custom_settings.main_search_region_code);
+            //queryCropFun("3100000000","create_cropId");
+            //$("#create_cropId option:eq(1)").prop("selected", 'selected');//默认作物
+            //$("#create_resolution option:eq(1)").prop("selected", 'selected');//默认分辨率
+            //$("#create_dataSet option:eq(1)").prop("selected", 'selected');//默认数据集
+        };
+
+        /**
+         * Description: 生成报告 数据集改变事件
+         * @param null
+         * @return
+         * @version <1> 2018/6/4 15:53 zhangshen: Created.
+         */
+        var createDataSetChangeFun = function(dataSet, cropId){
+            $("#" + dataSet).change(function(){
+                var createDataSet = $("#" + dataSet).val();
+                if(createDataSet == "1805" || createDataSet == "1804" || createDataSet == "1806"){//降雨,地温,干旱
+                    $("#" + cropId).parent().parent().css("display","none");
+                }else {
+                    $("#" + cropId).parent().parent().css("display","");
+                }
+            });
+        };
+
+        /**
+         * Description: 生成报告
+         * @version <1> 2018/6/4 13:49 zhangshen: Created.
+         */
+        var createReportFun = function(){
+            //$('.errorInfo').text('');
+            initCreate();//初始化生成报告的下拉框
+            createDataSetChangeFun("create_dataSet", "create_cropId");//生成报告 数据集改变事件
+
+            var dialog =  $("#createReportInfo");
+            var dialogParent = dialog.parent();
+            var dialogOwn = dialog.clone();
+            dialog.dialog({
+                autoOpen: false,
+                title: '生成报告',
+                height: 360,
+                width: 460,
+                modal: true,
+                close:function(){
+                    dialogOwn.appendTo(dialogParent);
+                    dialog.dialog("destroy").remove();
+                },
+                buttons: [{
+                    text:"确定",
+                    click:function(){
+                        if (checkReportIsExist()) {
+                            var delDialog = $("#delDialog");
+                            delDialog.html("报告已存在，是否重新生成报告？");
+                            delDialog.dialog({
+                                autoOpen: true,
+                                title: '系统提示',
+                                height: 160,
+                                width: 410,
+                                modal: true,
+                                buttons: [{
+                                    text:"是",
+                                    click:function(){
+                                        delDialog.dialog("close");
+                                        createReportInfoFun(dialog);//生成报告保存操作
+                                    }},{
+                                    text:"否",
+                                    click:function(){
+                                        delDialog.dialog("close");
+                                    }
+                                }]
+                            });
+                            delDialog.dialog("open");
+                        } else {
+                            createReportInfoFun(dialog);//生成报告保存操作
+                        }
+                    }},{
+                    text:"取消",
+                    click:function(){
+                        dialog.dialog("close");
+                    }
+                }]
+            });
+            dialog.dialog("open");
+        };
+
+        /**
+         * Description: 根据条件查询报告是否已经生成
+         * @version <1> 2018/7/19 13:27 zhangshen: Created.
+         */
+        var checkReportIsExist = function() {
+            if(!formVerf()){//验证
+                return ;
+            }
+
+            var flag = false;
+
+            var reportCreateParam = {};//生成报告参数
+            var regionId = $("#create_txtArea").attr("regionid") || '';//区域id
+            var dataSet = $("#create_dataSet").val();//数据集
+            var resolution =$("#create_resolution").val();//分辨率
+            var dataTime = $("#create_dataTime").val().trim() || '';
+
+            reportCreateParam.dataSet = dataSet;//单个数据集
+            reportCreateParam.regionId = regionId;//区域id
+            reportCreateParam.resolution = resolution;//分辨率
+            reportCreateParam.dataTime = dataTime;
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                var cropId = $("#create_cropId").val();//作物id
+                reportCreateParam.cropId = cropId;//作物id
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(reportCreateParam);
+            ajax.opts.url = DS_REPORT.checkReportIsExist_url;
+            ajax.opts.async = false;//同步
+            ajax.opts.successFun = function(result){
+                if(result.flag && result.data.length > 0){
+                    flag = true;
+                }
+            };
+            ajax.opts.failureFun = function(){
+                PopWin.showMessageWin("系统错误");
+            };
+            ajax.run();
+
+            return flag;
+        };
+
+        /**
+         * Description: 生成报告保存操作
+         * @version <1> 2018/6/4 16:15 zhangshen: Created.
+         */
+        var createReportInfoFun = function(obj){
+            if(!formVerf()){//验证
+                return ;
+            }
+            var regionId = $("#create_txtArea").attr("regionid") || '';//区域id
+            var regionCode = $("#create_txtArea").attr("regioncode") || '';//区域code
+            var cropId = $("#create_cropId").val();//作物id
+            var dataSet = $("#create_dataSet").val();//数据集
+            var resolution =$("#create_resolution").val();//分辨率
+            var dataTime = $("#create_dataTime").val().trim() || '';
+            var keyword = $('#create_keyword').val().trim();//关键字
+            var reportTempType = $('#report_tempType').val();//报告模板的类型
+
+            var reportCreateParam = {};//生成报告参数
+            reportCreateParam.dataSet = dataSet;//单个数据集
+            reportCreateParam.regionId = regionId;//区域id
+            reportCreateParam.regionCode = regionCode;//区域code
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                reportCreateParam.cropId = cropId;//作物id
+            }
+            reportCreateParam.resolution = resolution;//分辨率
+            reportCreateParam.dataTime = dataTime;//数据时间
+            reportCreateParam.keyword = keyword;//关键词
+            reportCreateParam.reportTempType = reportTempType;//报告模板的类型
+
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(reportCreateParam);
+            ajax.opts.url = DS_REPORT.createReport_url;
+            //显示进度条 关闭提示框
+            obj.dialog("close");
+            showProcess();
+            ajax.opts.successFun = function(data){
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                if (data.flag) {
+                    //obj.dialog("close");
+                    PopWin.showMessageWin("生成报告成功");
+                } else {
+                    setTimeout(function () { PopWin.showMessageWin(data.msg);},1000);
+                }
+                searchFun();
+                setTimeout(function () { $('.errorInfo').text('')},1000);
+            };
+            ajax.opts.failureFun = function(){
+                //关闭进度条
+                processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                PopWin.showMessageWin("系统错误");
+            };
+            ajax.run();
+        };
+
+        //验证
+        var formVerf = function(){
+            var dialog = $("#createReportInfo");
+
+            var dataSet = $("#create_dataSet").val();//数据集
+
+            if(formVerfication.checkInputIsEmpty($("#create_dataSet"),dialog,'数据集不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#create_txtArea"),dialog,'区域不能为空')){
+                return false;
+            }
+
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                if (formVerfication.checkInputIsEmpty($("#create_cropId"), dialog, '作物不能为空')) {
+                    return false;
+                }
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#create_resolution"),dialog,'精度不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#create_dataTime"),dialog,'数据时间不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,100,$('#create_keyword'),dialog,'关键字长度不能超过100字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#report_tempType"),dialog,'报告模板类型不能为空')){
+                return false;
+            }
+            return true;
+        };
+
+        var showProcess=function(){
+            processDialog.dialog({
+                autoOpen: false,
+                height: 460,
+                width: 460,
+                modal: true ,
+                closeOnEscape: false,
+                open: function(event, ui) {
+                    processDialog.siblings().hide();
+                    processDialog.parent().css({"opacity":0.8,"background":"rgba(0,0,0,0)"});
+                }
+            });
+            processDialog.dialog("open");
+        };
+
+        /**
+         * Description: 根据reportId,发布报告
+         * @param obj
+         * @version <1> 2018/5/24 11:06 zhangshen: Created.
+         */
+        var publishReportFun = function(obj){
+            var delDialog = $("#delDialog");
+            delDialog.html("是否确认发布报告？");
+            delDialog.dialog({
+                autoOpen: false,
+                title: '系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        var reportId = obj.attr("data-id");
+                        var reportIds = [];//reportId集合
+                        reportIds.push(reportId);
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_REPORT.batchPublishReport_url;//批量发布报告
+                        ajax.opts.data = JSON.stringify({reportIds: reportIds});
+                        ajax.opts.successFun = function (data) {
+                            if(data.flag){
+                                delDialog.dialog("close");
+                                PopWin.showMessageWin("发布报告成功");
+                            }else{
+                                PopWin.showMessageWin("发布报告失败");
+                            }
+                            searchFun();
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            delDialog.dialog("open");
+        };
+
+        /**
+         * Description: 根据reportId,撤回报告
+         * @param obj
+         * @version <1> 2018/5/24 11:06 zhangshen: Created.
+         */
+        var cancelReportFun = function(obj){
+            var delDialog = $("#delDialog");
+            delDialog.html("是否确认撤回报告？");
+            delDialog.dialog({
+                autoOpen: false,
+                title: '系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        var reportId = obj.attr("data-id");
+                        var reportIds = [];//reportId集合
+                        reportIds.push(reportId);
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_REPORT.batchCancelReport_url;//批量撤回报告
+                        ajax.opts.data = JSON.stringify({reportIds: reportIds});
+                        ajax.opts.successFun = function (data) {
+                            if(data.flag){
+                                delDialog.dialog("close");
+                                PopWin.showMessageWin("撤回报告成功");
+                            }else{
+                                PopWin.showMessageWin("撤回报告失败");
+                            }
+                            searchFun();
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            delDialog.dialog("open");
+        };
+
+        /**
+         * Description: 根据reportId,删除报告
+         * @param obj
+         * @version <1> 2018/5/24 11:06 zhangshen: Created.
+         */
+        var deleteReportFun = function(obj){
+            var delDialog = $("#delDialog");
+            delDialog.html("是否确认删除报告？");
+            delDialog.dialog({
+                autoOpen: false,
+                title: '系统提示',
+                height: 160,
+                width: 410,
+                modal: true,
+                buttons: [{
+                    text:"是",
+                    click:function(){
+                        var reportId = obj.attr("data-id");
+                        var reportIds = [];//reportId集合
+                        reportIds.push(reportId);
+                        var ajax = new BaseAjax();
+                        ajax.opts.url = DS_REPORT.batchDeleteReport_url;//批量删除报告
+                        ajax.opts.data = JSON.stringify({reportIds: reportIds});
+                        ajax.opts.successFun = function (data) {
+                            if(data.flag){
+                                delDialog.dialog("close");
+                                PopWin.showMessageWin("删除报告成功");
+                            }else{
+                                PopWin.showMessageWin("删除报告失败");
+                            }
+                            searchFun();
+                        };
+                        ajax.run();
+                    }},{
+                    text:"否",
+                    click:function(){
+                        $(this).dialog("close");
+                    }
+                }]
+            });
+            delDialog.dialog("open");
+        };
+
+        /**
+         * Description: 批量发布报告
+         * @version <1> 2018/5/18 17:40 zhangshen: Created.
+         */
+        var batchPublishFun = function(){
+            var ids = $("#reportListGrid").jqGrid("getGridParam", "selarrrow");
+            if(ids.length <= 0){
+                PopWin.showMessageWin("请勾选数据");
+                return;
+            }
+            var reportIds = [];//reportId集合
+            var flag = false;//是否存在已发布报告
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#reportListGrid").jqGrid('getRowData', id);
+                var reportId = row.reportId;//获取reportId
+                var publishStatus = row.publishStatus;//获取发布状态
+                /*if(publishStatus == 2201){//如果此条报告信息的发布状态为已发布2201,则不能重复发布
+                    PopWin.showMessageWin("批量发布失败,有报告信息已发布");
+                    flag = true;//存在
+                    return;
+                }*/
+                if(publishStatus == 2202){//如果是待发布
+                    reportIds.push(reportId);//添加reportId到reportIds
+                }
+            });
+
+            //不存在已发布报告 并且 待发布报告ids有值
+            if(reportIds.length > 0 && !flag){
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认批量发布报告？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_REPORT.batchPublishReport_url;//批量发布报告
+                            ajax.opts.data = JSON.stringify({reportIds: reportIds});
+                            ajax.opts.successFun = function (data) {
+                                if(data.flag){
+                                    PopWin.showMessageWin("批量发布报告成功");
+                                }else{
+                                    PopWin.showMessageWin("批量发布报告失败");
+                                }
+                                delDialog.dialog("close");
+                                searchFun();
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            }
+        };
+
+        /**
+         * Description: 批量撤回报告
+         * @version <1> 2018/5/24 13:40 zhangshen: Created.
+         */
+        var batchCancelFun = function(){
+            var ids = $("#reportListGrid").jqGrid("getGridParam", "selarrrow");
+            if(ids.length <= 0){
+                PopWin.showMessageWin("请勾选数据");
+                return;
+            }
+            var reportIds = [];//reportId集合
+            var flag = false;//是否存在待发布报告
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#reportListGrid").jqGrid('getRowData', id);
+                var reportId = row.reportId;//获取reportId
+                var publishStatus = row.publishStatus;//获取发布状态
+                /*if(publishStatus == 2202){//如果此条报告信息的发布状态为待发布2202,则不能撤回
+                    PopWin.showMessageWin("有报告信息待发布,无法撤回");
+                    flag = true;//存在
+                    return;
+                }*/
+                if(publishStatus == 2201){//如果是已发布
+                    reportIds.push(reportId);//添加reportId到reportIds
+                }
+            });
+
+            //不存在待发布报告 并且 已发布报告ids有值
+            if(reportIds.length > 0 && !flag){
+                var delDialog = $("#delDialog");
+                delDialog.html("是否确认批量撤回报告？");
+                delDialog.dialog({
+                    autoOpen: false,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text:"是",
+                        click:function(){
+                            var ajax = new BaseAjax();
+                            ajax.opts.url = DS_REPORT.batchCancelReport_url;//批量撤回报告
+                            ajax.opts.data = JSON.stringify({reportIds: reportIds});
+                            ajax.opts.successFun = function (data) {
+                                if(data.flag){
+                                    PopWin.showMessageWin("批量撤回报告成功");
+                                }else{
+                                    PopWin.showMessageWin("批量撤回报告失败");
+                                }
+                                delDialog.dialog("close");
+                                searchFun();
+                            };
+                            ajax.run();
+                        }},{
+                        text:"否",
+                        click:function(){
+                            $(this).dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            }
+        };
+
+        /**
+         * Description: 批量下载
+         * @version <1> 2018/5/23 17:38 zhangshen: Created.
+         */
+        var triggerDelay = 100;
+        var removeDelay = 1000;
+        var batchDownloadFun = function(){
+            var ids = $("#reportListGrid").jqGrid("getGridParam", "selarrrow");
+            if(ids.length <= 0){
+                PopWin.showMessageWin("请勾选数据");
+                return;
+            }
+            //遍历这个集合,存放reportId
+            $(ids).each(function (index, id){
+                //由id获得对应数据行
+                var row = $("#reportListGrid").jqGrid('getRowData', id);
+                var reportId = row.reportId;//获取reportId
+                //_createIFrame(reportId, index * triggerDelay, removeDelay);
+                _createA(reportId, index * triggerDelay, removeDelay);
+            });
+        };
+
+        /**
+         * Description: 动态添加iframe
+         * @version <1> 2018/5/23 17:38 zhangshen: Created.
+         */
+        /*var _createIFrame = function(url, triggerDelay, removeDelay){
+            //动态添加iframe，设置src，然后删除
+            setTimeout(function() {
+                var frame = $('<iframe style="display: none;" class="multi-download"></iframe>');
+                frame.attr('src', "/dsReport/down2?reportId="+url + "&type");
+                $(document.body).after(frame);
+                setTimeout(function() {
+                    frame.remove();
+                }, removeDelay);
+            }, triggerDelay);
+        };*/
+
+        /**
+         * Description: 动态添加a下载标签
+         * @version <1> 2018-06-06 zhangshen: Created.
+         */
+        var _createA = function(reportId, triggerDelay, removeDelay){
+            setTimeout(function() {
+                var a = document.createElement('a');
+                a.setAttribute('download','');
+                a.href=DS_REPORT.reportDown_url + "?reportId="+reportId + "&type&AccessToken=" + commons.getAccessToken();
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function() {
+                    document.body.removeChild(a);
+                }, removeDelay);
+            }, triggerDelay);
+        };
+
+        /**
+         * 区域选择控件
+         * @param regionIdName 区域ID
+         * @param cropIdName 作物ID
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var regionSelectFun = function(regionIdName,cropIdName){
+            var txtArea = document.getElementById(regionIdName);
+            txtArea.onclick = function(){
+                var opts = {colNum:3,width:400,url:REGION_CONFIG.findRegion_url,closeFun:function(){
+                        queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+                    }};
+                var regionSelector = new RegionModule.RegionSelector(regionIdName,opts);
+                regionSelector.show();
+            };
+            queryCropFun(txtArea.getAttribute("regionid"), cropIdName);
+        };
+
+        /**
+         * 获取作物下拉框数据
+         * @param parentId = 500
+         * @version <1> 2018-05-09 wl: created.
+         */
+        /*var initCropIdFun=function (parentId, name) {
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    });
+                    $("#"+name).html('').append(str);
+                }
+            };
+            ajax.run();
+        };*/
+
+        /**
+         * 通过区域获取作物
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var queryCropFun = function(regionId,cropIdName){
+            if (regionId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = CROP_CONFIG.queryCropListByRegionId_url+"?regionId="+regionId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (data) {
+                    var crop = data.data;
+                    initCropFun(crop,cropIdName);
+                };
+                ajax.run();
+            }else{
+                $('#'+cropIdName).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * 初始化作物下拉框
+         * @param crop 查询出的作物对象集合
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var initCropFun = function(crop,cropIdName){
+            var result;
+            result = '<option value="">--请选择--</option>';
+            if(crop!=null){
+                $.each(crop,function(i,o){
+                    result += '<option value = "' + o.cropId + '">' + o.cropName + '</option>';
+                });
+            }
+            $('#'+cropIdName).html(result);
+        };
+
+        /**
+         * 获取数据集下拉框数据
+         * @param parentId = 1800
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var initDataSetFun = function(parentId, dataSetIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        if(element.dictId == 1805 || element.dictId == 1804){//过滤掉 降雨 和 地温
+                            //str += "<option style='display: none' value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        }else{
+                            str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                        }
+                    })
+                    //str += "<option value='"+ 1850 +"'>"+ '混合数据集' +"</option>";
+                    $("#"+dataSetIdName).html("");//清空
+                    $("#"+dataSetIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * 获取分辨率下拉框数据
+         * @param parentId = 4000
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var initResolutionFun = function(parentId, resolutionIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#"+resolutionIdName).html("");//清空
+                    $("#"+resolutionIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id选择器名称
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var initResolution = function(dataSet, resolution) {
+            $("#"+dataSet).change(function() {
+                queryResolutionFun($("#" + dataSet).val(), resolution);
+            });
+            queryResolutionFun($("#" + dataSet).val(), resolution);
+        };
+
+        /**
+         * Description:
+         * @param dataSetId 数据集 id
+         * @param resolutionId 精度 id选择器名称
+         * @return
+         * @version <1> 2018/8/30 15:11 zhangshen: Created.
+         */
+        var queryResolutionFun = function(dataSetId, resolution){
+            if (dataSetId) {
+                var ajax = new BaseAjax();
+                ajax.opts.url = DICT_COFING.queryResolutionListByDataSetId_url + "?dataSetId="+dataSetId;
+                ajax.opts.contentType = "application/json";
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (data) {
+                    if (data.flag) {
+                        var result = data.data;
+                        initResolutionFun(result,resolution);
+                    } else {
+                        $('#'+resolution).html('<option value="">--请选择--</option>');
+                    }
+                };
+                ajax.run();
+            } else {
+                $('#'+resolution).html('<option value="">--请选择--</option>');
+            }
+        };
+
+        /**
+         * Description:
+         * @param result 根据数据集id查询出来的精度列表
+         * @param resolution 精度id选择器名称
+         * @return
+         * @version <1> 2018/8/30 16:51 zhangshen: Created.
+         */
+        var initResolutionFun = function(result,resolution){
+            var resultHtml = '<option value="">--请选择--</option>';
+            if(result) {
+                $.each(result,function(i,o){
+                    resultHtml += '<option value = "' + o.resolutionId + '">' + o.resolutionName + '</option>';
+                });
+            }
+            $('#'+resolution).html(resultHtml);
+        };
+
+        /**
+         * 获取报告类型下拉框数据
+         * @param parentId = 9001
+         * @version <1> 2018-05-15 zhangshen : created.
+         */
+        var initReportTypeFun = function(parentId, reportTypeIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#"+reportTypeIdName).html("");//清空
+                    $("#"+reportTypeIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * Description: 初始化发布状态
+         * @param parentId = 2200
+         * @return
+         * @version <1> 2018/5/23 14:20 zhangshen: Created.
+         */
+        var initPublishStatusFun = function(parentId, publishStatusIdName){
+            var ajax = new BaseAjax();
+            ajax.opts.url = DICT_COFING.queryDictByParentId_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify({'parentId' : parentId});
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dictId+"'>"+ element.dataName +"</option>";
+                    })
+                    $("#"+publishStatusIdName).html("");//清空
+                    $("#"+publishStatusIdName).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+
+
+        /**
+         * Description: 初始化报告模板种类
+         * @return
+         * @version <1> 2018/11/26  Roach: Created.
+         */
+        var initReportCategoryFun = function(reportTempTypeId){
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_REPORT.findAllReportTempType_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.type="get";
+
+            ajax.opts.successFun = function(result){
+                var str = "<option value=''>--请选择--</option>";
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element['key']+"'>"+ element['value'] +"</option>";
+                    })
+                    $("#"+reportTempTypeId).html("");//清空
+                    $("#"+reportTempTypeId).append(str);
+                }
+            }
+            ajax.run();
+        };
+
+        /**
+         * 初始化创建时间 和 报告时间控件
+         * @version <1> 2018-04-27 zhangshen : Created.
+         */
+        var dateFun = function(){
+            /*$("#createTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });*/
+            $("#reportTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        /**
+         * 初始化编辑的报告时间控件
+         * @version <1> 2018-05-21 zhangshen : Created.
+         */
+        var initEditReportTime = function(){
+            $("#edit_reportTime").jeDate({
+                multiPane:true,
+                format: 'YYYY-MM-DD'
+            });
+        };
+
+        /**
+         * 初始生成报告的数据时间控件
+         * @version <1> 2018-06-04 zhangshen : Created.
+         */
+        var initCreateReportTime = function(obj){
+            /*$("#create_dataTime").jeDate({
+                range:"至",
+                multiPane:false,
+                format: 'YYYY-MM-DD'
+            });*/
+
+            var str = "<option value=''>--请选择--</option>";
+            $("#" + obj).html('').append(str);
+
+            var dataSet = $("#create_dataSet").val();
+            var regionId = $("#create_txtArea").attr("regionid") || '';//区域id;
+            var cropId = $("#create_cropId").val();
+            var resolution = $("#create_resolution").val();
+
+            var reportCreateParam = {};
+            reportCreateParam.dataSet = dataSet;
+            reportCreateParam.regionId = regionId;
+            reportCreateParam.resolution = resolution;
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                reportCreateParam.cropId = cropId;//作物id
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = DS_REPORT.queryDateTimeList_url;
+            ajax.opts.contentType = "application/json";
+            ajax.opts.async = false;
+            ajax.opts.data = JSON.stringify(reportCreateParam);
+
+            ajax.opts.successFun = function(result){
+                if(result.flag){
+                    $.each(result.data, function(index, element){
+                        str += "<option value='"+ element.dataTime+"'>"+ element.dataTime +"</option>";
+                    });
+                    $("#" + obj).html('').append(str);
+                }
+            };
+            ajax.run();
+        };
+
+        /**
+         * 报告编辑点击保存事件
+         * @version <1> 2018-05-21 zhangshen : Created.
+         */
+        var saveReportInfoFun = function(obj,dialogObj){
+            if(!verficationFormFun()){//表单验证
+                return ;
+            }
+            debugger
+            var form  = $('#fileInfo')[0];
+            var formdata = new FormData(form);
+            if(obj != null){//不等于null,说明是编辑
+                var id = obj.attr("data-id");
+                if(id != null && id.length > 0){
+                    formdata.append('reportId',id);
+                }
+            }
+
+            var regionId = document.getElementById("edit_txtArea").getAttribute("regionid");//区域id
+            var regionCode = document.getElementById("edit_txtArea").getAttribute("regioncode");//区域code
+            var regionName = document.getElementById("edit_txtArea").getAttribute("chinaname");//区域中文名
+
+            var dataSet = $('#edit_dataSet').val().trim();//数据集
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                var cropId = $('#edit_cropId').val().trim();//作物id
+                var cropName = $("#edit_cropId option:selected").text().trim();//作物name
+                formdata.append('cropId',cropId);
+                formdata.append('cropName',cropName);
+            }
+            var resolution = $('#edit_resolution').val().trim();//分辨率
+            var reportTime = $('#edit_reportTime').val().trim();//报告时间
+            var reportType = $('#edit_reportType').val().trim();//报告类型
+            var keyword = $('#edit_keyword').val().trim();//关键字
+
+            formdata.append('regionId',regionId);
+            formdata.append('regionCode',regionCode);
+            formdata.append('regionName',regionName);
+            formdata.append('dataSet',dataSet);
+            formdata.append('resolution',resolution);
+            formdata.append('reportTime',reportTime);
+            formdata.append('reportType',reportType);
+            formdata.append('keyword',keyword);
+
+            if(editCheckReportIsExist(obj)) {//判断报告时候存在
+
+                var delDialog = $("#delDialog");
+                if (obj) {
+                    delDialog.html("报告已存在，是否重新编辑报告？");
+                } else {
+                    delDialog.html("报告已存在，是否重新上传报告？");
+                }
+
+                delDialog.dialog({
+                    autoOpen: true,
+                    title: '系统提示',
+                    height: 160,
+                    width: 410,
+                    modal: true,
+                    buttons: [{
+                        text: "是",
+                        click: function () {
+                            delDialog.dialog("close");
+
+                            //$('.errorInfo').text('请稍候，上传中...');
+                            //显示进度条 关闭提示框
+                            dialogObj.dialog("close");
+                            showProcess();
+                            debugger
+                            $.ajax({
+                                type: 'POST',
+                                url: DS_REPORT.updateReportById_url,
+                                data: formdata,
+                                //async : false,
+                                processData: false,
+                                contentType: false,
+                                cache: false,
+                                timeout: 600000,
+                                headers: {"AccessToken": commons.getAccessToken()},
+                                success: function (data) {
+                                    //关闭进度条
+                                    processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                    if (data.flag) {
+                                        //dialogObj.dialog("close");
+                                        PopWin.showMessageWin("上传成功");
+                                        searchFun();
+                                    } else {
+                                        $('.errorInfo').text('上传失败');
+                                    }
+                                }, error: function () {
+                                    //关闭进度条
+                                    processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                                    $('.errorInfo').text('上传失败');
+                                }
+                            });
+
+                        }
+                    }, {
+                        text: "否",
+                        click: function () {
+                            delDialog.dialog("close");
+                        }
+                    }]
+                });
+                delDialog.dialog("open");
+            }else{
+
+                //$('.errorInfo').text('请稍候，上传中...');
+                //显示进度条 关闭提示框
+                dialogObj.dialog("close");
+                showProcess();
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: DS_REPORT.updateReportById_url,
+                    data: formdata,
+                    //async : false,
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    timeout: 600000,
+                    headers: {"AccessToken": commons.getAccessToken()},
+                    success: function (data) {
+                        //关闭进度条
+                        processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                        if (data.flag) {
+                            //dialogObj.dialog("close");
+                            PopWin.showMessageWin("上传成功");
+                            searchFun();
+                        } else {
+                            $('.errorInfo').text('上传失败');
+                        }
+                    }, error: function () {
+                        //关闭进度条
+                        processDialog.dialog("close");//关闭进度条 并恢复弹出框样式 避免对页面其他弹出框有影响
+                        $('.errorInfo').text('上传失败');
+                    }
+                });
+
+            }
+
+        };
+
+        /**
+         * 表单验证
+         * @version <1> 2018-05-21 zhangshen : Created.
+         */
+        var verficationFormFun = function(){
+            var dialog =  $("#editReportInfo");
+            var regionId = document.getElementById("edit_txtArea").getAttribute("regionId");//区域
+
+            if(formVerfication.checkInputIsEmpty($("#edit_dataSet"),dialog,'数据集不能为空')){
+                return false;
+            }
+
+            if(regionId == "" || regionId == null){
+                formVerfication.showPromptInfo($("#edit_txtArea"), dialog, "区域名称不能为空");
+                return false;
+            }
+
+            var dataSet = $("#edit_dataSet").val();//数据集
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                if (formVerfication.checkInputIsEmpty($("#edit_cropId"), dialog, '作物不能为空')) {
+                    return false;
+                }
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#edit_resolution"),dialog,'精度不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#edit_reportTime"),dialog,'报告时间不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($("#edit_reportType"),dialog,'报告类型不能为空')){
+                return false;
+            }
+
+            if(formVerfication.checkInputLength(0,100,$('#edit_keyword'),dialog,'关键字长度不能超过100字')){
+                return false;
+            }
+
+            if(formVerfication.checkInputIsEmpty($('#edit_reportFile'),dialog,'报告文件不能为空')){
+                return false;
+            }
+
+            var reportFile = $('#edit_reportFile').val().trim();//报告文件
+            var suffix = reportFile.substring(reportFile.lastIndexOf("."), reportFile.length);
+            if(".pdf" != suffix && ".doc" != suffix){
+                formVerfication.showPromptInfo($("#edit_reportFile"), dialog, "报告文件不正确,只能上传pdf和doc文件");
+                return false;
+            }
+
+            return true;
+        };
+
+        /**
+         * Description: 根据条件查询报告是否已经生成
+         * @version <1> 2018/7/19 13:27 zhangshen: Created.
+         */
+        var editCheckReportIsExist = function(obj) {
+            /*if(!verficationFormFun()){//验证
+                return ;
+            }*/
+
+            var flag = false;
+
+            var reportCreateParam = {};//生成报告参数
+            var regionId = $("#edit_txtArea").attr("regionid") || '';//区域id
+            var dataSet = $("#edit_dataSet").val();//数据集
+            var resolution =$("#edit_resolution").val();//分辨率
+            var dataTime = $("#edit_reportTime").val().trim() || '';
+
+            reportCreateParam.dataSet = dataSet;//单个数据集
+            reportCreateParam.regionId = regionId;//区域id
+            reportCreateParam.resolution = resolution;//分辨率
+            reportCreateParam.dataTime = dataTime;
+            if(dataSet == "1801" || dataSet == "1802" || dataSet == "1803") {//分布,估产,长势
+                var cropId = $("#edit_cropId").val();//作物id
+                reportCreateParam.cropId = cropId;//作物id
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(reportCreateParam);
+            ajax.opts.url = DS_REPORT.checkReportIsExist_url;
+            ajax.opts.async = false;//同步
+            ajax.opts.successFun = function(result){
+                if(obj){//编辑
+                    if(result.flag && result.data.length > 0){
+                        $.each(result.data, function(index,item){
+                            if(item.reportTime == dataTime && (item.reportId + "") != obj.attr("data-id")){
+                                flag = true;
+                                return false;//结束循环
+                            };
+                        });
+                    }
+                }else{//上传
+                    if(result.flag && result.data.length > 0){
+                        flag = true;
+                    }
+                }
+
+            };
+            ajax.opts.failureFun = function(){
+                PopWin.showMessageWin("系统错误");
+            };
+            ajax.run();
+
+            return flag;
+        };
+
+        init();
+    })
+</script>

@@ -1,0 +1,64 @@
+/* CSS Document */
+html,body{ height:100%; font-size:12px;  color:#000; font-family:"\9ED1\4F53";}
+*{ margin:0px; padding:0px;}
+ul, li{ list-style:none;}
+/* 表单与文字样式 */
+.red{color:#f20101;}
+.inputStyle{padding:0 0 0 5px;width:180px;height:30px;border-radius:3px;border:1px solid #ccc;  }
+.inputStyle2{width:100px;}
+.btnStyle{padding:5px 20px 5px 20px;border-radius:3px;border:none;background:#00ace9;color:#FFFFFF;cursor:pointer;  }
+
+/* 搜索条件框样式 */
+.searchWrap,.resultWrap,.pageWrap{margin:0 auto;width:86%;  }
+.searchTitle{padding-left:10px;height:20px;line-height:20px;border-left:5px solid #4c9cf0;color:#000;font-weight:bold;  }
+.searchBG{margin:10px 0;width:100%;line-height:50px;background:#f3f3f3;  }
+.searchBGleft{float:left;overflow:hidden;}
+.itemsWrap{}
+.itemsWrap>label{margin:0 5px 0 15px;  }
+.searchBGright{float:right;width:15%;margin-right:10px;text-align:right;  }
+
+/* 结果列表样式*/
+.tableWrap{padding:10px 0 0 0;line-height:35px;  }
+.tableWrap .link a{display:inline-block;width:25px;margin:0 6px;}
+.tableWrap .link a img{	vertical-align:middle;}
+/* 隔行变色偶数even*/
+.tableWrap tr:nth-child(odd){background:#f3f3f3;  }
+/* 表格最后一行*/
+.tableWrap tr:last-child td{border-bottom:1px solid #f5f5f6;}
+
+.tableWrap tr:hover{background:#dfe1e2;cursor:pointer;  }
+
+.tableWrap th{background:#fff;color:#00ace9;border-bottom:2px solid #00ace9;  }
+.tableWrap td{	text-align:center;  }
+.textAlingnLeft{	text-align:left;  }
+
+/* 翻页样式 */
+.pageWrap {	margin:10px auto;  }
+.pageWrap .page{
+    float:right;
+    height:25px;
+    line-height:25px;
+    margin:0 2px;
+}
+
+
+
+
+
+/*
+*
+* 	既可以解决高度塌陷，又可以确保父元素和子元素的垂直外边距不会重叠
+*/
+.clearfix:before,
+.clearfix:after{
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.clearfix{
+    zoom: 1;
+}
+
+
+

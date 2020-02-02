@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body, html{min-width: 1366px !important;}
+        .screenLoad{position: absolute; display: none; width: 100%;height: 100%;z-index: 999;left: 0;top: 0;background: rgba(0,0,0,0.2) url('images/public/loading.gif') center center no-repeat;}
+    </style>
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <link type="text/css" rel="stylesheet" href="css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="css/index/index.css" >
+    <title>珈和农情遥感</title>
+    <script type="text/javascript" src="js/lib/require/require.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript">
+        require(['jquery',"commons","urlConfig","enums"],function($,commons,urlConfig,enums){
+            var init = function(){
+                //commons.initSystem();
+                commons.menuShow(system_role_group.system_role_forum);//生成左侧菜单
+                //跳转首页
+                $("#go_index").click(function(){
+                    var url=$(this).attr("data-url")
+                    window.location.href = url;
+                });
+
+            }
+
+            init();
+        });
+    </script>
+</head>
+<body>
+
+<div style="height:100%;">
+    <div class="screenLoad"></div>
+    <div style="clear: both;"></div>
+    <!--左边开始-->
+    <div class="leftMenuWrap">
+
+        <div class="leftLogo"><img src="images/public/logo4.png" style="width:170px;"></div>
+
+
+        <!--<div class="leftLogo">-->
+        <!--&lt;!&ndash;<img src="images/public/leftlogo.png" width="34px" height="34px">&ndash;&gt;-->
+        <!--&lt;!&ndash;<h1 class="company"></h1>&ndash;&gt;-->
+        <!--</div>-->
+        <!--左边菜单开始-->
+        <div class="leftMenuCoat">
+            <div></div>
+        </div>
+    </div>
+    <!--左边结束-->
+    <!--右边开始-->
+    <div class="rightMainWrap">
+        <div class="rightTop">
+            <div class="logo">
+                <span>珈和农情遥感管理平台</span>
+            </div>
+            <div class="user">
+                <a href="javascript:void(0)" class="userCenter"><img src="images/public/userImage.png" align="absmiddle"><span class="user"></span></a>
+                <span id="noticeId" class="tips"></span>
+                &nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" id="quitBtn">退出</a>
+                <ul class="userContent" style="display: none;" >
+                    <li><a href="javascript:void(0)" id="go_index" data-url="index.html" page-type="1"><span>论坛首页</span></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="rightMain">
+
+        </div>
+    </div>
+    <!--个人中心菜单内容显示-->
+    <div id="menuInfo" style="display:none;"></div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript" src="js/main/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<style type="text/css">
+
+    .roleShowName{text-overflow: ellipsis;white-space:nowrap;overflow: hidden;width:130px;display: inline-block;}
+    #userInfo #view_address{width:95%;outline:none;border:0;resize:none;position:relative;top:10px;}
+    #roleDialog input[type=checkbox]{margin-right:8px;position: relative;top:8px;vertical-align: top;}
+</style>
+
+<div class="content">
+    <div class="searchItems">
+        <div class="searchRow">
+            <div class="searchBGleft" >
+                <div>
+                    <span class="label2">操作人：</span>
+                    <span><input type="text" class="input" id="search_operatorName" /></span>
+                </div>
+                <div>
+                    <span class="label2">操作时间：</span>
+                    <span><input type="text" class="input inputWidth_190" id="search_logDate" /></span>
+                </div>
+                <div>
+                    <span class="label2">操作内容：</span>
+                    <span><input type="text" class="input" id="search_contentKey"/></span>
+                </div>
+            </div>
+            <div class="searchBGright">
+                <input type="button" class="btn " value="查询" id="queryBtn" />
+                <input type="button" class="btn " id="resetBtn" value="重置" />
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <table id="logGrid"></table>
+        <div id="pager2"></div>
+    </div>
+
+    <script>
+        require(["jquery","jqGrid","jqueryUi","dateUtil","BaseAjax","PopWin","commons"],function($,jqGrid,jqueryUi,dateUtil, BaseAjax,PopWin,commons){
+            var init = function(){
+                loadLogPage();
+                $("#queryBtn").bind("click",searchFun);
+                $("#resetBtn").on("click",resetFun);
+                dateFun('search_logDate');
+                $(window).resize(function(){
+                    $("#logGrid").setGridWidth($(".rightMain").width() - 30);
+                    chanageTableCss();
+                });
+            };
+
+            /**
+             * 重置
+             * @version<1> 2018-06-21 cxw :created.
+             */
+            var resetFun = function(){
+                $(".input").val("");
+            }
+
+
+            var chanageTableCss = function(){
+                var divObj = $('#logGrid').parent('div');
+                divObj.addClass('tableStyle');
+                divObj.css({'maxHeight':($(".rightMain").height()-$(".searchItems").height()-$(".ui-jqgrid-hdiv").height())-$("#pager2").height()-50+"px"});
+            };
+
+            var dateFun = function(idName){
+                $("#"+idName).jeDate({
+                    range:"至",
+                    multiPane:false,
+                    format: 'YYYY-MM-DD'
+                });
+            };
+
+            /**
+             * 根据条件查询日志
+             * @version <1> 2018-03-12 xzg： Created.
+             */
+            var searchFun = function () {
+                var dictId = $.trim($("#search_dataType").val());
+                var search_date = ($("#search_logDate").val().trim()).split('至');
+                $("#logGrid").jqGrid('setGridParam', {
+                    datatype: 'json',
+                    postData:{
+                        'operatorName': $.trim($("#search_operatorName").val()),
+                        'startLogDate':search_date[0] || '',
+                        'endLogDate':search_date[1] || '',
+                        'logContentKey':$.trim($('#search_contentKey').val())
+                    },
+                    page: 1
+                }).trigger("reloadGrid");
+            };
+
+            /**
+             * 日志列表渲染
+             * @version <1> 2018-03-12 xzg： Created.
+             */
+            var loadLogPage = function () {
+                $("#logGrid").jqGrid({
+                    url: LOGS_CONFIG.findByPage_url,
+                    datatype: "json",
+                    postData: {
+                        'downloadConfigParam': {}
+                    },
+                    mtype: 'POST',
+                    jsonReader: {
+                        root: "list",
+                        total: "pages",
+                        page: "page",
+                        records: "total",
+                        repeatitems: false
+                    },
+                    rownumbers: true,
+                    colNames: ['操作人', '操作时间', '操作电脑', '操作内容'],
+                    colModel: [
+                        {name: 'operatorName', index: 'operatorName', align: 'center', width: '20%'},
+                        {name: 'opTime', index: 'opTime', align: 'center', width: '20%'},
+                        {name: 'opIp', index: 'opIp', align: 'center', width: '10%',hidden:true},
+                        {name: 'opContent', index: 'opContent', align: 'left', width: '70%'}
+                    ],
+                    width: '100%',
+                    autowidth: true,
+                    height: '100%',
+                    rowNum: 15,
+                    rowList: [15,30],
+                    pager: '#pager2',
+                    sortname: 'id',
+                    viewrecords: true,
+                    sortorder: "desc",
+                    loadComplete: function () {
+                        commons.isNextDisable();
+                    }
+                });
+                chanageTableCss();
+            };
+
+            init();
+        });
+
+    </script>
+
+</div>

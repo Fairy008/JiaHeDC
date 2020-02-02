@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title></title>
+    <!--修改favcon，springboot默认是绿色叶子-->
+    <link rel="icon" type="image/x-icon" href="images/public/index-logo.png">
+    <link type="text/css" rel="stylesheet" href="css/common.css"/>
+
+    <style>
+        html,body{ margin:0; padding:0;height: 100%; font-size:12px; font-family:"\9ED1\4F53"; color:#000;background:#01A7ED;}
+        div, p, ul, h2, img{margin:0px; padding:0px;}
+        ul, li{ list-style:none; margin:0; padding:0}
+        a{color:#f20101; text-decoration:none;}
+        a:hover{color:#ebb600; text-decoration:underline;}
+        img{ border:none;}
+        .red{ color:#f20101;}
+
+        .getCodeClass{background:#B9B9B9 !important;}
+        .input input:focus{ background:#feffe9;}
+        .topLogin{ height:10%; padding:2% 0 0 16%;}
+
+        .wrong{ height:30px; line-height:30px;color:#f20101;font-size:13px;}
+        .mainFrame{height:100%;overflow-x:auto;background:url("images/public/bg.png") bottom center no-repeat;position:relative;}
+
+        .topLogin{padding:2% 0 0 15%; text-align:center;height:50px;line-height:50px;}
+        .topLogin img{float:left;margin-top:3px;}
+        .topLogin h1{font-size:24px!important;letter-spacing:-1px;height:50px;float:left;padding-left:10px;color:#fff;}
+
+        .main{ height:62%; width:100%;max-height:600px; min-height:420px;min-width:1200px; display:inline-block;  margin:0 auto; position:relative;}
+        .cloud{position:absolute;top:60px;right:44%;z-index:0;}
+        .right{float:left;width:55%; margin:65px 5% 0 0 }
+        .inputWrap{position:absolute;top:105px;right:25%; width:210px;z-index:9999;   padding:28px 2% 38px 2%; margin:4.5% 0 0 0; background:rgba(255, 255, 255, 1); box-shadow:1px 1px 20px 1px #557893; border-radius:5px; }
+        .login{font-size:20px !important;  text-align:center; color:#363636;}
+        .input{ line-height:30px; margin-bottom:10px;}
+        .button{width:100%; height:37px; background:#17aefb; color:#FFFFFF; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer; text-align: center; line-height: 37px;}
+        .zc{height:30px; line-height:30px; text-align:right;color:#CCCCCC;}
+        .inputStyle{height:30px; line-height:30px; width:99%; border:1px solid #ccc; border-radius:3px; text-indent:3px;}
+        .inputStyle2{width:50%;}
+        .footer{text-align:center;width:100%;margin:0 auto; color:#818181; font-size:14px; padding-top:15px;position:absolute;margin-top:200px;left:0px;}
+        .footer .copyright{text-align:center;width:100%;color:#fff;clear: both;}
+        .footer a{color: #fff !important;}
+        .orange{color:#FF9900;}
+        .yz{ position:absolute; top:0; right:0; cursor:pointer;}
+        .lookPwd{display:none;}
+        .cantClick{
+            font-size:14px;display:inline-block;border:1px solid #dfdfdf;background: #95C1EE;
+            border-radius:3px;color:#fff;height:30px;line-height:30px;width:45%;
+            text-align:center;cursor:pointer;float:right;
+        }
+    </style>
+</head>
+<body>
+<div class="mainFrame">
+    <div class="main">
+    <div class="topLogin"><img src="images/public/logo4.png" width="300px" height="48px"/><!--<h1 class="title"></h1>--></div>
+    <div class="cloud"><img src="images/public/cloud.png"></div>
+    <form class="loginIndex" id="form-signin" onsubmit="false" >
+        <div class="inputWrap">
+            <div class="login">用户登录</div>
+            <div class="wrong" id="loginError"></div>
+            <div class="input" >
+                <input id="accountName" name="accountName" class="inputStyle" type="text" placeholder="请输入手机号码或账号名" tabindex="1"/>
+            </div>
+            <div class="input">
+                <input id="accountPwd" name="accountPwd" class="inputStyle" type="password" placeholder="请输入密码" tabindex="2"/>
+            </div>
+            <div class="input" style="position:relative;" >
+                <input id="code" name="code" class="inputStyle inputStyle2" type="text" placeholder="请输入验证码" tabindex="3"/>
+                <span class="yz"><img src="" id="verifyCode" width="90" height="35" /></span>
+
+            </div>
+            <div><div class="button" id="btnLogin" tabindex="4">登录</div></div>
+            <div class="zc"><a id="wjmm" href="javascript:void(0);">忘记密码？</a>| <a id="register" href="javascript:void(0);">注册</a></div>
+        </div>
+    </form>
+    <div class="inputWrap lookPwd">
+        <div class="login">找回密码</div>
+        <div class="wrong"  id="errorMsg">&nbsp;</div>
+        <div id="vailCode">
+            <div class="input"><input  class="inputStyle" id="phone" type="text" name="phone" placeholder="手机号码" /></div>
+            <div class="input2" style="position:relative;margin-bottom:10px;" >
+                <input  class="inputStyle inputStyle2" id="verifCode" type="text" name="code" placeholder="手机验证码" />
+                <span  class="cantClick" id="getCode">获取验证码</span>
+               </div>
+            <div><input type="button" class="button"  value="下一步" id="next" /></div>
+            <div class="zc" style="height:30px;line-height:30px;font-size:14px;padding-top:3px;"><a id="wjmm2" href="javascript:void(0);">返回登录？</a></div>
+        </div>
+        <div id="resetPwd" style="display: none">
+            <div class="input" ><input class="inputStyle" id="pwd" type="password" name="password" placeholder="新密码(密码长度在6-20位)" /></div>
+            <div class="input" style="margin-bottom:10px;"><input class="inputStyle"  id="confirmPwd" type="password" name="password" placeholder="确认密码(密码长度在6-20位)" /></div>
+            <div><input type="button" class="button"  value="重置密码" id="submit" /></div>
+        </div>
+        <div id="redirectToLogin" style="display: none">
+            <div style="height:30px;line-height: 30px; color:green; font-size: 14px;text-align: center;">恭喜您，重置密码成功</div>
+            <div style="height: 30px;line-height: 30px;width:50%;font-size:16px;background-color: #17aefb;color:white;border-radius: 5px;margin:15px auto;text-align: center;"><input type="button" class="button"  value="直接登录" id="goLogin" /></div>
+        </div>
+    </div>
+
+    <div style="clear:both;"></div>
+</div>
+<div class="footer" ><span class="copyright"></span></div>
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/url_config.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+
+<script type="text/javascript">
+    require(["jquery", "BaseAjax", "formVerfication", "Base64","commons","UserModule"], function ($, BaseAjax, formVerfication, Base64,commons, UserModule) {
+        var guid = function() {
+            var str = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx";
+            return str.replace(/[xy]/g, function(c) {
+                var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+                return v.toString(16);
+            });
+        };
+
+        var validToken = guid();
+
+        var init = function(){
+            var date = new Date();
+            $("#verifyCode").attr("src", LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime());
+        };
+
+        commons.setTitleFun();
+        /**
+         * 注册
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#register").click(function() {
+            window.location.href = LOGIN_CONFIG.register_url;
+        });
+
+        /**
+         * 清除错误信息
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        var clearWrongTips = function () {
+            $(".wrong").text("");
+        }
+        $("#accountName, #accountPwd, #code").focus(clearWrongTips);
+
+        /**
+         * 校验输入的用户名
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        var checkAccountName = function () {
+            var accountName = $.trim($("#accountName").val());
+            if (accountName == "") {
+                $("#accountName").focus();
+                $("#loginError").text("请输入手机号码或账号名");
+                $("#accountName").val("");
+                return true;
+            }
+
+            //支持accountCode登录, 去掉手机号格式校验
+            /*var myreg = /^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$/;
+            if (!myreg.test(accountName)) {
+                $("#accountName").focus();
+                $("#loginError").text("手机号码格式不正确");
+                return true;
+            }*/
+
+
+
+            return false;
+        }
+        //$("#accountName").blur(checkAccountName);
+
+        /**
+         * 校验输入的账号密码
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        var checkAccountPwd = function () {
+            var accountPwd = $.trim($("#accountPwd").val());
+            if (accountPwd == "") {
+                $("#accountPwd").focus();
+                $("#loginError").text("请输入密码");
+                $("#accountPwd").val("");
+                return true;
+            }
+            return false;
+        }
+      //  $("#accountPwd").blur(checkAccountPwd);
+
+        /**
+         * 校验用户输入的验证码
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        var checkCode = function () {
+            var code = $.trim($("#code").val());
+            if (code == "") {
+                $("#code").focus();
+                $("#loginError").text("请输入验证码");
+                $("#code").val("");
+                return true;
+            }
+            return false;
+        }
+        //$("#code").blur(checkCode);
+
+
+        /**
+         * 刷新验证码
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#verifyCode").click(function () {
+            var date = new Date();
+            this.src =  LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime();
+        });
+
+        /**
+         * 登录
+         *
+         * @version <1> 2018/1/22 djh： Created.
+         */
+        $("#btnLogin").click(function () {
+            if (checkAccountName() || checkAccountPwd() || checkCode()) {
+                resetValidCode();
+                return;
+            }
+
+            var accountName = $("#accountName").val();
+            var accountPwd = $("#accountPwd").val();
+            var code = $("#code").val();
+
+            var permAccount = {'accountName': accountName,
+                'accountPwd': Base64.encode(accountPwd)
+            };
+
+            var jsonData = {
+                'permAccount':permAccount,
+                'validToken': validToken,
+                'verifyCode': code
+            };
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.login_url;
+            ajax.opts.data = JSON.stringify(jsonData);
+            ajax.opts.successFun = function (msg) {
+                if (msg.flag) {
+                    var data = msg.data ;
+                    commons.setCookie(COOKIE_CONFIG.cookieName,data.AccessToken,30);
+
+                    // var userInfo = UserModule.UserUtil.saveUserInfo(data.AccessToken,data);
+                    // commons.setCookie(data.AccessToken , userInfo, 30)
+
+                    var url = data.defaultMenu;   //默认页面
+
+                    window.location.href = LOGIN_CONFIG.cms_index_page_url;
+
+                } else {
+                    $("#loginError").text(msg.msg);
+                    resetValidCode();
+                }
+            };
+            ajax.run();
+        });
+
+        $("body").keydown(function () {
+            if (event.keyCode == "13") {//keyCode=13是回车键
+                $("#btnLogin").click();
+            }
+        });
+
+        /**
+         * 点击忘记密码的交互
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#wjmm").click(function() {
+            //清除错误信息
+            $(".wrong").text("");
+            $(".loginIndex").hide();
+            $(".lookPwd").show();
+        });
+
+        /**
+         * 点击“返回登录”的交互
+         * @version<1> 2018-02-08 lcw: Created.
+         */
+        $("#wjmm2").click(function() {
+            $(".lookPwd").hide();
+            $(".loginIndex").show();
+        });
+
+        /**
+         * 点击获取手机验证码
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#getCode").click(function () {
+            $("#errorMsg").text("");
+            if ($("#getCode").hasClass("getCodeClass")) {
+                return;
+            }
+
+            var phonenum = $.trim($("#phone").val());
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+
+            if(phonenum == null || phonenum == ""){
+                $("#errorMsg").text("手机号码不能为空");
+                $("#getCode").removeClass("getCodeClass");
+                $("#phone").focus();
+                return;
+            }
+
+            if (!myreg.test(phonenum)) {
+                $("#errorMsg").text("手机号码格式不正确");
+                $("#getCode").removeClass("getCodeClass");
+                $("#phone").focus();
+                return;
+            }
+
+            $("#errorMsg").text("");
+            var flag = false;
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.checkAccountExists;
+            ajax.opts.async = false;
+//            ajax.opts.data = JSON.stringify({tel: phonenum});
+            ajax.opts.type = "GET";
+            ajax.opts.data =  {'accountName':phonenum};
+            ajax.opts.successFun = function (data) {
+                if(!data.flag){
+                    $("#errorMsg").text(data.msg);
+                    $("#phone").focus();
+                    flag = true;
+                }
+            };
+            ajax.opts.errorFun = function () {
+                flag = true;
+                $("#errorMsg").text("账号不存在!");
+            };
+            ajax.run();
+
+            if (flag) {
+                return;
+            }
+
+            $("#getCode").addClass("getCodeClass");
+            //立即执行
+            readSeconds();
+            clearInterval(sendCode);
+            //定时执行方法
+            var sendCode = setInterval(function(){readSeconds()}, 1000);
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.sendsms_url;
+            ajax.opts.data = {mobile: phonenum};
+            ajax.opts.type = "GET";
+            ajax.opts.successFun = function (data) {
+                if(!data.flag){
+                    $("#errorMsg").text(data.msg);
+                }
+//                if (data.code == 0) {
+//                    $("#errorMsg").text(data.msg);
+//                } else if (data.code == 2) {
+//                    $("#errorMsg").text("24小时内只能获取5次验证码");
+//                }
+            };
+            ajax.opts.errorFun = function () {
+                $("#getCode").removeClass("getCodeClass");
+                $("#errorMsg").text("账号不存在!");
+            };
+            ajax.run();
+        });
+
+        /**
+         * 读秒
+         * @version <1> 2018-02-11 lcw : created.
+         */
+        var countDown = 60;
+        var readSeconds = function () {
+            var obj = $("#getCode");
+            if (countDown > 0) {
+                obj.text(countDown + "秒后重发");
+                countDown--;
+            } else {
+                obj.text('获取验证码');
+                clearInterval(sendCode);
+                $("#getCode").removeClass("getCodeClass");
+            }
+        }
+
+
+        /**
+         * 下一步
+         *
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#next").click(function() {
+            var phonenum = $.trim($("#phone").val());
+            var myreg = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+
+            if(phonenum == null || phonenum == ""){
+                $("#errorMsg").text("手机号码不能为空");
+                $("#phone").focus();
+                return;
+            }
+
+            if (!myreg.test(phonenum)) {
+                $("#errorMsg").text("手机号码格式不正确");
+                $("#phone").focus();
+                return;
+            }
+
+            var phoneValicode = $.trim($("#verifCode").val());
+            if (phoneValicode == "") {
+                $("#errorMsg").text("请填写手机验证码");
+                $("#verifCode").focus();
+                return;
+            }
+
+            var flag = false;
+            var phoneAjax = new BaseAjax();
+            phoneAjax.opts.url = LOGIN_CONFIG.checkPhoneValicode_url;
+            phoneAjax.opts.data = {verifCode:phoneValicode,phone:phonenum};
+            phoneAjax.opts.type = "GET";
+            phoneAjax.opts.async = false;  //同步方法
+            phoneAjax.opts.successFun = function(result){
+                if(!result.flag){
+                    $("#errorMsg").text("手机验证码错误");
+                    $("#verifCode").focus();
+                    flag = true;
+                }
+            };
+            phoneAjax.opts.errorFun = function(){
+                flag = true;
+                $("#errorMsg").html("系统异常，暂时无法发送验证码");
+            };
+            phoneAjax.run();
+
+            if (flag) {
+                return;
+            }
+            //清空提示信息
+            $("#errorMsg").text("");
+
+            $("#vailCode").hide();
+            $("#resetPwd").show();
+        });
+
+
+        /**
+         * 确认密码的逻辑
+         *
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#submit").click(function () {
+            var obj = $("#pwd");
+            if (formVerfication.isEmpty(obj.val())) {
+                $("#errorMsg").text("新密码不能为空");
+                return;
+            } else if (!formVerfication.isScopeLength(obj.val(), 6, 20)) {
+                $("#errorMsg").text("新密码长度在6-20位");
+                return;
+            }
+
+            var cpwd = $.trim($("#confirmPwd").val());
+            if(cpwd == null || cpwd == ""){
+                $("#errorMsg").text("请输入确认密码");
+                return ;
+            }
+
+            if (cpwd != obj.val()) {
+                $("#errorMsg").text("密码不一致");
+                return;
+            }
+
+            var phoneNumber = $("#phone").val();
+            var bajax = new BaseAjax();
+            bajax.opts.url = LOGIN_CONFIG.updateUserPwd_url;
+
+            var permAccount = {'accountName': phoneNumber,
+                'accountPwd': Base64.encode(cpwd)
+            };
+
+            bajax.opts.data = JSON.stringify({permAccount:permAccount});
+            bajax.opts.type = "POST";
+            bajax.opts.successFun = function(result){
+                if (result.code == 0) {
+                    $("#errorMsg").text(result.msg);
+                    flag = true;
+                } else if (result.code == 1) {
+                    $("#errorMsg").text("");
+                    $("#resetPwd").hide();
+                    $(".login").hide();
+                    $("#redirectToLogin").show();
+                }
+            };
+            bajax.opts.errorFun = function(){
+                $("#errorMsg").html("系统异常，暂时无法发送验证码");
+            };
+            bajax.run();
+        });
+
+        /**
+         * 重新设置密码后重新登录
+         *
+         * @version<1> 2018-01-22 djh: Created.
+         */
+        $("#redirectToLogin").click(function() {
+            window.location.href = "login.html";
+        });
+
+        /**
+         * 重置验证码：1、清空验证码输入框；2、刷新验证码图片
+         * @param msg
+         */
+        function resetValidCode(){
+            $("#verifyCode").html("");
+            var imgValidCode = document.getElementById("verifyCode");
+            var txtValidCode = document.getElementById("code");
+            var date = new Date();
+            imgValidCode.src =  LOGIN_CONFIG.verify_url + "?validToken="+ validToken +"&datetime=" + date.getTime();
+            txtValidCode.value="";
+        }
+
+        init();
+    });
+</script>

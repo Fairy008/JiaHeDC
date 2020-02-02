@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link type="text/css" rel="stylesheet" href="css/base.css"/>
+    <style>
+        /*.rightTop{ border-bottom: 1px solid #f0f0f0; padding:0 20px;background-color: #ffffff;}*/
+        /*.rightTop .box{ width: 1300px; margin:0 auto; height: 62px; }*/
+
+        body{background-color: #f4f4f4;}
+
+
+        .content{ width: 993px;margin:0 auto}
+        /*左侧轮播*/
+        .content .conMain{ width: 755px; float: right; border-radius:5px;min-height:650px;}
+        /*左侧列表**/
+        .list{ width: 672px; margin-top: 4%;margin-left: 5%;}
+        .list h1{ border-bottom: 1px solid #f0f0f0; padding:0 6px; padding-bottom: 18px;}
+        .list h1 a{ color:#000; font-size: 16px; margin-right: 27px; padding-bottom: 14px; }
+        .list h1 a.on{ font-weight: bold; border-bottom: 3px solid #000;}
+        .list h1 a:hover{ cursor: pointer;}
+        .list h2{ font-size: 18px; line-height: 22px; color: #000;}
+        .list dl dd p{ font-size: 14px; color: #7b7b7b; line-height: 27px;}
+        .list span.lab:first-of-type{margin-left:8px;}
+        .list i.hot{ vertical-align: text-top; margin-right: 3px;}
+        .list dl{ border-bottom: 1px solid #f0f0f0; padding:14px 5px;}
+        .list dl dt.report{ float: right; margin-top:10px;}
+        .list dl dt.report img{ width: 147px; height: 98px; border-radius: 3px; margin-left: 18px;}
+        .list dl dd p.brief{ height: 54px; margin-top:16.5px;    overflow: hidden;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;}
+        .list dl dd p.info{ color: #9cbfcb; font-size: 12px;}
+        .list dl dd p.info b{ font-weight: bold; margin-right: 4px;}
+        .list dl dd p.info i.time{ margin-right: 24px;}
+        .list dl dd p.info span{ background: url("images/public/forum/comment.png") 0px 0px no-repeat; padding-left:20px;}
+        .list dl dd p.info span.comment{ background-position: 0px 0px; margin-right: 14px;}
+        .list dl dd p.info span.collect{ background-position: 0px -49px;}
+        .loadMore{ height: 38px;width: 672px; line-height: 38px; font-size: 12px; color: #000; border:1px solid #e2e2e2; border-radius: 5px; text-align: center; margin:40px auto;}
+        .loadMore:hover{ cursor: pointer;}
+
+        /*回到顶部*/
+        .returnTop{ position: fixed; bottom: 30px;right:30px; color: transparent; width: 38px; font-size: 12px;line-height: 16px;padding: 2px 6px;box-sizing: border-box; height: 38px; background: #F5A836 url("images/public/forum/returnTop.png") center center no-repeat; border:1px solid #e2e2e2; border-radius: 5px;}
+        .returnTop:hover{  background: #F5A836; cursor: pointer; color: #fff;}
+
+        i.follow{ height: 18px; width: 33px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 20px;}
+
+        #personDiv{width: 220px;float:left;background-color: #ffffff;text-align: center;border-radius:5px;padding-bottom:36px;}
+        .photoUrl{width: 70px;height: 70px;border-radius: 50%;margin-top: 38px;}
+        .expertName{display: block;font-size: 18px;margin-top: 17px;}
+        .introduction{display: block;font-size: 12px;margin-top: 15px;color: #7c7c7c}
+        .follow{ height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;cursor: pointer}
+        .followed{ height: 18px; width: 36px; line-height: 18px; color: #00a4da; font-size: 12px; display: inline-block; margin-right: 4px; vertical-align: top; padding:0 6px; border:1px solid #00a4da; border-radius: 4px;margin-top: 10px;cursor: pointer}
+
+        #articleList a{text-decoration: none;color: #000;font-weight: bold;}
+
+        /*农业*/
+        span.lab.agriculture{ background: #65d763;}
+        /*气象*/
+        span.lab.meteorology{ background: #00a5da;}
+        /*遥感*/
+        span.lab.remotesensing{ background: #daa900;}
+        /*期货*/
+        span.lab.futures{ background: #dbab00;}
+        /*保险*/
+        span.lab.insurance{ background: #0c6e86;}
+
+        #noData{height: 38px;width: 100%;text-align: center;display: flex;justify-content: center;align-items: center;margin:41px auto;}
+        #noData img{width: 33px;height: 33px;border-radius: 50%;}
+        #noData p{font-size: 16px;color: #dadada;padding-left: 10px;}
+
+    </style>
+    <title></title>
+</head>
+<body>
+
+<div style="height:100%;">
+    <!--<div class="rightTop">-->
+
+    <!--</div>-->
+    <div style="clear: both;"></div>
+
+    <div class="content">
+        <!--专家个人信息-->
+        <div id="personDiv">
+
+        </div>
+        <div class="conMain" style="background-color: #ffffff;">
+            <div class="list">
+                <h1><a class="on" articleType="all">全部</a><a articleType="11001">报告</a><a articleType="11002">调研</a><a articleType="11003">问答</a></h1>
+                <!--此处动态添加帖子内容-->
+                <div id="articleList">
+
+                </div>
+            </div>
+            <div style="clear: both;"></div>
+            <div id="noData" >
+                <img src="images/public/forum/POKERFACE.png"><p>暂无数据</p>
+            </div>
+            <p class="loadMore">加载更多>></p>
+        </div>
+        <a class="returnTop" style="display: none;">回到顶部</a>
+    </div>
+    <!--个人中心菜单内容显示-->
+    <div id="menuInfo" style="display:none;"></div>
+</div>
+<!--右边结束-->
+<script type="text/javascript" src="js/lib/require/require.js"></script>
+<script type="text/javascript" src="js/url_config.js"></script>
+<script type="text/javascript" src="js/config.js"></script>
+<script type="text/javascript">
+    require(["jquery","Marquee","BaseAjax","jqGrid","jqueryUi","UserModule","commons","enums"],function($,Marquee,BaseAjax,jqGrid,jqueryUi,UserModule,commons,enums){
+
+
+        var init = function(){
+            //回到顶部按钮
+            returnTop();
+            //加载更多
+            loadMore();
+            //查看更多标签
+            lookMore();
+            //tab切换
+            tabFun();
+            //加载 该用户创建的所有帖子
+            // loadArticleList();
+            initArticlePage(1, initFirstRows, false);
+            //加载专家个人信息
+            getExpertInfo();
+
+            // $('#searchBtn').bind('click',function () {
+            //     console.log(456);
+            //     loadArticleList();
+            // })
+        }
+
+        //返回定部
+        var returnTop = function(){
+            $('.returnTop').on('click',function(){
+                $('html,body').animate({
+                    scrollTop: 0
+                }, 300);
+            });
+
+            //对页面滚动条滚动的监听
+            $(window).scroll(function(event){
+                var scroH = $(this).scrollTop();//获取滚动条的滑动距离
+                if (scroH > 0) {
+                    $('.returnTop').fadeIn();//淡入
+                } else {
+                    $('.returnTop').fadeOut();//淡出
+                }
+            });
+        };
+
+        //查看更多
+        var lookMore = function(){
+            $('.lookMore a').on('click',function(){
+                $('.tags').css('height','auto');
+                $('.lookMore').hide();
+            });
+        };
+
+        /**
+         * 点击帖子更多
+         * @param
+         * @return
+         * @version <1> 2019/3/8 13:42 zhangshen:Created.
+         */
+        var loadMore = function () {
+            $('.loadMore').on('click',function(){
+                var nextPage = $(".loadMore").attr("nextPage");
+                if (nextPage != 0) {
+                    var articleType = parseInt($('.list .on').attr('articleType'));
+                    if (articleType == "all") {
+                        initArticlePage(nextPage, initFirstRows, false);
+                    } else {
+                        initArticlePage(nextPage, initFirstRows, false, articleType);
+                    }
+                }
+            });
+        };
+
+
+        //右侧列表区域tab切换
+        var tabFun = function(){
+            $('.list h1 a').on('click',function(){
+                $(this).addClass('on').siblings('a').removeClass('on');
+                // loadArticleList();//切换帖子类型标签，需要重新加载帖子列表
+                // $("#articleList").html("");
+                $('#articleList').find('dl').remove();
+                var articleType = parseInt($(this).attr("articleType"));
+                if (articleType == "all") {
+                    initArticlePage(1, initFirstRows, false);
+                } else {
+                    initArticlePage(1, initFirstRows, false, articleType);
+                }
+            });
+        };
+
+
+        /**
+         * 获取查询参数
+         * @param
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getParam = function () {
+            //搜索框文字内容
+            var keyWords = $('.searchBox input').val();
+            //当前选中的tab标签的类型
+            var currentTabName = $('.list .on').text();
+            var articleType = getTabId(currentTabName);//帖子类型
+            var creator = GetQueryString('expertId');
+
+            var param = {
+                creator : creator,
+                keyWords : keyWords,
+                articleType : articleType
+            }
+            return param;
+        }
+
+
+
+
+        /**
+         * 查询帖子列表
+         * @param param 查询参数
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var loadArticleList = function(){
+            //查询前，先清空现有帖子列表
+            $('.list').find('dl').remove();
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_ARTICLE.findCombinationPage_url;
+            ajax.opts.data = JSON.stringify(getParam());
+            ajax.opts.successFun = function (result) {
+                if (null == result || result.list.length == 0) {
+                    return;
+                }
+                generateArticleList(result);
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        }
+
+        /**
+         * 根据查询结果动态生成帖子列表的内容
+         * @param result 帖子列表分页查询结果
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateArticleList = function(result){
+            var article = null;
+            for (var i=0;i<result.list.length;i++){
+                article = result.list[i];
+                var articleType = article.articleType;//帖子类型
+                var articleLabelList = article.articleLabelList;//帖子标签
+                var articleHot = article.articleHot;//是否为最热帖子：0否、1是
+
+                var htmlStr = '';
+
+                console.log(article)
+                htmlStr += ' <dl><dt class="report"><img src="images/public/forum/list_img.png" /></dt><dt><h2>';//帖子缩略图
+                if (articleHot == 1){
+                    htmlStr += '<i class="hot"></i>';//最热帖子标记
+                }
+                htmlStr += '<i class="type">'+getArticleType(articleType)+'</i>'+article.articleTitle;//帖子类型和帖子标题
+                htmlStr += generateLabelContent(articleLabelList);
+                htmlStr += '</h2></dt><dd>' + '<p class="brief">'+article.articleSummary+'</p>' +
+                '<p class="info"><b>'+article.creatorName+'</b>发布于<i class="time">'+article.createTime+'</i> <span class="comment">'+article.commentCount+'</span><span class="collect">'+article.likeCount+'</span></p></dd></dl>';
+                $('.list').append(htmlStr);
+            }
+
+        }
+
+        /**
+         * 根据帖子类型id获取帖子类型名称
+         * @param articleType 帖子类型id
+         * @return 帖子类型的名称
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getArticleType = function(articleType){
+            for (var i=0;i<articleTypeList.length;i++) {
+                if (articleTypeList[i].id == articleType){
+                    return articleTypeList[i].name;
+                }
+            }
+        }
+
+        /**
+         * 获取数标签配置表所有的标签信息
+         * @param
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        // var getLabelList = function(){
+        //     var ajax = new BaseAjax();
+        //     ajax.opts.url = FORUM_LABEL.nolog_findLabelList_url;
+        //     ajax.opts.data = JSON.stringify({});
+        //     ajax.opts.successFun = function (result) {
+        //         if (null != result && result.list.length != 0) {
+        //             return result.list;
+        //         }
+        //         return null;
+        //     };
+        //     ajax.opts.errorFun = function () {
+        //         return null;
+        //     };
+        //     ajax.run();
+        // }
+
+
+
+        /**
+         * 根据帖子的标签列表动态生成该帖子的标签HTML内容
+         * 只加载帖子的前3个标签
+         * @param articleLabelList 标签列表
+         * @return 帖子的标签HTML内容
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateLabelContent = function(articleLabelList){
+            var str = '';
+            $.each(articleLabelList,function(ii,oo){
+                if (ii < 3) {
+                    for (var k in oo) {
+                        if (oo[k]) {
+                            str += '<span class="lab" style="background-color: '+ oo[k] +';">' + k + '</span>';
+                        } else {
+                            str += '<span class="lab">' + k + '</span>';
+                        }
+                    }
+                }
+            })
+            return str;
+        }
+
+
+        /**
+         * 后台查询专家的个人信息
+         * @param
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getExpertInfo = function () {
+
+
+            // var expertId= GetQueryString('expertId'); //专家ID
+
+            var accountId = GetQueryString("accountId"); //用户ID
+
+
+
+            var ajax = new BaseAjax();
+
+            ajax.opts.url = USER_CONFIG.no_logQueryPersonByAccountId+"?accountId="+accountId;
+
+            // ajax.opts.url = FORUM_EXPERT.nolog_findExpertInfo_url+"?expertId="+expertId;
+            ajax.opts.type = 'get';
+            ajax.opts.successFun = function (result) {
+
+                console.log(result.data)
+
+                if (result.flag && null != result.data){
+                    var expert = result.data;
+                    generateExpertContent(expert);
+                }else {
+                    showUser(GetQueryString('expertId'));//如果当前用户不是专家，则查询并显示用户信息
+                }
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+        }
+
+        /**
+         * 根据后台查询的专家结果动态生成专家详情
+         * @param expert 专家信息
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var generateExpertContent = function (expert) {
+
+
+            console.log(expert)
+
+            //查询当前用户关注的所有专家的id
+            var focusIdList = [];
+            focusIdList = queryMyFocusExperts();
+            var code = getIndustryColor(expert.industry);
+            var htmlStr = '';
+            var photoUrl = 'images/public/forum/userImg.png'
+            if (null != expert.photoUrl && '' != expert.photoUrl) photoUrl =download_config.DOWNLOD_URL + expert.photoUrl;
+
+            htmlStr += ' <img src="'+photoUrl+'" class="photoUrl">' +
+                '            <a class="expertName">'+(expert.personName == null ? expert.nickName : expert.personName )+'</a>' +
+                '            <a class="introduction">'+(expert.remark == null ?  "" : expert.remark )+'</a>' ;
+            // if (null != expert.industry && '' != expert.industry){
+            //     htmlStr +=  '    <div style="margin-top: 15px;">' +
+            //         '                <span class="lab '+code+'">'+expert.industry+'</span>' +
+            //         '            </div>';
+            // }
+            //如果当前用户已关注该专家
+            if (null != focusIdList && focusIdList.indexOf(expert.accountId) != -1) {
+                htmlStr +=  '            <a class="followed" expertId="'+expert.expertId+'" accountId="'+ expert.accountId +'">已关注</a>' ;
+                htmlStr += '            <a class="follow" expertId="'+expert.expertId+'" accountId="'+ expert.accountId +'" style="display: none">+关注</a>';
+            }else {
+                htmlStr +=  '            <a class="followed" expertId="'+expert.expertId+'"  accountId="'+ expert.accountId +'" style="display: none">已关注</a>' ;
+                htmlStr += '            <a class="follow" expertId="'+expert.expertId+'"  accountId="'+ expert.accountId +'">+关注</a>';
+            }
+            $('#personDiv').append(htmlStr);
+
+            //点击关注按钮
+            $('.follow').bind('click',function () {
+                //1、首先查询用户是否登录，没有登录跳转到登录页面
+                if (commons.checkForumLoginStatus()){
+                    var expertId = $(this).attr('expertId');
+                    var accountId = $(this).attr("accountId");
+                    //关注专家
+                    var flag = followPerson(accountId);
+                    if (flag){
+                        // $(this).removeClass('follow').addClass('followed');
+                        // $(this).text('已关注');
+                        $(this).hide();
+                        $(this).prev().show();
+                    }
+                }
+            });
+
+            //点击已关注按钮，取消关注
+            $('.followed').bind('click',function () {
+                //1、首先查询用户是否登录，没有登录跳转到登录页面
+                if (commons.checkForumLoginStatus()){
+                    var expertId = $(this).attr('expertId');
+                    var accountId = $(this).attr("accountId");
+                    //取消关注专家
+                    var flag = cancelFollowPerson(accountId);
+                    if (flag) {
+                        // $(this).removeClass('followed').addClass('follow');
+                        // $(this).text('+关注');
+                        $(this).hide();
+                        $(this).next().show();
+                    }
+                }
+            });
+
+        }
+
+
+        /**
+         * 根据帖子类型的名称获取帖子类型的id
+         * @param
+         * @return
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getTabId = function(currentTabName){
+            for (var i=0;i<articleTypeList.length;i++) {
+                if(articleTypeList[i].name == currentTabName){
+                    return articleTypeList[i].id;
+                }
+            }
+            return null;
+        }
+
+        /**
+         * 根据行业名称获取配置的行业标签的颜色
+         * @param industry 行业名称
+         * @return 行业代码
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var getIndustryColor = function(industry){
+            for (var i=0;i<industryList.length;i++) {
+                if (industryList[i].name == industry){
+                    return industryList[i].code;
+                }
+            }
+        }
+
+        /**
+         * 初始化全部帖子列表
+         * @param page第几页，rows每页条数，flag是否第一次加载（第一页），articleType类型（全部、报告、调研、问答）
+         * @return
+         * @version <1> 2019/3/7 20:34 zhangshen:Created.
+         */
+        var initFirstRows = 4;//第一次夹加载条数
+        var initRows = 2;//之后每次加载条数
+        var initArticlePage = function (page, rows, flag, articleType) {
+            // $('.list').find('dl').remove();
+            var forumArticle = {page:page, rows:rows, articleStatus: 12004,creator:GetQueryString('accountId')};
+            if (articleType) {
+                forumArticle.articleType = articleType;
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.data = JSON.stringify(forumArticle);
+            ajax.opts.url = FORUM_ARTICLE.nolog_findCombinationPage_url;
+            ajax.opts.successFun = function(data){
+                var str = "";
+                if (data) {
+                    $('#noData').hide();
+                    var list = data.list;
+                    $.each(list,function(i,o){
+                        var articleLabelListStr = "";
+                        $.each(o.articleLabelList,function(ii,oo){
+                            if (ii < 3) {
+                                for (var k in oo) {
+                                    if (oo[k]) {
+                                        articleLabelListStr += '<span class="lab" style="background-color: '+ oo[k] +';">' + k + '</span>';
+                                    } else {
+                                        articleLabelListStr += '<span class="lab">' + k + '</span>';
+                                    }
+                                }
+                            }
+                        });
+
+                        str += '<dl>';
+
+
+                        var _imgUrl = "images/public/forum/list_img.png";
+                        if(o.imageUrl != "" && o.imageUrl != null){
+                            _imgUrl= o.imageUrl;
+                        }
+                        if (o.articleType == 11001) {//报告
+                            if (o.articleHot == 1) {
+
+                                str += '<dt class="report"><img src="'+ _imgUrl +'" /></dt>' +
+                                    '<dt>' +
+                                    '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank" articleType="' + o.articleType + '" articleId="' + o.articleId + '"><i class="hot"></i>' + o.articleTitle + articleLabelListStr + '</a></h2>';
+                            } else {
+                                str += '<dt class="report"><img src="'+ _imgUrl +'" /></dt>' +
+                                    '<dt>' +
+                                    '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank"></i>' + o.articleTitle + articleLabelListStr + '</a>';
+                            }
+
+                        } else if (o.articleType == 11002) {//约调研
+                            str += '<dt>' +
+                                '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank" articleType="' + o.articleType + '" articleId="' + o.articleId + '"><i class="type">调研</i>' + o.articleTitle + articleLabelListStr + '</a></h2>';
+                        } else if (o.articleType == 11003) {//问答
+                            str += '<dt>' +
+                                '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank" articleType="' + o.articleType + '" articleId="' + o.articleId + '"><i class="type">问答</i>' + o.articleTitle + articleLabelListStr + '</a></h2>';
+                        } else if (o.articleType == 11004) {//数据分享
+                            str += '<dt>' +
+                                '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank" articleType="' + o.articleType + '" articleId="' + o.articleId + '"><i class="type">数据分享</i>' + o.articleTitle + articleLabelListStr + '</a></h2>';
+                        } else if (o.articleType == 11005) {//其他
+                            str += '<dt>' +
+                                '<h2><a href="index.html?articleId=' + o.articleId + '#articleInfo" target="_blank" articleType="' + o.articleType + '" articleId="' + o.articleId + '"><i class="type">其他</i>' + o.articleTitle + articleLabelListStr + '</a></h2>';
+                        }
+
+                        str += '</dt>' +
+                            '<dd>' +
+                            '<p class="brief">' + o.articleSummary + '</p>' +
+                            '<p class="info"><b>' + (o.publisher == null ? null : commons.queryAccountName(o.publisher)) + '</b>发布于<i class="time">' + strSubstring(o.publishTime, 0, 10) + '</i> <span class="comment">' + o.commentCount + '</span><span class="collect">' + o.likeCount + '</span></p>' +
+                            '</dd>' +
+                            '</dl>';
+                    });
+
+                    if (data.hasNextPage) {
+                        if (flag) {
+                            $(".loadMore").attr("nextPage", (initFirstRows/initRows + 1)).html("加载更多>>");
+                        } else {
+                            $(".loadMore").attr("nextPage", data.nextPage).html("加载更多>>");
+                        }
+                    } else {
+                        $(".loadMore").attr("nextPage", data.nextPage).html("没有更多了");
+                    }
+
+                    $(".loadMore").show();
+
+                    if (null == data || data.size == 0) {
+                        $('.loadMore').hide();
+                        $('#noData').show();
+                    }
+                }
+                $("#articleList").append(str);
+            };
+            ajax.opts.failureFun = function(){};
+            ajax.run();
+        };
+
+
+        /**
+         * 获取url中的参数
+         * @param 参数名称
+         * @return 参数值
+         * @version <1> 2019/3/8 mason:Created.
+         */
+        var GetQueryString = function (name) {
+
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            console.log(decodeURI(r[2]))
+            if (r != null) return decodeURI(r[2]);
+            return null;
+        }
+
+
+        /**
+         * 截取
+         * @param str要截取的字符串, start开始小标, end结束下标
+         * @return
+         * @version <1> 2019/3/8 10:48 zhangshen:Created.
+         */
+        var strSubstring = function (str, start, end) {
+            if (str) {
+                str = str != null ? str.substring(start,end) : str;
+            }
+            return str;
+        };
+
+        /**
+         * 判断用户是否登陆,若登录成功，返回用户信息
+         * @param
+         * @return boolean
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var isLogion = function(){
+            var userInfo;
+            var ajax = new BaseAjax();
+            ajax.opts.type = "get";
+            ajax.opts.url = LOGIN_CONFIG.check_user_login;
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result){
+                userInfo = result;
+            };
+            ajax.opts.errorFun = function () {
+                return null;
+            };
+            ajax.run();
+            return userInfo;
+        }
+
+
+        /**
+         * 查询我的关注的所有专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var queryMyFocusExperts = function(){
+            //1、判断是否登录,登录后查询用户信息
+            var result = isLogion();
+            if (result.flag){
+                var focusIdList = [];
+                var userInfo = JSON.parse(result.data);
+                var accountId = userInfo.accountId;
+                //2、查询用户关注的所有专家
+                var param = {
+                    followType : forum_followType.follow_focus,
+                    creator : accountId
+                }
+                var ajax = new BaseAjax();
+                ajax.opts.url = FORUM_FOLLOW.findByPage_url;
+                ajax.opts.data = JSON.stringify(param);
+                ajax.opts.async = false;
+                ajax.opts.successFun = function (result) {
+                    if (result.flag && null != result.data) {
+                        for (var i=0;i<result.data.length;i++){
+                            //将查询出的关注的专家列表的id存入数组
+                            focusIdList.push(result.data[i].articleId);
+                        }
+                    }
+                };
+                ajax.opts.errorFun = function () {
+
+                };
+                ajax.run();
+                return focusIdList;
+            }
+
+        }
+
+
+        /**
+         * 关注专家方法
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var followPerson = function(expertId){
+            var flag = false;
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus
+            }
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.addFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+                //此处欠缺弹框提示用户关注失败
+            };
+            ajax.run();
+            return flag;
+        }
+
+
+        /**
+         * 取消关注专家
+         * @param
+         * @return
+         * @version <1> 2019/3/13 mason:Created.
+         */
+        var cancelFollowPerson = function (expertId) {
+            var flag = false;
+            var result = isLogion();
+            var userInfo = JSON.parse(result.data);
+            var accountId = null;
+            if (null != userInfo.accountId) {
+                accountId = userInfo.accountId;
+            }else {
+                alert('取消关注失败');
+                return;
+            }
+
+            var param = {
+                articleId : expertId,
+                followType :forum_followType.follow_focus,
+                creator :accountId
+            }
+
+            var ajax = new BaseAjax();
+            ajax.opts.url = FORUM_FOLLOW.removeFollow_url;
+            ajax.opts.data = JSON.stringify(param);
+            ajax.opts.async = false;
+            ajax.opts.successFun = function (result) {
+                flag = result.flag;
+            };
+            ajax.opts.errorFun = function () {
+
+            };
+            ajax.run();
+            return flag;
+        }
+
+        /**
+         * 获取并加载作者详情
+         * @param
+         * @return
+         * @version <1> 2019/3/11 mason:Created.
+         */
+        var showUser = function(accountId){
+            var ajax = new BaseAjax();
+            ajax.opts.url = LOGIN_CONFIG.nolog_getByAccountId_url + "?accountId=" + accountId;
+            ajax.opts.type = 'get';
+            ajax.opts.successFun = function(result){
+                var permPerson = result.data;
+                //person表中暂无头像，用默认头像代替
+                var expert = {expertName:"",introduction:"",industry:'',expertId:permPerson.accountId};
+                expert.expertName = permPerson.personName;
+                expert.introduction = permPerson.remark;
+                generateExpertContent(expert);
+            };
+            ajax.run();
+        };
+
+
+        init();
+
+    })
+</script>
+</body>
+</html>

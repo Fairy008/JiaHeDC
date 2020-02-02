@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="css/app.css" rel="stylesheet" type="text/css" />
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<title>珈和农情遥感</title>
+	<style>
+		html,body{ margin:0; padding:0;height: 100%; font-size:12px;  color:#000;}
+		div, p, ul, h2, img{margin:0px; padding:0px;}
+		ul, li{ list-style:none; margin:0; padding:0}
+		a{color:#f91b52; text-decoration:none;}
+		a:hover{color:#ebb600; text-decoration:underline;}
+		img{ border:none;}
+		.red{ color:#f20101;}
+
+		.input input:focus{ background:#feffe9;}
+		.top{ height:10%; padding:2% 0 0 16%;}
+
+		.loginBtnWrap{ position:absolute; top:20px; right:20px;}
+		.loginBtn{width:50px; height:30px; background:#0896d5; color:#fff; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+
+		.main{ height:100%; width:100%;display:block;  margin:0 auto; background:#04aef8  url(img/login/loginBG.jpg) left bottom repeat-x;}
+		.right{float:left;width:50%; margin:0 5% 0 0; text-align:right; }
+		.inputWrap{float:left; width:240px;   padding:28px 2% 38px 2%; margin:5% 0 0 0; background:rgba(255, 255, 255, 1); box-shadow:0 0px 0px 0px #24a1ce; border-radius:3px; }
+		.login{font-size:22px; margin:0 0 0 0; text-align:center; color:#000; font-family:"黑体";}
+		.input,.input2{ line-height:30px; margin-bottom:15px;}
+		.button{width:100%; height:37px; background:#0070cd; color:#FFFFFF; font-size:12px; font-weight:bold; border:none; border-radius:3px; cursor:pointer;}
+		.zc{height:30px; line-height:30px; text-align:right;color:#CCCCCC;}
+		.inputStyle{height:30px; line-height:30px; width:100%; border:1px solid #ccc; border-radius:3px; color:#000;text-indent:3px;}
+		.inputStyle2{ width:50%;}
+		.copyright{clear: both; line-height:30px; width:100%; position:fixed;bottom:0; text-align:center; color:#000; font-size:14px; background:rgba(255, 255, 255, 0.8);}
+		.orange{color:#FF9900;}
+		.yz{ position:absolute; top:0; right:0; cursor:pointer;}
+		.yz input{ height:32px; border:none; color:#FFFFFF;cursor:pointer; }
+		.wrong {height:30px; line-height:30px;color:#f20101;}
+		.agree{ height:30px; line-height:30px; position:relative; padding-left:20px;}
+		.loginBtn{
+			text-decoration:none;
+			font-size: 12px;
+			text-decoration: none;
+			width: 60px;
+			height: 30px;
+			display: block;
+			text-align: center;
+			line-height: 30px;
+		}
+	</style>
+
+</head>
+
+
+<body>
+
+<div class="main">
+	<div  class="top"><img src="img/login/logo.png" /><span class="loginBtnWrap"><a href="index.html" class="loginBtn" >登录</a>
+	    </span></div>
+	<div class="right" ><img src="img/login/earth.png" width="461" height="461" /></div>
+	<form action="target.html">
+		<div class="inputWrap">
+			<div class="login">用户注册</div>
+			<div class="wrong" id="errorMsg">&nbsp;</div>
+			<div class="input"><input  class="inputStyle" id="phone" type="text" name="phone" placeholder="手机号码" /></div>
+			<div class="input" style="position:relative;" ><input  class="inputStyle inputStyle2" type="text" name="code" style="background-color:#ffffff !important;" placeholder="请输入验证码" id="txtValidCode"/><span class="yz" id="dsuccess"><img src="" width="100" height="32" id="imgValidCode"  /></span></div>
+			<div class="input2" style="position:relative;" ><input  class="inputStyle inputStyle2" id="verifCode" type="text" name="code" placeholder="手机验证码" /><span class="yz"><input type="button"  id = "getCode" value="获取手机验证码" style="border-radius: 2px; padding:0 10px;height:31px;background: #97c7ef;color:#fff;"/></span></div>
+			<!-- <div class="input"><input  class="inputStyle" id="companyName" type="text" name="company" placeholder="工作单位" /></div>
+			<div class="input" ><input class="inputStyle" id="email" type="text" name="email" placeholder="邮箱" /></div> -->
+			<div class="input" ><input class="inputStyle" id="pwd" type="password" name="password" placeholder="设置密码(密码长度在6-20位)" /></div>
+			<div class="input" style="margin-bottom:2px;"><input  class="inputStyle"  id="confirmPwd" type="password" name="password" placeholder="确认密码(密码长度在6-20位)" /></div>
+			<div class="agree"><label><input type="checkbox"  id="isAgree"  value="" style=" position:absolute;top:10px; left:0;" />我已阅读并同意<a href="#" id="pupopen" >《注册条款》</a></label></div>
+			<div><input type="button" class="button"  value="注册" id="submit" /></div>
+		</div>
+	</form>
+	<div style="clear:both;"></div>
+	<div class="copyright" id="copyright"><a style="color: #0a0a0a !important;" target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=42018502001246"><img src="img/beian.png" width="20" height="20" align="absmiddle">鄂公网安备 42018502001246号</a>&nbsp;&nbsp;&nbsp; 鄂ICP备13010685号<br>
+		Copyright©武汉珈和科技有限公司 All Rights Reserved<br>
+	</div>
+</div>
+
+<!--注册协议-->
+<div class="divMask" id="popbox">
+	<div style="width:460px;  margin:0 auto; margin-top:100px; padding:25px 30px 10px 30px; background:#FFFFFF; border-radius:5px;">
+		<div style=" text-align:center;font-size:24px; margin:10px 0;">注册条款</div>
+		<div style="height:440px; line-height:25px; font-size:14px; color:#666666; text-indent:30px; overflow-y:scroll; ">
+			<p>服务条款的确认和接纳：
+				珈和数据中心用户服务的所有权和运作权归武汉珈和科技有限公司拥有。提供的服务将按照有关章程、服务条款和操作规则严格执行。用户通过注册会员，即表示用户与珈和达成协议并接受所有的服务条款。</p>
+			<p> 珈和数据中心服务简介：
+				珈和数据中心是通过国际互联网为用户提供卫星遥感类资讯浏览、信息交流等无偿或有偿服务的网站。</p>
+			<p> 用户同意：</p>
+			<p>1、提供及时、详尽及准确的个人资料。</p>
+			<p>2、用户同意遵守《中华人民共和国保守国家秘密法》、《中华人民共和国计算机信息系统安全保护条例》、《计算机软件保护条例》等有关计算机及互联网规定的法律和法规、实施办法。在任何情况下，珈和数据中心合理地认为用户的行为可能违反上述法律、法规，珈和数据中心可以在任何时候，不经事先通知终止向该用户提供服务。用户应了解国际互联网的无国界性，应特别注意遵守当地所有有关的法律和法规。</p>
+			<p> 服务条款的修改：
+				珈和数据中心会不定时地修改服务条款，服务条款一旦发生变动，将会在相关页面上提示修改内容。如果您同意改动，则再一次点击“我同意”按钮。如果您不接受，则及时取消您的用户使用服务资格。</p>
+			<p>服务修订：
+				珈和数据中心保留随时修改或中断服务而不需知照用户的权利。珈和数据中心站行使修改或中断服务的权利，不需对用户或第三方负责。目前免费信息栏目保留收费的可能。</p>
+			<p>用户的帐号，密码和安全性：
+				一旦注册成功成为珈和数据中心用户，您将得到相应的账户和密码。如果您不保管好自己的帐号和密码安全，将对因此产生的后果负全部责任。另外，每个用户都要对其帐户中的所有活动和事件负全责。您可随时根据指示改变您的密码，也可以结束旧的帐户重开一个新帐户。用户同意若发现任何非法使用用户帐号或安全漏洞的情况，立即通知珈和科技网站。</p>
+			<p>附加信息服务：
+				用户在享用珈和数据中心提供的免费服务的同时，同意接受珈和数据中心提供的各类附加信息服务。</p>
+			<p> 解释权：
+				本注册协议的解释权归珈和数据中心所有。如果其中有任何条款与国家的有关法律相抵触，则以国家法律的明文规定为准。 </p>
+		</div>
+		<div style=" padding:20px 0 20px 0; text-align:center;"><input style="width:260px; height:37px; background:#0070cd; font-size:14px; color:#FFFFFF; border:none; cursor:pointer; border-radius:3px;" type="button" id="pupclose" value="确认" /></div>
+	</div>
+</div>
+</body>
+
+
+<script src="js/lib/require/require.js"></script>
+<script src="js/require.config.js"></script>
+<script src="js/lib/jh/formVerfication.js"></script>
+<script type="text/javascript">
+	/**
+	 * 用户注册
+	 * @version <1> 2017-11-28 lcw : created.
+	 */
+	require(["jquery","BaseAjax","JHModule"],function($,BaseAjax,JHModule){
+		var pupopen = document.getElementById("pupopen");
+		var pupclose = document.getElementById("pupclose");
+		var codeBtn = document.getElementById("getCode"); //获取验证码DOM
+		var txtValidCode = document.getElementById("txtValidCode");//验证码输入框
+
+		var submitBtn = document.getElementById("submit");
+
+		var base64 = new JHModule.Base64();
+
+		/*
+		 * 使用token+验证码进行后台校验
+		 * 1.先验证验证码
+		 * 2.验证码验证通过后验证用户名和密码，并进行登录
+		 * @version <1> 2017-11-28 lcw : created.
+		 */
+		var validToken = base64.guid(); //唯一码
+		var validUrl = System_Env.Region_Valid_Code_URL + validToken;
+		imgValidCode.src =validUrl +"&timestamp="+new Date();//生成验证码，默认请求一次
+
+		//重置验证码
+		imgValidCode.onclick = function(){
+			this.src = validUrl +"&timestamp="+new Date(); //点击请求
+		}
+
+		/**
+		 * 显示《注册条款》信息，显示弹出框
+		 */
+		pupopen.onclick = function(){
+			document.getElementById("popbox").style.display="block" ;
+		}
+
+		/**
+		 * 《注册条款》确认，关闭弹出框
+		 */
+		pupclose.onclick = function(){
+			document.getElementById("popbox").style.display="none" ;
+		}
+
+
+		/*
+		 * 获取手机验证码,60秒内不重复发送
+		 *
+		 * @version <1> 2017-11-29 lcw : created.
+		 */
+		var flag = false;
+		$("#getCode").on("click",function(){
+			$("#errorMsg").html(" ");
+
+			if(txtValidCode.value==null || txtValidCode.value=="")
+			{
+				$("#errorMsg").html("图形验证码不能为空");
+				return ;
+			}
+
+			var data,obj,countDown;
+			//在倒计时结束之后，才可再次点击
+			if(flag){
+				return ;
+			}
+			flag = true;
+			countDown = 60;
+			obj = $(this);
+
+			var phoneVal =$("#phone").val();
+			if((checkPhoneInput($("#phone")))){
+				return true;
+			}
+
+			var phoneAjax = new BaseAjax();
+			phoneAjax.opts.url = User_Env.CheckPhoneExists_URL;
+			phoneAjax.opts.data = {'accountName':phoneVal};
+			phoneAjax.opts.type = "GET";
+			phoneAjax.opts.async = true;  //同步方法
+			phoneAjax.opts.successFun = function(result){
+				if(!result.flag){
+					$("#errorMsg").html(result.msg);
+					flag = false;
+				}else{
+					if (result.data){
+						//手机号已注册注册
+						$("#errorMsg").html(result.msg);
+						flag = false;
+					} else {
+						// 手机号未注册
+						$("#errorMsg").html("");
+						var codeAjax = new BaseAjax();
+						codeAjax.opts.url = User_Env.Register_SendSmsCode_URL;
+						codeAjax.opts.data = {
+							'mobile':phoneVal,
+							'imageVerifyCode':txtValidCode.value,
+							'validToken':validToken
+						};
+						codeAjax.opts.contentType = "application/json";
+						codeAjax.opts.type = "GET";
+						codeAjax.opts.async = false;  //同步方法
+						codeAjax.opts.successFun = function(result){
+							if(result.flag){
+								obj.css('background','#cccccc');
+								obj.val(''+countDown + '秒后重新发送');
+								var countDownFun = function(){
+									if(countDown > 0){
+										obj.val(''+countDown + '秒后重新发送');
+										countDown--;
+									}else{
+										obj.css('background','#97c7ef');
+										obj.val('获取手机验证码');
+										clearInterval(sendCode);
+										countDown = 60;
+										flag = false;
+										return ;
+									}
+								};
+								var sendCode = setInterval(countDownFun,1000);
+							}else{
+								$("#errorMsg").html(result.msg);
+								flag = false;
+							}
+						}
+						codeAjax.opts.errorFun = function(){
+							//obj.parent().append(getHtml("获取验证码失败"))
+							$("#errorMsg").html("获取验证码失败");
+							flag = false;
+						};
+						codeAjax.run();
+					}
+				}
+			};
+			phoneAjax.opts.errorFun = function(){
+				//obj.parent().append(getHtml("系统异常，暂时无法注册"))
+				clearErrorMsg();
+				$("#errorMsg").html("系统异常，暂时无法注册");
+			};
+			phoneAjax.run();
+		})
+
+		/**
+		 * “注册”按钮功能
+		 * @version <1> 2017-11-29 lcw : created.
+		 */
+		var submitFlag = true;
+		submitBtn.onclick = function(){
+			if(!submitFlag){
+				return false;
+			}
+			//注册提交验证
+			if(checkPhoneInput($("#phone"))){
+				return ;
+			}else if(checkVerifyCode($('#verifCode'))){
+				return ;
+			}
+			// else if(checkCompanyNameInput($('#companyName'))){
+			// 	return;
+			// }
+			// else if(checkEmailInput($("#email"))){
+			// 	return ;
+			// }
+			else if(checkPasswordInput($("#pwd"))){
+				return ;
+			}else if(checkReplyPasswordInput($("#confirmPwd"),$("#pwd"))){
+				return ;
+			}
+			else if(checkReadProtocol($("#isAgree"))){
+				return ;
+			}
+
+			submitFlag = false; //验证通过后，设置为false
+
+			var registerEntity = {};
+			registerEntity.phone =  $("#phone").val();
+//			registerEntity.email = $("#email").val();
+//			registerEntity.companyName = $("#companyName").val();
+			registerEntity.pwd = base64.encode($("#pwd").val());
+			registerEntity.confirmPwd = base64.encode($("#confirmPwd").val());
+			registerEntity.smsVerifCode = $("#verifCode").val();
+			registerEntity.imgVerifyCode = txtValidCode.value;
+
+			var codeAjax = new BaseAjax();
+			codeAjax.opts.url = User_Env.Register_URL;
+			codeAjax.opts.data = JSON.stringify(registerEntity);
+			codeAjax.opts.contentType = "application/json";
+			codeAjax.opts.type = "POST";
+			codeAjax.opts.async = false;  //同步方法
+			codeAjax.opts.successFun = function(result){
+				if(result.flag){
+					JHModule.CookieUtil.setCookie("registerPhone",registerEntity.phone);
+					window.location.href = "registerSuccess.html";
+				}else{
+					$("#errorMsg").html(result.msg);
+					submitFlag = true;
+				}
+			}
+			codeAjax.opts.errorFun = function(){
+				$("#errorMsg").html("注册失败");
+				submitFlag = true;
+			};
+			codeAjax.run();
+		}
+
+		/*
+		 *表单失去焦点事件，对表单项进行验证
+		 *@version <1> 2017-11-29 lcw : created.
+		 */
+		//email失去焦点事件
+		// $("#email").on("blur", function () {
+		// 	var obj = $(this);
+		// 	checkEmailInput(obj);
+		// })
+		//工作单位验证
+		// $("#companyName").on("blur",function(){
+		// 	var obj = $(this);
+		// 	checkCompanyNameInput(obj);
+		// })
+
+		//手机号码输入框失去焦点事件
+		$('#phone').on('blur',function(){
+			var obj = $(this);
+			checkPhoneInput(obj);
+		});
+		//密码输入框失去焦点事件
+		// $('#pwd').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkPasswordInput(obj);
+		// });
+		//重复密码输入框失去焦点事件
+		// $('#confirmPwd').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkReplyPasswordInput(obj,$('#pwd'));
+		// });
+		//验证码输入框失去焦点事件
+		// $('#verifCode').on('blur',function(){
+		// 	var obj = $(this);
+		// 	checkVerifyCode(obj);
+		// });
+
+		/*
+		 * 检查是否阅读了协议
+		 * @param obj
+		 * @returns {boolean}
+		 * @version <1> 2017-11-29 lcw :created.
+		 */
+		var checkReadProtocol = function(obj){
+			if(!obj.is(":checked")){
+				clearErrorMsg();
+				$("#errorMsg").html("请确认已阅读协议");
+				//obj.parent().append(getHtml('请确认已阅读协议'));
+				return true;
+			}
+			return false;
+		}
+
+		/*
+		 *显示提示内容
+		 * @param msg
+		 * @version <1> 2017-11-29 lcw :created.
+		 */
+		var getHtml = function(msg){
+			return '<div class="d3"><span class="s3">*</span><span>' + msg + '</span></div>';
+		};
+
+		/*
+		 *清除错误信息
+		 * @param obj
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var clearErrorInfo = function(obj){
+			if(obj.parent().find('.d3').length != 0){
+				obj.parent().find('.d3').remove();
+			}
+		};
+
+		/*
+		 *清除错误信息
+		 * @param obj
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var clearErrorMsg = function(){
+			$("#errorMsg").html(" ");
+		};
+
+
+		/*
+		 *检验验证码输入
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkVerifyCode = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('手机验证码不能为空'));
+				$("#errorMsg").html("手机验证码不能为空");
+				return true;
+			}
+			return false;
+		};
+
+
+		/*
+		 *检验手机号码输入
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPhoneInput = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('手机号码不能为空'));
+				$("#errorMsg").html("手机号码不能为空");
+				return true;
+			}else if(!formVerfication.isPhone(obj.val())){
+				//obj.parent().append(getHtml('手机号码格式不正确'));
+				$("#errorMsg").html("手机号码格式不正确");
+				return true;
+			}
+			return false;
+		};
+
+
+		/*
+		 *密码验证
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkPasswordInput = function(obj){
+			clearErrorMsg();
+
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('密码不能为空'));
+				$("#errorMsg").html("密码不能为空");
+				return true;
+			}else if(!formVerfication.isScopeLength(obj.val(),6,20)){
+				//obj.parent().append(getHtml('密码长度在6-20位'));
+				$("#errorMsg").html("密码长度在6-20位");
+				return true;
+			}
+			return false;
+		};
+
+
+		/*
+		 * 邮箱格式验证，允许邮箱为空
+		 * @param obj
+		 * @returns {boolean}
+		 * @version <1> 2017-11-29 lcw: created.
+		 */
+		var checkEmailInput = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				$("#errorMsg").html("邮箱不能为空");
+				return true;
+			}else if(!formVerfication.isEmail(obj.val())){
+				//obj.parent().append(getHtml("邮箱格式不正确"));
+				$("#errorMsg").html("邮箱格式不正确");
+				return true;
+			}
+			return false;
+		}
+
+		/*
+		 * 工作单位长度验证，允许为空
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkCompanyNameInput = function(obj){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('单位名称不能为空'));
+				$("#errorMsg").html("单位名称不能为空");
+				return true;
+			}
+
+			if(!formVerfication.isScopeLength(obj.val(),0,50)){
+				//obj.parent().append(getHtml('单位名称太长'));
+				$("#errorMsg").html("单位名称太长");
+				return true;
+			}
+			return false;
+		};
+
+		/*
+		 *确认密码验证
+		 * @param obj
+		 * @returns {boolean}
+		 *@version <1> 2017-11-29 lcw: created.
+		 */
+		var checkReplyPasswordInput = function(obj,objTo){
+			//clearErrorInfo(obj);
+			clearErrorMsg();
+			if(formVerfication.isEmpty(obj.val())){
+				//obj.parent().append(getHtml('重复密码不能为空'));
+				$("#errorMsg").html("重复密码不能为空");
+				return true;
+			}else if(!formVerfication.isScopeLength(obj.val(),6,20)){
+				//obj.parent().append(getHtml('重复密码长度在6-20位'));
+				$("#errorMsg").html("重复密码长度在6-20位");
+				return true;
+			}else if(!formVerfication.isPasswordTo(obj.val(),objTo.val())){
+				//obj.parent().append(getHtml('密码输入不一致'));
+				$("#errorMsg").html("密码输入不一致");
+				return true;
+			}
+			return false;
+		};
+	})
+
+</script>
+</html>

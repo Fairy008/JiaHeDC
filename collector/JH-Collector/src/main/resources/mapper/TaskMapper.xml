@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.collector.mapping.TaskMapper" >
+  <resultMap id="BaseResultMap" type="com.jh.collector.entity.Task" >
+    <id column="task_id" property="taskId" jdbcType="INTEGER" />
+    <result column="data_status" property="dataStatus" jdbcType="CHAR" />
+    <result column="del_flag" property="delFlag" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="DATE" />
+    <result column="creator_name" property="creatorName" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="INTEGER" />
+    <result column="modify_time" property="modifyTime" jdbcType="DATE" />
+    <result column="modifier_name" property="modifierName" jdbcType="VARCHAR" />
+    <result column="modifier" property="modifier" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="task_name" property="taskName" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="BIGINT" />
+    <result column="insurance_policy_num" property="insurancePolicyNum" jdbcType="INTEGER" />
+    <result column="calibrated_policy_number" property="calibratedPolicyNumber" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="DATE" />
+    <result column="end_time" property="endTime" jdbcType="DATE" />
+    <result column="status_status" property="statusStatus" jdbcType="CHAR" />
+  </resultMap>
+
+  <sql id="Base_Column_List" >
+    task_id, data_status, del_flag, create_time, creator_name, creator, modify_time,
+    modifier_name, modifier, remark, task_name, region_id, insurance_policy_num, calibrated_policy_number, 
+    start_time, end_time, status_status
+  </sql>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from ls_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ls_task
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </delete>
+
+
+  <insert id="insertSelective" parameterType="com.jh.collector.entity.Task" >
+    insert into ls_task
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        task_id,
+      </if>
+      <if test="dataStatus != null" >
+        data_status,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="creatorName != null" >
+        creator_name,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="modifierName != null" >
+        modifier_name,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="taskName != null" >
+        task_name,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="insurancePolicyNum != null" >
+        insurance_policy_num,
+      </if>
+      <if test="calibratedPolicyNumber != null" >
+        calibrated_policy_number,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="statusStatus != null" >
+        status_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="taskId != null" >
+        #{taskId,jdbcType=INTEGER},
+      </if>
+      <if test="dataStatus != null" >
+        #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=DATE},
+      </if>
+      <if test="creatorName != null" >
+        #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="insurancePolicyNum != null" >
+        #{insurancePolicyNum,jdbcType=INTEGER},
+      </if>
+      <if test="calibratedPolicyNumber != null" >
+        #{calibratedPolicyNumber,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=DATE},
+      </if>
+      <if test="statusStatus != null" >
+        #{statusStatus,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.jh.collector.entity.Task" >
+    update ls_task
+    <set >
+      <if test="dataStatus != null" >
+        data_status = #{dataStatus,jdbcType=CHAR},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=DATE},
+      </if>
+      <if test="creatorName != null" >
+        creator_name = #{creatorName,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=INTEGER},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=DATE},
+      </if>
+      <if test="modifierName != null" >
+        modifier_name = #{modifierName,jdbcType=VARCHAR},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="taskName != null" >
+        task_name = #{taskName,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null" >
+        region_id = #{regionId,jdbcType=BIGINT},
+      </if>
+      <if test="insurancePolicyNum != null" >
+        insurance_policy_num = #{insurancePolicyNum,jdbcType=INTEGER},
+      </if>
+      <if test="calibratedPolicyNumber != null" >
+        calibrated_policy_number = #{calibratedPolicyNumber,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=DATE},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=DATE},
+      </if>
+      <if test="statusStatus != null" >
+        status_status = #{statusStatus,jdbcType=CHAR},
+      </if>
+    </set>
+    where task_id = #{taskId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectTaskListByAccountId" parameterType="Integer" resultMap="BaseResultMap">
+    select
+    t.task_id, t.create_time, t.creator_name, t.creator, t.remark, t.task_name, t.region_id, t.insurance_policy_num, t.calibrated_policy_number,t.start_time, t.end_time, t.status_status
+    from ls_task as  t join is_calibrator as c on t.task_id = c.task_id
+    where c.account_id = #{accountId}
+  </select>
+
+
+  <select id="selectTaskListbyCreatorName" parameterType="map" resultMap="BaseResultMap">
+    select
+    a.task_id, a.data_status, a.create_time, a.creator_name, a.task_name, a.region_id, a.insurance_policy_num, a.calibrated_policy_number,
+    a.start_time, a.end_time, status_status
+    from ls_task as a join is_calibrator as b on a.task_id = b.task_id
+    <where>
+      <if test="accountId != null">
+        b.account_id = #{accountId}
+      </if>
+      <if test="keyWord != null and keyWord != ''">
+        and (a.region_id = #{keyWord} or a.creator_name like '%' || #{keyWord} || '%')
+      </if>
+    </where>
+  </select>
+
+
+</mapper>

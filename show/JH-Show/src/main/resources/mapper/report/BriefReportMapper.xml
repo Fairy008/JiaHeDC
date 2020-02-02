@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jh.show.report.mapping.IBriefReportMapper" >
+    <sql id="Base_Column_List" >
+        reporter_id,
+        reporter_name,
+        reporter_content,
+        reporter_mobile_content,
+        create_time,
+        creator,
+        audis_state,
+        region_id,
+        crops_id,
+        report_data_time_start,
+        report_data_time_end,
+        modify_time,
+        modifier,
+        template_id
+    </sql>
+
+    <select id="findBriefReportByPage" resultType="map" parameterType="hashMap">
+        SELECT
+        reporter_id as report_id,reporter_name as report_name
+        FROM
+        briefing_reporter
+        WHERE audis_state = #{audisState,jdbcType = INTEGER}
+        AND region_id = #{regionId,jdbcType = BIGINT}
+        ORDER BY report_data_time_end DESC
+    </select>
+
+    <select id="findBriefReportById" resultType="map" parameterType="Integer">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM
+        briefing_reporter
+        WHERE reporter_id = #{reportId,jdbcType=INTEGER}
+    </select>
+
+    <!--分页查询简报数据 -->
+    <select id="findBriefPage" resultType="map" parameterType="hashMap">
+        SELECT
+        reporter_id as report_id,reporter_name as report_name
+        FROM
+        briefing_reporter
+        WHERE audis_state = #{audisState,jdbcType = INTEGER} -- 发布状态
+        <if test="regionId != null">
+            AND region_id = #{regionId,jdbcType = BIGINT}   --区域id
+        </if>
+        <if test="cropId != null">
+            AND crops_id = #{cropId,jdbcType = INTEGER}   --作物id
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND report_data_time_end BETWEEN to_date(#{startDate},'yyyy-MM-dd') AND to_date(#{endDate},'yyyy-MM-dd') --开始和结束日期
+        </if>
+        ORDER BY report_data_time_end DESC
+    </select>
+</mapper>

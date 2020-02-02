@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>农情模板</title>
+    <style type="text/css">
+        .textSpan{
+            border-style: none;
+            padding-right: 5px;
+            line-height:27px;
+        }
+        .myRightMain{
+            margin:2px 2px 2px 2px;
+            position: relative;
+            padding:8px 10px 10px 10px;
+            width:calc(100% - 24px);
+            min-width: 850px;
+            height:auto;
+            background:#fff;
+            box-shadow:0px 0px 3px 3px #e5e8ed;
+        }
+        p{
+            width:100%;
+            line-height:27px;
+        }
+        .myTextarea{
+            border-style: none;
+            width:auto;
+            line-height:27px;
+        }
+        .table{
+            width:100%;
+        }
+    </style>
+</head>
+<body style="margin: 0;padding: 0;font-family:'\9ED1\4F53';font-size:14px !important;">
+<div class="myRightMain">
+    <div class="head">
+        <h2><span class="textSpan">${dateTimeSpan!}</span>&nbsp;&nbsp;：</h2>
+        <p>本期<span class="textSpan">${regionName!}</span><span class="textSpan">${cropsName!}</span>进入<span class="textSpan">${growthPeriodName!}</span></p>
+        <p>
+            日均地温：
+            <#if ttnStatistics.minTtnAvg?? && ttnStatistics.maxTtnAvg??>
+				<span class="textSpan">${ttnStatistics.minTtnAvg.ttnAvg!}</span>(<span class="textSpan">${ttnStatistics.minTtnAvg.regionName!}</span>)
+                ~
+                <span class="textSpan">${ttnStatistics.maxTtnAvg.ttnAvg!}</span>(<span class="textSpan">${ttnStatistics.maxTtnAvg.regionName!}</span>)℃。
+                <#if ttnStatistics.instructions??>
+					<#assign instructions='' />
+                    <#list ttnStatistics.instructions as info>
+                        <#if info_index == 0>
+							<#assign instructions='${info!}' />
+                        <#else>
+							<#assign instructions+='，${info!}' />
+                        </#if>
+					</#list>
+					<#assign instructions+='。' />
+                </#if>
+            <#else>
+				<#assign instructions='数据更新中。' />
+            </#if>
+			<span class="textSpan">${instructions}</span>
+        </p>
+        <p>
+            <span class="textSpan">${cropsName!}</span>自播种以来有效积温
+            <#if ttnStatistics.minTtnTotal?? && ttnStatistics.maxTtnTotal??>
+                <span class="textSpan">${ttnStatistics.minTtnTotal.ttnAvg!}</span>(<span class="textSpan">${ttnStatistics.minTtnTotal.regionName!}</span>)
+                ~
+                <span class="textSpan">${ttnStatistics.maxTtnTotal.ttnAvg!}</span>(<span class="textSpan">${ttnStatistics.maxTtnTotal.regionName!}</span>)℃。
+            <#else>
+                <span class="textSpan">数据更新中</span>
+            </#if>
+        </p>
+        <p>
+            本期降雨（<span class="textSpan">${trrmStatistics.rainDays!0}</span>）天，
+            <#if trrmStatistics.trrmRegionMaxDay??>
+                <span class="textSpan">${trrmStatistics.trrmRegionMaxDay.maxDayTrrmDate!}</span>
+                <span class="textSpan">${trrmStatistics.trrmRegionMaxDay.maxDayTrrmRegion!}</span>降雨量最大，
+                达<span class="textSpan">${trrmStatistics.trrmRegionMaxDay.maxDayTrrm!}</span>mm（<span class="textSpan">${trrmStatistics.trrmRegionMaxDay.rainStormLevel!}</span>)。
+            </#if>
+            本期降雨总量
+            <#if trrmStatistics.minTrrmRegion?? && trrmStatistics.maxTrrmRegion??>
+                <span class="textSpan">${trrmStatistics.minTrrmRegion.trrmTotal!}</span>(<span class="textSpan">${trrmStatistics.minTrrmRegion.regionName!}</span>)
+                ~
+                <span class="textSpan">${trrmStatistics.maxTrrmRegion.trrmTotal!}</span>(<span class="textSpan">${trrmStatistics.maxTrrmRegion.regionName!}</span>)
+            <#else>
+                <span class="textSpan">0</span>
+            </#if>
+            mm。
+        </p>
+    </div>
+
+    <p style="font-weight: bold">本期降雨量信息：</p>
+    <table class="table" cellspacing="5px">
+        <tr>
+            <td>区域</td>
+            <td>本期降雨量（mm）</td>
+            <td>空气湿度</td>
+            <td>去年同期降雨量（mm）</td>
+            <td>较去年同期比（%）</td>
+            <td>历史同期降雨量（mm）</td>
+            <td>较历史同期比（%）</td>
+            <td>近60天降雨量（mm）</td>
+            <td>历史同期60天降雨量（mm）</td>
+            <td>较历史60天比（%）</td>
+            <td>墒情概况</td>
+        </tr>
+        <#if trrmStatistics.trrmStatisticsRegion?? && trrmStatistics.trrmStatisticsRegion?size &gt;0>
+            <#list trrmStatistics.trrmStatisticsRegion as item>
+                <tr>
+                    <td><span class="textSpan">${item.regionName!}</span></td>
+                    <td><span class="textSpan">${item.trrmTotal!}</span></td>
+                    <td><span class="textSpan">${item.airHumidity!'--'}</span></td>
+                    <td><span class="textSpan">${item.avgTrrmLastYear!}</span></td>
+                    <td><span class="textSpan">${item.percentLastYear!}</span></td>
+                    <td><span class="textSpan">${item.avgTrrmHistory!}</span></td>
+                    <td><span class="textSpan">${item.percentHistoryYear!}</span></td>
+                    <td><span class="textSpan">${item.trrmTotalMonth!}</span></td>
+                    <td><span class="textSpan">${item.avgTrrmMonthHistory!}</span></td>
+                    <td><span class="textSpan">${item.percentMonthHistoryYear!}</span></td>
+                    <td><span class="textSpan">${item.soilMoisture!'--'}</span></td>
+                </tr>
+            </#list>
+        </#if>
+    </table>
+
+    <#if diseaseControls?size &gt; 0 && bugDiseaseControls?size &gt; 0>
+        <p style="font-weight: bold;">
+            当前阶段易发生
+            <#assign x='' />
+            <#list diseaseControls as item>
+                <#if item_index == 0>
+                    <#assign x='${item.diseaseName!}' />
+                <#else>
+                    <#assign x+='，${item.diseaseName!}' />
+                </#if>
+            </#list>
+            <#assign x+='；' />
+            <#list bugDiseaseControls as item>
+                <#if item_index == 0>
+                    <#assign x+='${item.diseaseName!}' />
+                <#else>
+                    <#assign x+='，${item.diseaseName!}' />
+                </#if>
+            </#list>
+            <#if x??>
+				<span class="textSpan">${x}</span>
+            </#if>
+            等病虫害，参考下面防治措施。
+        </p>
+
+        <p style="font-weight: bold">作物病害防治措施：</p>
+        <div class="myTextarea">
+            <#list diseaseControls as item>
+                ${item.diseaseName!}，${item.diseaseMeasure!}<br>
+            </#list>
+        </div>
+
+        <p style="font-weight: bold">作物虫害防治措施：</p>
+        <div class="myTextarea">
+            <#list bugDiseaseControls as item>
+                ${item.diseaseName!}，${item.diseaseMeasure!}<br>
+            </#list>
+        </div>
+        <#elseif diseaseControls?size &gt; 0>
+            <p style="font-weight: bold;">
+                当前阶段易发生
+                <#assign y='' />
+                <#list diseaseControls as item>
+                    <#if item_index == 0>
+                        <#assign y='${item.diseaseName!}' />
+                    <#else>
+                        <#assign y+='，${item.diseaseName!}' />
+                    </#if>
+                </#list>
+                <#if y??>
+                    <span class="textSpan">${y}</span>
+                </#if>
+                等病害，参考下面防治措施。
+            </p>
+
+            <p style="font-weight: bold">作物病害防治措施：</p>
+            <div class="myTextarea">
+                <#list diseaseControls as item>
+                    ${item.diseaseName!}，${item.diseaseMeasure!}<br>
+                </#list>
+            </div>
+            <#elseif bugDiseaseControls?size &gt; 0>
+                <p style="font-weight: bold;">
+                    当前阶段易发生
+                    <#assign z='' />
+                    <#list bugDiseaseControls as item>
+                        <#if item_index == 0>
+                            <#assign z='${item.diseaseName!}' />
+                        <#else>
+                            <#assign z+='，${item.diseaseName!}' />
+                        </#if>
+                    </#list>
+                    <#if z??>
+                        <span class="textSpan">${z}</span>
+                    </#if>
+                    等虫害，参考下面防治措施。
+                </p>
+
+                <p style="font-weight: bold">作物虫害防治措施：</p>
+                <div class="myTextarea">
+                    <#list bugDiseaseControls as item>
+                        ${item.diseaseName!}，${item.diseaseMeasure!}<br>
+                    </#list>
+                </div>
+        <#else>
+			<div class="myTextarea">当前阶段病虫害信息更新中</div>
+
+			<p style="font-weight: bold">作物病害防治措施：</p>
+			<div class="myTextarea">作物病害防治措施信息更新中</div>
+
+			<p style="font-weight: bold">作物虫害防治措施：</p>
+			<div class="myTextarea">作物虫害防治措施信息更新中</div>
+        </#if>
+
+    <p style="font-weight: bold">备注信息：</p>
+        <#if remark??>
+            <div class="myTextarea">${remark!}</div>
+        <#else>
+            <div class="myTextarea">当前阶段，应加强田间肥水管理</div>
+        </#if>
+</div>
+</body>
+</html>
